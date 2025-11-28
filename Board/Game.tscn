@@ -1,0 +1,577 @@
+[gd_scene load_steps=2 format=3 uid="uid://cuqm30mdbu41k"]
+
+[ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Card/Card.tscn" id="1_7k413"]
+
+[node name="Game" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Open" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 210)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PlayerBoard2" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 600)
+layout_mode = 2
+
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.17641911, 0.17641908, 0.17641908, 1)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PlayerBoard2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Left" type="Control" parent="VBoxContainer/PlayerBoard2/HBoxContainer"]
+custom_minimum_size = Vector2(191, 0)
+layout_mode = 2
+
+[node name="DamageZone" type="Control" parent="VBoxContainer/PlayerBoard2/HBoxContainer/Left"]
+custom_minimum_size = Vector2(0, 508)
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard2/HBoxContainer/Left/DamageZone"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.6789437, 0.6789437, 0.6789437, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PlayerBoard2/HBoxContainer/Left/DamageZone"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="HBoxContainer" type="VBoxContainer" parent="VBoxContainer/PlayerBoard2/HBoxContainer/Left/DamageZone/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = -60
+
+[node name="CardArea1" type="Control" parent="VBoxContainer/PlayerBoard2/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 2
+
+[node name="Card" parent="VBoxContainer/PlayerBoard2/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer/CardArea1" instance=ExtResource("1_7k413")]
+layout_mode = 1
+offset_right = 0.0
+offset_bottom = 0.0
+rotation = 1.5707964
+scale = Vector2(0.45, 0.45)
+pivot_offset = Vector2(150, 210)
+
+[node name="CardArea2" type="Control" parent="VBoxContainer/PlayerBoard2/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 2
+
+[node name="Card" parent="VBoxContainer/PlayerBoard2/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer/CardArea2" instance=ExtResource("1_7k413")]
+layout_mode = 1
+offset_right = 0.0
+offset_bottom = 0.0
+rotation = 1.5707964
+scale = Vector2(0.45, 0.45)
+pivot_offset = Vector2(150, 210)
+
+[node name="CardArea3" type="Control" parent="VBoxContainer/PlayerBoard2/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 2
+
+[node name="Card" parent="VBoxContainer/PlayerBoard2/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer/CardArea3" instance=ExtResource("1_7k413")]
+layout_mode = 1
+offset_right = 0.0
+offset_bottom = 0.0
+rotation = 1.5707964
+scale = Vector2(0.45, 0.45)
+pivot_offset = Vector2(150, 210)
+
+[node name="CardArea4" type="Control" parent="VBoxContainer/PlayerBoard2/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 2
+
+[node name="Card" parent="VBoxContainer/PlayerBoard2/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer/CardArea4" instance=ExtResource("1_7k413")]
+layout_mode = 1
+offset_right = 0.0
+offset_bottom = 0.0
+rotation = 1.5707964
+scale = Vector2(0.45, 0.45)
+pivot_offset = Vector2(150, 210)
+
+[node name="CardArea5" type="Control" parent="VBoxContainer/PlayerBoard2/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 2
+
+[node name="Card" parent="VBoxContainer/PlayerBoard2/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer/CardArea5" instance=ExtResource("1_7k413")]
+layout_mode = 1
+offset_right = 0.0
+offset_bottom = 0.0
+rotation = 1.5707964
+scale = Vector2(0.45, 0.45)
+pivot_offset = Vector2(150, 210)
+
+[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard2/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 2
+
+[node name="Card" parent="VBoxContainer/PlayerBoard2/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer/CardArea6" instance=ExtResource("1_7k413")]
+layout_mode = 1
+offset_right = 0.0
+offset_bottom = 0.0
+rotation = 1.5707964
+scale = Vector2(0.45, 0.45)
+pivot_offset = Vector2(150, 210)
+
+[node name="GuardZone" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 210)
+layout_mode = 2
+
+[node name="PlayerBoard" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 600)
+layout_mode = 2
+
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.17641911, 0.17641908, 0.17641908, 1)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PlayerBoard"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Left" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer"]
+custom_minimum_size = Vector2(191, 0)
+layout_mode = 2
+
+[node name="DamageZone" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left"]
+custom_minimum_size = Vector2(0, 508)
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.6789437, 0.6789437, 0.6789437, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="HBoxContainer" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = -60
+
+[node name="CardArea1" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 2
+
+[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer/CardArea1" instance=ExtResource("1_7k413")]
+layout_mode = 1
+offset_right = 0.0
+offset_bottom = 0.0
+rotation = 1.5707964
+scale = Vector2(0.45, 0.45)
+pivot_offset = Vector2(150, 210)
+
+[node name="CardArea2" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 2
+
+[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer/CardArea2" instance=ExtResource("1_7k413")]
+layout_mode = 1
+offset_right = 0.0
+offset_bottom = 0.0
+rotation = 1.5707964
+scale = Vector2(0.45, 0.45)
+pivot_offset = Vector2(150, 210)
+
+[node name="CardArea3" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 2
+
+[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer/CardArea3" instance=ExtResource("1_7k413")]
+layout_mode = 1
+offset_right = 0.0
+offset_bottom = 0.0
+rotation = 1.5707964
+scale = Vector2(0.45, 0.45)
+pivot_offset = Vector2(150, 210)
+
+[node name="CardArea4" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 2
+
+[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer/CardArea4" instance=ExtResource("1_7k413")]
+layout_mode = 1
+offset_right = 0.0
+offset_bottom = 0.0
+rotation = 1.5707964
+scale = Vector2(0.45, 0.45)
+pivot_offset = Vector2(150, 210)
+
+[node name="CardArea5" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 2
+
+[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer/CardArea5" instance=ExtResource("1_7k413")]
+layout_mode = 1
+offset_right = 0.0
+offset_bottom = 0.0
+rotation = 1.5707964
+scale = Vector2(0.45, 0.45)
+pivot_offset = Vector2(150, 210)
+
+[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 2
+
+[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer/CardArea6" instance=ExtResource("1_7k413")]
+layout_mode = 1
+offset_right = 0.0
+offset_bottom = 0.0
+rotation = 1.5707964
+scale = Vector2(0.45, 0.45)
+pivot_offset = Vector2(150, 210)
+
+[node name="Center" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="CenterContainer" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -192.0
+offset_bottom = 218.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Circles" type="HBoxContainer" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="LeftZone" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Front" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/LeftZone"]
+custom_minimum_size = Vector2(195, 195)
+layout_mode = 2
+
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/LeftZone/Front"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.6784314, 0.6784314, 0.6784314, 1)
+
+[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/LeftZone/Front"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/LeftZone/Front/CardArea6" instance=ExtResource("1_7k413")]
+layout_mode = 1
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+pivot_offset = Vector2(150, 210)
+
+[node name="Back" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/LeftZone"]
+custom_minimum_size = Vector2(195, 195)
+layout_mode = 2
+
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/LeftZone/Back"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.6784314, 0.6784314, 0.6784314, 1)
+
+[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/LeftZone/Back"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/LeftZone/Back/CardArea6" instance=ExtResource("1_7k413")]
+layout_mode = 1
+offset_right = 0.0
+offset_bottom = 0.0
+rotation = 1.5707964
+scale = Vector2(0.45, 0.45)
+pivot_offset = Vector2(150, 210)
+
+[node name="Center" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Front" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Center"]
+custom_minimum_size = Vector2(195, 195)
+layout_mode = 2
+
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Center/Front"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.6784314, 0.6784314, 0.6784314, 1)
+
+[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Center/Front"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Center/Front/CardArea6" instance=ExtResource("1_7k413")]
+layout_mode = 1
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+pivot_offset = Vector2(150, 210)
+
+[node name="Back" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Center"]
+custom_minimum_size = Vector2(195, 195)
+layout_mode = 2
+
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Center/Back"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.6784314, 0.6784314, 0.6784314, 1)
+
+[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Center/Back"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Center/Back/CardArea6" instance=ExtResource("1_7k413")]
+layout_mode = 1
+offset_right = 0.0
+offset_bottom = 0.0
+rotation = 1.5707964
+scale = Vector2(0.45, 0.45)
+pivot_offset = Vector2(150, 210)
+
+[node name="Right" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Front" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Right"]
+custom_minimum_size = Vector2(195, 195)
+layout_mode = 2
+
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Right/Front"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.6784314, 0.6784314, 0.6784314, 1)
+
+[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Right/Front"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Right/Front/CardArea6" instance=ExtResource("1_7k413")]
+layout_mode = 1
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+pivot_offset = Vector2(150, 210)
+
+[node name="Back" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Right"]
+custom_minimum_size = Vector2(195, 195)
+layout_mode = 2
+
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Right/Back"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.6784314, 0.6784314, 0.6784314, 1)
+
+[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Right/Back"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Right/Back/CardArea6" instance=ExtResource("1_7k413")]
+layout_mode = 1
+offset_right = 0.0
+offset_bottom = 0.0
+rotation = 1.5707964
+scale = Vector2(0.45, 0.45)
+pivot_offset = Vector2(150, 210)
+
+[node name="Right" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+
+[node name="Control" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/HBoxContainer/Right"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="DeckArea" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Right/Control"]
+custom_minimum_size = Vector2(0, 195)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PlayerBoard/HBoxContainer/Right/Control/DeckArea"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 11
+theme_override_constants/margin_right = 12
+
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/HBoxContainer/Right/Control/DeckArea/MarginContainer"]
+layout_mode = 2
+color = Color(0.6784314, 0.6784314, 0.6784314, 1)
+
+[node name="CardArea1" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Right/Control/DeckArea/MarginContainer"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 2
+
+[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Right/Control/DeckArea/MarginContainer/CardArea1" instance=ExtResource("1_7k413")]
+layout_mode = 1
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+pivot_offset = Vector2(150, 210)
+
+[node name="DropZone" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Right/Control"]
+custom_minimum_size = Vector2(0, 195)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PlayerBoard/HBoxContainer/Right/Control/DropZone"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 11
+theme_override_constants/margin_right = 12
+
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/HBoxContainer/Right/Control/DropZone/MarginContainer"]
+layout_mode = 2
+color = Color(0.6784314, 0.6784314, 0.6784314, 1)
+
+[node name="CardArea1" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Right/Control/DropZone/MarginContainer"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 2
+
+[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Right/Control/DropZone/MarginContainer/CardArea1" instance=ExtResource("1_7k413")]
+layout_mode = 1
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+pivot_offset = Vector2(150, 210)
+
+[node name="Open2" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 210)
+layout_mode = 2
+size_flags_vertical = 3

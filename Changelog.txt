@@ -1,0 +1,5 @@
+v.0001 Duel Creatures
+- Created Placeholder card
+
+// TODO 
+- Placeholder deck
