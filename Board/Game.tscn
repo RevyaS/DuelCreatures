@@ -160,7 +160,7 @@ custom_minimum_size = Vector2(0, 210)
 layout_mode = 2
 
 [node name="PlayerBoard" type="Control" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 600)
+custom_minimum_size = Vector2(0, 900)
 layout_mode = 2
 
 [node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard"]
@@ -172,7 +172,39 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.17641911, 0.17641908, 0.17641908, 1)
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PlayerBoard"]
+[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/PlayerBoard"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 195.0
+grow_horizontal = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+
+[node name="ExtraCircles" type="HBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer2"]
+layout_mode = 2
+
+[node name="Left" type="HBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="Left2" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Left"]
+custom_minimum_size = Vector2(195, 195)
+layout_mode = 2
+
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Left/Left2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.6784314, 0.6784314, 0.6784314, 1)
+
+[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Left/Left2"]
+custom_minimum_size = Vector2(0, 134)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -180,12 +212,124 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Left" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer"]
+[node name="Card" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Left/Left2/CardArea6" instance=ExtResource("1_7k413")]
+layout_mode = 1
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+pivot_offset = Vector2(150, 210)
+
+[node name="Left3" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Left"]
+custom_minimum_size = Vector2(195, 195)
+layout_mode = 2
+
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Left/Left3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.6784314, 0.6784314, 0.6784314, 1)
+
+[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Left/Left3"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Card" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Left/Left3/CardArea6" instance=ExtResource("1_7k413")]
+layout_mode = 1
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+pivot_offset = Vector2(150, 210)
+
+[node name="Right" type="HBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Left2" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Right"]
+custom_minimum_size = Vector2(195, 195)
+layout_mode = 2
+
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Right/Left2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.6784314, 0.6784314, 0.6784314, 1)
+
+[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Right/Left2"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Card" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Right/Left2/CardArea6" instance=ExtResource("1_7k413")]
+layout_mode = 1
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+pivot_offset = Vector2(150, 210)
+
+[node name="Left3" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Right"]
+custom_minimum_size = Vector2(195, 195)
+layout_mode = 2
+
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Right/Left3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.6784314, 0.6784314, 0.6784314, 1)
+
+[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Right/Left3"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Card" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Right/Left3/CardArea6" instance=ExtResource("1_7k413")]
+layout_mode = 1
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+pivot_offset = Vector2(150, 210)
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PlayerBoard"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 180
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer"]
+layout_mode = 2
+
+[node name="Left" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(191, 0)
 layout_mode = 2
 
-[node name="DamageZone" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left"]
-custom_minimum_size = Vector2(0, 508)
+[node name="DamageZone" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Left"]
+custom_minimum_size = Vector2(0, 609)
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
@@ -194,7 +338,7 @@ anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone"]
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Left/DamageZone"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -203,7 +347,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.6789437, 0.6789437, 0.6789437, 1)
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone"]
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Left/DamageZone"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -215,15 +359,15 @@ theme_override_constants/margin_top = 2
 theme_override_constants/margin_right = 2
 theme_override_constants/margin_bottom = 2
 
-[node name="HBoxContainer" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer"]
+[node name="HBoxContainer" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Left/DamageZone/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = -60
+theme_override_constants/separation = -40
 
-[node name="CardArea1" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer"]
+[node name="CardArea1" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(0, 134)
 layout_mode = 2
 
-[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer/CardArea1" instance=ExtResource("1_7k413")]
+[node name="Card" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer/CardArea1" instance=ExtResource("1_7k413")]
 layout_mode = 1
 offset_right = 0.0
 offset_bottom = 0.0
@@ -231,11 +375,11 @@ rotation = 1.5707964
 scale = Vector2(0.45, 0.45)
 pivot_offset = Vector2(150, 210)
 
-[node name="CardArea2" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer"]
+[node name="CardArea2" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(0, 134)
 layout_mode = 2
 
-[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer/CardArea2" instance=ExtResource("1_7k413")]
+[node name="Card" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer/CardArea2" instance=ExtResource("1_7k413")]
 layout_mode = 1
 offset_right = 0.0
 offset_bottom = 0.0
@@ -243,11 +387,11 @@ rotation = 1.5707964
 scale = Vector2(0.45, 0.45)
 pivot_offset = Vector2(150, 210)
 
-[node name="CardArea3" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer"]
+[node name="CardArea3" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(0, 134)
 layout_mode = 2
 
-[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer/CardArea3" instance=ExtResource("1_7k413")]
+[node name="Card" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer/CardArea3" instance=ExtResource("1_7k413")]
 layout_mode = 1
 offset_right = 0.0
 offset_bottom = 0.0
@@ -255,11 +399,11 @@ rotation = 1.5707964
 scale = Vector2(0.45, 0.45)
 pivot_offset = Vector2(150, 210)
 
-[node name="CardArea4" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer"]
+[node name="CardArea4" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(0, 134)
 layout_mode = 2
 
-[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer/CardArea4" instance=ExtResource("1_7k413")]
+[node name="Card" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer/CardArea4" instance=ExtResource("1_7k413")]
 layout_mode = 1
 offset_right = 0.0
 offset_bottom = 0.0
@@ -267,11 +411,11 @@ rotation = 1.5707964
 scale = Vector2(0.45, 0.45)
 pivot_offset = Vector2(150, 210)
 
-[node name="CardArea5" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer"]
+[node name="CardArea5" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(0, 134)
 layout_mode = 2
 
-[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer/CardArea5" instance=ExtResource("1_7k413")]
+[node name="Card" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer/CardArea5" instance=ExtResource("1_7k413")]
 layout_mode = 1
 offset_right = 0.0
 offset_bottom = 0.0
@@ -279,11 +423,11 @@ rotation = 1.5707964
 scale = Vector2(0.45, 0.45)
 pivot_offset = Vector2(150, 210)
 
-[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer"]
+[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(0, 134)
 layout_mode = 2
 
-[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer/CardArea6" instance=ExtResource("1_7k413")]
+[node name="Card" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Left/DamageZone/MarginContainer/HBoxContainer/CardArea6" instance=ExtResource("1_7k413")]
 layout_mode = 1
 offset_right = 0.0
 offset_bottom = 0.0
@@ -291,11 +435,11 @@ rotation = 1.5707964
 scale = Vector2(0.45, 0.45)
 pivot_offset = Vector2(150, 210)
 
-[node name="Center" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer"]
+[node name="Center" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="MarginContainer" type="CenterContainer" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center"]
+[node name="MarginContainer" type="CenterContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center"]
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
@@ -306,19 +450,22 @@ offset_bottom = 218.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Circles" type="HBoxContainer" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer"]
+layout_mode = 2
+
+[node name="Circles" type="HBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="LeftZone" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles"]
+[node name="LeftZone" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Front" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/LeftZone"]
+[node name="Front" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone"]
 custom_minimum_size = Vector2(195, 195)
 layout_mode = 2
 
-[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/LeftZone/Front"]
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone/Front"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -327,7 +474,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.6784314, 0.6784314, 0.6784314, 1)
 
-[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/LeftZone/Front"]
+[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone/Front"]
 custom_minimum_size = Vector2(0, 134)
 layout_mode = 1
 anchors_preset = 15
@@ -336,18 +483,18 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/LeftZone/Front/CardArea6" instance=ExtResource("1_7k413")]
+[node name="Card" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone/Front/CardArea6" instance=ExtResource("1_7k413")]
 layout_mode = 1
 offset_right = 0.0
 offset_bottom = 0.0
 scale = Vector2(0.45, 0.45)
 pivot_offset = Vector2(150, 210)
 
-[node name="Back" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/LeftZone"]
+[node name="Back" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone"]
 custom_minimum_size = Vector2(195, 195)
 layout_mode = 2
 
-[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/LeftZone/Back"]
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone/Back"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -356,7 +503,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.6784314, 0.6784314, 0.6784314, 1)
 
-[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/LeftZone/Back"]
+[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone/Back"]
 custom_minimum_size = Vector2(0, 134)
 layout_mode = 1
 anchors_preset = 15
@@ -365,7 +512,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/LeftZone/Back/CardArea6" instance=ExtResource("1_7k413")]
+[node name="Card" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone/Back/CardArea6" instance=ExtResource("1_7k413")]
 layout_mode = 1
 offset_right = 0.0
 offset_bottom = 0.0
@@ -373,15 +520,15 @@ rotation = 1.5707964
 scale = Vector2(0.45, 0.45)
 pivot_offset = Vector2(150, 210)
 
-[node name="Center" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles"]
+[node name="Center" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Front" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Center"]
+[node name="Front" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center"]
 custom_minimum_size = Vector2(195, 195)
 layout_mode = 2
 
-[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Center/Front"]
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center/Front"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -390,7 +537,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.6784314, 0.6784314, 0.6784314, 1)
 
-[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Center/Front"]
+[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center/Front"]
 custom_minimum_size = Vector2(0, 134)
 layout_mode = 1
 anchors_preset = 15
@@ -399,18 +546,18 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Center/Front/CardArea6" instance=ExtResource("1_7k413")]
+[node name="Card" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center/Front/CardArea6" instance=ExtResource("1_7k413")]
 layout_mode = 1
 offset_right = 0.0
 offset_bottom = 0.0
 scale = Vector2(0.45, 0.45)
 pivot_offset = Vector2(150, 210)
 
-[node name="Back" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Center"]
+[node name="Back" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center"]
 custom_minimum_size = Vector2(195, 195)
 layout_mode = 2
 
-[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Center/Back"]
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center/Back"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -419,7 +566,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.6784314, 0.6784314, 0.6784314, 1)
 
-[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Center/Back"]
+[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center/Back"]
 custom_minimum_size = Vector2(0, 134)
 layout_mode = 1
 anchors_preset = 15
@@ -428,7 +575,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Center/Back/CardArea6" instance=ExtResource("1_7k413")]
+[node name="Card" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center/Back/CardArea6" instance=ExtResource("1_7k413")]
 layout_mode = 1
 offset_right = 0.0
 offset_bottom = 0.0
@@ -436,15 +583,15 @@ rotation = 1.5707964
 scale = Vector2(0.45, 0.45)
 pivot_offset = Vector2(150, 210)
 
-[node name="Right" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles"]
+[node name="Right" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Front" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Right"]
+[node name="Front" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right"]
 custom_minimum_size = Vector2(195, 195)
 layout_mode = 2
 
-[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Right/Front"]
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right/Front"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -453,7 +600,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.6784314, 0.6784314, 0.6784314, 1)
 
-[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Right/Front"]
+[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right/Front"]
 custom_minimum_size = Vector2(0, 134)
 layout_mode = 1
 anchors_preset = 15
@@ -462,18 +609,18 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Right/Front/CardArea6" instance=ExtResource("1_7k413")]
+[node name="Card" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right/Front/CardArea6" instance=ExtResource("1_7k413")]
 layout_mode = 1
 offset_right = 0.0
 offset_bottom = 0.0
 scale = Vector2(0.45, 0.45)
 pivot_offset = Vector2(150, 210)
 
-[node name="Back" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Right"]
+[node name="Back" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right"]
 custom_minimum_size = Vector2(195, 195)
 layout_mode = 2
 
-[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Right/Back"]
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right/Back"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -482,7 +629,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.6784314, 0.6784314, 0.6784314, 1)
 
-[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Right/Back"]
+[node name="CardArea6" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right/Back"]
 custom_minimum_size = Vector2(0, 134)
 layout_mode = 1
 anchors_preset = 15
@@ -491,7 +638,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Center/MarginContainer/Circles/Right/Back/CardArea6" instance=ExtResource("1_7k413")]
+[node name="Card" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right/Back/CardArea6" instance=ExtResource("1_7k413")]
 layout_mode = 1
 offset_right = 0.0
 offset_bottom = 0.0
@@ -499,11 +646,11 @@ rotation = 1.5707964
 scale = Vector2(0.45, 0.45)
 pivot_offset = Vector2(150, 210)
 
-[node name="Right" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer"]
+[node name="Right" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
 
-[node name="Control" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/HBoxContainer/Right"]
+[node name="Control" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right"]
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
@@ -513,11 +660,11 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 20
 
-[node name="DeckArea" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Right/Control"]
+[node name="DeckArea" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control"]
 custom_minimum_size = Vector2(0, 195)
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PlayerBoard/HBoxContainer/Right/Control/DeckArea"]
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control/DeckArea"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -527,26 +674,26 @@ grow_vertical = 2
 theme_override_constants/margin_left = 11
 theme_override_constants/margin_right = 12
 
-[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/HBoxContainer/Right/Control/DeckArea/MarginContainer"]
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control/DeckArea/MarginContainer"]
 layout_mode = 2
 color = Color(0.6784314, 0.6784314, 0.6784314, 1)
 
-[node name="CardArea1" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Right/Control/DeckArea/MarginContainer"]
+[node name="CardArea1" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control/DeckArea/MarginContainer"]
 custom_minimum_size = Vector2(0, 134)
 layout_mode = 2
 
-[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Right/Control/DeckArea/MarginContainer/CardArea1" instance=ExtResource("1_7k413")]
+[node name="Card" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control/DeckArea/MarginContainer/CardArea1" instance=ExtResource("1_7k413")]
 layout_mode = 1
 offset_right = 0.0
 offset_bottom = 0.0
 scale = Vector2(0.45, 0.45)
 pivot_offset = Vector2(150, 210)
 
-[node name="DropZone" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Right/Control"]
+[node name="DropZone" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control"]
 custom_minimum_size = Vector2(0, 195)
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PlayerBoard/HBoxContainer/Right/Control/DropZone"]
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control/DropZone"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -556,15 +703,15 @@ grow_vertical = 2
 theme_override_constants/margin_left = 11
 theme_override_constants/margin_right = 12
 
-[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/HBoxContainer/Right/Control/DropZone/MarginContainer"]
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control/DropZone/MarginContainer"]
 layout_mode = 2
 color = Color(0.6784314, 0.6784314, 0.6784314, 1)
 
-[node name="CardArea1" type="Control" parent="VBoxContainer/PlayerBoard/HBoxContainer/Right/Control/DropZone/MarginContainer"]
+[node name="CardArea1" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control/DropZone/MarginContainer"]
 custom_minimum_size = Vector2(0, 134)
 layout_mode = 2
 
-[node name="Card" parent="VBoxContainer/PlayerBoard/HBoxContainer/Right/Control/DropZone/MarginContainer/CardArea1" instance=ExtResource("1_7k413")]
+[node name="Card" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control/DropZone/MarginContainer/CardArea1" instance=ExtResource("1_7k413")]
 layout_mode = 1
 offset_right = 0.0
 offset_bottom = 0.0
