@@ -11,6 +11,19 @@ public partial class CardContainer : Control
     {
         ChildEnteredTree += OnChildEnteredTree;
         ChildExitingTree += OnChildExitedTree;
+
+        if(GetChildCount() > 0)
+        {
+            currentCard = GetChild<Card>(0);
+        }
+    }
+
+    public void RemoveCard()
+    {
+        if(currentCard is not null)
+        {
+            RemoveChild(currentCard);
+        }
     }
 
     private void OnChildExitedTree(Node node)

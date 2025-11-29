@@ -1,6 +1,4 @@
 v.0001 Duel Creatures
 - Created Placeholder card
 - Designed Player Board (Good for android)
-
-// TODO 
-- Placeholder deck
+- Card Factory and Some Assets

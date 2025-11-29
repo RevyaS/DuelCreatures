@@ -1,5 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://cuqm30mdbu41k"]
+[gd_scene load_steps=6 format=3 uid="uid://cuqm30mdbu41k"]
 
+[ext_resource type="Script" uid="uid://d33oqm6uprjxl" path="res://Board/DuelCreaturesBoard.cs" id="1_s27tx"]
 [ext_resource type="Script" uid="uid://bqw5phtur46nx" path="res://Components/CardContainer.cs" id="1_wd5v0"]
 [ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Card/Card.tscn" id="2_s27tx"]
 [ext_resource type="PackedScene" uid="uid://dm8sksf3b1gcw" path="res://Board/UnitCircle.tscn" id="3_iu5jy"]
@@ -12,6 +13,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_s27tx")
 
 [node name="Opp Hand" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -286,11 +288,13 @@ theme_override_constants/separation = 20
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Front" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone" instance=ExtResource("3_iu5jy")]
+[node name="OppBackRight" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone" instance=ExtResource("3_iu5jy")]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 
-[node name="Back" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone" instance=ExtResource("3_iu5jy")]
+[node name="OppFrontRight" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone" instance=ExtResource("3_iu5jy")]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 
@@ -298,11 +302,12 @@ layout_mode = 2
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Vanguard" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center" instance=ExtResource("3_iu5jy")]
+[node name="OppBackCenter" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center" instance=ExtResource("3_iu5jy")]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 
-[node name="Rearguard" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center" instance=ExtResource("3_iu5jy")]
+[node name="Vanguard" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center" instance=ExtResource("3_iu5jy")]
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 
@@ -310,10 +315,12 @@ layout_mode = 2
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Front" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right" instance=ExtResource("3_iu5jy")]
+[node name="OppBackLeft" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right" instance=ExtResource("3_iu5jy")]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Back" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right" instance=ExtResource("3_iu5jy")]
+[node name="OppFrontLeft" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right" instance=ExtResource("3_iu5jy")]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="Right" type="Control" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer"]
@@ -346,21 +353,57 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
-[node name="Left2" parent="VBoxContainer/OppBoard/MarginContainer2/ExtraCircles/Left" instance=ExtResource("3_iu5jy")]
+[node name="OppExtraRight1" parent="VBoxContainer/OppBoard/MarginContainer2/ExtraCircles/Left" instance=ExtResource("3_iu5jy")]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Left1" parent="VBoxContainer/OppBoard/MarginContainer2/ExtraCircles/Left" instance=ExtResource("3_iu5jy")]
+[node name="OppExtraRight2" parent="VBoxContainer/OppBoard/MarginContainer2/ExtraCircles/Left" instance=ExtResource("3_iu5jy")]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="Right" type="HBoxContainer" parent="VBoxContainer/OppBoard/MarginContainer2/ExtraCircles"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Right2" parent="VBoxContainer/OppBoard/MarginContainer2/ExtraCircles/Right" instance=ExtResource("3_iu5jy")]
+[node name="OppExtraLeft2" parent="VBoxContainer/OppBoard/MarginContainer2/ExtraCircles/Right" instance=ExtResource("3_iu5jy")]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Right1" parent="VBoxContainer/OppBoard/MarginContainer2/ExtraCircles/Right" instance=ExtResource("3_iu5jy")]
+[node name="OppExtraLeft1" parent="VBoxContainer/OppBoard/MarginContainer2/ExtraCircles/Right" instance=ExtResource("3_iu5jy")]
+unique_name_in_owner = true
 layout_mode = 2
+
+[node name="OppPhaseIndicator" type="Label" parent="VBoxContainer/OppBoard/MarginContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 32
+text = "No Phase"
+horizontal_alignment = 1
+
+[node name="CenterArea" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/CenterArea"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/CenterArea/MarginContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="VBoxContainer/CenterArea/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "End Phase"
 
 [node name="PlayerBoard" type="Control" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 860)
@@ -376,6 +419,7 @@ grow_vertical = 2
 color = Color(0.17641911, 0.17641908, 0.17641908, 1)
 
 [node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/PlayerBoard"]
+custom_minimum_size = Vector2(0, 213)
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -385,6 +429,14 @@ theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 
+[node name="PlayerPhaseIndicator" type="Label" parent="VBoxContainer/PlayerBoard/MarginContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 32
+text = "No Phase"
+horizontal_alignment = 1
+
 [node name="ExtraCircles" type="HBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer2"]
 layout_mode = 2
 
@@ -393,20 +445,24 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
-[node name="Left2" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Left" instance=ExtResource("3_iu5jy")]
+[node name="PlayerExtraLeft1" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Left" instance=ExtResource("3_iu5jy")]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Left1" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Left" instance=ExtResource("3_iu5jy")]
+[node name="PlayerExtraLeft2" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Left" instance=ExtResource("3_iu5jy")]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="Right" type="HBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Right2" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Right" instance=ExtResource("3_iu5jy")]
+[node name="PlayerExtraRight2" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Right" instance=ExtResource("3_iu5jy")]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Right1" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Right" instance=ExtResource("3_iu5jy")]
+[node name="PlayerExtraRight1" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Right" instance=ExtResource("3_iu5jy")]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PlayerBoard"]
@@ -457,11 +513,13 @@ theme_override_constants/separation = 20
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Front" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone" instance=ExtResource("3_iu5jy")]
+[node name="PlayerFrontLeft" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone" instance=ExtResource("3_iu5jy")]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 
-[node name="Back" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone" instance=ExtResource("3_iu5jy")]
+[node name="PlayerBackLeft" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone" instance=ExtResource("3_iu5jy")]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 
@@ -473,7 +531,8 @@ theme_override_constants/separation = 20
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 
-[node name="Rearguard" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center" instance=ExtResource("3_iu5jy")]
+[node name="PlayerBackCenter" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center" instance=ExtResource("3_iu5jy")]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 
@@ -481,10 +540,12 @@ layout_mode = 2
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Front" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right" instance=ExtResource("3_iu5jy")]
+[node name="PlayerFrontRight" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right" instance=ExtResource("3_iu5jy")]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Back" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right" instance=ExtResource("3_iu5jy")]
+[node name="PlayerBackRight" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right" instance=ExtResource("3_iu5jy")]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="Right" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer"]
