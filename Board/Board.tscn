@@ -330,6 +330,7 @@ layout_mode = 2
 [node name="DamageZone" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Right" instance=ExtResource("4_3hmgy")]
 layout_mode = 1
 rotation = 4.712389
+Separation = -45
 
 [node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/OppBoard"]
 layout_mode = 1
@@ -486,6 +487,7 @@ layout_mode = 2
 [node name="DamageZone" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Left" instance=ExtResource("4_3hmgy")]
 layout_mode = 1
 rotation = 1.5707964
+Separation = -45
 
 [node name="Center" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer"]
 layout_mode = 2
