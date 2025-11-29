@@ -1,0 +1,715 @@
+[gd_scene load_steps=5 format=3 uid="uid://cuqm30mdbu41k"]
+
+[ext_resource type="Script" uid="uid://bqw5phtur46nx" path="res://Components/CardContainer.cs" id="1_wd5v0"]
+[ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Card/Card.tscn" id="2_s27tx"]
+[ext_resource type="PackedScene" uid="uid://dm8sksf3b1gcw" path="res://Board/UnitCircle.tscn" id="3_iu5jy"]
+[ext_resource type="PackedScene" uid="uid://bevj84kr2566s" path="res://Board/CardLineStatic.tscn" id="4_3hmgy"]
+
+[node name="Board" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Opp Hand" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 189.0
+grow_horizontal = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Opp Hand"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="CardContainer" type="Control" parent="Opp Hand/HBoxContainer"]
+custom_minimum_size = Vector2(135, 189)
+layout_mode = 2
+script = ExtResource("1_wd5v0")
+metadata/_custom_type_script = "uid://bqw5phtur46nx"
+
+[node name="Card" parent="Opp Hand/HBoxContainer/CardContainer" instance=ExtResource("2_s27tx")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+
+[node name="CardContainer2" type="Control" parent="Opp Hand/HBoxContainer"]
+custom_minimum_size = Vector2(135, 189)
+layout_mode = 2
+script = ExtResource("1_wd5v0")
+metadata/_custom_type_script = "uid://bqw5phtur46nx"
+
+[node name="Card" parent="Opp Hand/HBoxContainer/CardContainer2" instance=ExtResource("2_s27tx")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+
+[node name="CardContainer3" type="Control" parent="Opp Hand/HBoxContainer"]
+custom_minimum_size = Vector2(135, 189)
+layout_mode = 2
+script = ExtResource("1_wd5v0")
+metadata/_custom_type_script = "uid://bqw5phtur46nx"
+
+[node name="Card" parent="Opp Hand/HBoxContainer/CardContainer3" instance=ExtResource("2_s27tx")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+
+[node name="CardContainer4" type="Control" parent="Opp Hand/HBoxContainer"]
+custom_minimum_size = Vector2(135, 189)
+layout_mode = 2
+script = ExtResource("1_wd5v0")
+metadata/_custom_type_script = "uid://bqw5phtur46nx"
+
+[node name="Card" parent="Opp Hand/HBoxContainer/CardContainer4" instance=ExtResource("2_s27tx")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+
+[node name="CardContainer5" type="Control" parent="Opp Hand/HBoxContainer"]
+custom_minimum_size = Vector2(135, 189)
+layout_mode = 2
+script = ExtResource("1_wd5v0")
+metadata/_custom_type_script = "uid://bqw5phtur46nx"
+
+[node name="Card" parent="Opp Hand/HBoxContainer/CardContainer5" instance=ExtResource("2_s27tx")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+
+[node name="CardContainer6" type="Control" parent="Opp Hand/HBoxContainer"]
+custom_minimum_size = Vector2(135, 189)
+layout_mode = 2
+script = ExtResource("1_wd5v0")
+metadata/_custom_type_script = "uid://bqw5phtur46nx"
+
+[node name="Card" parent="Opp Hand/HBoxContainer/CardContainer6" instance=ExtResource("2_s27tx")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="Open" type="Control" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="OppBoard" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 860)
+layout_mode = 2
+
+[node name="BG" type="ColorRect" parent="VBoxContainer/OppBoard"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.17641911, 0.17641908, 0.17641908, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/OppBoard"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 290
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/OppBoard/MarginContainer"]
+layout_mode = 2
+
+[node name="Left" type="Control" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[node name="Control" type="VBoxContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -205.0
+offset_right = -11.0
+offset_bottom = 205.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="DeckArea" type="PanelContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/Control"]
+custom_minimum_size = Vector2(0, 195)
+layout_mode = 2
+
+[node name="BG" type="ColorRect" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/Control/DeckArea"]
+layout_mode = 2
+color = Color(0.6784314, 0.6784314, 0.6784314, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/Control/DeckArea"]
+layout_mode = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="CardContainer" type="Control" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/Control/DeckArea/MarginContainer"]
+custom_minimum_size = Vector2(135, 189)
+layout_mode = 2
+script = ExtResource("1_wd5v0")
+metadata/_custom_type_script = "uid://bqw5phtur46nx"
+
+[node name="Card" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/Control/DeckArea/MarginContainer/CardContainer" instance=ExtResource("2_s27tx")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+
+[node name="DropZone" type="PanelContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/Control"]
+custom_minimum_size = Vector2(0, 195)
+layout_mode = 2
+
+[node name="BG" type="ColorRect" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/Control/DropZone"]
+layout_mode = 2
+color = Color(0.6784314, 0.6784314, 0.6784314, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/Control/DropZone"]
+layout_mode = 2
+theme_override_constants/margin_left = 11
+theme_override_constants/margin_right = 12
+
+[node name="CardArea1" type="Control" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/Control/DropZone/MarginContainer"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 2
+
+[node name="Card" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/Control/DropZone/MarginContainer/CardArea1" instance=ExtResource("2_s27tx")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+
+[node name="Center" type="Control" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="CenterContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -224.0
+offset_bottom = 224.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer"]
+layout_mode = 2
+
+[node name="Circles" type="HBoxContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="LeftZone" type="VBoxContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Front" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone" instance=ExtResource("3_iu5jy")]
+custom_minimum_size = Vector2(0, 0)
+layout_mode = 2
+
+[node name="Back" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone" instance=ExtResource("3_iu5jy")]
+custom_minimum_size = Vector2(0, 0)
+layout_mode = 2
+
+[node name="Center" type="VBoxContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Vanguard" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center" instance=ExtResource("3_iu5jy")]
+custom_minimum_size = Vector2(0, 0)
+layout_mode = 2
+
+[node name="Rearguard" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center" instance=ExtResource("3_iu5jy")]
+custom_minimum_size = Vector2(0, 0)
+layout_mode = 2
+
+[node name="Right" type="VBoxContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Front" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right" instance=ExtResource("3_iu5jy")]
+layout_mode = 2
+
+[node name="Back" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right" instance=ExtResource("3_iu5jy")]
+layout_mode = 2
+
+[node name="Right" type="Control" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+
+[node name="DamageZone" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Right" instance=ExtResource("4_3hmgy")]
+layout_mode = 1
+rotation = 4.712389
+
+[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/OppBoard"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -213.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="ExtraCircles" type="HBoxContainer" parent="VBoxContainer/OppBoard/MarginContainer2"]
+layout_mode = 2
+
+[node name="Left" type="HBoxContainer" parent="VBoxContainer/OppBoard/MarginContainer2/ExtraCircles"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="Left2" parent="VBoxContainer/OppBoard/MarginContainer2/ExtraCircles/Left" instance=ExtResource("3_iu5jy")]
+layout_mode = 2
+
+[node name="Left1" parent="VBoxContainer/OppBoard/MarginContainer2/ExtraCircles/Left" instance=ExtResource("3_iu5jy")]
+layout_mode = 2
+
+[node name="Right" type="HBoxContainer" parent="VBoxContainer/OppBoard/MarginContainer2/ExtraCircles"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Right2" parent="VBoxContainer/OppBoard/MarginContainer2/ExtraCircles/Right" instance=ExtResource("3_iu5jy")]
+layout_mode = 2
+
+[node name="Right1" parent="VBoxContainer/OppBoard/MarginContainer2/ExtraCircles/Right" instance=ExtResource("3_iu5jy")]
+layout_mode = 2
+
+[node name="PlayerBoard" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 860)
+layout_mode = 2
+
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.17641911, 0.17641908, 0.17641908, 1)
+
+[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/PlayerBoard"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 195.0
+grow_horizontal = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+
+[node name="ExtraCircles" type="HBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer2"]
+layout_mode = 2
+
+[node name="Left" type="HBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="Left2" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Left" instance=ExtResource("3_iu5jy")]
+layout_mode = 2
+
+[node name="Left1" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Left" instance=ExtResource("3_iu5jy")]
+layout_mode = 2
+
+[node name="Right" type="HBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Right2" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Right" instance=ExtResource("3_iu5jy")]
+layout_mode = 2
+
+[node name="Right1" parent="VBoxContainer/PlayerBoard/MarginContainer2/ExtraCircles/Right" instance=ExtResource("3_iu5jy")]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PlayerBoard"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 290
+theme_override_constants/margin_right = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer"]
+layout_mode = 2
+
+[node name="Left" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+
+[node name="DamageZone" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Left" instance=ExtResource("4_3hmgy")]
+layout_mode = 1
+rotation = 1.5707964
+
+[node name="Center" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="CenterContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -224.0
+offset_bottom = 224.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer"]
+layout_mode = 2
+
+[node name="Circles" type="HBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="LeftZone" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Front" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone" instance=ExtResource("3_iu5jy")]
+custom_minimum_size = Vector2(0, 0)
+layout_mode = 2
+
+[node name="Back" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone" instance=ExtResource("3_iu5jy")]
+custom_minimum_size = Vector2(0, 0)
+layout_mode = 2
+
+[node name="Center" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Vanguard" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center" instance=ExtResource("3_iu5jy")]
+custom_minimum_size = Vector2(0, 0)
+layout_mode = 2
+
+[node name="Rearguard" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center" instance=ExtResource("3_iu5jy")]
+custom_minimum_size = Vector2(0, 0)
+layout_mode = 2
+
+[node name="Right" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Front" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right" instance=ExtResource("3_iu5jy")]
+layout_mode = 2
+
+[node name="Back" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right" instance=ExtResource("3_iu5jy")]
+layout_mode = 2
+
+[node name="Right" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[node name="Control" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -205.0
+offset_right = -11.0
+offset_bottom = 205.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="DeckArea" type="PanelContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control"]
+custom_minimum_size = Vector2(0, 195)
+layout_mode = 2
+
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control/DeckArea"]
+layout_mode = 2
+color = Color(0.6784314, 0.6784314, 0.6784314, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control/DeckArea"]
+layout_mode = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="CardContainer" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control/DeckArea/MarginContainer"]
+custom_minimum_size = Vector2(135, 189)
+layout_mode = 2
+script = ExtResource("1_wd5v0")
+metadata/_custom_type_script = "uid://bqw5phtur46nx"
+
+[node name="Card" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control/DeckArea/MarginContainer/CardContainer" instance=ExtResource("2_s27tx")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+
+[node name="DropZone" type="PanelContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control"]
+custom_minimum_size = Vector2(0, 195)
+layout_mode = 2
+
+[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control/DropZone"]
+layout_mode = 2
+color = Color(0.6784314, 0.6784314, 0.6784314, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control/DropZone"]
+layout_mode = 2
+theme_override_constants/margin_left = 11
+theme_override_constants/margin_right = 12
+
+[node name="CardArea1" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control/DropZone/MarginContainer"]
+custom_minimum_size = Vector2(0, 134)
+layout_mode = 2
+
+[node name="Card" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control/DropZone/MarginContainer/CardArea1" instance=ExtResource("2_s27tx")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+
+[node name="Open2" type="Control" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GuardZone" parent="." instance=ExtResource("3_iu5jy")]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -96.5
+offset_top = -96.5
+offset_right = 96.5
+offset_bottom = 96.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PlayerHand" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -189.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PlayerHand"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="CardContainer" type="Control" parent="PlayerHand/HBoxContainer"]
+custom_minimum_size = Vector2(135, 189)
+layout_mode = 2
+script = ExtResource("1_wd5v0")
+metadata/_custom_type_script = "uid://bqw5phtur46nx"
+
+[node name="Card" parent="PlayerHand/HBoxContainer/CardContainer" instance=ExtResource("2_s27tx")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+
+[node name="CardContainer2" type="Control" parent="PlayerHand/HBoxContainer"]
+custom_minimum_size = Vector2(135, 189)
+layout_mode = 2
+script = ExtResource("1_wd5v0")
+metadata/_custom_type_script = "uid://bqw5phtur46nx"
+
+[node name="Card" parent="PlayerHand/HBoxContainer/CardContainer2" instance=ExtResource("2_s27tx")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+
+[node name="CardContainer3" type="Control" parent="PlayerHand/HBoxContainer"]
+custom_minimum_size = Vector2(135, 189)
+layout_mode = 2
+script = ExtResource("1_wd5v0")
+metadata/_custom_type_script = "uid://bqw5phtur46nx"
+
+[node name="Card" parent="PlayerHand/HBoxContainer/CardContainer3" instance=ExtResource("2_s27tx")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+
+[node name="CardContainer4" type="Control" parent="PlayerHand/HBoxContainer"]
+custom_minimum_size = Vector2(135, 189)
+layout_mode = 2
+script = ExtResource("1_wd5v0")
+metadata/_custom_type_script = "uid://bqw5phtur46nx"
+
+[node name="Card" parent="PlayerHand/HBoxContainer/CardContainer4" instance=ExtResource("2_s27tx")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+
+[node name="CardContainer5" type="Control" parent="PlayerHand/HBoxContainer"]
+custom_minimum_size = Vector2(135, 189)
+layout_mode = 2
+script = ExtResource("1_wd5v0")
+metadata/_custom_type_script = "uid://bqw5phtur46nx"
+
+[node name="Card" parent="PlayerHand/HBoxContainer/CardContainer5" instance=ExtResource("2_s27tx")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+
+[node name="CardContainer6" type="Control" parent="PlayerHand/HBoxContainer"]
+custom_minimum_size = Vector2(135, 189)
+layout_mode = 2
+script = ExtResource("1_wd5v0")
+metadata/_custom_type_script = "uid://bqw5phtur46nx"
+
+[node name="Card" parent="PlayerHand/HBoxContainer/CardContainer6" instance=ExtResource("2_s27tx")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
