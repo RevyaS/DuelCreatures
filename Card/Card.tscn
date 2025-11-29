@@ -1,15 +1,23 @@
-[gd_scene format=3 uid="uid://b3rw6rjka7eon"]
+[gd_scene load_steps=2 format=3 uid="uid://b3rw6rjka7eon"]
+
+[ext_resource type="Script" uid="uid://d3joytsthq224" path="res://Card/Card.cs" id="1_gasdx"]
 
 [node name="Card" type="Control"]
 custom_minimum_size = Vector2(300, 420)
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = -780.0
-offset_bottom = -1500.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -210.0
+offset_right = 150.0
+offset_bottom = 210.0
 grow_horizontal = 2
 grow_vertical = 2
+pivot_offset = Vector2(150, 210)
+script = ExtResource("1_gasdx")
 
 [node name="Border" type="ColorRect" parent="."]
 layout_mode = 1

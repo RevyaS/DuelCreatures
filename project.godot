@@ -12,14 +12,14 @@ config_version=5
 
 config/name="Duel Creatures"
 run/main_scene="uid://cuqm30mdbu41k"
-config/features=PackedStringArray("4.5", "Mobile")
+config/features=PackedStringArray("4.5", "C#", "Mobile")
 config/icon="res://icon.svg"
 
 [display]
 
 window/size/viewport_width=1080
 window/size/viewport_height=1920
-window/handheld/orientation=1
+window/stretch/mode="viewport"
 
 [dotnet]
 
