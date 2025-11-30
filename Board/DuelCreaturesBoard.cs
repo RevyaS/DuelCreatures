@@ -53,5 +53,13 @@ public partial class DuelCreaturesBoard : Control
         {
             damageZone.ClearCards();
         }
+
+        foreach(var hand in AllHands)
+        {
+            hand.ClearCards();
+        }
+
+        PlayerDropZone.ClearCard();
+        OppDropZone.ClearCard();
     }
 }

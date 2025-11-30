@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=3 uid="uid://cuqm30mdbu41k"]
 
 [ext_resource type="Script" uid="uid://d33oqm6uprjxl" path="res://Board/DuelCreaturesBoard.cs" id="1_s27tx"]
-[ext_resource type="Script" uid="uid://bqw5phtur46nx" path="res://Components/CardContainer.cs" id="1_wd5v0"]
-[ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Card/Card.tscn" id="2_s27tx"]
 [ext_resource type="PackedScene" uid="uid://dm8sksf3b1gcw" path="res://Board/UnitCircle.tscn" id="3_iu5jy"]
 [ext_resource type="PackedScene" uid="uid://bevj84kr2566s" path="res://Board/CardLineStatic.tscn" id="4_3hmgy"]
+[ext_resource type="PackedScene" uid="uid://cow87og7qhndr" path="res://Board/CardVerticalStack.tscn" id="6_3hmgy"]
+[ext_resource type="PackedScene" uid="uid://bqhy1u56ohnlg" path="res://Board/CardLineDynamic.tscn" id="6_iu5jy"]
 
 [node name="Board" type="Control"]
 layout_mode = 3
@@ -73,69 +73,13 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 20
 
-[node name="DeckArea" type="PanelContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/Control"]
-custom_minimum_size = Vector2(0, 195)
+[node name="OppDropZone" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/Control" instance=ExtResource("6_3hmgy")]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="BG" type="ColorRect" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/Control/DeckArea"]
+[node name="OppDeck" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/Control" instance=ExtResource("6_3hmgy")]
+unique_name_in_owner = true
 layout_mode = 2
-color = Color(0.6784314, 0.6784314, 0.6784314, 1)
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/Control/DeckArea"]
-layout_mode = 2
-theme_override_constants/margin_left = 2
-theme_override_constants/margin_top = 2
-theme_override_constants/margin_right = 2
-theme_override_constants/margin_bottom = 2
-
-[node name="CardContainer" type="Control" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/Control/DeckArea/MarginContainer"]
-custom_minimum_size = Vector2(135, 189)
-layout_mode = 2
-script = ExtResource("1_wd5v0")
-metadata/_custom_type_script = "uid://bqw5phtur46nx"
-
-[node name="Card" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/Control/DeckArea/MarginContainer/CardContainer" instance=ExtResource("2_s27tx")]
-layout_mode = 1
-anchors_preset = 15
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
-scale = Vector2(0.45, 0.45)
-
-[node name="DropZone" type="PanelContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/Control"]
-custom_minimum_size = Vector2(0, 195)
-layout_mode = 2
-
-[node name="BG" type="ColorRect" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/Control/DropZone"]
-layout_mode = 2
-color = Color(0.6784314, 0.6784314, 0.6784314, 1)
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/Control/DropZone"]
-layout_mode = 2
-theme_override_constants/margin_left = 11
-theme_override_constants/margin_right = 12
-
-[node name="CardArea1" type="Control" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/Control/DropZone/MarginContainer"]
-custom_minimum_size = Vector2(0, 134)
-layout_mode = 2
-
-[node name="Card" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/Control/DropZone/MarginContainer/CardArea1" instance=ExtResource("2_s27tx")]
-layout_mode = 1
-anchors_preset = 15
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
-scale = Vector2(0.45, 0.45)
 
 [node name="Center" type="Control" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -212,13 +156,12 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -294.5
 offset_top = -96.5
-offset_right = 244.5
+offset_right = 294.5
 offset_bottom = 96.5
 grow_horizontal = 2
 grow_vertical = 2
 rotation = -1.5707964
 pivot_offset = Vector2(294.5, 96.5)
-Separation = -55
 
 [node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/OppBoard"]
 layout_mode = 1
@@ -382,13 +325,12 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -294.5
 offset_top = -96.5
-offset_right = 244.5
+offset_right = 294.5
 offset_bottom = 96.5
 grow_horizontal = 2
 grow_vertical = 2
 rotation = 1.5707964
 pivot_offset = Vector2(294.5, 96.5)
-Separation = -55
 
 [node name="Center" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -457,80 +399,26 @@ layout_mode = 2
 
 [node name="Control" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right"]
 layout_mode = 1
-anchors_preset = 14
+anchors_preset = 8
+anchor_left = 0.5
 anchor_top = 0.5
-anchor_right = 1.0
+anchor_right = 0.5
 anchor_bottom = 0.5
+offset_left = -69.5
 offset_top = -205.0
-offset_right = -11.0
+offset_right = 69.5
 offset_bottom = 205.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 20
 
-[node name="DeckArea" type="PanelContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control"]
-custom_minimum_size = Vector2(0, 195)
+[node name="PlayerDeck" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control" instance=ExtResource("6_3hmgy")]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control/DeckArea"]
+[node name="PlayerDropZone" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control" instance=ExtResource("6_3hmgy")]
+unique_name_in_owner = true
 layout_mode = 2
-color = Color(0.6784314, 0.6784314, 0.6784314, 1)
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control/DeckArea"]
-layout_mode = 2
-theme_override_constants/margin_left = 2
-theme_override_constants/margin_top = 2
-theme_override_constants/margin_right = 2
-theme_override_constants/margin_bottom = 2
-
-[node name="CardContainer" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control/DeckArea/MarginContainer"]
-custom_minimum_size = Vector2(135, 189)
-layout_mode = 2
-script = ExtResource("1_wd5v0")
-metadata/_custom_type_script = "uid://bqw5phtur46nx"
-
-[node name="Card" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control/DeckArea/MarginContainer/CardContainer" instance=ExtResource("2_s27tx")]
-layout_mode = 1
-anchors_preset = 15
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
-scale = Vector2(0.45, 0.45)
-
-[node name="DropZone" type="PanelContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control"]
-custom_minimum_size = Vector2(0, 195)
-layout_mode = 2
-
-[node name="BG" type="ColorRect" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control/DropZone"]
-layout_mode = 2
-color = Color(0.6784314, 0.6784314, 0.6784314, 1)
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control/DropZone"]
-layout_mode = 2
-theme_override_constants/margin_left = 11
-theme_override_constants/margin_right = 12
-
-[node name="CardArea1" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control/DropZone/MarginContainer"]
-custom_minimum_size = Vector2(0, 134)
-layout_mode = 2
-
-[node name="Card" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/Control/DropZone/MarginContainer/CardArea1" instance=ExtResource("2_s27tx")]
-layout_mode = 1
-anchors_preset = 15
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
-scale = Vector2(0.45, 0.45)
 
 [node name="Open2" type="Control" parent="VBoxContainer"]
 layout_mode = 2
@@ -543,123 +431,10 @@ anchor_right = 1.0
 offset_bottom = 189.0
 grow_horizontal = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Opp Hand"]
+[node name="OppHand" parent="Opp Hand" instance=ExtResource("6_iu5jy")]
+unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 4
-
-[node name="CardContainer" type="Control" parent="Opp Hand/HBoxContainer"]
-custom_minimum_size = Vector2(135, 189)
-layout_mode = 2
-script = ExtResource("1_wd5v0")
-metadata/_custom_type_script = "uid://bqw5phtur46nx"
-
-[node name="Card" parent="Opp Hand/HBoxContainer/CardContainer" instance=ExtResource("2_s27tx")]
-layout_mode = 1
-anchors_preset = 15
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
-scale = Vector2(0.45, 0.45)
-
-[node name="CardContainer2" type="Control" parent="Opp Hand/HBoxContainer"]
-custom_minimum_size = Vector2(135, 189)
-layout_mode = 2
-script = ExtResource("1_wd5v0")
-metadata/_custom_type_script = "uid://bqw5phtur46nx"
-
-[node name="Card" parent="Opp Hand/HBoxContainer/CardContainer2" instance=ExtResource("2_s27tx")]
-layout_mode = 1
-anchors_preset = 15
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
-scale = Vector2(0.45, 0.45)
-
-[node name="CardContainer3" type="Control" parent="Opp Hand/HBoxContainer"]
-custom_minimum_size = Vector2(135, 189)
-layout_mode = 2
-script = ExtResource("1_wd5v0")
-metadata/_custom_type_script = "uid://bqw5phtur46nx"
-
-[node name="Card" parent="Opp Hand/HBoxContainer/CardContainer3" instance=ExtResource("2_s27tx")]
-layout_mode = 1
-anchors_preset = 15
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
-scale = Vector2(0.45, 0.45)
-
-[node name="CardContainer4" type="Control" parent="Opp Hand/HBoxContainer"]
-custom_minimum_size = Vector2(135, 189)
-layout_mode = 2
-script = ExtResource("1_wd5v0")
-metadata/_custom_type_script = "uid://bqw5phtur46nx"
-
-[node name="Card" parent="Opp Hand/HBoxContainer/CardContainer4" instance=ExtResource("2_s27tx")]
-layout_mode = 1
-anchors_preset = 15
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
-scale = Vector2(0.45, 0.45)
-
-[node name="CardContainer5" type="Control" parent="Opp Hand/HBoxContainer"]
-custom_minimum_size = Vector2(135, 189)
-layout_mode = 2
-script = ExtResource("1_wd5v0")
-metadata/_custom_type_script = "uid://bqw5phtur46nx"
-
-[node name="Card" parent="Opp Hand/HBoxContainer/CardContainer5" instance=ExtResource("2_s27tx")]
-layout_mode = 1
-anchors_preset = 15
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
-scale = Vector2(0.45, 0.45)
-
-[node name="CardContainer6" type="Control" parent="Opp Hand/HBoxContainer"]
-custom_minimum_size = Vector2(135, 189)
-layout_mode = 2
-script = ExtResource("1_wd5v0")
-metadata/_custom_type_script = "uid://bqw5phtur46nx"
-
-[node name="Card" parent="Opp Hand/HBoxContainer/CardContainer6" instance=ExtResource("2_s27tx")]
-layout_mode = 1
-anchors_preset = 15
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
-scale = Vector2(0.45, 0.45)
+Separation = -45
 
 [node name="GuardZone" parent="." instance=ExtResource("3_iu5jy")]
 layout_mode = 1
@@ -685,120 +460,7 @@ offset_top = -189.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PlayerHand"]
+[node name="PlayerHand" parent="PlayerHand" instance=ExtResource("6_iu5jy")]
+unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 4
-
-[node name="CardContainer" type="Control" parent="PlayerHand/HBoxContainer"]
-custom_minimum_size = Vector2(135, 189)
-layout_mode = 2
-script = ExtResource("1_wd5v0")
-metadata/_custom_type_script = "uid://bqw5phtur46nx"
-
-[node name="Card" parent="PlayerHand/HBoxContainer/CardContainer" instance=ExtResource("2_s27tx")]
-layout_mode = 1
-anchors_preset = 15
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
-scale = Vector2(0.45, 0.45)
-
-[node name="CardContainer2" type="Control" parent="PlayerHand/HBoxContainer"]
-custom_minimum_size = Vector2(135, 189)
-layout_mode = 2
-script = ExtResource("1_wd5v0")
-metadata/_custom_type_script = "uid://bqw5phtur46nx"
-
-[node name="Card" parent="PlayerHand/HBoxContainer/CardContainer2" instance=ExtResource("2_s27tx")]
-layout_mode = 1
-anchors_preset = 15
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
-scale = Vector2(0.45, 0.45)
-
-[node name="CardContainer3" type="Control" parent="PlayerHand/HBoxContainer"]
-custom_minimum_size = Vector2(135, 189)
-layout_mode = 2
-script = ExtResource("1_wd5v0")
-metadata/_custom_type_script = "uid://bqw5phtur46nx"
-
-[node name="Card" parent="PlayerHand/HBoxContainer/CardContainer3" instance=ExtResource("2_s27tx")]
-layout_mode = 1
-anchors_preset = 15
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
-scale = Vector2(0.45, 0.45)
-
-[node name="CardContainer4" type="Control" parent="PlayerHand/HBoxContainer"]
-custom_minimum_size = Vector2(135, 189)
-layout_mode = 2
-script = ExtResource("1_wd5v0")
-metadata/_custom_type_script = "uid://bqw5phtur46nx"
-
-[node name="Card" parent="PlayerHand/HBoxContainer/CardContainer4" instance=ExtResource("2_s27tx")]
-layout_mode = 1
-anchors_preset = 15
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
-scale = Vector2(0.45, 0.45)
-
-[node name="CardContainer5" type="Control" parent="PlayerHand/HBoxContainer"]
-custom_minimum_size = Vector2(135, 189)
-layout_mode = 2
-script = ExtResource("1_wd5v0")
-metadata/_custom_type_script = "uid://bqw5phtur46nx"
-
-[node name="Card" parent="PlayerHand/HBoxContainer/CardContainer5" instance=ExtResource("2_s27tx")]
-layout_mode = 1
-anchors_preset = 15
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
-scale = Vector2(0.45, 0.45)
-
-[node name="CardContainer6" type="Control" parent="PlayerHand/HBoxContainer"]
-custom_minimum_size = Vector2(135, 189)
-layout_mode = 2
-script = ExtResource("1_wd5v0")
-metadata/_custom_type_script = "uid://bqw5phtur46nx"
-
-[node name="Card" parent="PlayerHand/HBoxContainer/CardContainer6" instance=ExtResource("2_s27tx")]
-layout_mode = 1
-anchors_preset = 15
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
-scale = Vector2(0.45, 0.45)
+Separation = -45
