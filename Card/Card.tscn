@@ -41,5 +41,12 @@ theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
 [node name="Back" type="ColorRect" parent="Border/MarginContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 color = Color(0.073364116, 0.3143422, 0.5716949, 1)
+
+[node name="Front" type="TextureRect" parent="Border/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 6

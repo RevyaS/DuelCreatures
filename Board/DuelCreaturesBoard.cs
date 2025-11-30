@@ -1,12 +1,15 @@
 using ArC.CardGames;
 using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Predefined.Vanguard;
+using ArC.CardGames.Setup;
 using Godot;
 
 
 public partial class DuelCreaturesBoard : Control
 {
     VanguardGameSession _gameSession;
+    VanguardPlayerProfile player1 => _gameSession.Game.Player1;
+    VanguardPlayerProfile player2 => _gameSession.Game.Player2;
 
     string mulliganPhase = "Mulligan Phase";
 
@@ -61,5 +64,9 @@ public partial class DuelCreaturesBoard : Control
 
         PlayerDropZone.ClearCard();
         OppDropZone.ClearCard();
+
+        // Set Vanguards
+        PlayerVanguard.SetCard((VanguardCard)player1.Vanguard);
+        OppVanguard.SetCard((VanguardCard)player2.Vanguard);
     }
 }

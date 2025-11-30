@@ -12,17 +12,17 @@ public class InputProviderFactory(VanguardGame game, DuelCreaturesBoard board) :
     {
         if(game.Player1 == playerProfile)
         {
-            return new GodotInputProvider(board);
+            return new GodotInputProvider(board, game.Board.Player1Area);
         } else
         {
-            return new AIInputProvider();
+            return new AIInputProvider(game.Board.Player2Area);
         }
     }
 }
 
-public class GodotInputProvider(DuelCreaturesBoard board) : IVanguardPlayerInputProvider
+public class GodotInputProvider(DuelCreaturesBoard board, VanguardPlayArea playArea) : IVanguardPlayerInputProvider
 {
-    public VanguardPlayArea PlayArea => throw new System.NotImplementedException();
+    public VanguardPlayArea PlayArea => playArea;
 
     public VanguardPlayArea OpponentPlayArea => throw new System.NotImplementedException();
 
@@ -112,9 +112,9 @@ public class GodotInputProvider(DuelCreaturesBoard board) : IVanguardPlayerInput
     }
 }
 
-public class AIInputProvider : IVanguardPlayerInputProvider
+public class AIInputProvider(VanguardPlayArea playArea) : IVanguardPlayerInputProvider
 {
-    public VanguardPlayArea PlayArea => throw new System.NotImplementedException();
+    public VanguardPlayArea PlayArea => playArea;
 
     public VanguardPlayArea OpponentPlayArea => throw new System.NotImplementedException();
 

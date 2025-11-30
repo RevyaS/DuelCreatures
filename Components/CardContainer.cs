@@ -18,6 +18,23 @@ public partial class CardContainer : Control
         }
     }
 
+    public void FaceUp()
+    {
+        if(currentCard is not null)
+        {
+            currentCard.IsFront = true;
+        }
+    }
+
+    public void AddCard(Card card)
+    {
+        if(currentCard is not null)
+        {
+            RemoveCard();
+        }
+        AddChild(card);
+    }
+
     public void RemoveCard()
     {
         if(currentCard is not null)

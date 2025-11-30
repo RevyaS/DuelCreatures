@@ -8,6 +8,8 @@ public partial class DuelCreaturesBoard : Control
     UnitCircle PlayerExtraLeft1, PlayerExtraLeft2, PlayerExtraRight1, PlayerExtraRight2,
         OppExtraLeft1, OppExtraLeft2, OppExtraRight1, OppExtraRight2,
 
+        PlayerVanguard, OppVanguard,
+
         PlayerFrontLeft, PlayerBackLeft, PlayerBackCenter, PlayerFrontRight, PlayerBackRight,
         OppFrontLeft, OppBackLeft, OppBackCenter, OppFrontRight, OppBackRight;
     CardLineStatic PlayerDamageZone, OppDamageZone;
@@ -68,5 +70,8 @@ public partial class DuelCreaturesBoard : Control
 
         PlayerDropZone = GetNode<CardVerticalStack>($"%{nameof(PlayerDropZone)}");
         OppDropZone = GetNode<CardVerticalStack>($"%{nameof(OppDropZone)}");
+
+        PlayerVanguard = GetNode<UnitCircle>($"%{nameof(PlayerVanguard)}");
+        OppVanguard = GetNode<UnitCircle>($"%{nameof(OppVanguard)}");
     }
 }

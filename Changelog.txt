@@ -2,3 +2,5 @@ v.0001 Duel Creatures
 - Created Placeholder card
 - Designed Player Board (Good for android)
 - Card Factory and Some Assets
+- Utilize Session and InputProvider
+- Initial Board state (Except Guard Zone)
