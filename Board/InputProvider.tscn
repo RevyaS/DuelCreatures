@@ -1,0 +1,34 @@
+[gd_scene load_steps=4 format=3 uid="uid://54vx7214u53f"]
+
+[ext_resource type="Script" uid="uid://dg7uwa2tvdn5o" path="res://Board/InputProvider.cs" id="1_mnfo1"]
+[ext_resource type="PackedScene" uid="uid://cuqm30mdbu41k" path="res://Board/Board.tscn" id="2_g4tnu"]
+[ext_resource type="PackedScene" uid="uid://dt60jvmuuttc0" path="res://HUD/SelectCardsFromHand.tscn" id="3_g4tnu"]
+
+[node name="InputProviderComponent" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_mnfo1")
+
+[node name="DuelCreaturesBoard" parent="." instance=ExtResource("2_g4tnu")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="HUD" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SelectCardsFromHand" parent="HUD" instance=ExtResource("3_g4tnu")]
+unique_name_in_owner = true
+layout_mode = 1
+offset_left = -405.0
+offset_top = -214.5
+offset_right = 405.0
+offset_bottom = 214.5

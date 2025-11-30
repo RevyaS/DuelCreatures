@@ -3,8 +3,8 @@
 [ext_resource type="Script" uid="uid://d33oqm6uprjxl" path="res://Board/DuelCreaturesBoard.cs" id="1_s27tx"]
 [ext_resource type="PackedScene" uid="uid://dm8sksf3b1gcw" path="res://Board/UnitCircle.tscn" id="3_iu5jy"]
 [ext_resource type="PackedScene" uid="uid://bevj84kr2566s" path="res://Board/CardLineStatic.tscn" id="4_3hmgy"]
+[ext_resource type="PackedScene" uid="uid://b7fl8cs62jr2v" path="res://Board/Hand.tscn" id="5_iu5jy"]
 [ext_resource type="PackedScene" uid="uid://cow87og7qhndr" path="res://Board/CardVerticalStack.tscn" id="6_3hmgy"]
-[ext_resource type="PackedScene" uid="uid://bqhy1u56ohnlg" path="res://Board/CardLineDynamic.tscn" id="6_iu5jy"]
 
 [node name="Board" type="Control"]
 layout_mode = 3
@@ -167,7 +167,8 @@ grow_horizontal = 2
 grow_vertical = 2
 rotation = -1.5707964
 pivot_offset = Vector2(294.5, 96.5)
-Separation = null
+MaxCards = 6
+Separation = -45
 
 [node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/OppBoard"]
 layout_mode = 1
@@ -337,7 +338,8 @@ grow_horizontal = 2
 grow_vertical = 2
 rotation = 1.5707964
 pivot_offset = Vector2(294.5, 96.5)
-Separation = null
+MaxCards = 6
+Separation = -45
 
 [node name="Center" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -441,7 +443,7 @@ anchor_right = 1.0
 offset_bottom = 189.0
 grow_horizontal = 2
 
-[node name="OppHand" parent="Opp Hand" instance=ExtResource("6_iu5jy")]
+[node name="OppHand" parent="Opp Hand" instance=ExtResource("5_iu5jy")]
 unique_name_in_owner = true
 layout_mode = 2
 
@@ -469,6 +471,6 @@ offset_top = -189.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="PlayerHand" parent="PlayerHand" instance=ExtResource("6_iu5jy")]
+[node name="PlayerHand" parent="PlayerHand" instance=ExtResource("5_iu5jy")]
 unique_name_in_owner = true
 layout_mode = 2

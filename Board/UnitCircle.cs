@@ -23,16 +23,8 @@ public partial class UnitCircle : Control
 
     public void SetCard(VanguardCard card)
     {
-        Card cardComponent = SceneFactory.CreateCard();
-        cardComponent.Texture = GetCardNameTexture(card.Name);
+        Card cardComponent = SceneFactory.CreateVanguardCard(card);
         cardRotationContainer.AddCard(cardComponent);
         cardRotationContainer.FaceUp();
-    }
-
-    private Texture2D GetCardNameTexture(string cardName)
-    {
-        var cleanedName = cardName.Replace(" ", "").Replace(",", "");
-        var path = $"res://Assets/Cards/{cleanedName}.png";
-        return ResourceLoader.Load<Texture2D>(path);
     }
 }

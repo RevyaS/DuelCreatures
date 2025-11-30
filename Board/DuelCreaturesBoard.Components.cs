@@ -13,7 +13,7 @@ public partial class DuelCreaturesBoard : Control
         PlayerFrontLeft, PlayerBackLeft, PlayerBackCenter, PlayerFrontRight, PlayerBackRight,
         OppFrontLeft, OppBackLeft, OppBackCenter, OppFrontRight, OppBackRight;
     CardLineStatic PlayerDamageZone, OppDamageZone;
-    CardLineDynamic PlayerHand, OppHand;
+    HandComponent PlayerHand, OppHand;
     CardVerticalStack PlayerDeck, OppDeck, 
         PlayerDropZone, OppDropZone;
 
@@ -31,7 +31,7 @@ public partial class DuelCreaturesBoard : Control
         PlayerDamageZone, OppDamageZone
     ];
 
-    List<CardLineDynamic> AllHands => [ 
+    List<HandComponent> AllHands => [ 
         PlayerHand, OppHand
     ];
 
@@ -65,8 +65,8 @@ public partial class DuelCreaturesBoard : Control
         PlayerDamageZone = GetNode<CardLineStatic>($"%{nameof(PlayerDamageZone)}");
         OppDamageZone = GetNode<CardLineStatic>($"%{nameof(OppDamageZone)}");
 
-        PlayerHand = GetNode<CardLineDynamic>($"%{nameof(PlayerHand)}");
-        OppHand = GetNode<CardLineDynamic>($"%{nameof(OppHand)}");
+        PlayerHand = GetNode<HandComponent>($"%{nameof(PlayerHand)}");
+        OppHand = GetNode<HandComponent>($"%{nameof(OppHand)}");
 
         PlayerDropZone = GetNode<CardVerticalStack>($"%{nameof(PlayerDropZone)}");
         OppDropZone = GetNode<CardVerticalStack>($"%{nameof(OppDropZone)}");

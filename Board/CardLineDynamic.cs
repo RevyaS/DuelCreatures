@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 [Tool]
@@ -7,19 +8,50 @@ public partial class CardLineDynamic : PanelContainer
 
     IChildManagerComponent ContainerNodeManager => Container;    
 
+    private int _separation = 0;
     [Export]
     public int Separation { 
-        get => !IsInsideTree() ? 0 : Container.GetThemeConstant("separation"); 
+        get => _separation; 
         set
         {
-            if(!IsInsideTree()) return;
-            Container.AddThemeConstantOverride("separation", value);
+            _separation = value;
+            Render();
+        } 
+    }
+
+    private bool _hidden = false;
+    [Export]
+    public bool Hidden { 
+        get => _hidden; 
+        set
+        {
+            _hidden = value;
+            Render();
         } 
     }
 
     public override void _Ready()
     {
         Container = GetNode<HBoxNodeContainer>($"%{nameof(Container)}");
+        Render();
+    }
+
+    private void Render()
+    {
+        if(!IsInsideTree()) return;
+        Container.RemoveThemeConstantOverride("separation");
+        Container.AddThemeConstantOverride("separation", _separation);
+
+        ContainerNodeManager.ApplyToChildren<CardContainer>((child) =>
+        {
+            if(_hidden)
+            {
+                child.FaceDown();
+            } else
+            {
+                child.FaceUp();
+            }
+        });
     }
 
     public void AddCard(Card card)
@@ -27,6 +59,13 @@ public partial class CardLineDynamic : PanelContainer
         CardContainer cardContainer = new();
         Container.AddChild(cardContainer);
         cardContainer.AddChild(card);
+        card.IsFront = !_hidden;
+        card.CardPressed += OnCardPressed;
+    }
+
+    private void OnCardPressed(Card card)
+    {
+        CardPressed(card);
     }
 
     public void RemoveCard(Card card)
@@ -48,4 +87,6 @@ public partial class CardLineDynamic : PanelContainer
             child.QueueFree();
         });
     }
+
+    public event Action<Card> CardPressed;
 }

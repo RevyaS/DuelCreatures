@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://4eajk2m67oax"]
 
 [ext_resource type="Script" uid="uid://cpbfp06gxdww3" path="res://Board/Session.cs" id="1_f6vms"]
-[ext_resource type="PackedScene" uid="uid://cuqm30mdbu41k" path="res://Board/Board.tscn" id="1_n44xq"]
+[ext_resource type="PackedScene" uid="uid://54vx7214u53f" path="res://Board/InputProvider.tscn" id="2_f6vms"]
 
 [node name="Session" type="Control"]
 layout_mode = 3
@@ -12,6 +12,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_f6vms")
 
-[node name="DuelCreaturesBoard" parent="." instance=ExtResource("1_n44xq")]
+[node name="InputProviderComponent" parent="." instance=ExtResource("2_f6vms")]
 unique_name_in_owner = true
 layout_mode = 1

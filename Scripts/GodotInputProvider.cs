@@ -4,22 +4,9 @@ using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Predefined.Vanguard;
 using ArC.CardGames.Setup;
+using Godot;
 
-public class InputProviderFactory(VanguardGame game, InputProvider inputProviderComponent) : IPlayerInputProviderFactory
-{
-    public IPlayerInputProvider GetInputProvider(PlayerProfile playerProfile)
-    {
-        if(game.Player1 == playerProfile)
-        {
-            return new GodotInputProvider(inputProviderComponent, game.Board.Player1Area);
-        } else
-        {
-            return new AIInputProvider(game.Board.Player2Area);
-        }
-    }
-}
-
-public class AIInputProvider(VanguardPlayArea playArea) : IVanguardPlayerInputProvider
+public class GodotInputProvider(InputProvider inputProviderComponent, VanguardPlayArea playArea) : IVanguardPlayerInputProvider
 {
     public VanguardPlayArea PlayArea => playArea;
 
@@ -71,6 +58,7 @@ public class AIInputProvider(VanguardPlayArea playArea) : IVanguardPlayerInputPr
 
     public Task<List<CardBase>> SelectCardsFromHandRange(int minimum, int maximum)
     {
+        GD.Print("Select card from hand requested");
         throw new System.NotImplementedException();
     }
 

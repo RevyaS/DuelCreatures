@@ -1,9 +1,9 @@
+using System;
 using Godot;
 
 [Tool]
 public partial class Card : Control
 {
-    ColorRect Back;
     TextureRect Front;
 
     private Texture2D texture;
@@ -18,7 +18,7 @@ public partial class Card : Control
         }
     }
 
-    private bool _isFront;
+    private bool _isFront = true;
     [Export]
     public bool IsFront
     {
@@ -35,15 +35,27 @@ public partial class Card : Control
     public override void _Ready()
     {
         CustomMinimumSize = SizeConstants.CardDefaultSize;
-        Back = GetNode<ColorRect>($"%{nameof(Back)}");
         Front = GetNode<TextureRect>($"%{nameof(Front)}");
+        Render();
     }
 
     private void Render()
     {
         if(!IsInsideTree()) return;
-        Back.Visible = !_isFront;
         Front.Visible = _isFront;
         Front.Texture = texture;
     }
+
+    public override void _GuiInput(InputEvent @event)
+    {
+        if(@event is InputEventMouseButton inputEventMouseButton)
+        {
+            if(inputEventMouseButton.ButtonIndex == MouseButton.Left && inputEventMouseButton.Pressed)
+            {
+                CardPressed(this);
+            }
+        }
+    }
+
+    public event Action<Card> CardPressed;
 }

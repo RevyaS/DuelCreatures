@@ -8,10 +8,12 @@ using static ArC.CardGames.Predefined.Vanguard.Cards.DuelMaidensCardsFactory;
 
 public partial class Session : Control
 {
-    DuelCreaturesBoard board;
+    InputProvider InputProviderComponent;
+    DuelCreaturesBoard Board => InputProviderComponent.Board;
+
     public async override void _Ready()
     {
-        board = GetNode<DuelCreaturesBoard>($"%{nameof(DuelCreaturesBoard)}");
+        InputProviderComponent = GetNode<InputProvider>($"%{nameof(InputProviderComponent)}");
 
         var eventBus = new VanguardEventBus();
         var effectService = new VanguardEffectService();
@@ -33,7 +35,7 @@ public partial class Session : Control
         ], eventBus), RoyalPaladin.StardustTrumpeteer);
 
         var game = new VanguardGame(player1, player2, eventBus, effectService);
-        var inputProviderFactory = new InputProviderFactory(game, board);
+        var inputProviderFactory = new InputProviderFactory(game, InputProviderComponent);
         var skillService = new VanguardSkillService(game);
 
         var session = new VanguardGameSession(game, inputProviderFactory, eventBus, effectService, skillService);
@@ -44,7 +46,7 @@ public partial class Session : Control
     private async Task StartGame(VanguardGameSession session)
     {
         session.StartGame();
-        board.ApplySession(session);
+        Board.ApplySession(session);
         
         while(!session.IsGameOver())
         {

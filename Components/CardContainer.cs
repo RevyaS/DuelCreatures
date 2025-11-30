@@ -26,6 +26,14 @@ public partial class CardContainer : Control
         }
     }
 
+    public void FaceDown()
+    {
+        if(currentCard is not null)
+        {
+            currentCard.IsFront = false;
+        }
+    }
+
     public void AddCard(Card card)
     {
         if(currentCard is not null)

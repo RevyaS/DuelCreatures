@@ -4,3 +4,5 @@ v.0001 Duel Creatures
 - Card Factory and Some Assets
 - Utilize Session and InputProvider
 - Initial Board state (Except Guard Zone)
+- Initial HUD for mulligan
+- Shows first draw

@@ -1,7 +1,8 @@
+using System;
 using ArC.CardGames;
+using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Predefined.Vanguard;
-using ArC.CardGames.Setup;
 using Godot;
 
 
@@ -16,6 +17,12 @@ public partial class DuelCreaturesBoard : Control
     public override void _Ready()
     {
         SetComponents();
+        PlayerHand.CardPressed += OnHandCardPressed;
+    }
+
+    private void OnHandCardPressed(Card card)
+    {
+        HandCardPressed(card);
     }
 
     public void ApplySession(VanguardGameSession gameSession)
@@ -26,6 +33,17 @@ public partial class DuelCreaturesBoard : Control
         Reset();
 
         OnPhaseChanged(gameSession.CurrentPhase);
+        SetupEventBus(gameSession.EventBus);
+
+        var game = gameSession.Game;
+        PlayerHand.BindHand(game.Board.Player1Area.Hand);
+        OppHand.BindHand(game.Board.Player2Area.Hand);
+    }
+
+    private void SetupEventBus(VanguardEventBus eventBus)
+    {
+        PlayerHand.SetEventBus(eventBus);
+        OppHand.SetEventBus(eventBus);
     }
 
     private void OnPhaseChanged(IPhase phase)
@@ -69,4 +87,6 @@ public partial class DuelCreaturesBoard : Control
         PlayerVanguard.SetCard((VanguardCard)player1.Vanguard);
         OppVanguard.SetCard((VanguardCard)player2.Vanguard);
     }
+
+    public event Action<Card> HandCardPressed;
 }
