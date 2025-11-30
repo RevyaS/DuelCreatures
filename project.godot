@@ -27,6 +27,10 @@ window/handheld/orientation=1
 
 project/assembly_name="Duel Creatures"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/rev_godot_core/plugin.cfg")
+
 [rendering]
 
 renderer/rendering_method="mobile"

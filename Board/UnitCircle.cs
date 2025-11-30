@@ -10,7 +10,7 @@ public partial class UnitCircle : Control
         cardRotationContainer = GetNode<CardRotationContainer>($"%{nameof(CardRotationContainer)}");
     }
 
-    public void Clear()
+    public void ClearCard()
     {
         cardRotationContainer.RemoveCard();
     }

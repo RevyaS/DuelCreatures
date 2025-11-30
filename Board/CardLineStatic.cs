@@ -3,7 +3,9 @@ using Godot;
 [Tool]
 public partial class CardLineStatic : PanelContainer
 {
-    HBoxContainer Container;    
+    HBoxNodeContainer Container;
+
+    IChildManagerComponent ContainerNodeManager => Container;    
     int lastIndex = 0;
 
     private int _maxCards;
@@ -19,42 +21,58 @@ public partial class CardLineStatic : PanelContainer
 
     [Export]
     public int Separation { 
-        get => Container.GetThemeConstant("separation"); 
+        get => !IsInsideTree() ? 0 : Container.GetThemeConstant("separation"); 
         set
         {
+            if(!IsInsideTree()) return;
             Container.AddThemeConstantOverride("separation", value);
         } 
     }
 
     public override void _Ready()
     {
-        Container = GetNode<HBoxContainer>($"%{nameof(Container)}");
+        Container = GetNode<HBoxNodeContainer>($"%{nameof(Container)}");
         EvaluateContainers();
     }
 
     public void ClearCards()
     {
+        ContainerNodeManager.ApplyToChildren<CardContainer>((child) =>
+        {
+            child.RemoveCard();
+        });
     }
 
     private void EvaluateContainers()
     {
-        int currentContainerCount = 0;
-        lastIndex = 0;
-        for(int i = 0; i < Container.GetChildCount(); i++)
+        if(!IsInsideTree())
         {
-            currentContainerCount++;
-            var container = Container.GetChild<CardContainer>(i);
-            if(container.GetChildCount() > 0)
+            return;
+        }
+
+        lastIndex = 0;
+        ContainerNodeManager.ApplyToChildren<CardContainer>((child) =>
+        {
+            if(child.HasChild<Card>())
             {
                 lastIndex++;
             }
-        }
+        });
 
-        int missingContainers = MaxCards - Container.GetChildCount();
-        for(int i = 0; i < missingContainers; i++)
+        var currentCards = Container.GetChildCount<CardContainer>();
+
+        if(MaxCards > currentCards)
         {
-            // Create missing container
-            AddChild(new CardContainer());
+            int missingContainers = MaxCards - currentCards;
+            for (int i = 0; i < missingContainers; i++)
+            {
+                // Create missing container
+                AddChild(new CardContainer());
+            }
+        } 
+        else if(MaxCards < currentCards)
+        {
+            MaxCards = currentCards;
         }
     }
 }

@@ -46,7 +46,12 @@ public partial class DuelCreaturesBoard : Control
 
         foreach(var field in AllFields)
         {
-            field.Clear();
+            field.ClearCard();
+        }
+
+        foreach(var damageZone in AllDamageZones)
+        {
+            damageZone.ClearCards();
         }
     }
 }

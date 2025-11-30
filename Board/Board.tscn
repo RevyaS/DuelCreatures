@@ -15,131 +15,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_s27tx")
 
-[node name="Opp Hand" type="PanelContainer" parent="."]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 189.0
-grow_horizontal = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Opp Hand"]
-layout_mode = 2
-size_flags_horizontal = 4
-
-[node name="CardContainer" type="Control" parent="Opp Hand/HBoxContainer"]
-custom_minimum_size = Vector2(135, 189)
-layout_mode = 2
-script = ExtResource("1_wd5v0")
-metadata/_custom_type_script = "uid://bqw5phtur46nx"
-
-[node name="Card" parent="Opp Hand/HBoxContainer/CardContainer" instance=ExtResource("2_s27tx")]
-layout_mode = 1
-anchors_preset = 15
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
-scale = Vector2(0.45, 0.45)
-
-[node name="CardContainer2" type="Control" parent="Opp Hand/HBoxContainer"]
-custom_minimum_size = Vector2(135, 189)
-layout_mode = 2
-script = ExtResource("1_wd5v0")
-metadata/_custom_type_script = "uid://bqw5phtur46nx"
-
-[node name="Card" parent="Opp Hand/HBoxContainer/CardContainer2" instance=ExtResource("2_s27tx")]
-layout_mode = 1
-anchors_preset = 15
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
-scale = Vector2(0.45, 0.45)
-
-[node name="CardContainer3" type="Control" parent="Opp Hand/HBoxContainer"]
-custom_minimum_size = Vector2(135, 189)
-layout_mode = 2
-script = ExtResource("1_wd5v0")
-metadata/_custom_type_script = "uid://bqw5phtur46nx"
-
-[node name="Card" parent="Opp Hand/HBoxContainer/CardContainer3" instance=ExtResource("2_s27tx")]
-layout_mode = 1
-anchors_preset = 15
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
-scale = Vector2(0.45, 0.45)
-
-[node name="CardContainer4" type="Control" parent="Opp Hand/HBoxContainer"]
-custom_minimum_size = Vector2(135, 189)
-layout_mode = 2
-script = ExtResource("1_wd5v0")
-metadata/_custom_type_script = "uid://bqw5phtur46nx"
-
-[node name="Card" parent="Opp Hand/HBoxContainer/CardContainer4" instance=ExtResource("2_s27tx")]
-layout_mode = 1
-anchors_preset = 15
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
-scale = Vector2(0.45, 0.45)
-
-[node name="CardContainer5" type="Control" parent="Opp Hand/HBoxContainer"]
-custom_minimum_size = Vector2(135, 189)
-layout_mode = 2
-script = ExtResource("1_wd5v0")
-metadata/_custom_type_script = "uid://bqw5phtur46nx"
-
-[node name="Card" parent="Opp Hand/HBoxContainer/CardContainer5" instance=ExtResource("2_s27tx")]
-layout_mode = 1
-anchors_preset = 15
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
-scale = Vector2(0.45, 0.45)
-
-[node name="CardContainer6" type="Control" parent="Opp Hand/HBoxContainer"]
-custom_minimum_size = Vector2(135, 189)
-layout_mode = 2
-script = ExtResource("1_wd5v0")
-metadata/_custom_type_script = "uid://bqw5phtur46nx"
-
-[node name="Card" parent="Opp Hand/HBoxContainer/CardContainer6" instance=ExtResource("2_s27tx")]
-layout_mode = 1
-anchors_preset = 15
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
-scale = Vector2(0.45, 0.45)
-
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -176,7 +51,7 @@ grow_vertical = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 290
+theme_override_constants/margin_bottom = 200
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/OppBoard/MarginContainer"]
 layout_mode = 2
@@ -327,10 +202,23 @@ layout_mode = 2
 custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 
-[node name="DamageZone" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Right" instance=ExtResource("4_3hmgy")]
+[node name="OppDamageZone" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Right" instance=ExtResource("4_3hmgy")]
+unique_name_in_owner = true
 layout_mode = 1
-rotation = 4.712389
-Separation = -45
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -294.5
+offset_top = -96.5
+offset_right = 244.5
+offset_bottom = 96.5
+grow_horizontal = 2
+grow_vertical = 2
+rotation = -1.5707964
+pivot_offset = Vector2(294.5, 96.5)
+Separation = -55
 
 [node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/OppBoard"]
 layout_mode = 1
@@ -474,7 +362,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 290
+theme_override_constants/margin_top = 200
 theme_override_constants/margin_right = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer"]
@@ -484,10 +372,23 @@ layout_mode = 2
 custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 
-[node name="DamageZone" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Left" instance=ExtResource("4_3hmgy")]
+[node name="PlayerDamageZone" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Left" instance=ExtResource("4_3hmgy")]
+unique_name_in_owner = true
 layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -294.5
+offset_top = -96.5
+offset_right = 244.5
+offset_bottom = 96.5
+grow_horizontal = 2
+grow_vertical = 2
 rotation = 1.5707964
-Separation = -45
+pivot_offset = Vector2(294.5, 96.5)
+Separation = -55
 
 [node name="Center" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -634,6 +535,131 @@ scale = Vector2(0.45, 0.45)
 [node name="Open2" type="Control" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="Opp Hand" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 189.0
+grow_horizontal = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Opp Hand"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="CardContainer" type="Control" parent="Opp Hand/HBoxContainer"]
+custom_minimum_size = Vector2(135, 189)
+layout_mode = 2
+script = ExtResource("1_wd5v0")
+metadata/_custom_type_script = "uid://bqw5phtur46nx"
+
+[node name="Card" parent="Opp Hand/HBoxContainer/CardContainer" instance=ExtResource("2_s27tx")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+
+[node name="CardContainer2" type="Control" parent="Opp Hand/HBoxContainer"]
+custom_minimum_size = Vector2(135, 189)
+layout_mode = 2
+script = ExtResource("1_wd5v0")
+metadata/_custom_type_script = "uid://bqw5phtur46nx"
+
+[node name="Card" parent="Opp Hand/HBoxContainer/CardContainer2" instance=ExtResource("2_s27tx")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+
+[node name="CardContainer3" type="Control" parent="Opp Hand/HBoxContainer"]
+custom_minimum_size = Vector2(135, 189)
+layout_mode = 2
+script = ExtResource("1_wd5v0")
+metadata/_custom_type_script = "uid://bqw5phtur46nx"
+
+[node name="Card" parent="Opp Hand/HBoxContainer/CardContainer3" instance=ExtResource("2_s27tx")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+
+[node name="CardContainer4" type="Control" parent="Opp Hand/HBoxContainer"]
+custom_minimum_size = Vector2(135, 189)
+layout_mode = 2
+script = ExtResource("1_wd5v0")
+metadata/_custom_type_script = "uid://bqw5phtur46nx"
+
+[node name="Card" parent="Opp Hand/HBoxContainer/CardContainer4" instance=ExtResource("2_s27tx")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+
+[node name="CardContainer5" type="Control" parent="Opp Hand/HBoxContainer"]
+custom_minimum_size = Vector2(135, 189)
+layout_mode = 2
+script = ExtResource("1_wd5v0")
+metadata/_custom_type_script = "uid://bqw5phtur46nx"
+
+[node name="Card" parent="Opp Hand/HBoxContainer/CardContainer5" instance=ExtResource("2_s27tx")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
+
+[node name="CardContainer6" type="Control" parent="Opp Hand/HBoxContainer"]
+custom_minimum_size = Vector2(135, 189)
+layout_mode = 2
+script = ExtResource("1_wd5v0")
+metadata/_custom_type_script = "uid://bqw5phtur46nx"
+
+[node name="Card" parent="Opp Hand/HBoxContainer/CardContainer6" instance=ExtResource("2_s27tx")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)
 
 [node name="GuardZone" parent="." instance=ExtResource("3_iu5jy")]
 layout_mode = 1
