@@ -23,6 +23,15 @@ public partial class HandComponent : CardLineDynamic
         }
     }
 
+    public void ShowContainerOfCard(VanguardCard card)
+    {
+        var cardComponent = FindCard((containedCard) => containedCard is VanguardCardComponent vgCard && ReferenceEquals(vgCard.Card, card));
+        if(cardComponent is not null)
+        {
+            cardComponent.Show();
+        }
+    }
+
     public void BindHand(Hand hand)
     {
         Hand = hand;

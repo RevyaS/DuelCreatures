@@ -6,6 +6,16 @@ public partial class Card : Control
 {
     TextureRect Front;
 
+    private bool _currentlyDragged = false;
+    public bool CurrentlyDragged { 
+        get => _currentlyDragged;
+        set
+        {
+            _currentlyDragged = value;
+            Visible = !_currentlyDragged;
+        } 
+    }
+
     private Texture2D texture;
     [Export]
     public Texture2D Texture
@@ -55,6 +65,30 @@ public partial class Card : Control
                 CardPressed(this);
             }
         }
+    }
+
+    public override Variant _GetDragData(Vector2 atPosition)
+    {
+        SetDragPreview(CreateClone());
+        CurrentlyDragged = true;
+        return this;
+    }
+
+    public override void _Notification(int what)
+    {
+        if(what == NotificationDragEnd && CurrentlyDragged)
+        {
+            if(!IsDragSuccessful())
+            {
+                CurrentlyDragged = false;
+            }
+        }
+    }
+
+    public virtual Card CreateClone()
+    {
+        var preview = SceneFactory.CreateCard(Texture, IsFront);
+        return preview;
     }
 
     public event Action<Card> CardPressed;

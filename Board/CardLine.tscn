@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://bqhy1u56ohnlg"]
+[gd_scene load_steps=5 format=3 uid="uid://bqhy1u56ohnlg"]
 
 [ext_resource type="Script" uid="uid://tymprrxn341" path="res://addons/rev_godot_core/Components/HBoxNodeContainer.cs" id="1_d5578"]
+[ext_resource type="Script" uid="uid://cwwbsfwll5kn6" path="res://Board/CardLine.cs" id="1_rfqe6"]
 [ext_resource type="Script" uid="uid://bqw5phtur46nx" path="res://Components/CardContainer.cs" id="2_rfqe6"]
 [ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Card/Card.tscn" id="3_kue8l"]
 
@@ -9,6 +10,7 @@ offset_right = 489.0
 offset_bottom = 193.0
 size_flags_horizontal = 6
 size_flags_vertical = 4
+script = ExtResource("1_rfqe6")
 
 [node name="BG" type="ColorRect" parent="."]
 layout_mode = 2

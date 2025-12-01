@@ -6,6 +6,7 @@ using Godot;
 public partial class CardContainer : Control
 {
     Card currentCard = null;
+    public Card CurrentCard => currentCard;
     protected bool UpdateSizeOnCardPlacedment = true;
     public override void _Ready()
     {

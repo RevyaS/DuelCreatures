@@ -13,7 +13,10 @@ public partial class DuelCreaturesBoard : Control
         PlayerFrontLeft, PlayerBackLeft, PlayerBackCenter, PlayerFrontRight, PlayerBackRight,
         OppFrontLeft, OppBackLeft, OppBackCenter, OppFrontRight, OppBackRight;
     CardLineStatic PlayerDamageZone, OppDamageZone;
-    HandComponent PlayerHand, OppHand;
+
+    public HandComponent PlayerHand { get; private set; }
+    HandComponent OppHand;
+
     CardVerticalStack PlayerDeck, OppDeck, 
         PlayerDropZone, OppDropZone;
 

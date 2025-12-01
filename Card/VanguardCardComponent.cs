@@ -17,4 +17,10 @@ public partial class VanguardCardComponent : Card
         var path = $"res://Assets/Cards/{cleanedName}.png";
         return ResourceLoader.Load<Texture2D>(path);
     }
+
+    public override Card CreateClone()
+    {
+        var card = SceneFactory.CreateVanguardCard(Card);
+        return card;
+    }
 }

@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using ArC.CardGames.Components;
 using Godot;
 
 public partial class InputProvider : Control
@@ -16,18 +20,39 @@ public partial class InputProvider : Control
     {
         board = GetNode<DuelCreaturesBoard>($"%{nameof(DuelCreaturesBoard)}");
         SelectCardsFromHandComponent = GetNode<SelectCardsFromHandComponent>($"%{nameof(SelectCardsFromHand)}");
+        SelectCardsFromHandComponent.CardReturned += OnCardReturned;
+        SelectCardsFromHandComponent.CardSelected += OnCardSelected;
+
         Board.HandCardPressed += OnHandCardPressed;
+    }
+
+    private void OnCardSelected(Card card)
+    {
+        board.PlayerHand.RemoveCard(card);
+    }
+
+    private void OnCardReturned(Card card)
+    {
+        board.PlayerHand.AddCard(card);
+        card.CurrentlyDragged = false;
     }
 
     private void OnHandCardPressed(Card card)
     {
-        GD.Print();
+        VanguardCardComponent component = (VanguardCardComponent)card;
     }
 
-    public void SelectCardsFromHand()
+    public async Task<List<CardBase>> SelectCardsFromHand()
     {
         DragHandToZone = true;
-        SelectCardsFromHandComponent.Show();
+        TaskCompletionSource<List<CardBase>> completionSource = new();
+        SelectCardsFromHandComponent.Activate(0, 5);
+        SelectCardsFromHandComponent.ConfirmedCards += (cards) =>
+        {
+            SelectCardsFromHandComponent.Deactivate();
+            completionSource.SetResult(cards.Cast<VanguardCardComponent>().Select(x => x.Card).Cast<CardBase>().ToList());
+        };
         
+        return await completionSource.Task;
     }
 }

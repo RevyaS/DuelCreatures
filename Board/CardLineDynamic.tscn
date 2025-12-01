@@ -1,5 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://cnp5v17a7qgwg"]
+[gd_scene load_steps=3 format=3 uid="uid://cnp5v17a7qgwg"]
 
 [ext_resource type="PackedScene" uid="uid://bqhy1u56ohnlg" path="res://Board/CardLine.tscn" id="1_ormq5"]
+[ext_resource type="Script" uid="uid://cv83uahtcwq4h" path="res://Board/CardLineDynamic.cs" id="2_baxsq"]
 
 [node name="CardLineDynamic" instance=ExtResource("1_ormq5")]
+offset_right = 814.0
+script = ExtResource("2_baxsq")
+
+[node name="Container" parent="MarginContainer" index="0"]
+theme_override_constants/separation = 0

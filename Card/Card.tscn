@@ -26,6 +26,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 color = Color(0, 0, 0, 1)
 
 [node name="MarginContainer" type="MarginContainer" parent="Border"]
@@ -43,6 +44,7 @@ theme_override_constants/margin_bottom = 10
 [node name="Back" type="ColorRect" parent="Border/MarginContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+mouse_filter = 1
 color = Color(0.073364116, 0.3143422, 0.5716949, 1)
 
 [node name="Front" type="TextureRect" parent="Border/MarginContainer"]
@@ -50,3 +52,13 @@ unique_name_in_owner = true
 layout_mode = 2
 expand_mode = 1
 stretch_mode = 6
+
+[node name="Button" type="Button" parent="Border"]
+visible = false
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 290.0
+offset_bottom = 410.0
+text = "Input Test
+"

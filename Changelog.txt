@@ -6,3 +6,5 @@ v.0001 Duel Creatures
 - Initial Board state (Except Guard Zone)
 - Initial HUD for mulligan
 - Shows first draw
+- Implemented player mulligan
+- Created SelectCardsFromHand input

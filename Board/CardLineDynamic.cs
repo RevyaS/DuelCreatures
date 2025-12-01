@@ -1,13 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 [Tool]
-public partial class CardLineDynamic : PanelContainer
+public partial class CardLineDynamic : CardLine
 {
-    HBoxNodeContainer Container;
-
-    IChildManagerComponent ContainerNodeManager => Container;    
-
     private int _separation = 0;
     [Export]
     public int Separation { 
@@ -19,32 +17,25 @@ public partial class CardLineDynamic : PanelContainer
         } 
     }
 
-    private bool _hidden = false;
+    private bool _hideCards = false;
     [Export]
-    public bool Hidden { 
-        get => _hidden; 
+    public bool HideCards { 
+        get => _hideCards; 
         set
         {
-            _hidden = value;
+            _hideCards = value;
             Render();
         } 
     }
 
-    public override void _Ready()
+    protected override void RenderCore()
     {
-        Container = GetNode<HBoxNodeContainer>($"%{nameof(Container)}");
-        Render();
-    }
-
-    private void Render()
-    {
-        if(!IsInsideTree()) return;
         Container.RemoveThemeConstantOverride("separation");
         Container.AddThemeConstantOverride("separation", _separation);
 
         ContainerNodeManager.ApplyToChildren<CardContainer>((child) =>
         {
-            if(_hidden)
+            if(_hideCards)
             {
                 child.FaceDown();
             } else
@@ -52,6 +43,8 @@ public partial class CardLineDynamic : PanelContainer
                 child.FaceUp();
             }
         });
+
+        base.RenderCore();
     }
 
     public void AddCard(Card card)
@@ -59,13 +52,13 @@ public partial class CardLineDynamic : PanelContainer
         CardContainer cardContainer = new();
         Container.AddChild(cardContainer);
         cardContainer.AddChild(card);
-        card.IsFront = !_hidden;
+        card.IsFront = !_hideCards;
         card.CardPressed += OnCardPressed;
     }
 
     private void OnCardPressed(Card card)
     {
-        CardPressed(card);
+        CardPressed?.Invoke(card);
     }
 
     public void RemoveCard(Card card)
@@ -75,6 +68,8 @@ public partial class CardLineDynamic : PanelContainer
             var containedCard = child.GetChild<Card>(0);
             if(ReferenceEquals(containedCard, card))
             {
+                Container.RemoveChild(child);
+                child.RemoveChild(containedCard);
                 child.QueueFree();
             }
         });
@@ -84,8 +79,34 @@ public partial class CardLineDynamic : PanelContainer
     {
         ContainerNodeManager.ApplyToChildren<CardContainer>((child) =>
         {
+            Container.RemoveChild(child);
             child.QueueFree();
         });
+        
+        Render();
+    }
+
+    public bool HasCardContainer(Func<Card, bool> predicate)
+    {
+        return Container.GetChildren<CardContainer>()
+            .Select(cont => cont.CurrentCard)
+            .Any(predicate);
+    }
+
+    public Card FindCard(Func<Card, bool> predicate)
+    {
+        return GetCards().FirstOrDefault(predicate);
+    }
+
+    public IEnumerable<Card> GetCards()
+    {
+        return Container.GetChildren<CardContainer>()
+            .Select(cont => cont.CurrentCard);
+    }
+
+    public bool HasCard(Func<CardContainer, bool> predicate)
+    {
+        return ContainerNodeManager.HasChild(predicate);
     }
 
     public event Action<Card> CardPressed;

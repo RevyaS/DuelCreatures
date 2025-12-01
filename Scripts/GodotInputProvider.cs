@@ -58,8 +58,7 @@ public class GodotInputProvider(InputProvider inputProviderComponent, VanguardPl
 
     public Task<List<CardBase>> SelectCardsFromHandRange(int minimum, int maximum)
     {
-        GD.Print("Select card from hand requested");
-        throw new System.NotImplementedException();
+        return inputProviderComponent.SelectCardsFromHand();
     }
 
     public Task<List<VanguardCard>> SelectCardsFromSoul(int amount)
