@@ -12,6 +12,7 @@ public partial class DuelCreaturesBoard : Control
     VanguardPlayerProfile player2 => _gameSession.Game.Player2;
 
     string mulliganPhase = "Mulligan Phase";
+    string ridePhase = "Ride Phase";
 
     public override void _Ready()
     {
@@ -52,6 +53,18 @@ public partial class DuelCreaturesBoard : Control
             case MulliganPhase:
                 OppPhaseIndicator.Text = mulliganPhase;
                 PlayerPhaseIndicator.Text = mulliganPhase;
+                break;
+            case RidePhase:
+                if(_gameSession.currentPlayer == player1)
+                {
+                    OppPhaseIndicator.Text = string.Empty;
+                    PlayerPhaseIndicator.Text = ridePhase;
+                }
+                if(_gameSession.currentPlayer == player2)
+                {
+                    PlayerPhaseIndicator.Text = string.Empty;
+                    OppPhaseIndicator.Text = ridePhase;
+                }
                 break;
         };
     }

@@ -1,3 +1,4 @@
+using System;
 using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Predefined.Vanguard;
@@ -13,6 +14,15 @@ public partial class HandComponent : CardLineDynamic
     {
         EventBus = eventBus;
         eventBus.CardAddedToHand += OnCardAddedToHand;
+        eventBus.CardTakenFromHand += OnCardTakenFromHand;
+    }
+
+    private void OnCardTakenFromHand(CardBase card, Hand hand)
+    {
+        if(ReferenceEquals(Hand, hand))
+        {
+            RemoveCard(card);
+        }
     }
 
     private void OnCardAddedToHand(CardBase newCard, Hand hand)

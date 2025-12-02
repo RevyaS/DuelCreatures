@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ArC.CardGames.Components;
 using Godot;
 
 [Tool]
@@ -68,11 +69,29 @@ public partial class CardLineDynamic : CardLine
             var containedCard = child.GetChild<Card>(0);
             if(ReferenceEquals(containedCard, card))
             {
-                Container.RemoveChild(child);
-                child.RemoveChild(containedCard);
-                child.QueueFree();
+                RemoveCardContainer(child);
             }
         });
+    }
+
+    public void RemoveCard(CardBase card)
+    {
+        ContainerNodeManager.ApplyToChildren<CardContainer>((child) =>
+        {
+            var containedCard = child.GetChild<Card>(0);
+            if(ReferenceEquals(((VanguardCardComponent)containedCard).Card, card))
+            {
+                RemoveCardContainer(child);
+            }
+        });
+    }
+
+    private void RemoveCardContainer(CardContainer card)
+    {
+        var containedCard = card.GetChild<Card>(0);
+        Container.RemoveChild(card);
+        card.RemoveChild(containedCard);
+        card.QueueFree();
     }
 
     public void ClearCards()

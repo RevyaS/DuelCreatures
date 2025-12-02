@@ -1,8 +1,7 @@
-using System.Linq;
 using System.Threading.Tasks;
-using ArC.CardGames;
-using ArC.CardGames.Predefined.Common;
+using ArC.CardGames.Flow;
 using ArC.CardGames.Predefined.Vanguard;
+using ArC.CardGames.Setup;
 using Godot;
 using static ArC.CardGames.Predefined.Vanguard.Cards.DuelMaidensCardsFactory;
 
@@ -17,25 +16,27 @@ public partial class Session : Control
 
         var eventBus = new VanguardEventBus();
         var effectService = new VanguardEffectService();
+        var gameContext = new GameContext();
 
-        var player1 = new VanguardPlayerProfile(new([
-            ..Enumerable.Repeat(RoyalPaladin.LittleSageMarron, 4),
-            ..Enumerable.Repeat(RoyalPaladin.SailorGuardianMichiru, 4),
-            ..Enumerable.Repeat(RoyalPaladin.BlasterBlade, 4),
-            ..Enumerable.Repeat(RoyalPaladin.KnightOfSilenceGallatin, 4),
-            ..Enumerable.Repeat(RoyalPaladin.KingOfKnightsAlfred, 4)
-         ], eventBus), RoyalPaladin.StardustTrumpeteer);
+        var player1 = new VanguardPlayerProfile(new(
+            DeckBuilder.Create()
+                .AddCards(RoyalPaladin.LittleSageMarron, 4)
+                .AddCards(RoyalPaladin.SailorGuardianMichiru, 4)
+                .AddCards(RoyalPaladin.BlasterBlade, 4)
+                .AddCards(RoyalPaladin.KnightOfSilenceGallatin, 4)
+                .AddCards(RoyalPaladin.KingOfKnightsAlfred, 4)
+                .GetCards(), eventBus), RoyalPaladin.StardustTrumpeteer);
 
-        var player2 = new VanguardPlayerProfile(new([
-            ..Enumerable.Repeat(RoyalPaladin.LittleSageMarron, 4),
-            ..Enumerable.Repeat(RoyalPaladin.SailorGuardianMichiru, 4),
-            ..Enumerable.Repeat(RoyalPaladin.BlasterBlade, 4),
-            ..Enumerable.Repeat(RoyalPaladin.KnightOfSilenceGallatin, 4),
-            ..Enumerable.Repeat(RoyalPaladin.KingOfKnightsAlfred, 4)
-        ], eventBus), RoyalPaladin.StardustTrumpeteer);
+        var player2 = new VanguardPlayerProfile(new(DeckBuilder.Create()
+                .AddCards(RoyalPaladin.LittleSageMarron, 4)
+                .AddCards(RoyalPaladin.SailorGuardianMichiru, 4)
+                .AddCards(RoyalPaladin.BlasterBlade, 4)
+                .AddCards(RoyalPaladin.KnightOfSilenceGallatin, 4)
+                .AddCards(RoyalPaladin.KingOfKnightsAlfred, 4)
+                .GetCards(), eventBus), RoyalPaladin.StardustTrumpeteer);
 
-        var game = new VanguardGame(player1, player2, eventBus, effectService);
-        var inputProviderFactory = new InputProviderFactory(game, InputProviderComponent);
+        var game = new VanguardGame(player1, player2, eventBus, effectService, gameContext);
+        var inputProviderFactory = new InputProviderFactory(game, InputProviderComponent, gameContext);
         var skillService = new VanguardSkillService(game);
 
         var session = new VanguardGameSession(game, inputProviderFactory, eventBus, effectService, skillService);
@@ -61,16 +62,5 @@ public partial class Session : Control
         {
             GD.Print("You lose");
         }
-    }
-
-    public string GetPhaseName(IPhase phase)
-    {
-        switch(phase)
-        {
-            case MulliganPhase:
-                return "Mulligan Phase";
-        }
-
-        return "Unknown Phase";
     }
 }
