@@ -8,4 +8,5 @@ v.0001 Duel Creatures
 - Shows first draw
 - Implemented player mulligan
 - Created SelectCardsFromHand input
-- Created opponent AI Mulligan
+- Implemented opponent AI Mulligan
+- Implemented Player Ride phase

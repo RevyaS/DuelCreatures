@@ -5,10 +5,13 @@ using Godot;
 public partial class DuelCreaturesBoard : Control
 {
     Label OppPhaseIndicator, PlayerPhaseIndicator;
-    UnitCircle PlayerExtraLeft1, PlayerExtraLeft2, PlayerExtraRight1, PlayerExtraRight2,
+    
+    public UnitCircleComponent PlayerVanguard { get; private set; }
+
+    UnitCircleComponent PlayerExtraLeft1, PlayerExtraLeft2, PlayerExtraRight1, PlayerExtraRight2,
         OppExtraLeft1, OppExtraLeft2, OppExtraRight1, OppExtraRight2,
 
-        PlayerVanguard, OppVanguard,
+        OppVanguard,
 
         PlayerFrontLeft, PlayerBackLeft, PlayerBackCenter, PlayerFrontRight, PlayerBackRight,
         OppFrontLeft, OppBackLeft, OppBackCenter, OppFrontRight, OppBackRight;
@@ -20,12 +23,12 @@ public partial class DuelCreaturesBoard : Control
     CardVerticalStack PlayerDeck, OppDeck, 
         PlayerDropZone, OppDropZone;
 
-    List<UnitCircle> AllExtraFields => [ 
+    List<UnitCircleComponent> AllExtraFields => [ 
         PlayerExtraLeft1, PlayerExtraLeft2, PlayerExtraRight1, PlayerExtraRight2,
         OppExtraLeft1, OppExtraLeft2, OppExtraRight1, OppExtraRight2
     ];
 
-    List<UnitCircle> AllFields => [ 
+    List<UnitCircleComponent> AllFields => [ 
         PlayerFrontLeft, PlayerBackLeft, PlayerBackCenter, PlayerFrontRight, PlayerBackRight,
         OppFrontLeft, OppBackLeft, OppBackCenter, OppFrontRight, OppBackRight
     ];
@@ -43,27 +46,27 @@ public partial class DuelCreaturesBoard : Control
         OppPhaseIndicator = GetNode<Label>($"%{nameof(OppPhaseIndicator)}");
         PlayerPhaseIndicator = GetNode<Label>($"%{nameof(PlayerPhaseIndicator)}");
 
-        PlayerExtraLeft1 = GetNode<UnitCircle>($"%{nameof(PlayerExtraLeft1)}");
-        PlayerExtraLeft2 = GetNode<UnitCircle>($"%{nameof(PlayerExtraLeft2)}");
-        PlayerExtraRight1 = GetNode<UnitCircle>($"%{nameof(PlayerExtraRight1)}");
-        PlayerExtraRight2 = GetNode<UnitCircle>($"%{nameof(PlayerExtraRight2)}");
+        PlayerExtraLeft1 = GetNode<UnitCircleComponent>($"%{nameof(PlayerExtraLeft1)}");
+        PlayerExtraLeft2 = GetNode<UnitCircleComponent>($"%{nameof(PlayerExtraLeft2)}");
+        PlayerExtraRight1 = GetNode<UnitCircleComponent>($"%{nameof(PlayerExtraRight1)}");
+        PlayerExtraRight2 = GetNode<UnitCircleComponent>($"%{nameof(PlayerExtraRight2)}");
 
-        OppExtraLeft1 = GetNode<UnitCircle>($"%{nameof(OppExtraLeft1)}");
-        OppExtraLeft2 = GetNode<UnitCircle>($"%{nameof(OppExtraLeft2)}");
-        OppExtraRight1 = GetNode<UnitCircle>($"%{nameof(OppExtraRight1)}");
-        OppExtraRight2 = GetNode<UnitCircle>($"%{nameof(OppExtraRight2)}");
+        OppExtraLeft1 = GetNode<UnitCircleComponent>($"%{nameof(OppExtraLeft1)}");
+        OppExtraLeft2 = GetNode<UnitCircleComponent>($"%{nameof(OppExtraLeft2)}");
+        OppExtraRight1 = GetNode<UnitCircleComponent>($"%{nameof(OppExtraRight1)}");
+        OppExtraRight2 = GetNode<UnitCircleComponent>($"%{nameof(OppExtraRight2)}");
 
-        PlayerFrontLeft = GetNode<UnitCircle>($"%{nameof(PlayerFrontLeft)}");
-        PlayerBackLeft = GetNode<UnitCircle>($"%{nameof(PlayerBackLeft)}");
-        PlayerBackCenter = GetNode<UnitCircle>($"%{nameof(PlayerBackCenter)}");
-        PlayerFrontRight = GetNode<UnitCircle>($"%{nameof(PlayerFrontRight)}");
-        PlayerBackRight = GetNode<UnitCircle>($"%{nameof(PlayerBackRight)}");
+        PlayerFrontLeft = GetNode<UnitCircleComponent>($"%{nameof(PlayerFrontLeft)}");
+        PlayerBackLeft = GetNode<UnitCircleComponent>($"%{nameof(PlayerBackLeft)}");
+        PlayerBackCenter = GetNode<UnitCircleComponent>($"%{nameof(PlayerBackCenter)}");
+        PlayerFrontRight = GetNode<UnitCircleComponent>($"%{nameof(PlayerFrontRight)}");
+        PlayerBackRight = GetNode<UnitCircleComponent>($"%{nameof(PlayerBackRight)}");
 
-        OppFrontLeft = GetNode<UnitCircle>($"%{nameof(OppFrontLeft)}");
-        OppBackLeft = GetNode<UnitCircle>($"%{nameof(OppBackLeft)}");
-        OppBackCenter = GetNode<UnitCircle>($"%{nameof(OppBackCenter)}");
-        OppFrontRight = GetNode<UnitCircle>($"%{nameof(OppFrontRight)}");
-        OppBackRight = GetNode<UnitCircle>($"%{nameof(OppBackRight)}");
+        OppFrontLeft = GetNode<UnitCircleComponent>($"%{nameof(OppFrontLeft)}");
+        OppBackLeft = GetNode<UnitCircleComponent>($"%{nameof(OppBackLeft)}");
+        OppBackCenter = GetNode<UnitCircleComponent>($"%{nameof(OppBackCenter)}");
+        OppFrontRight = GetNode<UnitCircleComponent>($"%{nameof(OppFrontRight)}");
+        OppBackRight = GetNode<UnitCircleComponent>($"%{nameof(OppBackRight)}");
 
         PlayerDamageZone = GetNode<CardLineStatic>($"%{nameof(PlayerDamageZone)}");
         OppDamageZone = GetNode<CardLineStatic>($"%{nameof(OppDamageZone)}");
@@ -74,7 +77,7 @@ public partial class DuelCreaturesBoard : Control
         PlayerDropZone = GetNode<CardVerticalStack>($"%{nameof(PlayerDropZone)}");
         OppDropZone = GetNode<CardVerticalStack>($"%{nameof(OppDropZone)}");
 
-        PlayerVanguard = GetNode<UnitCircle>($"%{nameof(PlayerVanguard)}");
-        OppVanguard = GetNode<UnitCircle>($"%{nameof(OppVanguard)}");
+        PlayerVanguard = GetNode<UnitCircleComponent>($"%{nameof(PlayerVanguard)}");
+        OppVanguard = GetNode<UnitCircleComponent>($"%{nameof(OppVanguard)}");
     }
 }

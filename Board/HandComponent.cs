@@ -5,7 +5,7 @@ using ArC.CardGames.Predefined.Vanguard;
 using Godot;
 
 [Tool]
-public partial class HandComponent : CardLineDynamic
+public partial class HandComponent : CardLineDynamic, IEventBusUtilizer
 {
     VanguardEventBus EventBus;
     Hand Hand;

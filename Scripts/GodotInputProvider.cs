@@ -14,6 +14,7 @@ public class GodotInputProvider(InputProvider inputProviderComponent, VanguardPl
     public VanguardSkillService SkillService => throw new System.NotImplementedException();
 
     PlayAreaBase IPlayerInputProvider.PlayArea => PlayArea;
+    VanguardCard CurrentVanguard => PlayArea.Vanguard.Card;
 
     public Task<bool> QueryActivateSkill(VanguardSkillCost SkillCost)
     {
@@ -47,7 +48,7 @@ public class GodotInputProvider(InputProvider inputProviderComponent, VanguardPl
 
     public Task<CardBase> SelectCardFromHandOrNot()
     {
-        throw new System.NotImplementedException();
+        return inputProviderComponent.RideVanguardFromHandOrNot(CurrentVanguard);
     }
 
     public Task<List<VanguardCard>> SelectCardsFromDamageZone(int amount)
@@ -65,17 +66,17 @@ public class GodotInputProvider(InputProvider inputProviderComponent, VanguardPl
         throw new System.NotImplementedException();
     }
 
-    public Task<ArC.CardGames.Predefined.Vanguard.UnitCircle> SelectCircleToProvideCritical()
+    public Task<UnitCircle> SelectCircleToProvideCritical()
     {
         throw new System.NotImplementedException();
     }
 
-    public Task<ArC.CardGames.Predefined.Vanguard.UnitCircle> SelectCircleToProvidePower()
+    public Task<UnitCircle> SelectCircleToProvidePower()
     {
         throw new System.NotImplementedException();
     }
 
-    public Task<ArC.CardGames.Predefined.Vanguard.UnitCircle> SelectOpponentFrontRow(UnitSelector selector)
+    public Task<UnitCircle> SelectOpponentFrontRow(UnitSelector selector)
     {
         throw new System.NotImplementedException();
     }
@@ -85,7 +86,7 @@ public class GodotInputProvider(InputProvider inputProviderComponent, VanguardPl
         throw new System.NotImplementedException();
     }
 
-    public Task<ArC.CardGames.Predefined.Vanguard.UnitCircle> SelectOwnUnitCircle()
+    public Task<UnitCircle> SelectOwnUnitCircle()
     {
         throw new System.NotImplementedException();
     }
