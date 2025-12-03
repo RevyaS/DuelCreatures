@@ -13,3 +13,4 @@ v.0001 Duel Creatures
 - Base writing Player Main Phase
 - Created CardBaseComponent to refactor code
 - Cleaned up all nullable warnings
+- Rearguard and Hand handling of Card Draggable state
