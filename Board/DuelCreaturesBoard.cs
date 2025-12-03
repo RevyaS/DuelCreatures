@@ -4,7 +4,6 @@ using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Predefined.Vanguard;
 using Godot;
 
-
 public partial class DuelCreaturesBoard : Control
 {
     Button EndPhaseButton;
@@ -23,6 +22,22 @@ public partial class DuelCreaturesBoard : Control
         EndPhaseButton.Pressed += OnEndPhaseButtonPressed;
         SetComponents();
         PlayerHand.CardPressed += OnHandCardPressed;
+        PlayerVanguard.CardDropped += OnPlayerVanguardCardDropped;
+        PlayerFrontLeft.CardDropped += (card) => OnPlayerRearguardCardDropped(PlayerFrontLeft, card);
+        PlayerBackLeft.CardDropped += (card) => OnPlayerRearguardCardDropped(PlayerBackLeft, card);
+        PlayerBackCenter.CardDropped += (card) => OnPlayerRearguardCardDropped(PlayerBackCenter, card);
+        PlayerFrontRight.CardDropped += (card) => OnPlayerRearguardCardDropped(PlayerFrontRight, card);
+        PlayerBackRight.CardDropped += (card) => OnPlayerRearguardCardDropped(PlayerBackRight, card);
+    }
+
+    private void OnPlayerRearguardCardDropped(UnitCircleComponent unitCircle, Card card)
+    {
+        CardDroppedToPlayerRearguard?.Invoke(unitCircle, card);
+    }
+
+    private void OnPlayerVanguardCardDropped(Card card)
+    {
+        PlayerVanguardCardDropped?.Invoke(card);
     }
 
     private void OnEndPhaseButtonPressed()
@@ -130,6 +145,34 @@ public partial class DuelCreaturesBoard : Control
         OppVanguard.SetCard((VanguardCard)player2.Vanguard);
     }
 
+    public void EnablePlayerVanguardDropping()
+    {
+        PlayerVanguard.Droppable = true;
+    }
+    public void DisablePlayerVanguardDropping()
+    {
+        PlayerVanguard.Droppable = false;
+    }
+
+    public void EnablePlayerRearguardDropping()
+    {
+        PlayerFrontLeft.Droppable = true;
+        PlayerBackLeft.Droppable = true;
+        PlayerBackCenter.Droppable = true;
+        PlayerFrontRight.Droppable = true;
+        PlayerFrontRight.Droppable = true;
+    }
+    public void DisablePlayerRearguardDropping()
+    {
+        PlayerFrontLeft.Droppable = false;
+        PlayerBackLeft.Droppable = false;
+        PlayerBackCenter.Droppable = false;
+        PlayerFrontRight.Droppable = false;
+        PlayerFrontRight.Droppable = false;
+    }
+
     public event Action<Card> HandCardPressed;
+    public event Action<Card> PlayerVanguardCardDropped;
     public event Action EndPhasePressed;
+    public event Action<UnitCircleComponent, Card> CardDroppedToPlayerRearguard;
 }

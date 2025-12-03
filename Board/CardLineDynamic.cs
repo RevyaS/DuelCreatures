@@ -79,7 +79,7 @@ public partial class CardLineDynamic : CardLine
         ContainerNodeManager.ApplyToChildren<CardContainer>((child) =>
         {
             var containedCard = child.GetChild<Card>(0);
-            if(ReferenceEquals(((VanguardCardComponent)containedCard).Card, card))
+            if(ReferenceEquals(containedCard.CurrentCard, card))
             {
                 RemoveCardContainer(child);
             }

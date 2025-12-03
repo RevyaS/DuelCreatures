@@ -35,7 +35,7 @@ public partial class HandComponent : CardLineDynamic, IEventBusUtilizer
 
     public void ShowContainerOfCard(VanguardCard card)
     {
-        var cardComponent = FindCard((containedCard) => containedCard is VanguardCardComponent vgCard && ReferenceEquals(vgCard.Card, card));
+        var cardComponent = FindCard((containedCard) => ReferenceEquals(containedCard.CurrentCard, card));
         if(cardComponent is not null)
         {
             cardComponent.Show();

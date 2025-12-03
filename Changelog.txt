@@ -10,3 +10,5 @@ v.0001 Duel Creatures
 - Created SelectCardsFromHand input
 - Implemented opponent AI Mulligan
 - Implemented Player Ride phase
+- Base writing Player Main Phase
+- Created CardBaseComponent to refactor code

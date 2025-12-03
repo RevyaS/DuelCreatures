@@ -28,7 +28,7 @@ public class GodotInputProvider(InputProvider inputProviderComponent, VanguardPl
 
     public Task<IMainPhaseAction> RequestMainPhaseAction(List<IMainPhaseAction> actions)
     {
-        throw new System.NotImplementedException();
+        return inputProviderComponent.AskForMainPhaseAction(actions);
     }
 
     public Task<VanguardCard> SelectCardFromDamageZone()
