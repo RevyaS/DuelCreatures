@@ -1,10 +1,22 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ArC.CardGames.Components;
+using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Predefined.Vanguard;
 
-public interface IInputProviderStrategy
+public interface IInputProviderStrategy;
+
+public interface ISelectCardsFromHand
 {
     Task<List<CardBase>> SelectCardsFromHand();
+}
+
+public interface ISelectCardFromHandOrNot
+{
     Task<CardBase?> SelectCardFromHandOrNot(VanguardCard currentVanguard);
+}
+
+public interface IRequestMainPhaseAction
+{
+    Task<IMainPhaseAction> RequestMainPhaseAction(List<IMainPhaseAction> actions);
 }

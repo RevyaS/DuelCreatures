@@ -9,7 +9,7 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
     CardRotationContainer cardRotationContainer = null!;
     DropArea dropArea = null!;
 
-    UnitCircle UnitCircle = null!;
+    public UnitCircle UnitCircle { get; private set; } = null!;
 
     private bool _droppable = false;
     [Export]
@@ -41,7 +41,7 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         if(ReferenceEquals(circle, UnitCircle))
         {
             // Assign card
-            return Task.Run(() => SetCard(circle.Card!));
+            SetCard(circle.Card!);
         }
         return Task.CompletedTask;
     }

@@ -3,15 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ArC.CardGames.Components;
-using ArC.CardGames.Predefined.Vanguard;
 
-public class MulliganPhaseStrategy(SelectCardsFromHandComponent selectCardsFromHandComponent) : IInputProviderStrategy
+public class MulliganPhaseStrategy(SelectCardsFromHandComponent selectCardsFromHandComponent) : IInputProviderStrategy, ISelectCardsFromHand
 {
-    public Task<CardBase?> SelectCardFromHandOrNot(VanguardCard currentVanguard)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<List<CardBase>> SelectCardsFromHand()
     {
         TaskCompletionSource<List<CardBase>> completionSource = new();

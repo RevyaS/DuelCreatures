@@ -26,7 +26,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="SelectCardsFromHand" parent="HUD" instance=ExtResource("3_g4tnu")]
+[node name="SelectCardsFromHandComponent" parent="HUD" instance=ExtResource("3_g4tnu")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1

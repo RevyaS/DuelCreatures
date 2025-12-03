@@ -12,11 +12,12 @@ public partial class Session : Control
 
     public async override void _Ready()
     {
-        InputProviderComponent = GetNode<InputProvider>($"%{nameof(InputProviderComponent)}");
-
         var eventBus = new VanguardEventBus();
         var effectService = new VanguardEffectService();
         var gameContext = new GameContext();
+
+        InputProviderComponent = GetNode<InputProvider>($"%{nameof(InputProviderComponent)}");
+        InputProviderComponent.SetEventBus(eventBus);
 
         var player1 = new VanguardPlayerProfile(new(
             DeckBuilder.Create()

@@ -5,13 +5,25 @@ using ArC.CardGames;
 using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Predefined.Vanguard;
-using ArC.Common.Extensions;
+using ArC.CardGames.Rules;
+using ArC.CardGames.Setup;
 using Godot;
 
-public partial class InputProvider : Control
+public partial class InputProvider : Control, IVanguardPlayerInputProvider
 {
     DuelCreaturesBoard board = null!;
     public DuelCreaturesBoard Board => board;
+
+    public VanguardPlayArea PlayArea { get; private set; } = null!;
+
+    public VanguardPlayArea OpponentPlayArea => throw new NotImplementedException();
+
+    public VanguardSkillService SkillService => throw new NotImplementedException();
+
+
+    VanguardCard CurrentVanguard => PlayArea.Vanguard.Card!;
+    PlayAreaBase IPlayerInputProvider.PlayArea => PlayArea;
+
     IInputProviderStrategy strategy = null!;
 
     SelectCardsFromHandComponent SelectCardsFromHandComponent = null!;
@@ -19,11 +31,16 @@ public partial class InputProvider : Control
     public override void _Ready()
     {
         board = GetNode<DuelCreaturesBoard>($"%{nameof(DuelCreaturesBoard)}");
-        SelectCardsFromHandComponent = GetNode<SelectCardsFromHandComponent>($"%{nameof(SelectCardsFromHand)}");
+        SelectCardsFromHandComponent = GetNode<SelectCardsFromHandComponent>($"%{nameof(SelectCardsFromHandComponent)}");
         SelectCardsFromHandComponent.CardReturned += OnCardReturned;
         SelectCardsFromHandComponent.CardSelected += OnCardSelected;
 
         Board.HandCardPressed += OnHandCardPressed;
+    }
+
+    public void Setup(VanguardPlayArea playArea)
+    {
+        PlayArea = playArea;
     }
 
     public void SetEventBus(VanguardEventBus eventBus)
@@ -33,11 +50,19 @@ public partial class InputProvider : Control
 
     private void OnPhaseChanged(IPhase phase)
     {
+        if(phase is not IManualPhase) return;
+
         switch(phase)
         {
             case MulliganPhase:
                 SetProviderStrategy(new MulliganPhaseStrategy(SelectCardsFromHandComponent));
-                break;
+                return;
+            case RidePhase:
+                SetProviderStrategy(new RidePhaseStrategy(board));
+                return;
+            case MainPhase:
+                SetProviderStrategy(new MainRidePhaseStrategy(board));
+                return;
         }
         throw new NotSupportedException($"{phase.GetType().Name} is not supported yet");
     }
@@ -63,35 +88,83 @@ public partial class InputProvider : Control
         VanguardCardComponent component = (VanguardCardComponent)card;
     }
 
-    public Task<List<CardBase>> SelectCardsFromHand()
+    public Task<List<CardBase>> SelectCardsFromHandRange(int minimum, int maximum)
     {
-        return strategy.SelectCardsFromHand();
+        return ((ISelectCardsFromHand)strategy).SelectCardsFromHand();
     }
 
-    public Task<CardBase?> SelectCardFromHandOrNot(VanguardCard currentVanguard)
+    public Task<CardBase?> SelectCardFromHandOrNot()
     {
-        return strategy.SelectCardFromHandOrNot(currentVanguard);
+        return ((ISelectCardFromHandOrNot)strategy).SelectCardFromHandOrNot(CurrentVanguard);
     }
 
-    public async Task<IMainPhaseAction> AskForMainPhaseAction(List<IMainPhaseAction> actions)
+    public Task<IMainPhaseAction> RequestMainPhaseAction(List<IMainPhaseAction> actions)
     {
-        TaskCompletionSource<IMainPhaseAction> completionSource = new();
-        Board.ShowEndPhaseButton();
-        Action endPhaseHandler = () => {
-            var selected = actions.FirstOf<EndMainPhase>();
-            completionSource.SetResult(selected);
-        };
-        Action<UnitCircleComponent, Card> onCardPlacedToRGHandler = (unitCircle, card) =>
-        {
+        return ((IRequestMainPhaseAction)strategy).RequestMainPhaseAction(actions);
+    }
 
-        };
-        Board.EndPhasePressed +=  endPhaseHandler;
-        Board.CardDroppedToPlayerRearguard +=  onCardPlacedToRGHandler;
+    public Task<RearGuard> SelectOwnRearguard()
+    {
+        throw new NotImplementedException();
+    }
 
+    public Task<UnitCircle> SelectOpponentFrontRow(UnitSelector selector)
+    {
+        throw new NotImplementedException();
+    }
 
-        var result = await completionSource.Task;
-        Board.EndPhasePressed -=  endPhaseHandler;
-        Board.HideEndPhaseButton();
-        return result;
+    public Task<UnitCircle> SelectOwnUnitCircle()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<VanguardActivationSkill> SelectSkillToActivate(List<VanguardActivationSkill> skills)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<UnitCircle> SelectCircleToProvideCritical()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<UnitCircle> SelectCircleToProvidePower()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<VanguardCard> SelectCardFromDamageZone()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<VanguardCard> SelectCardFromDeck(int minGrade, int maxGrade)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<List<VanguardCard>> SelectCardsFromDamageZone(int amount)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<List<VanguardCard>> SelectCardsFromSoul(int amount)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> QueryActivateSkill(VanguardSkillCost SkillCost)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<CardBase> SelectCardFromHand()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IAttackPhaseAction> RequestAttackPhaseAction(List<IAttackPhaseAction> actions)
+    {
+        throw new NotImplementedException();
     }
 }

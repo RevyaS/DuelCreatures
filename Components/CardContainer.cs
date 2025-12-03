@@ -48,6 +48,7 @@ public partial class CardContainer : Control
     {
         if(currentCard is not null)
         {
+            currentCard.QueueFree();
             RemoveChild(currentCard);
         }
     }
