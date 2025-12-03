@@ -23,6 +23,18 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         }
     }
 
+    private bool _draggable = false;
+    [Export]
+    public bool Draggable
+    {
+        get => _draggable;
+        set
+        {
+            _draggable = value;
+            Render();
+        }
+    }
+
     public override void _Ready()
     {
         cardRotationContainer = GetNode<CardRotationContainer>($"%{nameof(CardRotationContainer)}");
@@ -55,11 +67,11 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
     {
         if(!IsInsideTree()) return;
         dropArea.Visible = _droppable;
+        cardRotationContainer.Draggable = _draggable;
     }
 
     protected virtual void OnCardDropped(Card card)
     {
-        GD.Print("Card Dropped");
         CardDropped?.Invoke(card);
     }
 

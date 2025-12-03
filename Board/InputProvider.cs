@@ -55,7 +55,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         switch(phase)
         {
             case MulliganPhase:
-                SetProviderStrategy(new MulliganPhaseStrategy(SelectCardsFromHandComponent));
+                SetProviderStrategy(new MulliganPhaseStrategy(board, SelectCardsFromHandComponent));
                 return;
             case RidePhase:
                 SetProviderStrategy(new RidePhaseStrategy(board));

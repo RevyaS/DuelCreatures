@@ -182,6 +182,32 @@ public partial class DuelCreaturesBoard : Control
         PlayerBackRight.Droppable = false;
     }
 
+    public void EnablePlayerRearguardDragging()
+    {
+        PlayerFrontLeft.Draggable = true;
+        PlayerBackLeft.Draggable = true;
+        PlayerBackCenter.Draggable = true;
+        PlayerFrontRight.Draggable = true;
+        PlayerBackRight.Draggable = true;
+    }
+    public void DisablePlayerRearguardDragging()
+    {
+        PlayerFrontLeft.Draggable = false;
+        PlayerBackLeft.Draggable = false;
+        PlayerBackCenter.Draggable = false;
+        PlayerFrontRight.Draggable = false;
+        PlayerBackRight.Draggable = false;
+    }
+
+    public void EnablePlayerHandDragging()
+    {
+        PlayerHand.Draggable = true;
+    }
+    public void DisablePlayerHandDragging()
+    {
+        PlayerHand.Draggable = false;
+    }
+
     public event Action<Card>? HandCardPressed;
     public event Action<Card>? PlayerVanguardCardDropped;
     public event Action? EndPhasePressed;

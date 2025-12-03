@@ -14,5 +14,4 @@ public partial class CardRotationContainer : CardContainer
         var maxDimension = Mathf.Max(scaledSize.X, scaledSize.Y);
         CustomMinimumSize = new(maxDimension, maxDimension);
     }
-
 }

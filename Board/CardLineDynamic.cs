@@ -29,6 +29,17 @@ public partial class CardLineDynamic : CardLine
         } 
     }
 
+    private bool _draggable = false;
+    [Export]
+    public bool Draggable { 
+        get => _draggable; 
+        set
+        {
+            _draggable = value;
+            Render();
+        } 
+    }
+
     protected override void RenderCore()
     {
         Container.RemoveThemeConstantOverride("separation");
@@ -43,6 +54,8 @@ public partial class CardLineDynamic : CardLine
             {
                 child.FaceUp();
             }
+
+            child.Draggable = Draggable;
         });
 
         base.RenderCore();

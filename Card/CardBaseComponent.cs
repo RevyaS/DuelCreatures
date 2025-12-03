@@ -15,6 +15,8 @@ public abstract partial class CardBaseComponent : Control
         } 
     }
 
+    public bool Draggable { get; set; } = false;
+
     private Texture2D texture = null!;
     [Export]
     public Texture2D Texture
@@ -57,6 +59,8 @@ public abstract partial class CardBaseComponent : Control
 
     public override Variant _GetDragData(Vector2 atPosition)
     {
+        if(!Draggable) return base._GetDragData(atPosition);
+
         SetDragPreview(CreateClone());
         CurrentlyDragged = true;
         return this;

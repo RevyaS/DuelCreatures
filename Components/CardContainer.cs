@@ -8,6 +8,19 @@ public partial class CardContainer : Control
     Card? currentCard = null;
     public Card? CurrentCard => currentCard;
     protected bool UpdateSizeOnCardPlacedment = true;
+
+    public bool Draggable
+    {
+        get => CurrentCard?.Draggable ?? false;
+        set
+        {
+            if(CurrentCard is not null)
+            {
+                CurrentCard.Draggable = value;
+            }
+        }
+    }
+
     public override void _Ready()
     {
         ChildEnteredTree += OnChildEnteredTree;
@@ -41,6 +54,7 @@ public partial class CardContainer : Control
         {
             RemoveCard();
         }
+        card.Draggable = Draggable;
         AddChild(card);
     }
 

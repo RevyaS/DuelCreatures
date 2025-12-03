@@ -15,7 +15,9 @@ public class MainRidePhaseStrategy(DuelCreaturesBoard Board) : IInputProviderStr
     {
         TaskCompletionSource<IMainPhaseAction> completionSource = new();
         Board.EnablePlayerRearguardDropping();
+        Board.EnablePlayerHandDragging();
         Board.ShowEndPhaseButton();
+        
         Action endPhaseHandler = () => {
             var selected = actions.FirstOf<EndMainPhase>();
             completionSource.SetResult(selected);
@@ -36,6 +38,8 @@ public class MainRidePhaseStrategy(DuelCreaturesBoard Board) : IInputProviderStr
 
         Board.HideEndPhaseButton();
         Board.DisablePlayerRearguardDropping();
+        Board.DisablePlayerHandDragging();
+
         return result;
     }
 

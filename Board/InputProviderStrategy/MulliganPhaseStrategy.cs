@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using ArC.CardGames.Components;
 
-public class MulliganPhaseStrategy(SelectCardsFromHandComponent selectCardsFromHandComponent) : IInputProviderStrategy, ISelectCardsFromHand
+public class MulliganPhaseStrategy(DuelCreaturesBoard board, SelectCardsFromHandComponent selectCardsFromHandComponent) : IInputProviderStrategy, ISelectCardsFromHand
 {
     public async Task<List<CardBase>> SelectCardsFromHand()
     {
+        board.EnablePlayerHandDragging();
+
         TaskCompletionSource<List<CardBase>> completionSource = new();
         selectCardsFromHandComponent.Activate(0, 5);
         
@@ -19,7 +21,10 @@ public class MulliganPhaseStrategy(SelectCardsFromHandComponent selectCardsFromH
         selectCardsFromHandComponent.ConfirmedCards += handler;
         
         var result = await completionSource.Task;
+
         selectCardsFromHandComponent.ConfirmedCards -= handler;
+        board.DisablePlayerHandDragging();
+
         return result;
     }
 }

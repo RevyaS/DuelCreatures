@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Vanguard;
@@ -11,6 +10,7 @@ public class RidePhaseStrategy(DuelCreaturesBoard Board) : IInputProviderStrateg
     {
         Board.ShowEndPhaseButton();
         Board.EnablePlayerVanguardDropping();
+        Board.EnablePlayerHandDragging();
         
         VanguardCard? newVanguard = null;
 
@@ -49,6 +49,7 @@ public class RidePhaseStrategy(DuelCreaturesBoard Board) : IInputProviderStrateg
 
         Board.DisablePlayerVanguardDropping();
         Board.HideEndPhaseButton();
+        Board.DisablePlayerHandDragging();
 
         return newVanguard;
     }
