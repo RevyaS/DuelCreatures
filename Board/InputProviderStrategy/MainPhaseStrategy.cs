@@ -6,7 +6,7 @@ using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Predefined.Vanguard;
 using ArC.Common.Extensions;
 
-public class MainRidePhaseStrategy(DuelCreaturesBoard Board) : IInputProviderStrategy, IRequestMainPhaseAction
+public class MainRidePhaseStrategy(DuelCreaturesBoard Board) : IInputProviderStrategy, IRequestMainPhaseAction, ISelectCardFromHand, ISelectOwnRearguard
 {
     CardBase selectedCardForCall = null!;
     RearGuard selectedRearguardForCall = null!;
@@ -14,6 +14,7 @@ public class MainRidePhaseStrategy(DuelCreaturesBoard Board) : IInputProviderStr
     public async Task<IMainPhaseAction> RequestMainPhaseAction(List<IMainPhaseAction> actions)
     {
         TaskCompletionSource<IMainPhaseAction> completionSource = new();
+        Board.EnablePlayerRearguardDropping();
         Board.ShowEndPhaseButton();
         Action endPhaseHandler = () => {
             var selected = actions.FirstOf<EndMainPhase>();
@@ -31,7 +32,32 @@ public class MainRidePhaseStrategy(DuelCreaturesBoard Board) : IInputProviderStr
 
         var result = await completionSource.Task;
         Board.EndPhasePressed -=  endPhaseHandler;
+        Board.CardDroppedToPlayerRearguard -=  onCardPlacedToRGHandler;
+
         Board.HideEndPhaseButton();
+        Board.DisablePlayerRearguardDropping();
         return result;
+    }
+
+    public Task<CardBase> SelectCardFromHand()
+    {
+        if(selectedCardForCall is not null)
+        {
+            var result = selectedCardForCall;
+            selectedCardForCall = null!;
+            return Task.FromResult(result);
+        }
+        throw new NotImplementedException();
+    }
+
+    public Task<RearGuard> SelectOwnRearguard()
+    {
+        if(selectedRearguardForCall is not null)
+        {
+            var result = selectedRearguardForCall;
+            selectedRearguardForCall = null!;
+            return Task.FromResult(result);
+        }
+        throw new NotImplementedException();
     }
 }

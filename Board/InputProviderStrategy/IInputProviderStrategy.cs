@@ -20,3 +20,11 @@ public interface IRequestMainPhaseAction
 {
     Task<IMainPhaseAction> RequestMainPhaseAction(List<IMainPhaseAction> actions);
 }
+public interface ISelectCardFromHand
+{
+    Task<CardBase> SelectCardFromHand();
+}
+public interface ISelectOwnRearguard
+{
+    Task<RearGuard> SelectOwnRearguard();
+}

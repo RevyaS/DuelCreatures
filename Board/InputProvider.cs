@@ -105,7 +105,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     public Task<RearGuard> SelectOwnRearguard()
     {
-        throw new NotImplementedException();
+        return ((ISelectOwnRearguard)strategy).SelectOwnRearguard();
     }
 
     public Task<UnitCircle> SelectOpponentFrontRow(UnitSelector selector)
@@ -160,7 +160,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     public Task<CardBase> SelectCardFromHand()
     {
-        throw new NotImplementedException();
+        return ((ISelectCardFromHand)strategy).SelectCardFromHand();
     }
 
     public Task<IAttackPhaseAction> RequestAttackPhaseAction(List<IAttackPhaseAction> actions)

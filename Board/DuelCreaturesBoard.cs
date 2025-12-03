@@ -73,6 +73,11 @@ public partial class DuelCreaturesBoard : Control
         PlayerHand.BindHand(game.Board.Player1Area.Hand);
         OppHand.BindHand(game.Board.Player2Area.Hand);
         PlayerVanguard.BindUnitCircle(game.Board.Player1Area.Vanguard);
+        PlayerFrontLeft.BindUnitCircle(game.Board.Player1Area.FrontLeft);
+        PlayerBackLeft.BindUnitCircle(game.Board.Player1Area.BackLeft);
+        PlayerBackCenter.BindUnitCircle(game.Board.Player1Area.BackCenter);
+        PlayerFrontRight.BindUnitCircle(game.Board.Player1Area.FrontRight);
+        PlayerBackRight.BindUnitCircle(game.Board.Player1Area.BackRight);
     }
 
     private void SetupEventBus(VanguardEventBus eventBus)
@@ -82,6 +87,11 @@ public partial class DuelCreaturesBoard : Control
         PlayerHand.SetEventBus(eventBus);
         OppHand.SetEventBus(eventBus);
         PlayerVanguard.SetEventBus(eventBus);
+        PlayerFrontLeft.SetEventBus(eventBus);
+        PlayerBackLeft.SetEventBus(eventBus);
+        PlayerBackCenter.SetEventBus(eventBus);
+        PlayerFrontRight.SetEventBus(eventBus);
+        PlayerBackRight.SetEventBus(eventBus);
     }
 
     private void OnPhaseChanged(IPhase phase)
@@ -161,7 +171,7 @@ public partial class DuelCreaturesBoard : Control
         PlayerBackLeft.Droppable = true;
         PlayerBackCenter.Droppable = true;
         PlayerFrontRight.Droppable = true;
-        PlayerFrontRight.Droppable = true;
+        PlayerBackRight.Droppable = true;
     }
     public void DisablePlayerRearguardDropping()
     {
@@ -169,7 +179,7 @@ public partial class DuelCreaturesBoard : Control
         PlayerBackLeft.Droppable = false;
         PlayerBackCenter.Droppable = false;
         PlayerFrontRight.Droppable = false;
-        PlayerFrontRight.Droppable = false;
+        PlayerBackRight.Droppable = false;
     }
 
     public event Action<Card>? HandCardPressed;
