@@ -7,9 +7,9 @@ public partial class SelectCardsFromHandComponent : PanelContainer
 {
     int minCards = 0, maxCards = 0;
 
-    DropArea DropArea;
-    CardLineDynamic SelectedCards;
-    Button Confirm;
+    DropArea DropArea = null!;
+    CardLineDynamic SelectedCards = null!;
+    Button Confirm = null!;
     public override void _Ready()
     {
         DropArea = GetNode<DropArea>($"%{nameof(DropArea)}");
@@ -63,7 +63,7 @@ public partial class SelectCardsFromHandComponent : PanelContainer
         }
     }
 
-    public event Action<Card> CardReturned;
-    public event Action<Card> CardSelected;
-    public event Action<List<Card>> ConfirmedCards;
+    public event Action<Card>? CardReturned;
+    public event Action<Card>? CardSelected;
+    public event Action<List<Card>>? ConfirmedCards;
 }

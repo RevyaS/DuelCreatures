@@ -1,20 +1,32 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ArC.CardGames;
 using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Predefined.Vanguard;
 using ArC.CardGames.Setup;
 
-public class GodotInputProvider(InputProvider inputProviderComponent, VanguardPlayArea playArea) : IVanguardPlayerInputProvider
+public class GodotInputProvider : IVanguardPlayerInputProvider
 {
-    public VanguardPlayArea PlayArea => playArea;
+    public VanguardPlayArea PlayArea { get; init; }
 
     public VanguardPlayArea OpponentPlayArea => throw new System.NotImplementedException();
 
     public VanguardSkillService SkillService => throw new System.NotImplementedException();
 
+    InputProvider inputProviderComponent;
+    VanguardEventBus eventBus;
+
     PlayAreaBase IPlayerInputProvider.PlayArea => PlayArea;
-    VanguardCard CurrentVanguard => PlayArea.Vanguard.Card;
+    VanguardCard CurrentVanguard => PlayArea.Vanguard.Card!;
+
+    public GodotInputProvider(InputProvider inputProviderComponent, VanguardPlayArea playArea, VanguardEventBus eventBus)
+    {
+        PlayArea = playArea;
+        this.inputProviderComponent = inputProviderComponent;
+        this.eventBus = eventBus;
+    }
 
     public Task<bool> QueryActivateSkill(VanguardSkillCost SkillCost)
     {
@@ -46,9 +58,9 @@ public class GodotInputProvider(InputProvider inputProviderComponent, VanguardPl
         throw new System.NotImplementedException();
     }
 
-    public Task<CardBase> SelectCardFromHandOrNot()
+    public Task<CardBase?> SelectCardFromHandOrNot()
     {
-        return inputProviderComponent.RideVanguardFromHandOrNot(CurrentVanguard);
+        return inputProviderComponent.SelectCardFromHandOrNot(CurrentVanguard);
     }
 
     public Task<List<VanguardCard>> SelectCardsFromDamageZone(int amount)

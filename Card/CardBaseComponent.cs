@@ -3,7 +3,7 @@ using Godot;
 [Tool]
 public abstract partial class CardBaseComponent : Control
 {
-    TextureRect Front;
+    TextureRect Front = null!;
 
     private bool _currentlyDragged = false;
     public bool CurrentlyDragged { 
@@ -15,7 +15,7 @@ public abstract partial class CardBaseComponent : Control
         } 
     }
 
-    private Texture2D texture;
+    private Texture2D texture = null!;
     [Export]
     public Texture2D Texture
     {

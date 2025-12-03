@@ -2,7 +2,7 @@ using Godot;
 
 public partial class CardLine : PanelContainer
 {
-    protected HBoxNodeContainer Container;
+    protected HBoxNodeContainer Container = null!;
     protected IChildManagerComponent ContainerNodeManager => Container;    
 
     private bool _shrinks = false;

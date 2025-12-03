@@ -7,7 +7,7 @@ using static ArC.CardGames.Predefined.Vanguard.Cards.DuelMaidensCardsFactory;
 
 public partial class Session : Control
 {
-    InputProvider InputProviderComponent;
+    InputProvider InputProviderComponent = null!;
     DuelCreaturesBoard Board => InputProviderComponent.Board;
 
     public async override void _Ready()

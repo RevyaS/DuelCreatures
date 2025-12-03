@@ -2,7 +2,7 @@ using Godot;
 
 public partial class CardVerticalStack : PanelContainer
 {
-    CardContainer cardContainer;
+    CardContainer cardContainer = null!;
 
     public override void _Ready()
     {

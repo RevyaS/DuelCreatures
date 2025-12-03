@@ -51,7 +51,7 @@ public class AIInputProvider(VanguardPlayArea playArea, GameContext gameContext)
         throw new System.NotImplementedException();
     }
 
-    public Task<CardBase> SelectCardFromHandOrNot()
+    public Task<CardBase?> SelectCardFromHandOrNot()
     {
         throw new System.NotImplementedException();
     }

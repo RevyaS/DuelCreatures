@@ -6,9 +6,9 @@ using Godot;
 
 public partial class DuelCreaturesBoard : Control
 {
-    Button EndPhaseButton;
+    Button EndPhaseButton = null!;
 
-    VanguardGameSession _gameSession;
+    VanguardGameSession _gameSession = null!;
     VanguardPlayerProfile player1 => _gameSession.Game.Player1;
     VanguardPlayerProfile player2 => _gameSession.Game.Player2;
 
@@ -57,13 +57,12 @@ public partial class DuelCreaturesBoard : Control
 
     private void OnHandCardPressed(Card card)
     {
-        HandCardPressed(card);
+        HandCardPressed?.Invoke(card);
     }
 
     public void ApplySession(VanguardGameSession gameSession)
     {
         _gameSession = gameSession;
-        _gameSession.OnPhaseChanged += OnPhaseChanged;
 
         Reset();
 
@@ -78,6 +77,8 @@ public partial class DuelCreaturesBoard : Control
 
     private void SetupEventBus(VanguardEventBus eventBus)
     {
+        eventBus.PhaseChanged += OnPhaseChanged;
+
         PlayerHand.SetEventBus(eventBus);
         OppHand.SetEventBus(eventBus);
         PlayerVanguard.SetEventBus(eventBus);
@@ -171,8 +172,8 @@ public partial class DuelCreaturesBoard : Control
         PlayerFrontRight.Droppable = false;
     }
 
-    public event Action<Card> HandCardPressed;
-    public event Action<Card> PlayerVanguardCardDropped;
-    public event Action EndPhasePressed;
-    public event Action<UnitCircleComponent, Card> CardDroppedToPlayerRearguard;
+    public event Action<Card>? HandCardPressed;
+    public event Action<Card>? PlayerVanguardCardDropped;
+    public event Action? EndPhasePressed;
+    public event Action<UnitCircleComponent, Card>? CardDroppedToPlayerRearguard;
 }

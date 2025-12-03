@@ -105,14 +105,14 @@ public partial class CardLineDynamic : CardLine
         Render();
     }
 
-    public bool HasCardContainer(Func<Card, bool> predicate)
+    public bool HasCardContainer(Func<Card?, bool> predicate)
     {
         return Container.GetChildren<CardContainer>()
             .Select(cont => cont.CurrentCard)
             .Any(predicate);
     }
 
-    public Card FindCard(Func<Card, bool> predicate)
+    public Card? FindCard(Func<Card, bool> predicate)
     {
         return GetCards().FirstOrDefault(predicate);
     }
@@ -120,7 +120,7 @@ public partial class CardLineDynamic : CardLine
     public IEnumerable<Card> GetCards()
     {
         return Container.GetChildren<CardContainer>()
-            .Select(cont => cont.CurrentCard);
+            .Select(cont => cont.CurrentCard!);
     }
 
     public bool HasCard(Func<CardContainer, bool> predicate)
@@ -128,5 +128,5 @@ public partial class CardLineDynamic : CardLine
         return ContainerNodeManager.HasChild(predicate);
     }
 
-    public event Action<Card> CardPressed;
+    public event Action<Card>? CardPressed;
 }

@@ -5,7 +5,7 @@ using Godot;
 [Tool]
 public partial class Card : CardBaseComponent
 {
-    CardBase card;
+    CardBase card = null!;
     public virtual CardBase CurrentCard => card;
     public override void _GuiInput(InputEvent @event)
     {
@@ -13,7 +13,7 @@ public partial class Card : CardBaseComponent
         {
             if(inputEventMouseButton.ButtonIndex == MouseButton.Left && inputEventMouseButton.Pressed)
             {
-                CardPressed(this);
+                CardPressed?.Invoke(this);
             }
         }
     }
@@ -37,5 +37,5 @@ public partial class Card : CardBaseComponent
         return ResourceLoader.Load<Texture2D>(path);
     }
 
-    public event Action<Card> CardPressed;
+    public event Action<Card>? CardPressed;
 }

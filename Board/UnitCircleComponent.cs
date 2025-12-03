@@ -6,10 +6,10 @@ using Godot;
 [Tool]
 public partial class UnitCircleComponent : Control, IEventBusUtilizer
 {
-    CardRotationContainer cardRotationContainer;
-    DropArea dropArea;
+    CardRotationContainer cardRotationContainer = null!;
+    DropArea dropArea = null!;
 
-    UnitCircle UnitCircle;
+    UnitCircle UnitCircle = null!;
 
     private bool _droppable = false;
     [Export]
@@ -36,13 +36,14 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         eventBus.OnPlaced += OnPlacedHandler;
     }
 
-    private async Task OnPlacedHandler(UnitCircle circle)
+    private Task OnPlacedHandler(UnitCircle circle)
     {
         if(ReferenceEquals(circle, UnitCircle))
         {
             // Assign card
-            SetCard(circle.Card);
+            return Task.Run(() => SetCard(circle.Card!));
         }
+        return Task.CompletedTask;
     }
 
     public void BindUnitCircle(UnitCircle unitCircle)
@@ -78,5 +79,5 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         cardRotationContainer.AddCard(cardComponent);
         cardRotationContainer.FaceUp();
     }
-    public event Action<Card> CardDropped;
+    public event Action<Card>? CardDropped;
 }

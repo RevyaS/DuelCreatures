@@ -13,8 +13,8 @@ public partial class DropArea : Control
 
     public override void _DropData(Vector2 atPosition, Variant data)
     {
-        CardDropped?.Invoke((Card)data.Obj);
+        CardDropped?.Invoke((Card)data.Obj!);
     }
 
-    public event Action<Card> CardDropped;
+    public event Action<Card>? CardDropped;
 }

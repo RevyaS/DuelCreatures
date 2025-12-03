@@ -12,3 +12,4 @@ v.0001 Duel Creatures
 - Implemented Player Ride phase
 - Base writing Player Main Phase
 - Created CardBaseComponent to refactor code
+- Cleaned up all nullable warnings

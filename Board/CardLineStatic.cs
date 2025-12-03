@@ -3,7 +3,7 @@ using Godot;
 [Tool]
 public partial class CardLineStatic : PanelContainer
 {
-    HBoxNodeContainer Container;
+    HBoxNodeContainer Container = null!;
 
     IChildManagerComponent ContainerNodeManager => Container;    
     int lastIndex = 0;

@@ -8,7 +8,7 @@ public class InputProviderFactory(VanguardGame game, InputProvider inputProvider
     {
         if(game.Player1 == playerProfile)
         {
-            return new GodotInputProvider(inputProviderComponent, game.Board.Player1Area);
+            return new GodotInputProvider(inputProviderComponent, game.Board.Player1Area, game.EventBus);
         } else
         {
             return new AIInputProvider(game.Board.Player2Area, gameContext);

@@ -4,24 +4,24 @@ using Godot;
 
 public partial class DuelCreaturesBoard : Control
 {
-    Label OppPhaseIndicator, PlayerPhaseIndicator;
+    Label OppPhaseIndicator = null!, PlayerPhaseIndicator = null!;
     
-    public UnitCircleComponent PlayerVanguard { get; private set; }
+    public UnitCircleComponent PlayerVanguard { get; private set; } = null!;
 
-    UnitCircleComponent PlayerExtraLeft1, PlayerExtraLeft2, PlayerExtraRight1, PlayerExtraRight2,
-        OppExtraLeft1, OppExtraLeft2, OppExtraRight1, OppExtraRight2,
+    UnitCircleComponent PlayerExtraLeft1 = null!, PlayerExtraLeft2 = null!, PlayerExtraRight1 = null!, PlayerExtraRight2 = null!,
+        OppExtraLeft1 = null!, OppExtraLeft2 = null!, OppExtraRight1 = null!, OppExtraRight2 = null!,
 
-        OppVanguard,
+        OppVanguard = null!,
 
-        PlayerFrontLeft, PlayerBackLeft, PlayerBackCenter, PlayerFrontRight, PlayerBackRight,
-        OppFrontLeft, OppBackLeft, OppBackCenter, OppFrontRight, OppBackRight;
-    CardLineStatic PlayerDamageZone, OppDamageZone;
+        PlayerFrontLeft = null!, PlayerBackLeft = null!, PlayerBackCenter = null!, PlayerFrontRight = null!, PlayerBackRight = null!,
+        OppFrontLeft = null!, OppBackLeft = null!, OppBackCenter = null!, OppFrontRight = null!, OppBackRight = null!;
+    CardLineStatic PlayerDamageZone = null!, OppDamageZone = null!;
 
-    public HandComponent PlayerHand { get; private set; }
-    HandComponent OppHand;
+    public HandComponent PlayerHand { get; private set; } = null!;
+    HandComponent OppHand = null!;
 
-    CardVerticalStack PlayerDeck, OppDeck, 
-        PlayerDropZone, OppDropZone;
+    CardVerticalStack PlayerDeck = null!, OppDeck = null!,
+        PlayerDropZone = null!, OppDropZone = null!;
 
     List<UnitCircleComponent> AllExtraFields => [ 
         PlayerExtraLeft1, PlayerExtraLeft2, PlayerExtraRight1, PlayerExtraRight2,
