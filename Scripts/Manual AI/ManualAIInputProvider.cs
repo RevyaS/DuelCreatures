@@ -26,12 +26,12 @@ public partial class AIInputProvider(VanguardPlayArea playArea, GameContext game
 
     public Task<IAttackPhaseAction> RequestAttackPhaseAction(List<IAttackPhaseAction> actions)
     {
-        throw new System.NotImplementedException();
+        return Task.Run(() => DecideAtackPhaseAction(actions));
     }
 
     public Task<IMainPhaseAction> RequestMainPhaseAction(List<IMainPhaseAction> actions)
     {
-        throw new System.NotImplementedException();
+        return Task.Run(() => DecideMainPhaseAction(actions));
     }
 
     public Task<VanguardCard> SelectCardFromDamageZone()

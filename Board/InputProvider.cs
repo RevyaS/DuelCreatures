@@ -21,7 +21,6 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     public VanguardSkillService SkillService => throw new NotImplementedException();
 
-
     VanguardCard CurrentVanguard => PlayArea.Vanguard.Card!;
     PlayAreaBase IPlayerInputProvider.PlayArea => PlayArea;
     GameContext GameContext = null!;

@@ -17,3 +17,4 @@ v.0001 Duel Creatures
 - Fixed MulliganPhase dragging where you cannot drag on top of already selected cards
 - Implemented Swap rearguards
 - Implemented AI Ride
+- AI just skips main phase and attack phase (temporary)

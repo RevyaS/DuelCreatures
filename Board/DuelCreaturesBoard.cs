@@ -15,6 +15,7 @@ public partial class DuelCreaturesBoard : Control
     string mulliganPhase = "Mulligan Phase";
     string ridePhase = "Ride Phase";
     string mainPhase = "Main Phase";
+    string attackPhase = "Attack Phase";
 
     public override void _Ready()
     {
@@ -123,6 +124,9 @@ public partial class DuelCreaturesBoard : Control
                 break;
             case MainPhase:
                 SetPhaseIndicatorToCurrentPlayer(mainPhase);
+                break;
+            case AttackPhase:
+                SetPhaseIndicatorToCurrentPlayer(attackPhase);
                 break;
         };
     }
