@@ -14,3 +14,4 @@ v.0001 Duel Creatures
 - Created CardBaseComponent to refactor code
 - Cleaned up all nullable warnings
 - Rearguard and Hand handling of Card Draggable state
+- Fixed MulliganPhase dragging where you cannot drag on top of already selected cards

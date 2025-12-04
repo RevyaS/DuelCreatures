@@ -32,8 +32,6 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
     {
         board = GetNode<DuelCreaturesBoard>($"%{nameof(DuelCreaturesBoard)}");
         SelectCardsFromHandComponent = GetNode<SelectCardsFromHandComponent>($"%{nameof(SelectCardsFromHandComponent)}");
-        SelectCardsFromHandComponent.CardReturned += OnCardReturned;
-        SelectCardsFromHandComponent.CardSelected += OnCardSelected;
 
         Board.HandCardPressed += OnHandCardPressed;
     }
@@ -70,17 +68,6 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
     public void SetProviderStrategy(IInputProviderStrategy strategy)
     {
         this.strategy = strategy;
-    }
-
-    private void OnCardSelected(Card card)
-    {
-        board.PlayerHand.RemoveCard(card);
-    }
-
-    private void OnCardReturned(Card card)
-    {
-        board.PlayerHand.AddCard(card);
-        card.CurrentlyDragged = false;
     }
 
     private void OnHandCardPressed(Card card)

@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 [Tool]
@@ -63,6 +64,7 @@ public abstract partial class CardBaseComponent : Control
 
         SetDragPreview(CreateClone());
         CurrentlyDragged = true;
+        CardDragging?.Invoke(this);
         return this;
     }
 
@@ -78,4 +80,6 @@ public abstract partial class CardBaseComponent : Control
     }
 
     public abstract CardBaseComponent CreateClone();
+
+    public Action<CardBaseComponent>? CardDragging;
 }

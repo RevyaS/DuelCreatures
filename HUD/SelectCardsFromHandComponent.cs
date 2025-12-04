@@ -10,6 +10,25 @@ public partial class SelectCardsFromHandComponent : PanelContainer
     DropArea DropArea = null!;
     CardLineDynamic SelectedCards = null!;
     Button Confirm = null!;
+
+    private bool _droppable;
+    public bool Droppable
+    {
+        get => _droppable;
+        set
+        {
+            _droppable = value;
+            Render();
+        }
+    }
+
+    private void Render()
+    {
+        if(!IsInsideTree()) return;
+        
+        DropArea.Visible = Droppable;
+    }
+
     public override void _Ready()
     {
         DropArea = GetNode<DropArea>($"%{nameof(DropArea)}");
@@ -19,6 +38,8 @@ public partial class SelectCardsFromHandComponent : PanelContainer
         Confirm = GetNode<Button>($"%{nameof(Confirm)}");
 
         Confirm.Pressed += OnConfirm;
+
+        Render();
     }
 
     private void OnConfirm()

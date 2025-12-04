@@ -37,15 +37,6 @@ text = "Drag Cards to Mulligan"
 custom_minimum_size = Vector2(900, 300)
 layout_mode = 2
 
-[node name="DropArea" type="Control" parent="MarginContainer/VBoxContainer/Drop"]
-unique_name_in_owner = true
-anchors_preset = 0
-offset_top = 4.0
-offset_right = 900.0
-offset_bottom = 304.0
-script = ExtResource("2_ma3nu")
-metadata/_custom_type_script = "uid://dwrq2pnaqfw1s"
-
 [node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer/Drop"]
 layout_mode = 1
 anchors_preset = 15
@@ -60,7 +51,18 @@ unique_name_in_owner = true
 layout_mode = 2
 Separation = 0
 HideCards = false
+Draggable = false
 Shrinks = true
+
+[node name="DropArea" type="Control" parent="MarginContainer/VBoxContainer/Drop"]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 0
+offset_top = 4.0
+offset_right = 900.0
+offset_bottom = 304.0
+script = ExtResource("2_ma3nu")
+metadata/_custom_type_script = "uid://dwrq2pnaqfw1s"
 
 [node name="ButtonList" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2

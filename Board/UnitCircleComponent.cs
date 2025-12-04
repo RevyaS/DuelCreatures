@@ -38,9 +38,17 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
     public override void _Ready()
     {
         cardRotationContainer = GetNode<CardRotationContainer>($"%{nameof(CardRotationContainer)}");
+        cardRotationContainer.CardDragging += OnCardDragging;
+
         dropArea = GetNode<DropArea>($"%{nameof(DropArea)}");
         dropArea.CardDropped += OnCardDropped;
+
         Render();
+    }
+
+    private void OnCardDragging(CardBaseComponent component)
+    {
+        RearguardCardDragging?.Invoke(this, component);
     }
 
     public void SetEventBus(VanguardEventBus eventBus)
@@ -92,4 +100,5 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         cardRotationContainer.FaceUp();
     }
     public event Action<Card>? CardDropped;
+    public event Action<UnitCircleComponent, CardBaseComponent>? RearguardCardDragging; 
 }

@@ -68,6 +68,12 @@ public partial class CardLineDynamic : CardLine
         cardContainer.AddChild(card);
         card.IsFront = !_hideCards;
         card.CardPressed += OnCardPressed;
+        card.CardDragging += OnCardDragging;
+    }
+
+    private void OnCardDragging(CardBaseComponent component)
+    {
+        CardDragging?.Invoke(component);
     }
 
     private void OnCardPressed(Card card)
@@ -142,4 +148,5 @@ public partial class CardLineDynamic : CardLine
     }
 
     public event Action<Card>? CardPressed;
+    public event Action<CardBaseComponent>? CardDragging;
 }

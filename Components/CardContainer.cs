@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 [Tool]
@@ -55,7 +56,13 @@ public partial class CardContainer : Control
             RemoveCard();
         }
         card.Draggable = Draggable;
+        card.CardDragging += OnCardDragging;
         AddChild(card);
+    }
+
+    private void OnCardDragging(CardBaseComponent component)
+    {
+        CardDragging?.Invoke(component);
     }
 
     public void RemoveCard()
@@ -104,4 +111,6 @@ public partial class CardContainer : Control
     {
         return card.EffectiveSize;
     }
+
+    public Action<CardBaseComponent>? CardDragging;
 }
