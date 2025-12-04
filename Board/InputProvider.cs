@@ -62,7 +62,10 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
                 SetProviderStrategy(new RidePhaseStrategy(board));
                 return;
             case MainPhase:
-                SetProviderStrategy(new MainRidePhaseStrategy(board, PlayArea, GameContext));
+                SetProviderStrategy(new MainPhaseStrategy(board, PlayArea, GameContext));
+                return;
+            case VanguardAttackPhase:
+                SetProviderStrategy(new MainPhaseStrategy(board, PlayArea, GameContext));
                 return;
         }
         throw new NotSupportedException($"{phase.GetType().Name} is not supported yet");

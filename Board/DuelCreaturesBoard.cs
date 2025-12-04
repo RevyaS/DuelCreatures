@@ -89,6 +89,9 @@ public partial class DuelCreaturesBoard : Control
         PlayerBackCenter.BindUnitCircle(game.Board.Player1Area.BackCenter);
         PlayerFrontRight.BindUnitCircle(game.Board.Player1Area.FrontRight);
         PlayerBackRight.BindUnitCircle(game.Board.Player1Area.BackRight);
+
+
+        OppVanguard.BindUnitCircle(game.Board.Player2Area.Vanguard);
     }
 
     private void SetupEventBus(VanguardEventBus eventBus)
@@ -103,6 +106,8 @@ public partial class DuelCreaturesBoard : Control
         PlayerBackCenter.SetEventBus(eventBus);
         PlayerFrontRight.SetEventBus(eventBus);
         PlayerBackRight.SetEventBus(eventBus);
+
+        OppVanguard.SetEventBus(eventBus);
     }
 
     private void OnPhaseChanged(IPhase phase)

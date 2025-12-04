@@ -7,7 +7,7 @@ using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Predefined.Vanguard;
 using ArC.Common.Extensions;
 
-public class MainRidePhaseStrategy(DuelCreaturesBoard Board, VanguardPlayArea playArea, GameContext gameContext) : IInputProviderStrategy, IRequestMainPhaseAction, ISelectCardFromHand, ISelectOwnRearguard
+public class MainPhaseStrategy(DuelCreaturesBoard Board, VanguardPlayArea playArea, GameContext gameContext) : IInputProviderStrategy, IRequestMainPhaseAction, ISelectCardFromHand, ISelectOwnRearguard
 {
     CardBase selectedCardForCall = null!;
     RearGuard selectedRearguardForCall = null!;

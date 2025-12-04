@@ -1,15 +1,13 @@
 
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using ArC.CardGames.Components;
 using ArC.CardGames.Flow;
 using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Predefined.Vanguard;
 using ArC.CardGames.Setup;
-using ArC.Common.Extensions;
 
-public class AIInputProvider(VanguardPlayArea playArea, GameContext gameContext) : IVanguardPlayerInputProvider
+public partial class AIInputProvider(VanguardPlayArea playArea, GameContext gameContext) : IVanguardPlayerInputProvider
 {
     public VanguardPlayArea PlayArea => playArea;
     public Hand Hand => PlayArea.Hand;
@@ -53,7 +51,12 @@ public class AIInputProvider(VanguardPlayArea playArea, GameContext gameContext)
 
     public Task<CardBase?> SelectCardFromHandOrNot()
     {
-        throw new System.NotImplementedException();
+        if(GameContext.GameState is RidePhaseState)
+        {
+            return Task.Run(() => SelectRideCard());
+        }
+
+        throw new System.NotImplementedException($"Select Card From Hand Or Not State {GameContext.GameState.GetType().Name} not implemented yet");
     }
 
     public Task<List<VanguardCard>> SelectCardsFromDamageZone(int amount)
@@ -104,68 +107,4 @@ public class AIInputProvider(VanguardPlayArea playArea, GameContext gameContext)
     {
         throw new System.NotImplementedException();
     }
-
-    #region Manual Logic
-    private List<CardBase> Mulligan(List<CardBase> handOriginal)
-    {
-        var hand = handOriginal.ToList();
-        List<CardBase> toReturn = new();
-
-        // Helper local function
-        bool HasGrade(int grade) =>
-            hand.Any(c => c is VanguardCard v && v.Grade == grade);
-
-        // 1. Remove all G0s (except starter)
-        toReturn.AddRange(hand.RemoveWhere<CardBase, VanguardCard>(
-            card => card.Grade == 0
-        ));
-
-        // 2. Make sure we have G1
-        if (!HasGrade(1))
-        {
-            // Mulligan a random lowest-value card (prefer highest grade)
-            toReturn.Add(MulliganOneJunkCard(hand));
-        }
-
-        // 3. Make sure we have G2
-        if (!HasGrade(2))
-        {
-            toReturn.Add(MulliganOneJunkCard(hand));
-        }
-
-        // 4. Make sure we have G3
-        if (!HasGrade(3))
-        {
-            toReturn.Add(MulliganOneJunkCard(hand));
-        }
-
-        // 5. Remove duplicates: keep only 1 of each ride grade
-        for (int grade = 1; grade <= 3; grade++)
-        {
-            var duplicates = hand
-                .Where(c => c is VanguardCard v && v.Grade == grade)
-                .Skip(1)
-                .ToList();
-
-            foreach (var d in duplicates)
-            {
-                hand.Remove(d);
-                toReturn.Add(d);
-            }
-        }
-
-        return toReturn;
-    }
-    private CardBase MulliganOneJunkCard(List<CardBase> hand)
-    {
-        // Priority: grade 3 > 2 > 1 > 0 (because extra G3 are worst)
-        var ordered = hand
-            .OrderByDescending(c => ((VanguardCard)c).Grade)
-            .ToList();
-
-        var card = ordered.First();
-        hand.Remove(card);
-        return card;
-    }
-    #endregion
 }

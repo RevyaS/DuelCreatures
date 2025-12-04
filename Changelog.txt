@@ -16,3 +16,4 @@ v.0001 Duel Creatures
 - Rearguard and Hand handling of Card Draggable state
 - Fixed MulliganPhase dragging where you cannot drag on top of already selected cards
 - Implemented Swap rearguards
+- Implemented AI Ride
