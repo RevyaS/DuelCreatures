@@ -53,15 +53,20 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
 
     public void SetEventBus(VanguardEventBus eventBus)
     {
-        eventBus.OnPlaced += OnPlacedHandler;
+        eventBus.CardAssignedToUnitCircle += OnCardAssignedToUnitCircle;
     }
 
-    private Task OnPlacedHandler(UnitCircle circle)
+    private Task OnCardAssignedToUnitCircle(UnitCircle circle)
     {
         if(ReferenceEquals(circle, UnitCircle))
         {
-            // Assign card
-            SetCard(circle.Card!);
+            if(circle.Card is null)
+            {
+                cardRotationContainer.RemoveCard();
+            } else
+            {
+                SetCard(circle.Card!);
+            }
         }
         return Task.CompletedTask;
     }

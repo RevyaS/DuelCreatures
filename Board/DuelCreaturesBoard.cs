@@ -28,6 +28,17 @@ public partial class DuelCreaturesBoard : Control
         PlayerBackCenter.CardDropped += (card) => OnPlayerRearguardCardDropped(PlayerBackCenter, card);
         PlayerFrontRight.CardDropped += (card) => OnPlayerRearguardCardDropped(PlayerFrontRight, card);
         PlayerBackRight.CardDropped += (card) => OnPlayerRearguardCardDropped(PlayerBackRight, card);
+
+        PlayerFrontLeft.RearguardCardDragging += OnPlayerRearGuardDragged;
+        PlayerBackLeft.RearguardCardDragging += OnPlayerRearGuardDragged;
+        PlayerBackCenter.RearguardCardDragging += OnPlayerRearGuardDragged;
+        PlayerFrontRight.RearguardCardDragging += OnPlayerRearGuardDragged;
+        PlayerBackRight.RearguardCardDragging += OnPlayerRearGuardDragged;
+    }
+
+    private void OnPlayerRearGuardDragged(UnitCircleComponent component1, CardBaseComponent component2)
+    {
+        PlayerRearGuardDragged?.Invoke(component1, component2);
     }
 
     private void OnPlayerRearguardCardDropped(UnitCircleComponent unitCircle, Card card)
@@ -212,4 +223,5 @@ public partial class DuelCreaturesBoard : Control
     public event Action<Card>? PlayerVanguardCardDropped;
     public event Action? EndPhasePressed;
     public event Action<UnitCircleComponent, Card>? CardDroppedToPlayerRearguard;
+    public event Action<UnitCircleComponent, CardBaseComponent>? PlayerRearGuardDragged;
 }

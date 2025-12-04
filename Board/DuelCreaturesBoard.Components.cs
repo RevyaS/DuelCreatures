@@ -7,13 +7,14 @@ public partial class DuelCreaturesBoard : Control
     Label OppPhaseIndicator = null!, PlayerPhaseIndicator = null!;
     
     public UnitCircleComponent PlayerVanguard { get; private set; } = null!;
+    public UnitCircleComponent PlayerBackCenter { get; private set; } = null!;
 
     UnitCircleComponent PlayerExtraLeft1 = null!, PlayerExtraLeft2 = null!, PlayerExtraRight1 = null!, PlayerExtraRight2 = null!,
         OppExtraLeft1 = null!, OppExtraLeft2 = null!, OppExtraRight1 = null!, OppExtraRight2 = null!,
 
         OppVanguard = null!,
 
-        PlayerFrontLeft = null!, PlayerBackLeft = null!, PlayerBackCenter = null!, PlayerFrontRight = null!, PlayerBackRight = null!,
+        PlayerFrontLeft = null!, PlayerBackLeft = null!, PlayerFrontRight = null!, PlayerBackRight = null!,
         OppFrontLeft = null!, OppBackLeft = null!, OppBackCenter = null!, OppFrontRight = null!, OppBackRight = null!;
     CardLineStatic PlayerDamageZone = null!, OppDamageZone = null!;
 

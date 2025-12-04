@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using ArC.CardGames;
 using ArC.CardGames.Components;
+using ArC.CardGames.Flow;
 using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Predefined.Vanguard;
 using ArC.CardGames.Rules;
@@ -23,6 +24,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     VanguardCard CurrentVanguard => PlayArea.Vanguard.Card!;
     PlayAreaBase IPlayerInputProvider.PlayArea => PlayArea;
+    GameContext GameContext = null!;
 
     IInputProviderStrategy strategy = null!;
 
@@ -36,9 +38,10 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         Board.HandCardPressed += OnHandCardPressed;
     }
 
-    public void Setup(VanguardPlayArea playArea)
+    public void Setup(VanguardPlayArea playArea, GameContext gameContext)
     {
         PlayArea = playArea;
+        GameContext = gameContext;
     }
 
     public void SetEventBus(VanguardEventBus eventBus)
@@ -59,7 +62,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
                 SetProviderStrategy(new RidePhaseStrategy(board));
                 return;
             case MainPhase:
-                SetProviderStrategy(new MainRidePhaseStrategy(board));
+                SetProviderStrategy(new MainRidePhaseStrategy(board, PlayArea, GameContext));
                 return;
         }
         throw new NotSupportedException($"{phase.GetType().Name} is not supported yet");

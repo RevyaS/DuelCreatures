@@ -8,7 +8,7 @@ public class InputProviderFactory(VanguardGame game, InputProvider inputProvider
     {
         if(game.Player1 == playerProfile)
         {
-            inputProviderComponent.Setup(game.Board.Player1Area);
+            inputProviderComponent.Setup(game.Board.Player1Area, gameContext);
             return inputProviderComponent;
         } else
         {

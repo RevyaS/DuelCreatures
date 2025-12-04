@@ -36,11 +36,11 @@ public partial class Session : Control
                 .AddCards(RoyalPaladin.KingOfKnightsAlfred, 4)
                 .GetCards(), eventBus), RoyalPaladin.StardustTrumpeteer);
 
-        var game = new VanguardGame(player1, player2, eventBus, effectService, gameContext);
+        var game = new VanguardGame(player1, player2, eventBus, effectService);
         var inputProviderFactory = new InputProviderFactory(game, InputProviderComponent, gameContext);
         var skillService = new VanguardSkillService(game);
 
-        var session = new VanguardGameSession(game, inputProviderFactory, eventBus, effectService, skillService);
+        var session = new VanguardGameSession(game, inputProviderFactory, eventBus, effectService, skillService, gameContext);
 
         await StartGame(session);
     }
