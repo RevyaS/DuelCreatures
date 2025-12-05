@@ -1,17 +1,18 @@
-[gd_scene load_steps=6 format=3 uid="uid://dm8sksf3b1gcw"]
+[gd_scene load_steps=7 format=3 uid="uid://dm8sksf3b1gcw"]
 
 [ext_resource type="Script" uid="uid://ccq70upyqje4r" path="res://Board/UnitCircleComponent.cs" id="1_c2ben"]
 [ext_resource type="Script" uid="uid://d0xdsvmtayatq" path="res://Components/CardRotationContainer.cs" id="2_o1h87"]
 [ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Card/Card.tscn" id="3_j7olg"]
 [ext_resource type="Script" uid="uid://dwrq2pnaqfw1s" path="res://HUD/DropArea.cs" id="4_5133l"]
 [ext_resource type="Script" uid="uid://cjx77gr8u66sg" path="res://HUD/DragArea.cs" id="5_o1h87"]
+[ext_resource type="Script" uid="uid://bcw76jvvuy61w" path="res://HUD/HoverArea.cs" id="6_j7olg"]
 
 [node name="UnitCircleComponent" type="PanelContainer"]
 custom_minimum_size = Vector2(189, 189)
 offset_right = 4.0
 offset_bottom = 4.0
 script = ExtResource("1_c2ben")
-Draggable = true
+Droppable = true
 
 [node name="BG" type="ColorRect" parent="."]
 layout_mode = 2
@@ -49,3 +50,10 @@ visible = false
 layout_mode = 2
 script = ExtResource("5_o1h87")
 metadata/_custom_type_script = "uid://cjx77gr8u66sg"
+
+[node name="HoverArea" type="Control" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+script = ExtResource("6_j7olg")
+metadata/_custom_type_script = "uid://bcw76jvvuy61w"

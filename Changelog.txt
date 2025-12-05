@@ -20,4 +20,5 @@ v.0001 Duel Creatures
 - AI just skips main phase and attack phase (temporary)
 - Strengthen Inputs (Noticed lag upon calling vanguard)
 - Added board logging for easy debugging
-- Simplified Input types for UnitCircle via ComponentUnitState eunm 
+- Simplified Input types for UnitCircle via ComponentUnitState enum 
+- Detect boosted attack (Ongoing)

@@ -42,9 +42,32 @@ public partial class DuelCreaturesBoard : Control
         PlayerHand, OppHand
     ];
 
-    List<UnitCircleComponent> PlayerRearguards => [
-        PlayerFrontLeft, PlayerBackLeft, PlayerBackCenter, PlayerFrontRight, PlayerBackRight
+
+    List<UnitCircleComponent> PlayerBackRowCircles => [
+        PlayerBackLeft, PlayerBackCenter, PlayerBackRight
     ];
+
+    List<UnitCircleComponent> PlayerFrontRowCircles => [
+        ..PlayerFrontRowRearguards, PlayerVanguard
+    ];
+
+    List<UnitCircleComponent> PlayerFrontRowRearguards => [
+        PlayerFrontLeft, PlayerFrontRight
+    ];
+
+    List<UnitCircleComponent> PlayerRearguards => [
+        ..PlayerFrontRowRearguards, ..PlayerBackRowCircles
+    ];
+
+    List<UnitCircleComponent> PlayerCircles => [
+        ..PlayerRearguards, PlayerVanguard
+    ];
+
+    List<UnitCircleComponent> OppFrontRowCircles => [
+        OppFrontLeft, OppFrontRight, OppVanguard
+    ];
+
+    Line2D PlayerLeftBoostLine = null!, PlayerCenterBoostLine = null!, PlayerRightBoostLine = null!;
 
     private void SetComponents()
     {
@@ -84,5 +107,9 @@ public partial class DuelCreaturesBoard : Control
 
         PlayerVanguard = GetNode<UnitCircleComponent>($"%{nameof(PlayerVanguard)}");
         OppVanguard = GetNode<UnitCircleComponent>($"%{nameof(OppVanguard)}");
+
+        PlayerLeftBoostLine = GetNode<Line2D>($"%{nameof(PlayerLeftBoostLine)}");
+        PlayerCenterBoostLine = GetNode<Line2D>($"%{nameof(PlayerCenterBoostLine)}");
+        PlayerRightBoostLine = GetNode<Line2D>($"%{nameof(PlayerRightBoostLine)}");
     }
 }

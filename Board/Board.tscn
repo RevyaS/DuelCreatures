@@ -14,7 +14,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_s27tx")
-metadata/_edit_vertical_guides_ = [263.0, 193.0, 444.0, 637.0]
+metadata/_edit_vertical_guides_ = [263.0, 193.0, 444.0, 637.0, 327.0]
 metadata/_edit_horizontal_guides_ = [1465.0, 691.0]
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -168,7 +168,6 @@ grow_vertical = 2
 rotation = -1.5707964
 pivot_offset = Vector2(294.5, 96.5)
 MaxCards = 6
-Separation = -45
 
 [node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/OppBoard"]
 layout_mode = 1
@@ -341,7 +340,6 @@ grow_vertical = 2
 rotation = 1.5707964
 pivot_offset = Vector2(294.5, 96.5)
 MaxCards = 6
-Separation = -45
 
 [node name="Center" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -375,9 +373,33 @@ theme_override_constants/separation = 20
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="CenterGuide" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone/PlayerFrontLeft"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
 [node name="PlayerBackLeft" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone" instance=ExtResource("3_iu5jy")]
 unique_name_in_owner = true
 layout_mode = 2
+
+[node name="CenterGuide" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone/PlayerBackLeft"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="PlayerLeftBoostLine" type="Line2D" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone"]
+unique_name_in_owner = true
+visible = false
+position = Vector2(96, 121)
+points = PackedVector2Array(0, -25.060425, 0, 188)
+
+[node name="Heads" type="Line2D" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone/PlayerLeftBoostLine"]
+position = Vector2(0, -22)
+points = PackedVector2Array(0, 0, 28, 28)
+
+[node name="Heads2" type="Line2D" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone/PlayerLeftBoostLine"]
+position = Vector2(0, -22)
+points = PackedVector2Array(0, 0, -28, 26)
 
 [node name="Center" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles"]
 layout_mode = 2
@@ -391,6 +413,20 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="PlayerCenterBoostLine" type="Line2D" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center"]
+unique_name_in_owner = true
+visible = false
+position = Vector2(96, 121)
+points = PackedVector2Array(0, -25.060425, 0, 188)
+
+[node name="Heads" type="Line2D" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center/PlayerCenterBoostLine"]
+position = Vector2(0, -22)
+points = PackedVector2Array(0, 0, 28, 28)
+
+[node name="Heads2" type="Line2D" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center/PlayerCenterBoostLine"]
+position = Vector2(0, -22)
+points = PackedVector2Array(0, 0, -28, 26)
+
 [node name="Right" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles"]
 layout_mode = 2
 theme_override_constants/separation = 20
@@ -402,6 +438,20 @@ layout_mode = 2
 [node name="PlayerBackRight" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right" instance=ExtResource("3_iu5jy")]
 unique_name_in_owner = true
 layout_mode = 2
+
+[node name="PlayerRightBoostLine" type="Line2D" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right"]
+unique_name_in_owner = true
+visible = false
+position = Vector2(96, 121)
+points = PackedVector2Array(0, -25.060425, 0, 188)
+
+[node name="Heads" type="Line2D" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right/PlayerRightBoostLine"]
+position = Vector2(0, -22)
+points = PackedVector2Array(0, 0, 28, 28)
+
+[node name="Heads2" type="Line2D" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right/PlayerRightBoostLine"]
+position = Vector2(0, -22)
+points = PackedVector2Array(0, 0, -28, 26)
 
 [node name="Right" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(150, 0)
@@ -446,6 +496,7 @@ unique_name_in_owner = true
 layout_mode = 2
 Separation = 0
 HideCards = false
+Draggable = false
 
 [node name="GuardZone" parent="." instance=ExtResource("3_iu5jy")]
 layout_mode = 1
@@ -477,3 +528,4 @@ unique_name_in_owner = true
 layout_mode = 2
 Separation = 0
 HideCards = false
+Draggable = false

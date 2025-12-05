@@ -9,6 +9,7 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
     CardRotationContainer cardRotationContainer = null!;
     DropArea dropArea = null!;
     DragArea dragArea = null!;
+    HoverArea hoverArea = null!;
 
     public UnitCircle UnitCircle { get; private set; } = null!;
 
@@ -46,6 +47,17 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         }
     }
 
+    [Export]
+    public bool Hoverable
+    {
+        get => inputState == ComponentInputState.Hoverable;
+        set
+        {
+            SetState(ComponentInputState.Hoverable, value);
+            Render();
+        }
+    }
+
     public override void _Ready()
     {
         cardRotationContainer = GetNode<CardRotationContainer>($"%{nameof(CardRotationContainer)}");
@@ -58,7 +70,15 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         dragArea = GetNode<DragArea>($"%{nameof(DragArea)}");
         dragArea.Dragging += OnDragging;
 
+        hoverArea = GetNode<HoverArea>($"%{nameof(HoverArea)}");
+        hoverArea.Hovering += OnHovering;
+
         Render();
+    }
+
+    private void OnHovering()
+    {
+        Hovering?.Invoke(this);
     }
 
     private void OnCardDragCancelled(CardBaseComponent component)
@@ -118,6 +138,7 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         dropArea.Visible = Droppable;
         cardRotationContainer.Draggable = Draggable;
         dragArea.Visible = ScreenDraggable;
+        hoverArea.Visible = Hoverable;
     }
 
     protected virtual void OnCardDropped(Card card)
@@ -145,4 +166,5 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
     public event Action<UnitCircleComponent, CardBaseComponent>? RearguardCardDragging; 
     public event Action<UnitCircleComponent, CardBaseComponent>? RearguardCardDragCancelled; 
     public event Action<UnitCircleComponent>? ScreenDragging; 
+    public event Action<UnitCircleComponent>? Hovering; 
 }

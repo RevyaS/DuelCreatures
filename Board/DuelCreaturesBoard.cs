@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ArC.CardGames;
 using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Predefined.Vanguard;
@@ -24,18 +25,43 @@ public partial class DuelCreaturesBoard : Control
         EndPhaseButton.Pressed += OnEndPhaseButtonPressed;
         SetComponents();
         PlayerHand.CardPressed += OnHandCardPressed;
-        PlayerVanguard.CardDropped += OnPlayerVanguardCardDropped;
-        PlayerFrontLeft.CardDropped += (card) => OnPlayerRearguardCardDropped(PlayerFrontLeft, card);
-        PlayerBackLeft.CardDropped += (card) => OnPlayerRearguardCardDropped(PlayerBackLeft, card);
-        PlayerBackCenter.CardDropped += (card) => OnPlayerRearguardCardDropped(PlayerBackCenter, card);
-        PlayerFrontRight.CardDropped += (card) => OnPlayerRearguardCardDropped(PlayerFrontRight, card);
-        PlayerBackRight.CardDropped += (card) => OnPlayerRearguardCardDropped(PlayerBackRight, card);
+
+        PlayerCircles.ForEach((circle) =>
+        {
+            circle.CardDropped += (card) => OnPlayerRearguardCardDropped(circle, card);
+            circle.ScreenDragging += OnPlayerRearGuardScreenDragged;
+        });
+
+        PlayerFrontRowCircles.ForEach((circle) =>
+        {
+            circle.Hovering += OnPlayerCircleHovering;
+        });
+
+        OppFrontRowCircles.ForEach((circle) =>
+        {
+            circle.Hovering += OnOppCircleHovering;
+        });
 
         PlayerRearguards.ForEach((rearguard) =>
         {
             rearguard.RearguardCardDragging += OnPlayerRearGuardDragged;
             rearguard.RearguardCardDragCancelled += OnPlayerRearGuardCardDragCancelled;
         });
+    }
+
+    private void OnOppCircleHovering(UnitCircleComponent component)
+    {
+        OppCircleHovering?.Invoke(component);
+    }
+
+    private void OnPlayerCircleHovering(UnitCircleComponent component)
+    {
+        PlayerCircleHovering?.Invoke(component);
+    }
+
+    private void OnPlayerRearGuardScreenDragged(UnitCircleComponent component)
+    {
+        PlayerCircleScreenDragged?.Invoke(component);
     }
 
     private void OnPlayerRearGuardCardDragCancelled(UnitCircleComponent component1, CardBaseComponent component2)
@@ -191,12 +217,14 @@ public partial class DuelCreaturesBoard : Control
         PlayerVanguard.Droppable = false;
     }
 
-    public UnitCircleComponent GetPlayerOppositeRearguard(UnitCircleComponent rearguard)
+    public UnitCircleComponent GetPlayerOppositeCircle(UnitCircleComponent circle)
     {
-        if(ReferenceEquals(PlayerFrontLeft, rearguard)) return PlayerBackLeft;
-        if(ReferenceEquals(PlayerBackLeft, rearguard)) return PlayerFrontLeft;
-        if(ReferenceEquals(PlayerFrontRight, rearguard)) return PlayerBackRight;
-        if(ReferenceEquals(PlayerBackRight, rearguard)) return PlayerFrontRight;
+        if(ReferenceEquals(PlayerFrontLeft, circle)) return PlayerBackLeft;
+        if(ReferenceEquals(PlayerBackLeft, circle)) return PlayerFrontLeft;
+        if(ReferenceEquals(PlayerFrontRight, circle)) return PlayerBackRight;
+        if(ReferenceEquals(PlayerBackRight, circle)) return PlayerFrontRight;
+        if(ReferenceEquals(PlayerVanguard, circle)) return PlayerBackCenter;
+        if(ReferenceEquals(PlayerBackCenter, circle)) return PlayerVanguard;
         throw new InvalidOperationException();
     }
 
@@ -208,6 +236,16 @@ public partial class DuelCreaturesBoard : Control
     public void EnablePlayerRearguardDropping(List<UnitCircleComponent> rearguards)
     {
         rearguards.ForEach(rg => rg.Droppable = true);
+    }
+
+    public bool IsBackRow(UnitCircleComponent unitCircle)
+    {
+        return PlayerBackRowCircles.Contains(unitCircle, ReferenceEqualityComparer.Instance);
+    }
+
+    public bool IsFrontRow(UnitCircleComponent unitCircle)
+    {
+        return PlayerFrontRowCircles.Contains(unitCircle, ReferenceEqualityComparer.Instance);
     }
 
     public void DisablePlayerRearguardDropping()
@@ -246,10 +284,66 @@ public partial class DuelCreaturesBoard : Control
         PlayerHand.Draggable = false;
     }
 
+    public void EnablePlayerUnitCircleScreenDragging()
+    {
+        PlayerVanguard.ScreenDraggable = true;
+        PlayerFrontLeft.ScreenDraggable = true;
+        PlayerBackLeft.ScreenDraggable = true;
+        PlayerBackCenter.ScreenDraggable = true;
+        PlayerFrontRight.ScreenDraggable = true;
+        PlayerBackRight.ScreenDraggable = true;
+    }
+    public void DisablePlayerUnitCircleScreenDragging()
+    {
+        PlayerVanguard.ScreenDraggable = false;
+        PlayerFrontLeft.ScreenDraggable = false;
+        PlayerBackLeft.ScreenDraggable = false;
+        PlayerBackCenter.ScreenDraggable = false;
+        PlayerFrontRight.ScreenDraggable = false;
+        PlayerBackRight.ScreenDraggable = false;
+    }
+
+    public void EnablePlayerFrontRowUnitCircleHovering()
+    {
+        PlayerFrontRowCircles.ForEach((circle) => circle.Hoverable = true);
+    }
+
+    public void DisablePlayerFrontRowUnitCircleHovering()
+    {
+        PlayerFrontRowCircles.ForEach((circle) => circle.ScreenDraggable = false);
+    }
+
+    public void EnableOppFrontRowUnitCircleHovering()
+    {
+        OppFrontRowCircles.ForEach((circle) => circle.ScreenDraggable = true);
+    }
+
+    public void DisableOppFrontRowUnitCircleHovering()
+    {
+        OppFrontRowCircles.ForEach((circle) => circle.ScreenDraggable = false);
+    }
+
+    public void ShowBoostLine(UnitCircleComponent unitCircleComponent)
+    {
+        if(ReferenceEquals(PlayerFrontLeft, unitCircleComponent)) PlayerLeftBoostLine.Show();
+        if(ReferenceEquals(PlayerVanguard, unitCircleComponent)) PlayerCenterBoostLine.Show();
+        if(ReferenceEquals(PlayerFrontRight, unitCircleComponent)) PlayerRightBoostLine.Show();
+    }
+
+    public void HideBoostLines()
+    {
+        PlayerLeftBoostLine.Hide();
+        PlayerCenterBoostLine.Hide();
+        PlayerRightBoostLine.Hide();
+    }
+
     public event Action<Card>? HandCardPressed;
     public event Action<Card>? PlayerVanguardCardDropped;
     public event Action? EndPhasePressed;
     public event Action<UnitCircleComponent, Card>? CardDroppedToPlayerRearguard;
     public event Action<UnitCircleComponent, CardBaseComponent>? PlayerRearGuardDragged;
     public event Action<UnitCircleComponent, CardBaseComponent>? PlayerRearGuardCardDragCancelled;
+    public event Action<UnitCircleComponent>? PlayerCircleScreenDragged;
+    public event Action<UnitCircleComponent>? PlayerCircleHovering;
+    public event Action<UnitCircleComponent>? OppCircleHovering;
 }

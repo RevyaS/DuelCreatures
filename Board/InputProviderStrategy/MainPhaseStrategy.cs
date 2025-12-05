@@ -67,7 +67,7 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, VanguardPlayArea playAr
         // Catalyst for rearguard swapping
         Action<UnitCircleComponent, CardBaseComponent> onRearguardDraggedHandler = (rearguard, card) =>
         {
-            Board.EnablePlayerRearguardDropping([rearguard, Board.GetPlayerOppositeRearguard(rearguard)]);
+            Board.EnablePlayerRearguardDropping([rearguard, Board.GetPlayerOppositeCircle(rearguard)]);
             rearguardDraggedFrom = rearguard;
             rearguardDragging = true;
         };
