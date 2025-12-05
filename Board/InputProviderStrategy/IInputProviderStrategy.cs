@@ -28,3 +28,8 @@ public interface ISelectOwnRearguard
 {
     Task<RearGuard> SelectOwnRearguard();
 }
+
+public interface IRequestAttackPhaseAction
+{
+    Task<IAttackPhaseAction> RequestAttackPhaseAction(List<IAttackPhaseAction> actions);
+}

@@ -18,3 +18,6 @@ v.0001 Duel Creatures
 - Implemented Swap rearguards
 - Implemented AI Ride
 - AI just skips main phase and attack phase (temporary)
+- Strengthen Inputs (Noticed lag upon calling vanguard)
+- Added board logging for easy debugging
+- Simplified Input types for UnitCircle via ComponentUnitState eunm 

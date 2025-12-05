@@ -57,7 +57,13 @@ public partial class CardContainer : Control
         }
         card.Draggable = Draggable;
         card.CardDragging += OnCardDragging;
+        card.CardDragCancelled += OnCardDragCancelled;
         AddChild(card);
+    }
+
+    private void OnCardDragCancelled(CardBaseComponent component)
+    {
+        CardDragCancelled?.Invoke(component);
     }
 
     private void OnCardDragging(CardBaseComponent component)
@@ -113,4 +119,5 @@ public partial class CardContainer : Control
     }
 
     public Action<CardBaseComponent>? CardDragging;
+    public Action<CardBaseComponent>? CardDragCancelled;
 }

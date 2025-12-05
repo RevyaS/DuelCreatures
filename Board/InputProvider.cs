@@ -64,7 +64,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
                 SetProviderStrategy(new MainPhaseStrategy(board, PlayArea, GameContext));
                 return;
             case VanguardAttackPhase:
-                SetProviderStrategy(new MainPhaseStrategy(board, PlayArea, GameContext));
+                SetProviderStrategy(new AttackPhaseStrategy(board));
                 return;
         }
         throw new NotSupportedException($"{phase.GetType().Name} is not supported yet");
@@ -157,6 +157,6 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     public Task<IAttackPhaseAction> RequestAttackPhaseAction(List<IAttackPhaseAction> actions)
     {
-        throw new NotImplementedException();
+        return ((IRequestAttackPhaseAction)strategy).RequestAttackPhaseAction(actions);
     }
 }

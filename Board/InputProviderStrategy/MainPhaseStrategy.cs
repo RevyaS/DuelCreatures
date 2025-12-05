@@ -13,15 +13,19 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, VanguardPlayArea playAr
     RearGuard selectedRearguardForCall = null!;
     RearGuard selectedRearguardForSwap = null!;
 
+    bool rearguardDragging = false;
+    UnitCircleComponent rearguardDraggedFrom = null!;
+
     public async Task<IMainPhaseAction> RequestMainPhaseAction(List<IMainPhaseAction> actions)
     {
         TaskCompletionSource<IMainPhaseAction> completionSource = new();
         Board.EnablePlayerRearguardDragging();
+        Board.DisablePlayerRearguardDragging([Board.PlayerBackCenter]);
         Board.EnablePlayerHandDragging();
         Board.ShowEndPhaseButton();
 
-        bool rearguardDragging = false;
-        RearGuard rearguardDraggedFrom = null!;
+        rearguardDragging = false;
+        rearguardDraggedFrom = null!;
 
         Action endPhaseHandler = () => {
             var selected = actions.FirstOf<EndMainPhase>();
@@ -29,26 +33,25 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, VanguardPlayArea playAr
         };
         Board.EndPhasePressed +=  endPhaseHandler;
 
+        Action<UnitCircleComponent, CardBaseComponent> onCardDragCancelledHandler = (unitCircle, card) =>
+        {
+            Board.EnablePlayerRearguardDragging();
+        };
+        Board.PlayerRearGuardCardDragCancelled += onCardDragCancelledHandler;
+
         // If card is dropped to RG then we execute Call Rearguard
         Action<UnitCircleComponent, Card> onCardPlacedToRGHandler = (unitCircle, card) =>
         {
+            Board.DisablePlayerRearguardDropping();
             if(rearguardDragging)
             {
-                var exception = VanguardValidator.CanSwap(playArea, rearguardDraggedFrom, (RearGuard)unitCircle.UnitCircle);
-                if(exception is null)
-                {
-                    selectedRearguardForSwap = rearguardDraggedFrom;
-                    Board.DisablePlayerRearguardDropping();
-                    completionSource.SetResult(actions.FirstOf<SwapRearguard>());
-                } else
-                {
-                    card.CurrentlyDragged = false;
-                }
+                var selectedRearguard = (RearGuard)rearguardDraggedFrom.UnitCircle;
+                selectedRearguardForSwap = selectedRearguard;
+                completionSource.SetResult(actions.FirstOf<SwapRearguard>());
             } else
             {
-                selectedCardForCall = card.CurrentCard;
                 selectedRearguardForCall = (RearGuard)unitCircle.UnitCircle;
-                Board.DisablePlayerRearguardDropping();
+                selectedCardForCall = card.CurrentCard;
                 completionSource.SetResult(actions.FirstOf<CallRearguard>());
             }
         };
@@ -64,17 +67,17 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, VanguardPlayArea playAr
         // Catalyst for rearguard swapping
         Action<UnitCircleComponent, CardBaseComponent> onRearguardDraggedHandler = (rearguard, card) =>
         {
-            Board.EnablePlayerRearguardDropping();
-            Board.PlayerBackCenter.Droppable = false;
+            Board.EnablePlayerRearguardDropping([rearguard, Board.GetPlayerOppositeRearguard(rearguard)]);
+            rearguardDraggedFrom = rearguard;
             rearguardDragging = true;
-            rearguard.Droppable = false;
-            rearguardDraggedFrom = (RearGuard)rearguard.UnitCircle;
         };
         Board.PlayerRearGuardDragged += onRearguardDraggedHandler;
 
         var result = await completionSource.Task;
+
         Board.EndPhasePressed -=  endPhaseHandler;
         Board.CardDroppedToPlayerRearguard -=  onCardPlacedToRGHandler;
+        Board.PlayerRearGuardCardDragCancelled -= onCardDragCancelledHandler;
         Board.PlayerHand.CardDragging -= onHandCardDragging;
         Board.PlayerRearGuardDragged -= onRearguardDraggedHandler;
 
@@ -98,8 +101,9 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, VanguardPlayArea playAr
 
     public Task<RearGuard> SelectOwnRearguard()
     {
-        if(gameContext.GameState is CallRearguardState && selectedRearguardForCall is not null)
+        if(gameContext.GameState is CallRearguardState)
         {
+            if(selectedRearguardForCall is null) throw new InvalidOperationException();
             var result = selectedRearguardForCall;
             selectedRearguardForCall = null!;
             return Task.FromResult(result);

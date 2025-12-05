@@ -30,7 +30,7 @@ public partial class DuelCreaturesBoard : Control
     ];
 
     List<UnitCircleComponent> AllFields => [ 
-        PlayerFrontLeft, PlayerBackLeft, PlayerBackCenter, PlayerFrontRight, PlayerBackRight,
+        ..PlayerRearguards,
         OppFrontLeft, OppBackLeft, OppBackCenter, OppFrontRight, OppBackRight
     ];
 
@@ -40,6 +40,10 @@ public partial class DuelCreaturesBoard : Control
 
     List<HandComponent> AllHands => [ 
         PlayerHand, OppHand
+    ];
+
+    List<UnitCircleComponent> PlayerRearguards => [
+        PlayerFrontLeft, PlayerBackLeft, PlayerBackCenter, PlayerFrontRight, PlayerBackRight
     ];
 
     private void SetComponents()

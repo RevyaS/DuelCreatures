@@ -8,29 +8,40 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
 {
     CardRotationContainer cardRotationContainer = null!;
     DropArea dropArea = null!;
+    DragArea dragArea = null!;
 
     public UnitCircle UnitCircle { get; private set; } = null!;
 
-    private bool _droppable = false;
+    private ComponentInputState inputState = ComponentInputState.None;
     [Export]
     public bool Droppable
     {
-        get => _droppable;
+        get => inputState == ComponentInputState.Droppable;
         set
         {
-            _droppable = value;
+            SetState(ComponentInputState.Droppable, value);
             Render();
         }
     }
 
-    private bool _draggable = false;
     [Export]
     public bool Draggable
     {
-        get => _draggable;
+        get => inputState == ComponentInputState.Draggable;
         set
         {
-            _draggable = value;
+            SetState(ComponentInputState.Draggable, value);
+            Render();
+        }
+    }
+
+    [Export]
+    public bool ScreenDraggable
+    {
+        get => inputState == ComponentInputState.ScreenDraggable;
+        set
+        {
+            SetState(ComponentInputState.ScreenDraggable, value);
             Render();
         }
     }
@@ -39,11 +50,36 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
     {
         cardRotationContainer = GetNode<CardRotationContainer>($"%{nameof(CardRotationContainer)}");
         cardRotationContainer.CardDragging += OnCardDragging;
+        cardRotationContainer.CardDragCancelled += OnCardDragCancelled;
 
         dropArea = GetNode<DropArea>($"%{nameof(DropArea)}");
         dropArea.CardDropped += OnCardDropped;
 
+        dragArea = GetNode<DragArea>($"%{nameof(DragArea)}");
+        dragArea.Dragging += OnDragging;
+
         Render();
+    }
+
+    private void OnCardDragCancelled(CardBaseComponent component)
+    {
+        RearguardCardDragCancelled?.Invoke(this, component);
+    }
+
+    private void SetState(ComponentInputState newState, bool value)
+    {
+        if(!value)
+        {
+            inputState = ComponentInputState.None;
+        } else
+        {
+            inputState = newState;
+        }
+    }
+
+    private void OnDragging()
+    {
+        ScreenDragging?.Invoke(this);
     }
 
     private void OnCardDragging(CardBaseComponent component)
@@ -79,8 +115,9 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
     private void Render()
     {
         if(!IsInsideTree()) return;
-        dropArea.Visible = _droppable;
-        cardRotationContainer.Draggable = _draggable;
+        dropArea.Visible = Droppable;
+        cardRotationContainer.Draggable = Draggable;
+        dragArea.Visible = ScreenDraggable;
     }
 
     protected virtual void OnCardDropped(Card card)
@@ -106,4 +143,6 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
     }
     public event Action<Card>? CardDropped;
     public event Action<UnitCircleComponent, CardBaseComponent>? RearguardCardDragging; 
+    public event Action<UnitCircleComponent, CardBaseComponent>? RearguardCardDragCancelled; 
+    public event Action<UnitCircleComponent>? ScreenDragging; 
 }

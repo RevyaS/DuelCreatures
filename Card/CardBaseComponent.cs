@@ -75,6 +75,7 @@ public abstract partial class CardBaseComponent : Control
             if(!IsDragSuccessful())
             {
                 CurrentlyDragged = false;
+                CardDragCancelled?.Invoke(this);
             }
         }
     }
@@ -82,4 +83,5 @@ public abstract partial class CardBaseComponent : Control
     public abstract CardBaseComponent CreateClone();
 
     public Action<CardBaseComponent>? CardDragging;
+    public Action<CardBaseComponent>? CardDragCancelled;
 }

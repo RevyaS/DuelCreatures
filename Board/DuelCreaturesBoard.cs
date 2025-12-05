@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using ArC.CardGames;
 using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Predefined.Vanguard;
@@ -30,11 +31,16 @@ public partial class DuelCreaturesBoard : Control
         PlayerFrontRight.CardDropped += (card) => OnPlayerRearguardCardDropped(PlayerFrontRight, card);
         PlayerBackRight.CardDropped += (card) => OnPlayerRearguardCardDropped(PlayerBackRight, card);
 
-        PlayerFrontLeft.RearguardCardDragging += OnPlayerRearGuardDragged;
-        PlayerBackLeft.RearguardCardDragging += OnPlayerRearGuardDragged;
-        PlayerBackCenter.RearguardCardDragging += OnPlayerRearGuardDragged;
-        PlayerFrontRight.RearguardCardDragging += OnPlayerRearGuardDragged;
-        PlayerBackRight.RearguardCardDragging += OnPlayerRearGuardDragged;
+        PlayerRearguards.ForEach((rearguard) =>
+        {
+            rearguard.RearguardCardDragging += OnPlayerRearGuardDragged;
+            rearguard.RearguardCardDragCancelled += OnPlayerRearGuardCardDragCancelled;
+        });
+    }
+
+    private void OnPlayerRearGuardCardDragCancelled(UnitCircleComponent component1, CardBaseComponent component2)
+    {
+        PlayerRearGuardCardDragCancelled?.Invoke(component1, component2);
     }
 
     private void OnPlayerRearGuardDragged(UnitCircleComponent component1, CardBaseComponent component2)
@@ -185,14 +191,25 @@ public partial class DuelCreaturesBoard : Control
         PlayerVanguard.Droppable = false;
     }
 
+    public UnitCircleComponent GetPlayerOppositeRearguard(UnitCircleComponent rearguard)
+    {
+        if(ReferenceEquals(PlayerFrontLeft, rearguard)) return PlayerBackLeft;
+        if(ReferenceEquals(PlayerBackLeft, rearguard)) return PlayerFrontLeft;
+        if(ReferenceEquals(PlayerFrontRight, rearguard)) return PlayerBackRight;
+        if(ReferenceEquals(PlayerBackRight, rearguard)) return PlayerFrontRight;
+        throw new InvalidOperationException();
+    }
+
     public void EnablePlayerRearguardDropping()
     {
-        PlayerFrontLeft.Droppable = true;
-        PlayerBackLeft.Droppable = true;
-        PlayerBackCenter.Droppable = true;
-        PlayerFrontRight.Droppable = true;
-        PlayerBackRight.Droppable = true;
+        EnablePlayerRearguardDropping(PlayerRearguards);
     }
+
+    public void EnablePlayerRearguardDropping(List<UnitCircleComponent> rearguards)
+    {
+        rearguards.ForEach(rg => rg.Droppable = true);
+    }
+
     public void DisablePlayerRearguardDropping()
     {
         PlayerFrontLeft.Droppable = false;
@@ -212,11 +229,12 @@ public partial class DuelCreaturesBoard : Control
     }
     public void DisablePlayerRearguardDragging()
     {
-        PlayerFrontLeft.Draggable = false;
-        PlayerBackLeft.Draggable = false;
-        PlayerBackCenter.Draggable = false;
-        PlayerFrontRight.Draggable = false;
-        PlayerBackRight.Draggable = false;
+        DisablePlayerRearguardDragging(PlayerRearguards);
+    }
+
+    public void DisablePlayerRearguardDragging(List<UnitCircleComponent> unitCircleComponents)
+    {
+        unitCircleComponents.ForEach(rg => rg.Draggable = false);
     }
 
     public void EnablePlayerHandDragging()
@@ -233,4 +251,5 @@ public partial class DuelCreaturesBoard : Control
     public event Action? EndPhasePressed;
     public event Action<UnitCircleComponent, Card>? CardDroppedToPlayerRearguard;
     public event Action<UnitCircleComponent, CardBaseComponent>? PlayerRearGuardDragged;
+    public event Action<UnitCircleComponent, CardBaseComponent>? PlayerRearGuardCardDragCancelled;
 }
