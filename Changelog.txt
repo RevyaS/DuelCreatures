@@ -24,3 +24,4 @@ v.0001 Duel Creatures
 - Detect boosted attack and cancellable
 - Added Manual AI Guard method
 - Implemented Damage Zone reflecting Damage
+- Grade, Power and Critical labels

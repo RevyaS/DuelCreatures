@@ -7,6 +7,7 @@ public partial class Card : CardBaseComponent
 {
     CardBase card = null!;
     public virtual CardBase CurrentCard => card;
+
     public override void _GuiInput(InputEvent @event)
     {
         if(@event is InputEventMouseButton inputEventMouseButton)

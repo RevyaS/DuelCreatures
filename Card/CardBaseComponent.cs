@@ -13,7 +13,7 @@ public abstract partial class CardBaseComponent : Control
         {
             _currentlyDragged = value;
             Visible = !_currentlyDragged;
-        } 
+        }
     }
 
     public bool Draggable { get; set; } = false;
@@ -51,9 +51,14 @@ public abstract partial class CardBaseComponent : Control
         Render();
     }
 
-    private void Render()
+    protected void Render()
     {
         if(!IsInsideTree()) return;
+        RenderCore();
+    }
+
+    protected virtual void RenderCore()
+    {
         Front.Visible = _isFront;
         Front.Texture = texture;
     }

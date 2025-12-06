@@ -7,7 +7,7 @@ using Godot;
 public partial class HandComponent : CardLineDynamic, IEventBusUtilizer
 {
     Hand Hand = null!;
-
+    
     public void SetEventBus(VanguardEventBus eventBus)
     {
         eventBus.CardAddedToHand += OnCardAddedToHand;

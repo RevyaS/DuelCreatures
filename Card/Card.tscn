@@ -53,12 +53,49 @@ layout_mode = 2
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Button" type="Button" parent="Border"]
+[node name="PowerPanel" type="PanelContainer" parent="Border"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -58.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Border/PowerPanel"]
+layout_mode = 2
+
+[node name="PowerLabel" type="Label" parent="Border/PowerPanel/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 56
+text = "100"
+horizontal_alignment = 1
+
+[node name="CriticalLabel" type="Label" parent="Border/PowerPanel/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(77, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 56
+text = "1"
+horizontal_alignment = 1
+
+[node name="GradePanel" type="PanelContainer" parent="Border"]
+unique_name_in_owner = true
 visible = false
 layout_mode = 0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = 290.0
-offset_bottom = 410.0
-text = "Input Test
-"
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="GradeLabel" type="Label" parent="Border/GradePanel"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 46
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
