@@ -5,6 +5,17 @@ public partial class CardLine : PanelContainer
     protected HBoxNodeContainer Container = null!;
     protected IChildManagerComponent ContainerNodeManager => Container;    
 
+    private int _separation = 0;
+    [Export]
+    public int Separation { 
+        get => _separation; 
+        set
+        {
+            _separation = value;
+            Render();
+        } 
+    }
+
     private bool _shrinks = false;
     [Export]
     public bool Shrinks
@@ -20,6 +31,7 @@ public partial class CardLine : PanelContainer
     public override void _Ready()
     {
         Container = GetNode<HBoxNodeContainer>($"%{nameof(Container)}");
+        
         Render();
     }
 
@@ -31,6 +43,9 @@ public partial class CardLine : PanelContainer
 
     protected virtual void RenderCore()
     {
+        Container.RemoveThemeConstantOverride("separation");
+        Container.AddThemeConstantOverride("separation", _separation);
+
         if(_shrinks)
         {
             ResetSize();

@@ -68,10 +68,10 @@ public partial class CardLineStatic : CardLine
 
     public override void AddCard(Card card)
     {
-        if(lastIndex == MaxCards - 1) throw new InvalidOperationException("Already reached MAX amount of cards");
+        if(lastIndex == MaxCards) throw new InvalidOperationException("Already reached MAX amount of cards");
 
         GD.Print("Last Index: ", lastIndex);
-        var container = Container.GetChild<CardContainer>(++lastIndex);
+        var container = Container.GetChild<CardContainer>(lastIndex++);
         container.AddChild(card);
         card.IsFront = true;
     }

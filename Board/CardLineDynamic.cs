@@ -7,17 +7,6 @@ using Godot;
 [Tool]
 public partial class CardLineDynamic : CardLine
 {
-    private int _separation = 0;
-    [Export]
-    public int Separation { 
-        get => _separation; 
-        set
-        {
-            _separation = value;
-            Render();
-        } 
-    }
-
     private bool _hideCards = false;
     [Export]
     public bool HideCards { 
@@ -42,9 +31,6 @@ public partial class CardLineDynamic : CardLine
 
     protected override void RenderCore()
     {
-        Container.RemoveThemeConstantOverride("separation");
-        Container.AddThemeConstantOverride("separation", _separation);
-
         ContainerNodeManager.ApplyToChildren<CardContainer>((child) =>
         {
             if(_hideCards)

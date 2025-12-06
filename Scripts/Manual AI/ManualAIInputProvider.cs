@@ -21,7 +21,7 @@ public partial class AIInputProvider(VanguardPlayArea playArea, GameContext game
 
     public Task<bool> QueryActivateSkill(VanguardSkillCost SkillCost)
     {
-        throw new System.NotImplementedException();
+        return Task.FromResult(ShouldActivateSkill(SkillCost));
     }
 
     public Task<IAttackPhaseAction> RequestAttackPhaseAction(List<IAttackPhaseAction> actions)

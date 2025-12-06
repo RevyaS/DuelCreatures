@@ -1,8 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://cuqm30mdbu41k"]
+[gd_scene load_steps=6 format=3 uid="uid://cuqm30mdbu41k"]
 
 [ext_resource type="Script" uid="uid://d33oqm6uprjxl" path="res://Board/DuelCreaturesBoard.cs" id="1_s27tx"]
 [ext_resource type="PackedScene" uid="uid://dm8sksf3b1gcw" path="res://Board/UnitCircleComponent.tscn" id="3_iu5jy"]
-[ext_resource type="PackedScene" uid="uid://bevj84kr2566s" path="res://Board/CardLineStatic.tscn" id="4_3hmgy"]
 [ext_resource type="PackedScene" uid="uid://cvy4hb158pate" path="res://Board/DamageZoneComponent.tscn" id="4_iu5jy"]
 [ext_resource type="PackedScene" uid="uid://b7fl8cs62jr2v" path="res://Board/Hand.tscn" id="5_iu5jy"]
 [ext_resource type="PackedScene" uid="uid://cow87og7qhndr" path="res://Board/CardVerticalStack.tscn" id="6_3hmgy"]
@@ -127,9 +126,6 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Button" type="Button" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone/OppFrontRight"]
-layout_mode = 2
-
 [node name="Center" type="VBoxContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles"]
 layout_mode = 2
 theme_override_constants/separation = 20
@@ -186,25 +182,8 @@ grow_horizontal = 2
 grow_vertical = 2
 rotation = -1.5707964
 pivot_offset = Vector2(294.5, 96.5)
-
-[node name="OppDamageZone3" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Right" instance=ExtResource("4_3hmgy")]
-unique_name_in_owner = true
-visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -294.5
-offset_top = -96.5
-offset_right = 294.5
-offset_bottom = 96.5
-grow_horizontal = 2
-grow_vertical = 2
-rotation = -1.5707964
-pivot_offset = Vector2(294.5, 96.5)
 MaxCards = 6
+Separation = -45
 
 [node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/OppBoard"]
 layout_mode = 1
@@ -360,25 +339,6 @@ layout_mode = 2
 custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 
-[node name="PlayerDamageZone1" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Left" instance=ExtResource("4_3hmgy")]
-unique_name_in_owner = true
-visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -294.5
-offset_top = -96.5
-offset_right = 294.5
-offset_bottom = 96.5
-grow_horizontal = 2
-grow_vertical = 2
-rotation = 1.5707964
-pivot_offset = Vector2(294.5, 96.5)
-MaxCards = 6
-
 [node name="PlayerDamageZone" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Left" instance=ExtResource("4_iu5jy")]
 unique_name_in_owner = true
 layout_mode = 1
@@ -395,6 +355,8 @@ grow_horizontal = 2
 grow_vertical = 2
 rotation = 1.5707964
 pivot_offset = Vector2(294.5, 96.5)
+MaxCards = 6
+Separation = -45
 
 [node name="Center" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -554,7 +516,6 @@ grow_horizontal = 2
 [node name="OppHand" parent="Opp Hand" instance=ExtResource("5_iu5jy")]
 unique_name_in_owner = true
 layout_mode = 2
-Separation = 0
 HideCards = false
 Draggable = false
 
@@ -586,7 +547,6 @@ grow_vertical = 0
 [node name="PlayerHand" parent="PlayerHand" instance=ExtResource("5_iu5jy")]
 unique_name_in_owner = true
 layout_mode = 2
-Separation = 0
 HideCards = false
 Draggable = false
 
