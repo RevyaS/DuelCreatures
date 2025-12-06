@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using ArC.CardGames.Predefined.Vanguard;
 using Godot;
+using Orientation = ArC.CardGames.Components.Orientation;
 
 [Tool]
 public partial class UnitCircleComponent : Control, IEventBusUtilizer
@@ -122,6 +123,15 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
     public void SetEventBus(VanguardEventBus eventBus)
     {
         eventBus.CardAssignedToUnitCircle += OnCardAssignedToUnitCircle;
+        eventBus.UnitCircleOrientationChanged += OnUnitCircleOrientationChanged;
+    }
+
+    private async Task OnUnitCircleOrientationChanged(UnitCircle circle, Orientation orientation)
+    {
+        if(ReferenceEquals(circle, UnitCircle))
+        {
+            cardRotationContainer.ChangeOrientation(orientation);
+        }
     }
 
     private Task OnCardAssignedToUnitCircle(UnitCircle circle)

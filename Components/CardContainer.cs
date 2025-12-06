@@ -1,5 +1,6 @@
 using System;
 using Godot;
+using Orientation = ArC.CardGames.Components.Orientation;
 
 [Tool]
 [GlobalClass]
@@ -116,6 +117,20 @@ public partial class CardContainer : Control
     protected virtual Vector2 UpdateSizeFromCard(Card card)
     {
         return card.EffectiveSize;
+    }
+
+    public void ChangeOrientation(Orientation orientation)
+    {
+        if(CurrentCard is null) return;
+        switch(orientation)
+        {
+            case Orientation.HORIZONTAL:
+                CurrentCard.Rotation = Mathf.DegToRad(90);
+                break;
+            case Orientation.VERTICAL:
+                CurrentCard.Rotation = Mathf.DegToRad(0);
+                break;
+        }
     }
 
     public Action<CardBaseComponent>? CardDragging;

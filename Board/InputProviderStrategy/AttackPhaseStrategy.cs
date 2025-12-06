@@ -16,6 +16,7 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
     public async Task<IAttackPhaseAction> RequestAttackPhaseAction(List<IAttackPhaseAction> actions)
     {
         Board.ShowEndPhaseButton();
+        Board.DisablePlayerFrontRowUnitCircleHovering();
         Board.EnablePlayerUnitCircleScreenDragging();
 
         TaskCompletionSource<IAttackPhaseAction> completionSource = new();
@@ -88,11 +89,19 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
         };
 
         Action<UnitCircleComponent> screenDragHandler = (unitCircleComponent) => {
+            // Catalyst for Boosted attack
             if(Board.IsBackRow(unitCircleComponent))
             {
                 boostingCircle = unitCircleComponent;
                 Board.DisablePlayerUnitCircleScreenDragging();
                 Board.EnablePlayerFrontRowUnitCircleHovering();
+            }
+            if(Board.IsFrontRow(unitCircleComponent))
+            {
+                GD.Print("Front row dragging");
+                attackingCircle = unitCircleComponent;
+                Board.DisablePlayerUnitCircleScreenDragging();
+                Board.EnableOppFrontRowUnitCircleHovering();
             }
         };
 
