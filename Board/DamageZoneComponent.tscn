@@ -1,0 +1,44 @@
+[gd_scene load_steps=3 format=3 uid="uid://cvy4hb158pate"]
+
+[ext_resource type="PackedScene" uid="uid://bevj84kr2566s" path="res://Board/CardLineStatic.tscn" id="1_j2ruf"]
+[ext_resource type="Script" uid="uid://btpu0ur81hphw" path="res://Board/DamageZoneComponent.cs" id="2_tqeg2"]
+
+[node name="CardLineDynamic" instance=ExtResource("1_j2ruf")]
+script = ExtResource("2_tqeg2")
+MaxCards = 0
+
+[node name="CardContainer" parent="MarginContainer/Container" index="0"]
+custom_minimum_size = Vector2(0, 0)
+
+[node name="Card" parent="MarginContainer/Container/CardContainer" index="0"]
+scale = Vector2(1, 1)
+
+[node name="CardContainer2" parent="MarginContainer/Container" index="1"]
+custom_minimum_size = Vector2(0, 0)
+
+[node name="Card" parent="MarginContainer/Container/CardContainer2" index="0"]
+scale = Vector2(1, 1)
+
+[node name="CardContainer3" parent="MarginContainer/Container" index="2"]
+custom_minimum_size = Vector2(0, 0)
+
+[node name="Card" parent="MarginContainer/Container/CardContainer3" index="0"]
+scale = Vector2(1, 1)
+
+[node name="CardContainer4" parent="MarginContainer/Container" index="3"]
+custom_minimum_size = Vector2(0, 0)
+
+[node name="Card" parent="MarginContainer/Container/CardContainer4" index="0"]
+scale = Vector2(1, 1)
+
+[node name="CardContainer5" parent="MarginContainer/Container" index="4"]
+custom_minimum_size = Vector2(0, 0)
+
+[node name="Card" parent="MarginContainer/Container/CardContainer5" index="0"]
+scale = Vector2(1, 1)
+
+[node name="CardContainer6" parent="MarginContainer/Container" index="5"]
+custom_minimum_size = Vector2(0, 0)
+
+[node name="Card" parent="MarginContainer/Container/CardContainer6" index="0"]
+scale = Vector2(1, 1)

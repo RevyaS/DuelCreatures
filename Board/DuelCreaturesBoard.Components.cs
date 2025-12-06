@@ -16,7 +16,7 @@ public partial class DuelCreaturesBoard : Control
 
         PlayerFrontLeft = null!, PlayerBackLeft = null!, PlayerFrontRight = null!, PlayerBackRight = null!,
         OppFrontLeft = null!, OppBackLeft = null!, OppBackCenter = null!, OppFrontRight = null!, OppBackRight = null!;
-    CardLineStatic PlayerDamageZone = null!, OppDamageZone = null!;
+    DamageZoneComponent PlayerDamageZone = null!, OppDamageZone = null!;
 
     public HandComponent PlayerHand { get; private set; } = null!;
     HandComponent OppHand = null!;
@@ -99,8 +99,8 @@ public partial class DuelCreaturesBoard : Control
         OppFrontRight = GetNode<UnitCircleComponent>($"%{nameof(OppFrontRight)}");
         OppBackRight = GetNode<UnitCircleComponent>($"%{nameof(OppBackRight)}");
 
-        PlayerDamageZone = GetNode<CardLineStatic>($"%{nameof(PlayerDamageZone)}");
-        OppDamageZone = GetNode<CardLineStatic>($"%{nameof(OppDamageZone)}");
+        PlayerDamageZone = GetNode<DamageZoneComponent>($"%{nameof(PlayerDamageZone)}");
+        OppDamageZone = GetNode<DamageZoneComponent>($"%{nameof(OppDamageZone)}");
 
         PlayerHand = GetNode<HandComponent>($"%{nameof(PlayerHand)}");
         OppHand = GetNode<HandComponent>($"%{nameof(OppHand)}");

@@ -1,11 +1,9 @@
+using System;
 using Godot;
 
 [Tool]
-public partial class CardLineStatic : PanelContainer
+public partial class CardLineStatic : CardLine
 {
-    HBoxNodeContainer Container = null!;
-
-    IChildManagerComponent ContainerNodeManager => Container;    
     int lastIndex = 0;
 
     private int _maxCards;
@@ -19,19 +17,9 @@ public partial class CardLineStatic : PanelContainer
         } 
     }
 
-    [Export]
-    public int Separation { 
-        get => !IsInsideTree() ? 0 : Container.GetThemeConstant("separation"); 
-        set
-        {
-            if(!IsInsideTree()) return;
-            Container.AddThemeConstantOverride("separation", value);
-        } 
-    }
-
     public override void _Ready()
     {
-        Container = GetNode<HBoxNodeContainer>($"%{nameof(Container)}");
+        base._Ready();
         EvaluateContainers();
     }
 
@@ -41,6 +29,7 @@ public partial class CardLineStatic : PanelContainer
         {
             child.RemoveCard();
         });
+        lastIndex = 0;
     }
 
     private void EvaluateContainers()
@@ -51,6 +40,7 @@ public partial class CardLineStatic : PanelContainer
         }
 
         lastIndex = 0;
+        GD.Print("Last Index: ", lastIndex);
         ContainerNodeManager.ApplyToChildren<CardContainer>((child) =>
         {
             if(child.HasChild<Card>())
@@ -67,12 +57,22 @@ public partial class CardLineStatic : PanelContainer
             for (int i = 0; i < missingContainers; i++)
             {
                 // Create missing container
-                AddChild(new CardContainer());
+                Container.AddChild(new CardContainer());
             }
         } 
         else if(MaxCards < currentCards)
         {
             MaxCards = currentCards;
         }
+    }
+
+    public override void AddCard(Card card)
+    {
+        if(lastIndex == MaxCards - 1) throw new InvalidOperationException("Already reached MAX amount of cards");
+
+        GD.Print("Last Index: ", lastIndex);
+        var container = Container.GetChild<CardContainer>(++lastIndex);
+        container.AddChild(card);
+        card.IsFront = true;
     }
 }

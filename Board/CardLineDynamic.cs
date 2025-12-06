@@ -61,7 +61,7 @@ public partial class CardLineDynamic : CardLine
         base.RenderCore();
     }
 
-    public void AddCard(Card card)
+    public override void AddCard(Card card)
     {
         CardContainer cardContainer = new();
         Container.AddChild(cardContainer);

@@ -36,4 +36,6 @@ public partial class CardLine : PanelContainer
             ResetSize();
         }
     }
+
+    public virtual void AddCard(Card card) {}
 }

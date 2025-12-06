@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using ArC.CardGames;
 using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Predefined.Vanguard;
@@ -141,13 +142,16 @@ public partial class DuelCreaturesBoard : Control
         PlayerFrontRight.BindUnitCircle(game.Board.Player1Area.FrontRight);
         PlayerBackRight.BindUnitCircle(game.Board.Player1Area.BackRight);
 
-
         OppVanguard.BindUnitCircle(game.Board.Player2Area.Vanguard);
+
+        PlayerDamageZone.BindDamageZone(game.Board.Player1Area.DamageZone);
+        OppDamageZone.BindDamageZone(game.Board.Player2Area.DamageZone);
     }
 
     private void SetupEventBus(VanguardEventBus eventBus)
     {
         eventBus.PhaseChanged += OnPhaseChanged;
+        eventBus.AttackEnded += OnAttackEnded;
 
         PlayerHand.SetEventBus(eventBus);
         OppHand.SetEventBus(eventBus);
@@ -159,6 +163,15 @@ public partial class DuelCreaturesBoard : Control
         PlayerBackRight.SetEventBus(eventBus);
 
         OppVanguard.SetEventBus(eventBus);
+
+        PlayerDamageZone.SetEventBus(eventBus);
+        OppDamageZone.SetEventBus(eventBus);
+    }
+
+    private async Task OnAttackEnded()
+    {
+        HideAttackLines();
+        HideBoostLines();
     }
 
     private void OnPhaseChanged(IPhase phase)
