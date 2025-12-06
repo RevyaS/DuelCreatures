@@ -29,17 +29,20 @@ public partial class DuelCreaturesBoard : Control
         PlayerCircles.ForEach((circle) =>
         {
             circle.CardDropped += (card) => OnPlayerRearguardCardDropped(circle, card);
-            circle.ScreenDragging += OnPlayerRearGuardScreenDragged;
+            circle.ScreenDragging += OnPlayerCircleScreenDragged;
+            circle.ScreenDragRelease += OnPlayerCircleScreenDragRelease;
         });
 
         PlayerFrontRowCircles.ForEach((circle) =>
         {
             circle.Hovering += OnPlayerCircleHovering;
+            circle.HoverReleased += OnPlayerCircleHoverReleased;
         });
 
         OppFrontRowCircles.ForEach((circle) =>
         {
             circle.Hovering += OnOppCircleHovering;
+            circle.HoverReleased += OnOppCircleHoverReleased;
         });
 
         PlayerRearguards.ForEach((rearguard) =>
@@ -47,6 +50,21 @@ public partial class DuelCreaturesBoard : Control
             rearguard.RearguardCardDragging += OnPlayerRearGuardDragged;
             rearguard.RearguardCardDragCancelled += OnPlayerRearGuardCardDragCancelled;
         });
+    }
+
+    private void OnOppCircleHoverReleased(UnitCircleComponent component)
+    {
+        OppCircleHoverReleased?.Invoke(component);
+    }
+
+    private void OnPlayerCircleHoverReleased(UnitCircleComponent component)
+    {
+        PlayerCircleHoverReleased?.Invoke(component);
+    }
+
+    private void OnPlayerCircleScreenDragRelease(UnitCircleComponent component)
+    {
+        PlayerCircleScreenDragReleased?.Invoke(component);
     }
 
     private void OnOppCircleHovering(UnitCircleComponent component)
@@ -59,7 +77,7 @@ public partial class DuelCreaturesBoard : Control
         PlayerCircleHovering?.Invoke(component);
     }
 
-    private void OnPlayerRearGuardScreenDragged(UnitCircleComponent component)
+    private void OnPlayerCircleScreenDragged(UnitCircleComponent component)
     {
         PlayerCircleScreenDragged?.Invoke(component);
     }
@@ -315,7 +333,7 @@ public partial class DuelCreaturesBoard : Control
 
     public void EnableOppFrontRowUnitCircleHovering()
     {
-        OppFrontRowCircles.ForEach((circle) => circle.ScreenDraggable = true);
+        OppFrontRowCircles.ForEach((circle) => circle.Hoverable = true);
     }
 
     public void DisableOppFrontRowUnitCircleHovering()
@@ -337,6 +355,32 @@ public partial class DuelCreaturesBoard : Control
         PlayerRightBoostLine.Hide();
     }
 
+    public void ShowAttackLine(UnitCircleComponent attacker, UnitCircleComponent target)
+    {
+        if(ReferenceEquals(PlayerFrontLeft, attacker) && ReferenceEquals(OppFrontLeft, target)) PlayerLeftAttackLeftLine.Show();
+        if(ReferenceEquals(PlayerFrontLeft, attacker) && ReferenceEquals(OppVanguard, target)) PlayerLeftAttackCenterLine.Show();
+        if(ReferenceEquals(PlayerFrontLeft, attacker) && ReferenceEquals(OppFrontRight, target)) PlayerLeftAttackRightLine.Show();
+        if(ReferenceEquals(PlayerVanguard, attacker) && ReferenceEquals(OppFrontLeft, target)) PlayerCenterAttackLeftLine.Show();
+        if(ReferenceEquals(PlayerVanguard, attacker) && ReferenceEquals(OppVanguard, target)) PlayerCenterAttackCenterLine.Show();
+        if(ReferenceEquals(PlayerVanguard, attacker) && ReferenceEquals(OppFrontRight, target)) PlayerCenterAttackRightLine.Show();
+        if(ReferenceEquals(PlayerFrontRight, attacker) && ReferenceEquals(OppFrontLeft, target)) PlayerRightAttackLeftLine.Show();
+        if(ReferenceEquals(PlayerFrontRight, attacker) && ReferenceEquals(OppVanguard, target)) PlayerRightAttackCenterLine.Show();
+        if(ReferenceEquals(PlayerFrontRight, attacker) && ReferenceEquals(OppFrontRight, target)) PlayerRightAttackRightLine.Show();
+    }
+
+    public void HideAttackLines()
+    {
+        PlayerLeftAttackLeftLine.Hide();
+        PlayerLeftAttackCenterLine.Hide();
+        PlayerLeftAttackRightLine.Hide();
+        PlayerCenterAttackLeftLine.Hide();
+        PlayerCenterAttackCenterLine.Hide();
+        PlayerCenterAttackRightLine.Hide();
+        PlayerRightAttackLeftLine.Hide();
+        PlayerRightAttackCenterLine.Hide();
+        PlayerRightAttackRightLine.Hide();
+    }
+
     public event Action<Card>? HandCardPressed;
     public event Action<Card>? PlayerVanguardCardDropped;
     public event Action? EndPhasePressed;
@@ -344,6 +388,9 @@ public partial class DuelCreaturesBoard : Control
     public event Action<UnitCircleComponent, CardBaseComponent>? PlayerRearGuardDragged;
     public event Action<UnitCircleComponent, CardBaseComponent>? PlayerRearGuardCardDragCancelled;
     public event Action<UnitCircleComponent>? PlayerCircleScreenDragged;
+    public event Action<UnitCircleComponent>? PlayerCircleScreenDragReleased;
     public event Action<UnitCircleComponent>? PlayerCircleHovering;
+    public event Action<UnitCircleComponent>? PlayerCircleHoverReleased;
     public event Action<UnitCircleComponent>? OppCircleHovering;
+    public event Action<UnitCircleComponent>? OppCircleHoverReleased;
 }

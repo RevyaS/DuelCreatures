@@ -5,6 +5,7 @@ using Godot;
 [Icon("res://Assets/Icons/Control.svg")]
 public partial class DragArea : Control
 {
+    private bool IsDragging = false;
 
     public override void _GuiInput(InputEvent e)
     {
@@ -22,8 +23,32 @@ public partial class DragArea : Control
     private void OnDrag()
     {
         GD.Print($"Dragging: true");
+        IsDragging = true;
         Dragging?.Invoke();
     }
 
+    public override void _Input(InputEvent @event)
+    {
+        if(!IsDragging) return;
+
+        if(@event is InputEventMouseButton mb && !mb.Pressed)
+        {
+            OnDragEnd();
+        }
+
+        if(@event is InputEventScreenTouch st && !st.Pressed)
+        {
+            OnDragEnd();
+        }
+    }
+
+    private void OnDragEnd()
+    {
+        GD.Print($"Dragging: false");
+        IsDragging = false;
+        DragReleased?.Invoke();
+    }
+
     public event Action? Dragging;
+    public event Action? DragReleased;
 }

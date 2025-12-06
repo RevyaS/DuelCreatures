@@ -21,4 +21,5 @@ v.0001 Duel Creatures
 - Strengthen Inputs (Noticed lag upon calling vanguard)
 - Added board logging for easy debugging
 - Simplified Input types for UnitCircle via ComponentUnitState enum 
-- Detect boosted attack (Ongoing)
+- Detect boosted attack and cancellable
+- Added Manual AI Guard method

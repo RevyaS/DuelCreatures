@@ -67,7 +67,10 @@ public partial class DuelCreaturesBoard : Control
         OppFrontLeft, OppFrontRight, OppVanguard
     ];
 
-    Line2D PlayerLeftBoostLine = null!, PlayerCenterBoostLine = null!, PlayerRightBoostLine = null!;
+    Line2D PlayerLeftBoostLine = null!, PlayerCenterBoostLine = null!, PlayerRightBoostLine = null!,
+        PlayerLeftAttackRightLine = null!, PlayerLeftAttackCenterLine = null!, PlayerLeftAttackLeftLine = null!,
+        PlayerCenterAttackRightLine = null!, PlayerCenterAttackCenterLine = null!, PlayerCenterAttackLeftLine = null!,
+        PlayerRightAttackRightLine = null!, PlayerRightAttackCenterLine = null!, PlayerRightAttackLeftLine = null!;
 
     private void SetComponents()
     {
@@ -111,5 +114,15 @@ public partial class DuelCreaturesBoard : Control
         PlayerLeftBoostLine = GetNode<Line2D>($"%{nameof(PlayerLeftBoostLine)}");
         PlayerCenterBoostLine = GetNode<Line2D>($"%{nameof(PlayerCenterBoostLine)}");
         PlayerRightBoostLine = GetNode<Line2D>($"%{nameof(PlayerRightBoostLine)}");
+
+        PlayerLeftAttackRightLine = GetNode<Line2D>($"%{nameof(PlayerLeftAttackRightLine)}");
+        PlayerLeftAttackCenterLine = GetNode<Line2D>($"%{nameof(PlayerLeftAttackCenterLine)}");
+        PlayerLeftAttackLeftLine = GetNode<Line2D>($"%{nameof(PlayerLeftAttackLeftLine)}");
+        PlayerCenterAttackRightLine = GetNode<Line2D>($"%{nameof(PlayerCenterAttackRightLine)}");
+        PlayerCenterAttackCenterLine = GetNode<Line2D>($"%{nameof(PlayerCenterAttackCenterLine)}");
+        PlayerCenterAttackLeftLine = GetNode<Line2D>($"%{nameof(PlayerCenterAttackLeftLine)}");
+        PlayerRightAttackRightLine = GetNode<Line2D>($"%{nameof(PlayerRightAttackRightLine)}");
+        PlayerRightAttackCenterLine = GetNode<Line2D>($"%{nameof(PlayerRightAttackCenterLine)}");
+        PlayerRightAttackLeftLine = GetNode<Line2D>($"%{nameof(PlayerRightAttackLeftLine)}");
     }
 }

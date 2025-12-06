@@ -68,7 +68,11 @@ public partial class AIInputProvider(VanguardPlayArea playArea, GameContext game
     {
         if(GameContext.GameState is MulliganState)
         {
-            return Task.Run(() => Mulligan(Hand.Cards));
+            return Task.FromResult(Mulligan(Hand.Cards));
+        }
+        if(GameContext.GameState is AttackState || GameContext.GameState is BoostedAttackState)
+        {
+            return Task.FromResult(Guard(Hand.Cards));
         }
         throw new System.NotImplementedException($"Select Cards From Hand State {GameContext.GameState.GetType().Name} not implemented yet");
     }

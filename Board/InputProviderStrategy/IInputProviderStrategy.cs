@@ -33,3 +33,13 @@ public interface IRequestAttackPhaseAction
 {
     Task<IAttackPhaseAction> RequestAttackPhaseAction(List<IAttackPhaseAction> actions);
 }
+
+public interface ISelectOwnUnitCircle
+{
+    Task<UnitCircle> SelectOwnUnitCircle();
+}
+
+public interface ISelectOpponentFrontRow
+{
+    Task<UnitCircle> SelectOpponentFrontRow(UnitSelector selector);
+}

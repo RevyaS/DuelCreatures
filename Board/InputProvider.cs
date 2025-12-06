@@ -17,7 +17,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     public VanguardPlayArea PlayArea { get; private set; } = null!;
 
-    public VanguardPlayArea OpponentPlayArea => throw new NotImplementedException();
+    public VanguardPlayArea OpponentPlayArea { get; private set; } = null!;
 
     public VanguardSkillService SkillService => throw new NotImplementedException();
 
@@ -37,8 +37,9 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         Board.HandCardPressed += OnHandCardPressed;
     }
 
-    public void Setup(VanguardPlayArea playArea, GameContext gameContext)
+    public void Setup(VanguardPlayArea playArea, VanguardPlayArea oppPlayArea, GameContext gameContext)
     {
+        OpponentPlayArea = oppPlayArea;
         PlayArea = playArea;
         GameContext = gameContext;
     }
@@ -64,7 +65,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
                 SetProviderStrategy(new MainPhaseStrategy(board, PlayArea, GameContext));
                 return;
             case VanguardAttackPhase:
-                SetProviderStrategy(new AttackPhaseStrategy(board));
+                SetProviderStrategy(new AttackPhaseStrategy(board, GameContext));
                 return;
         }
         throw new NotSupportedException($"{phase.GetType().Name} is not supported yet");
@@ -102,12 +103,12 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     public Task<UnitCircle> SelectOpponentFrontRow(UnitSelector selector)
     {
-        throw new NotImplementedException();
+        return ((ISelectOpponentFrontRow)strategy).SelectOpponentFrontRow(selector);
     }
 
     public Task<UnitCircle> SelectOwnUnitCircle()
     {
-        throw new NotImplementedException();
+        return ((ISelectOwnUnitCircle)strategy).SelectOwnUnitCircle();
     }
 
     public Task<VanguardActivationSkill> SelectSkillToActivate(List<VanguardActivationSkill> skills)

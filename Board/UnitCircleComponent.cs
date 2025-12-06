@@ -69,11 +69,23 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
 
         dragArea = GetNode<DragArea>($"%{nameof(DragArea)}");
         dragArea.Dragging += OnDragging;
+        dragArea.DragReleased += OnDragReleased;
 
         hoverArea = GetNode<HoverArea>($"%{nameof(HoverArea)}");
         hoverArea.Hovering += OnHovering;
+        hoverArea.HoverReleased += OnHoverReleased;
 
         Render();
+    }
+
+    private void OnHoverReleased()
+    {
+        HoverReleased?.Invoke(this);
+    }
+
+    private void OnDragReleased()
+    {
+        ScreenDragRelease?.Invoke(this);
     }
 
     private void OnHovering()
@@ -163,8 +175,10 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         cardRotationContainer.FaceUp();
     }
     public event Action<Card>? CardDropped;
-    public event Action<UnitCircleComponent, CardBaseComponent>? RearguardCardDragging; 
-    public event Action<UnitCircleComponent, CardBaseComponent>? RearguardCardDragCancelled; 
-    public event Action<UnitCircleComponent>? ScreenDragging; 
-    public event Action<UnitCircleComponent>? Hovering; 
+    public event Action<UnitCircleComponent, CardBaseComponent>? RearguardCardDragging;
+    public event Action<UnitCircleComponent, CardBaseComponent>? RearguardCardDragCancelled;
+    public event Action<UnitCircleComponent>? ScreenDragging;
+    public event Action<UnitCircleComponent>? ScreenDragRelease;
+    public event Action<UnitCircleComponent>? Hovering;
+    public event Action<UnitCircleComponent>? HoverReleased;
 }
