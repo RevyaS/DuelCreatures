@@ -9,6 +9,7 @@ public partial class CardContainer : Control
 {
     Card? currentCard = null;
     public Card? CurrentCard => currentCard;
+    public bool HasCard => currentCard is not null && currentCard.CurrentCard is not null;
     protected bool UpdateSizeOnCardPlacedment = true;
 
     private float _cardScale = SizeConstants.CardScaleFactor;
@@ -67,6 +68,10 @@ public partial class CardContainer : Control
     public void UpdatePower(int newPower)
     {
         ((VanguardCardComponent)CurrentCard!).Power = newPower;
+    }
+    public void UpdateCrit(int newCrit)
+    {
+        ((VanguardCardComponent)CurrentCard!).Critical = newCrit;
     }
 
     public void AddCard(Card card)
@@ -151,8 +156,6 @@ public partial class CardContainer : Control
         float newHeight = Mathf.Abs(w * sin) + Mathf.Abs(h * cos);
 
         var result = new Vector2(newWidth, newHeight);
-
-        GD.Print("Resulting calc ", result);
         return result;
 
     }

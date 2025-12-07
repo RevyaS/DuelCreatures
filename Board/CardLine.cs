@@ -1,5 +1,6 @@
 using Godot;
 
+[Tool]
 public partial class CardLine : PanelContainer
 {
     protected HBoxNodeContainer Container = null!;

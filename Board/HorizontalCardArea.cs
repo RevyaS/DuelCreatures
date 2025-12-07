@@ -16,6 +16,7 @@ public partial class HorizontalCardArea : PanelContainer
 
     public void AddCard(Card card)
     {
+        card.RotationDegrees = 90;
         Container.AddCard(card);
     }
 }

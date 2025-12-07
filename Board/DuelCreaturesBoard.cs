@@ -152,6 +152,9 @@ public partial class DuelCreaturesBoard : Control
     {
         eventBus.PhaseChanged += OnPhaseChanged;
         eventBus.AttackEnded += OnAttackEnded;
+        eventBus.OnDamageChecked += OnDamageChecked;
+        eventBus.OnDriveChecked += OnDriveChecked;
+        eventBus.CardAssignedToUnitCircle += OnCardAssignedToUnitCircle;
 
         PlayerHand.SetEventBus(eventBus);
         OppHand.SetEventBus(eventBus);
@@ -166,6 +169,51 @@ public partial class DuelCreaturesBoard : Control
 
         PlayerDamageZone.SetEventBus(eventBus);
         OppDamageZone.SetEventBus(eventBus);
+    }
+
+    private Task OnCardAssignedToUnitCircle(UnitCircle unitCircle)
+    {
+        RecalculateStats();
+        return Task.CompletedTask;
+    }
+
+    private void RecalculateStats()
+    {
+        PlayerCircles.ForEach(circle => circle.UpdateStats());
+    }
+
+    private async Task OnDriveChecked(VanguardPlayArea area, VanguardCard card)
+    {
+        await TriggerCheckCore(area, card);
+    }
+
+    private async Task OnDamageChecked(VanguardPlayArea area, VanguardCard card)
+    {
+        await TriggerCheckCore(area, card);
+    }
+
+    private async Task TriggerCheckCore(VanguardPlayArea area, VanguardCard card)
+    {
+        Card cardComponent = SceneFactory.CreateVanguardCard(card);
+        bool isPlayer1 = ReferenceEquals(area, _gameSession.Game.Board.Player1Area);
+        if(isPlayer1)
+        {
+            PlayerTriggerZone.AddCard(cardComponent);
+        } else
+        {
+            OppTriggerZone.AddCard(cardComponent);
+        }
+
+        // Wait for a bit
+        await ToSignal(GetTree().CreateTimer(1.0f), "timeout");
+
+        if(isPlayer1)
+        {
+            PlayerTriggerZone.ClearCard();
+        } else
+        {
+            OppTriggerZone.ClearCard();
+        }
     }
 
     private async Task OnAttackEnded()

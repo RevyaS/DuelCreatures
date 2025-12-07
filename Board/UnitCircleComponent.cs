@@ -1,4 +1,5 @@
 using System;
+using System.Data;
 using System.Threading.Tasks;
 using ArC.CardGames.Predefined.Vanguard;
 using Godot;
@@ -131,7 +132,16 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
     {
         if(ReferenceEquals(unitCircle, UnitCircle))
         {
+            UpdateStats();
+        }
+    }
+
+    public void UpdateStats()
+    {
+        if(cardRotationContainer.HasCard && !UnitCircle.IsEmpty)
+        {
             cardRotationContainer.UpdatePower(UnitCircle.GetOverallPower());
+            cardRotationContainer.UpdateCrit(UnitCircle.GetOverallCritical());
         }
     }
 
