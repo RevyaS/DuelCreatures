@@ -25,3 +25,5 @@ v.0001 Duel Creatures
 - Added Manual AI Guard method
 - Implemented Damage Zone reflecting Damage
 - Grade, Power and Critical labels
+- Added TriggerZoneArea
+- Added CardScale for CardContainers

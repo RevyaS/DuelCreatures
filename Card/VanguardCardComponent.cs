@@ -7,7 +7,6 @@ public partial class VanguardCardComponent : Card
     Label PowerLabel = null!, CriticalLabel = null!, GradeLabel = null!;
     PanelContainer PowerPanel = null!, GradePanel = null!;
     public override VanguardCard CurrentCard => (VanguardCard)base.CurrentCard;
-
     
     private int _power = 0;
     public int Power

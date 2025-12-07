@@ -124,6 +124,15 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
     {
         eventBus.CardAssignedToUnitCircle += OnCardAssignedToUnitCircle;
         eventBus.UnitCircleOrientationChanged += OnUnitCircleOrientationChanged;
+        eventBus.PowerEffectUpdatedToUnitCircle += OnPowerEffectUpdatedToUnitCircle;
+    }
+
+    private void OnPowerEffectUpdatedToUnitCircle(UnitCircle unitCircle)
+    {
+        if(ReferenceEquals(unitCircle, UnitCircle))
+        {
+            cardRotationContainer.UpdatePower(UnitCircle.GetOverallPower());
+        }
     }
 
     private async Task OnUnitCircleOrientationChanged(UnitCircle circle, Orientation orientation)

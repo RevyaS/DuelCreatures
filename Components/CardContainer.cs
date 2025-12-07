@@ -11,6 +11,18 @@ public partial class CardContainer : Control
     public Card? CurrentCard => currentCard;
     protected bool UpdateSizeOnCardPlacedment = true;
 
+    private float _cardScale = SizeConstants.CardScaleFactor;
+    [Export(PropertyHint.Range, "0.0, 1.0")]
+    public float CardScale
+    {
+        get => _cardScale;
+        set
+        {
+            _cardScale = value;
+            Render();
+        }
+    }
+
     public bool Draggable
     {
         get => CurrentCard?.Draggable ?? false;
@@ -32,6 +44,8 @@ public partial class CardContainer : Control
         {
             currentCard = GetChild<Card>(0);
         }
+
+        Render();
     }
 
     public void FaceUp()
@@ -50,6 +64,11 @@ public partial class CardContainer : Control
         }
     }
 
+    public void UpdatePower(int newPower)
+    {
+        ((VanguardCardComponent)CurrentCard!).Power = newPower;
+    }
+
     public void AddCard(Card card)
     {
         if(currentCard is not null)
@@ -60,6 +79,18 @@ public partial class CardContainer : Control
         card.CardDragging += OnCardDragging;
         card.CardDragCancelled += OnCardDragCancelled;
         AddChild(card);
+    }
+
+    private void Render()
+    {
+        if(CurrentCard is null) return;
+
+        CurrentCard.Scale = new Vector2(CardScale, CardScale);
+
+        if(UpdateSizeOnCardPlacedment)
+        {
+            CustomMinimumSize = UpdateSizeFromCard(CurrentCard);
+        }
     }
 
     private void OnCardDragCancelled(CardBaseComponent component)
@@ -104,19 +135,26 @@ public partial class CardContainer : Control
             } 
 
             currentCard = card;
-
-            card.Scale = SizeConstants.CardBoardScale;
-
-            if(UpdateSizeOnCardPlacedment)
-            {
-                CustomMinimumSize = UpdateSizeFromCard(card);
-            }
+            Render();
         }
     }
 
     protected virtual Vector2 UpdateSizeFromCard(Card card)
     {
-        return card.EffectiveSize;
+        float w = card.EffectiveSize.X;
+        float h = card.EffectiveSize.Y;
+
+        float cos = Mathf.Cos(card.Rotation);
+        float sin = Mathf.Sin(card.Rotation);
+
+        float newWidth = Mathf.Abs(w * cos) + Mathf.Abs(h * sin);
+        float newHeight = Mathf.Abs(w * sin) + Mathf.Abs(h * cos);
+
+        var result = new Vector2(newWidth, newHeight);
+
+        GD.Print("Resulting calc ", result);
+        return result;
+
     }
 
     public void ChangeOrientation(Orientation orientation)

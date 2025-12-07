@@ -13,7 +13,7 @@ public partial class Session : Control
     public async override void _Ready()
     {
         var eventBus = new VanguardEventBus();
-        var effectService = new VanguardEffectService();
+        var effectService = new VanguardEffectService(eventBus);
         var gameContext = new GameContext();
 
         InputProviderComponent = GetNode<InputProvider>($"%{nameof(InputProviderComponent)}");

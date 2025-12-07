@@ -14,12 +14,12 @@ public partial class CardLineStatic : CardLine
         {
             _maxCards = value;
             EvaluateContainers();
+            Render();
         } 
     }
 
-    public override void _Ready()
+    protected override void OnComponentsSet()
     {
-        base._Ready();
         EvaluateContainers();
     }
 

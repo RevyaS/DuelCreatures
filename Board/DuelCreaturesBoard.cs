@@ -237,6 +237,9 @@ public partial class DuelCreaturesBoard : Control
         // Set Vanguards
         PlayerVanguard.SetCard((VanguardCard)player1.Vanguard);
         OppVanguard.SetCard((VanguardCard)player2.Vanguard);
+
+        PlayerTriggerZone.ClearCard();
+        OppTriggerZone.ClearCard();
     }
 
     public void EnablePlayerVanguardDropping()

@@ -1,6 +1,8 @@
 using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Vanguard;
+using Godot;
 
+[Tool]
 public partial class DamageZoneComponent : CardLineStatic, IEventBusUtilizer
 {
     DamageZone DamageZone = null!;
