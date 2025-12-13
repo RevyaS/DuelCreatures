@@ -19,12 +19,13 @@ public static class DuelMaidensCardsFactory
         public static VanguardCard KnightOfSilenceGallatin => new VanguardCard(2, "Knight of Silence, Gallatin", 10000, 1, 5000, VanguardCardSkill.NONE, VanguardTrigger.NONE, []);
         public static VanguardCard BlasterBlade => new VanguardCard(2, "Blaster Blade", 9000, 1, 5000, VanguardCardSkill.NONE, VanguardTrigger.NONE, [
             new VanguardCriticalEffectContinuousSkill(VanguardSkillCardLocation.VANGUARD, new OccupiedRearguards(4), 1),
-            new VanguardAutomaticSkill(VanguardSkillCardLocation.VANGUARD | VanguardSkillCardLocation.REARGUARD, VanguardSkillTiming.ON_PLACE, new(1, 1), [
+            new VanguardAutomaticSkill(VanguardSkillCardLocation.VANGUARD | VanguardSkillCardLocation.REARGUARD, 
+                new OnPlaceTiming(), new VanguardSkillCost { CounterBlast = 1, SoulBlast = 1 }, [
                 new RetireFrontRow()
             ])
         ]);
         public static VanguardCard KingOfKnightsAlfred => new VanguardCard(3, "King of Knights, Alfred", 10000, 1, 0, VanguardCardSkill.TWIN_DRIVE, VanguardTrigger.NONE, [
-            new VanguardActivationSkill(VanguardSkillCardLocation.VANGUARD, new(2, 0), [
+            new VanguardActivationSkill(VanguardSkillCardLocation.VANGUARD, new VanguardSkillCost { CounterBlast = 2 }, [
                 new SuperiorCallFromDeck(0, 2)
             ])
         ]);

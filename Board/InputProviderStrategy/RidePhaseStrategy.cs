@@ -35,7 +35,7 @@ public class RidePhaseStrategy(DuelCreaturesBoard Board) : IInputProviderStrateg
             }
 
             newVanguard = (VanguardCard)result.CurrentCard;
-            var exception = VanguardValidator.ValidateRide(currentVanguard, newVanguard);
+            var exception = VanguardGameRules.ValidateRide(currentVanguard, newVanguard);
 
             if (exception is not null)
             {

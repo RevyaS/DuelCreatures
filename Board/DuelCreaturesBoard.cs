@@ -244,12 +244,11 @@ public partial class DuelCreaturesBoard : Control
 
     private void SetPhaseIndicatorToCurrentPlayer(string message)
     {
-        if (_gameSession.currentPlayer == player1)
+        if (_gameSession.CurrentPlayerIsPlayer1)
         {
             OppPhaseIndicator.Text = string.Empty;
             PlayerPhaseIndicator.Text = message;
-        }
-        if (_gameSession.currentPlayer == player2)
+        } else
         {
             PlayerPhaseIndicator.Text = string.Empty;
             OppPhaseIndicator.Text = message;

@@ -1,3 +1,6 @@
+v.0002 Skills and Trigger selection
+- Updated for ArC v.0000004
+
 v.0001 Duel Creatures
 - Created Placeholder card
 - Designed Player Board (Good for android)
