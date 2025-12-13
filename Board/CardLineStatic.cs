@@ -6,7 +6,7 @@ public partial class CardLineStatic : CardLine
 {
     int lastIndex = 0;
 
-    private int _maxCards;
+    private int _maxCards = 0;
     [Export]
     public int MaxCards { 
         get => _maxCards; 
@@ -20,7 +20,7 @@ public partial class CardLineStatic : CardLine
 
     protected override void OnComponentsSet()
     {
-        EvaluateContainers();
+        EvaluateContainers(true);
     }
 
     public void ClearCards()
@@ -32,7 +32,7 @@ public partial class CardLineStatic : CardLine
         lastIndex = 0;
     }
 
-    private void EvaluateContainers()
+    private void EvaluateContainers(bool initiation = false)
     {
         if(!IsInsideTree())
         {
@@ -51,6 +51,7 @@ public partial class CardLineStatic : CardLine
 
         var currentCards = Container.GetChildCount<CardContainer>();
 
+        GD.Print($"MaxCards: {MaxCards}, CurrentCards: {currentCards}");
         if(MaxCards > currentCards)
         {
             int missingContainers = MaxCards - currentCards;
@@ -62,7 +63,20 @@ public partial class CardLineStatic : CardLine
         } 
         else if(MaxCards < currentCards)
         {
-            MaxCards = currentCards;
+            int extraContainers = currentCards - MaxCards;
+            GD.Print($"Removing {extraContainers}");
+            for (int i = 0; i < extraContainers; i++)
+            {
+                // Remove extra container
+                var lastIndex = Container.GetChildCount() - 1;
+                GD.Print($"Removed Last Index {lastIndex}");
+                var lastContainer = Container.GetChild(lastIndex);
+                Container.RemoveChild(lastContainer);
+            }
+            if(initiation)
+            {
+                MaxCards = currentCards;
+            }
         }
     }
 

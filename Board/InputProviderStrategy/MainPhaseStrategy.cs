@@ -22,7 +22,7 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, VanguardPlayArea playAr
         Board.EnablePlayerRearguardDragging();
         Board.DisablePlayerRearguardDragging([Board.PlayerBackCenter]);
         Board.EnablePlayerHandDragging();
-        Board.ShowEndPhaseButton();
+        Board.ShowLeftButton(TextConstants.EndPhase);
 
         rearguardDragging = false;
         rearguardDraggedFrom = null!;
@@ -31,7 +31,7 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, VanguardPlayArea playAr
             var selected = actions.FirstOf<EndMainPhase>();
             completionSource.SetResult(selected);
         };
-        Board.EndPhasePressed +=  endPhaseHandler;
+        Board.LeftButtonPressed +=  endPhaseHandler;
 
         Action<UnitCircleComponent, CardBaseComponent> onCardDragCancelledHandler = (unitCircle, card) =>
         {
@@ -75,13 +75,13 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, VanguardPlayArea playAr
 
         var result = await completionSource.Task;
 
-        Board.EndPhasePressed -=  endPhaseHandler;
+        Board.LeftButtonPressed -=  endPhaseHandler;
         Board.CardDroppedToPlayerRearguard -=  onCardPlacedToRGHandler;
         Board.PlayerRearGuardCardDragCancelled -= onCardDragCancelledHandler;
         Board.PlayerHand.CardDragging -= onHandCardDragging;
         Board.PlayerRearGuardDragged -= onRearguardDraggedHandler;
 
-        Board.HideEndPhaseButton();
+        Board.HideLeftButton();
         Board.DisablePlayerRearguardDropping();
         Board.DisablePlayerHandDragging();
 

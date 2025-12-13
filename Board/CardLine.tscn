@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://bqhy1u56ohnlg"]
+[gd_scene load_steps=6 format=3 uid="uid://bqhy1u56ohnlg"]
 
 [ext_resource type="Script" uid="uid://tymprrxn341" path="res://addons/rev_godot_core/Components/HBoxNodeContainer.cs" id="1_d5578"]
 [ext_resource type="Script" uid="uid://cwwbsfwll5kn6" path="res://Board/CardLine.cs" id="1_rfqe6"]
 [ext_resource type="Script" uid="uid://bqw5phtur46nx" path="res://Components/CardContainer.cs" id="2_rfqe6"]
 [ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Card/Card.tscn" id="3_kue8l"]
+[ext_resource type="Script" uid="uid://dwrq2pnaqfw1s" path="res://HUD/DropArea.cs" id="5_kue8l"]
 
 [node name="CardLineDynamic" type="PanelContainer"]
 offset_right = 489.0
@@ -26,7 +27,7 @@ theme_override_constants/margin_bottom = 2
 [node name="Container" type="HBoxContainer" parent="MarginContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = -45
+theme_override_constants/separation = 0
 script = ExtResource("1_d5578")
 metadata/_custom_type_script = "uid://tymprrxn341"
 
@@ -143,3 +144,9 @@ offset_top = 0.0
 offset_right = 0.0
 offset_bottom = 0.0
 scale = Vector2(0.45, 0.45)
+
+[node name="DropArea" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("5_kue8l")
+metadata/_custom_type_script = "uid://dwrq2pnaqfw1s"

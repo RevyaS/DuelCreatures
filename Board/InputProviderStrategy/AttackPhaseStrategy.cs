@@ -15,7 +15,7 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
 
     public async Task<IAttackPhaseAction> RequestAttackPhaseAction(List<IAttackPhaseAction> actions)
     {
-        Board.ShowEndPhaseButton();
+        Board.ShowLeftButton(TextConstants.EndPhase);
         Board.DisablePlayerFrontRowUnitCircleHovering();
         Board.EnablePlayerUnitCircleScreenDragging();
 
@@ -105,7 +105,7 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
             }
         };
 
-        Board.EndPhasePressed += endPhaseHandler;
+        Board.LeftButtonPressed += endPhaseHandler;
         Board.PlayerCircleHovering += playerFrontRowHoverHandler;
         Board.PlayerCircleScreenDragged += screenDragHandler;
         Board.OppCircleHovering += oppFrontRowHoverHandler;
@@ -113,7 +113,7 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
         Board.PlayerCircleScreenDragReleased += dragReleaseHandler;
 
         var result = await completionSource.Task;
-        Board.EndPhasePressed -= endPhaseHandler;
+        Board.LeftButtonPressed -= endPhaseHandler;
         Board.PlayerCircleScreenDragged -= screenDragHandler;
         Board.PlayerCircleHovering -= playerFrontRowHoverHandler;
         Board.OppCircleHovering -= oppFrontRowHoverHandler;

@@ -47,6 +47,16 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
     public void SetEventBus(VanguardEventBus eventBus)
     {
         eventBus.PhaseChanged += OnPhaseChanged;
+        eventBus.OnGuardRequested += OnGuardRequested;
+    }
+
+    private Task OnGuardRequested(UnitCircle circle)
+    {
+        if(PlayArea.OwnsUnitCircle(circle))
+        {
+            SetProviderStrategy(new GuardPhaseStrategy(board, board.GetPlayerUnitCircleComponent(circle)));
+        }
+        return Task.CompletedTask;
     }
 
     private void OnPhaseChanged(IPhase phase)

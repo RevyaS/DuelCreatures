@@ -9,7 +9,7 @@ using Godot;
 
 public partial class DuelCreaturesBoard : Control
 {
-    Button EndPhaseButton = null!;
+    Button LeftButton = null!;
 
     VanguardGameSession _gameSession = null!;
     VanguardPlayerProfile player1 => _gameSession.Game.Player1;
@@ -22,8 +22,8 @@ public partial class DuelCreaturesBoard : Control
 
     public override void _Ready()
     {
-        EndPhaseButton = GetNode<Button>($"%{nameof(EndPhaseButton)}");
-        EndPhaseButton.Pressed += OnEndPhaseButtonPressed;
+        LeftButton = GetNode<Button>($"%{nameof(LeftButton)}");
+        LeftButton.Pressed += OnLeftButtonPressed;
         SetComponents();
         PlayerHand.CardPressed += OnHandCardPressed;
 
@@ -103,19 +103,20 @@ public partial class DuelCreaturesBoard : Control
         PlayerVanguardCardDropped?.Invoke(card);
     }
 
-    private void OnEndPhaseButtonPressed()
+    private void OnLeftButtonPressed()
     {
-        EndPhasePressed?.Invoke();
+        LeftButtonPressed?.Invoke();
     }
 
-    public void ShowEndPhaseButton()
+    public void ShowLeftButton(string caption)
     {
-        EndPhaseButton.Show();
+        LeftButton.Text = caption;
+        LeftButton.Show();
     }
 
-    public void HideEndPhaseButton()
+    public void HideLeftButton()
     {
-        EndPhaseButton.Hide();
+        LeftButton.Hide();
     }
 
     private void OnHandCardPressed(Card card)
@@ -143,6 +144,11 @@ public partial class DuelCreaturesBoard : Control
         PlayerBackRight.BindUnitCircle(game.Board.Player1Area.BackRight);
 
         OppVanguard.BindUnitCircle(game.Board.Player2Area.Vanguard);
+        OppFrontLeft.BindUnitCircle(game.Board.Player2Area.FrontLeft);
+        OppBackLeft.BindUnitCircle(game.Board.Player2Area.BackLeft);
+        OppBackCenter.BindUnitCircle(game.Board.Player2Area.BackCenter);
+        OppFrontRight.BindUnitCircle(game.Board.Player2Area.FrontRight);
+        OppBackRight.BindUnitCircle(game.Board.Player2Area.BackRight);
 
         PlayerDamageZone.BindDamageZone(game.Board.Player1Area.DamageZone);
         OppDamageZone.BindDamageZone(game.Board.Player2Area.DamageZone);
@@ -166,6 +172,11 @@ public partial class DuelCreaturesBoard : Control
         PlayerBackRight.SetEventBus(eventBus);
 
         OppVanguard.SetEventBus(eventBus);
+        OppFrontLeft.SetEventBus(eventBus);
+        OppBackLeft.SetEventBus(eventBus);
+        OppBackCenter.SetEventBus(eventBus);
+        OppFrontRight.SetEventBus(eventBus);
+        OppBackRight.SetEventBus(eventBus);
 
         PlayerDamageZone.SetEventBus(eventBus);
         OppDamageZone.SetEventBus(eventBus);
@@ -216,10 +227,12 @@ public partial class DuelCreaturesBoard : Control
         }
     }
 
-    private async Task OnAttackEnded()
+    private Task OnAttackEnded()
     {
+        GuardZone.ClearCards();
         HideAttackLines();
         HideBoostLines();
+        return Task.CompletedTask;
     }
 
     private void OnPhaseChanged(IPhase phase)
@@ -281,6 +294,8 @@ public partial class DuelCreaturesBoard : Control
         PlayerDropZone.ClearCard();
         OppDropZone.ClearCard();
 
+        GuardZone.ClearCards();
+
         // Set Vanguards
         PlayerVanguard.SetCard((VanguardCard)player1.Vanguard);
         OppVanguard.SetCard((VanguardCard)player2.Vanguard);
@@ -307,6 +322,11 @@ public partial class DuelCreaturesBoard : Control
         if(ReferenceEquals(PlayerVanguard, circle)) return PlayerBackCenter;
         if(ReferenceEquals(PlayerBackCenter, circle)) return PlayerVanguard;
         throw new InvalidOperationException();
+    }
+
+    public UnitCircleComponent GetPlayerUnitCircleComponent(UnitCircle circle)
+    {
+        return PlayerCircles.First(x => ReferenceEquals(x.UnitCircle, circle));
     }
 
     public void EnablePlayerRearguardDropping()
@@ -363,6 +383,24 @@ public partial class DuelCreaturesBoard : Control
     public void DisablePlayerHandDragging()
     {
         PlayerHand.Draggable = false;
+    }
+
+    public void EnableGuardDragging()
+    {
+        GuardZone.Draggable = true;
+    }
+    public void DisableGuardDragging()
+    {
+        GuardZone.Draggable = false;
+    }
+
+    public void EnableGuardDropping()
+    {
+        GuardZone.Droppable = true;
+    }
+    public void DisableGuardDropping()
+    {
+        GuardZone.Droppable = false;
     }
 
     public void EnablePlayerUnitCircleScreenDragging()
@@ -446,7 +484,7 @@ public partial class DuelCreaturesBoard : Control
 
     public event Action<Card>? HandCardPressed;
     public event Action<Card>? PlayerVanguardCardDropped;
-    public event Action? EndPhasePressed;
+    public event Action? LeftButtonPressed;
     public event Action<UnitCircleComponent, Card>? CardDroppedToPlayerRearguard;
     public event Action<UnitCircleComponent, CardBaseComponent>? PlayerRearGuardDragged;
     public event Action<UnitCircleComponent, CardBaseComponent>? PlayerRearGuardCardDragCancelled;

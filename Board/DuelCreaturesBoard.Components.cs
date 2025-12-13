@@ -18,6 +18,7 @@ public partial class DuelCreaturesBoard : Control
         OppFrontLeft = null!, OppBackLeft = null!, OppBackCenter = null!, OppFrontRight = null!, OppBackRight = null!;
     DamageZoneComponent PlayerDamageZone = null!, OppDamageZone = null!;
     HorizontalCardArea PlayerTriggerZone = null!, OppTriggerZone = null!;
+    public CardLineStatic GuardZone { get; private set; } = null!; 
 
     public HandComponent PlayerHand { get; private set; } = null!;
     HandComponent OppHand = null!;
@@ -77,6 +78,8 @@ public partial class DuelCreaturesBoard : Control
     {
         OppPhaseIndicator = GetNode<Label>($"%{nameof(OppPhaseIndicator)}");
         PlayerPhaseIndicator = GetNode<Label>($"%{nameof(PlayerPhaseIndicator)}");
+
+        GuardZone = GetNode<CardLineStatic>($"%{nameof(GuardZone)}");
 
         PlayerExtraLeft1 = GetNode<UnitCircleComponent>($"%{nameof(PlayerExtraLeft1)}");
         PlayerExtraLeft2 = GetNode<UnitCircleComponent>($"%{nameof(PlayerExtraLeft2)}");

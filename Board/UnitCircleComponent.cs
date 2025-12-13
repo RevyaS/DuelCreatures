@@ -1,5 +1,4 @@
 using System;
-using System.Data;
 using System.Threading.Tasks;
 using ArC.CardGames.Predefined.Vanguard;
 using Godot;
@@ -56,6 +55,18 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         set
         {
             SetState(ComponentInputState.Hoverable, value);
+            Render();
+        }
+    }
+
+    private float _cardScale = SizeConstants.CardScaleFactor;
+    [Export(PropertyHint.Range, "0.0, 1.0")]
+    public float CardScale
+    {
+        get => _cardScale;
+        set
+        {
+            _cardScale = value;
             Render();
         }
     }
@@ -145,12 +156,13 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         }
     }
 
-    private async Task OnUnitCircleOrientationChanged(UnitCircle circle, Orientation orientation)
+    private Task OnUnitCircleOrientationChanged(UnitCircle circle, Orientation orientation)
     {
         if(ReferenceEquals(circle, UnitCircle))
         {
             cardRotationContainer.ChangeOrientation(orientation);
         }
+        return Task.CompletedTask;
     }
 
     private Task OnCardAssignedToUnitCircle(UnitCircle circle)
@@ -178,6 +190,7 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         if(!IsInsideTree()) return;
         dropArea.Visible = Droppable;
         cardRotationContainer.Draggable = Draggable;
+        cardRotationContainer.CardScale = CardScale;
         dragArea.Visible = ScreenDraggable;
         hoverArea.Visible = Hoverable;
     }
@@ -203,6 +216,12 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         cardRotationContainer.AddCard(cardComponent);
         cardRotationContainer.FaceUp();
     }
+
+    public void UpdatePower(int newPower)
+    {
+        cardRotationContainer.UpdatePower(newPower);
+    }
+
     public event Action<Card>? CardDropped;
     public event Action<UnitCircleComponent, CardBaseComponent>? RearguardCardDragging;
     public event Action<UnitCircleComponent, CardBaseComponent>? RearguardCardDragCancelled;

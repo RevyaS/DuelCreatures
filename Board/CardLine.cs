@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 [Tool]
@@ -5,6 +6,19 @@ public partial class CardLine : PanelContainer
 {
     protected HBoxNodeContainer Container = null!;
     protected IChildManagerComponent ContainerNodeManager => Container;    
+    protected DropArea DropArea = null!;
+
+    private ComponentInputState inputState = ComponentInputState.None;
+    [Export]
+    public bool Droppable
+    {
+        get => inputState == ComponentInputState.Droppable;
+        set
+        {
+            SetState(ComponentInputState.Droppable, value);
+            Render();
+        }
+    }
 
     private float _cardScale = SizeConstants.CardScaleFactor;
     [Export(PropertyHint.Range, "0.0, 1.0")]
@@ -41,11 +55,46 @@ public partial class CardLine : PanelContainer
         }
     }
 
+    private bool _draggable = false;
+    [Export]
+    public bool Draggable { 
+        get => _draggable; 
+        set
+        {
+            _draggable = value;
+            Render();
+        } 
+    }
+
+    private BoxContainer.AlignmentMode _alignment = BoxContainer.AlignmentMode.Begin;
+    [Export]
+    public BoxContainer.AlignmentMode Alignment { 
+        get => _alignment; 
+        set
+        {
+            _alignment = value;
+            Render();
+        } 
+    }
+
     public override void _Ready()
     {
         Container = GetNode<HBoxNodeContainer>($"%{nameof(Container)}");
-        OnComponentsSet();   
+        DropArea = GetNode<DropArea>($"%{nameof(DropArea)}");
+        DropArea.CardDropped += OnCardDropped;
+
+        OnComponentsSet();
         Render();
+    }
+
+    private void OnCardDropped(Card card)
+    {
+        CardDropped?.Invoke(card);
+    }
+
+    private void OnCardDragging(CardBaseComponent component)
+    {
+        CardDragging?.Invoke(component);
     }
 
     protected virtual void OnComponentsSet()
@@ -62,10 +111,13 @@ public partial class CardLine : PanelContainer
     {
         Container.RemoveThemeConstantOverride("separation");
         Container.AddThemeConstantOverride("separation", _separation);
+        Container.Alignment = Alignment;
+        DropArea.Visible = Droppable;
 
         ContainerNodeManager.ApplyToChildren<CardContainer>(container =>
         {
             container.CardScale = CardScale;
+            container.Draggable = Draggable;
         });
 
         if(_shrinks)
@@ -74,5 +126,22 @@ public partial class CardLine : PanelContainer
         }
     }
 
-    public virtual void AddCard(Card card) {}
+    private void SetState(ComponentInputState newState, bool value)
+    {
+        if(!value)
+        {
+            inputState = ComponentInputState.None;
+        } else
+        {
+            inputState = newState;
+        }
+    }
+
+    public virtual void AddCard(Card card)
+    {
+        card.CardDragging += OnCardDragging;
+    }
+
+    public event Action<CardBaseComponent>? CardDragging;
+    public event Action<Card>? CardDropped;
 }

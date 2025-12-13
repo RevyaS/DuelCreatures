@@ -6,6 +6,4 @@
 [node name="CardLineDynamic" instance=ExtResource("1_ormq5")]
 offset_right = 814.0
 script = ExtResource("2_baxsq")
-
-[node name="Container" parent="MarginContainer" index="0"]
-theme_override_constants/separation = 0
+HideCards = false
