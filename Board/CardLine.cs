@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 [Tool]
@@ -140,6 +142,22 @@ public partial class CardLine : PanelContainer
     public virtual void AddCard(Card card)
     {
         card.CardDragging += OnCardDragging;
+    }
+
+    public void UnsubscribeCardEvents(Card card)
+    {
+        card.CardDragging -= OnCardDragging;
+    }
+
+    public Card? FindCard(Func<Card, bool> predicate)
+    {
+        return GetCards().FirstOrDefault(predicate);
+    }
+
+    public IEnumerable<Card> GetCards()
+    {
+        return Container.GetChildren<CardContainer>()
+            .Select(cont => cont.CurrentCard!);
     }
 
     public event Action<CardBaseComponent>? CardDragging;

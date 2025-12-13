@@ -385,6 +385,15 @@ public partial class DuelCreaturesBoard : Control
         PlayerHand.Draggable = false;
     }
 
+    public void EnablePlayerHandDropping()
+    {
+        PlayerHand.Droppable = true;
+    }
+    public void DisablePlayerHandDropping()
+    {
+        PlayerHand.Droppable = false;
+    }
+
     public void EnableGuardDragging()
     {
         GuardZone.Draggable = true;

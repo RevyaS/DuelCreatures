@@ -78,7 +78,7 @@ public partial class CardContainer : Control
     {
         if(currentCard is not null)
         {
-            RemoveCard();
+            RemoveCardAndFree();
         }
         card.Draggable = Draggable;
         card.CardDragging += OnCardDragging;
@@ -108,11 +108,16 @@ public partial class CardContainer : Control
         CardDragging?.Invoke(component);
     }
 
+    public void RemoveCardAndFree()
+    {
+        currentCard?.QueueFree();
+        RemoveCard();
+    }
+
     public void RemoveCard()
     {
         if(currentCard is not null)
         {
-            currentCard.QueueFree();
             RemoveChild(currentCard);
         }
     }

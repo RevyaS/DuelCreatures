@@ -61,6 +61,7 @@ public partial class CardLineDynamic : CardLine
     {
         var containedCard = card.GetChild<Card>(0);
         Container.RemoveChild(card);
+        UnsubscribeCardEvents(containedCard);
         card.RemoveChild(containedCard);
         card.QueueFree();
     }
@@ -81,17 +82,6 @@ public partial class CardLineDynamic : CardLine
         return Container.GetChildren<CardContainer>()
             .Select(cont => cont.CurrentCard)
             .Any(predicate);
-    }
-
-    public Card? FindCard(Func<Card, bool> predicate)
-    {
-        return GetCards().FirstOrDefault(predicate);
-    }
-
-    public IEnumerable<Card> GetCards()
-    {
-        return Container.GetChildren<CardContainer>()
-            .Select(cont => cont.CurrentCard!);
     }
 
     public bool HasCard(Func<CardContainer, bool> predicate)

@@ -171,7 +171,7 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         {
             if(circle.Card is null)
             {
-                cardRotationContainer.RemoveCard();
+                cardRotationContainer.RemoveCardAndFree();
             } else
             {
                 SetCard(circle.Card!);
@@ -202,7 +202,7 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
 
     public void ClearCard()
     {
-        cardRotationContainer.RemoveCard();
+        cardRotationContainer.RemoveCardAndFree();
     }
 
     public void FaceUp()

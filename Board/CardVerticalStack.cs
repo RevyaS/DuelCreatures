@@ -11,6 +11,6 @@ public partial class CardVerticalStack : PanelContainer
 
     public void ClearCard()
     {
-        cardContainer.RemoveCard();
+        cardContainer.RemoveCardAndFree();
     }
 }

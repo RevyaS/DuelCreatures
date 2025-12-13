@@ -27,7 +27,7 @@ public partial class CardLineStatic : CardLine
     {
         ContainerNodeManager.ApplyToChildren<CardContainer>((child) =>
         {
-            child.RemoveCard();
+            child.RemoveCardAndFree();
         });
         lastIndex = 0;
     }
@@ -80,6 +80,46 @@ public partial class CardLineStatic : CardLine
         }
     }
 
+    public void RemoveCard(Card card, bool freeCard = true)
+    {
+        int removeIndex = -1;
+
+        // Find the index
+        for (int i = 0; i < Container.GetChildCount(); i++)
+        {
+            var currentContainer = Container.GetChild<CardContainer>(i);
+            if (currentContainer.HasCard &&
+                ReferenceEquals(currentContainer.CurrentCard, card))
+            {
+                removeIndex = i;
+                break;
+            }
+        }
+
+        if (removeIndex == -1)
+            return;
+
+        // 2️⃣ Shift cards left
+        for (int i = removeIndex; i < Container.GetChildCount() - 1; i++)
+        {
+            var currentContainer = Container.GetChild<CardContainer>(i);
+            var nextContainer = Container.GetChild<CardContainer>(i + 1);
+            if(nextContainer.HasCard)
+            {
+                currentContainer.AddCard(nextContainer.CurrentCard!);
+            } else
+            {
+                if(freeCard)
+                {
+                    currentContainer.RemoveCardAndFree();
+                } else
+                {
+                    currentContainer.RemoveCard();
+                }
+            }
+        }
+    }
+
     public override void AddCard(Card card)
     {
         if(lastIndex == MaxCards) throw new InvalidOperationException("Already reached MAX amount of cards");
@@ -88,5 +128,6 @@ public partial class CardLineStatic : CardLine
         var container = Container.GetChild<CardContainer>(lastIndex++);
         container.AddChild(card);
         card.IsFront = true;
+        base.AddCard(card);
     }
 }
