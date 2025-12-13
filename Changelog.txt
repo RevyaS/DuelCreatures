@@ -1,5 +1,6 @@
 v.0002 Skills and Trigger selection
 - Updated for ArC v.0000004
+- Utilize VanguardAI from ArC, InputProviderFactory loads the AI data
 
 v.0001 Duel Creatures
 - Created Placeholder card
