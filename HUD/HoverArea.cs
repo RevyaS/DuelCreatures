@@ -3,6 +3,7 @@ using Godot;
 
 [GlobalClass]
 [Icon("res://Assets/Icons/Control.svg")]
+[Tool]
 public partial class HoverArea : Control
 {    
     private bool Hovered = false;
@@ -34,7 +35,6 @@ public partial class HoverArea : Control
 
         if(!inside && Hovered)
         {
-            GD.Print($"Hovering: false");
             Hovered = false;
             HoverReleased?.Invoke();
         }

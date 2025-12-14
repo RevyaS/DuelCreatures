@@ -3,6 +3,7 @@ using Godot;
 
 [GlobalClass]
 [Icon("res://Assets/Icons/Control.svg")]
+[Tool]
 public partial class DropArea : Control
 {
     public override bool _CanDropData(Vector2 atPosition, Variant data)

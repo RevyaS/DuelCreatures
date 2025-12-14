@@ -124,7 +124,6 @@ public partial class CardLineStatic : CardLine
     {
         if(lastIndex == MaxCards) throw new InvalidOperationException("Already reached MAX amount of cards");
 
-        GD.Print("Last Index: ", lastIndex);
         var container = Container.GetChild<CardContainer>(lastIndex++);
         container.AddChild(card);
         card.IsFront = true;
