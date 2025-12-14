@@ -28,8 +28,8 @@ theme_override_constants/margin_bottom = 2
 
 [node name="CardRotationContainer" type="Control" parent="MarginContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(189, 189)
 layout_mode = 2
+mouse_filter = 1
 script = ExtResource("2_o1h87")
 metadata/_custom_type_script = "uid://d0xdsvmtayatq"
 
@@ -39,7 +39,6 @@ scale = Vector2(0.45, 0.45)
 
 [node name="DropArea" type="Control" parent="."]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 script = ExtResource("4_5133l")
 metadata/_custom_type_script = "uid://dwrq2pnaqfw1s"

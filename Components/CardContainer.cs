@@ -84,7 +84,13 @@ public partial class CardContainer : Control
         card.CardDragging += OnCardDragging;
         card.CardDragCancelled += OnCardDragCancelled;
         card.CardPressed += OnCardPressed;
+        card.CardLongPressed += OnCardLongPressed;
         AddChild(card);
+    }
+
+    private void OnCardLongPressed(Card card)
+    {
+        CardLongPressed?.Invoke(card);
     }
 
     private void OnCardPressed(Card card)
@@ -188,4 +194,5 @@ public partial class CardContainer : Control
     public Action<CardBaseComponent>? CardDragging;
     public Action<CardBaseComponent>? CardDragCancelled;
     public event Action<Card>? CardPressed;
+    public event Action<Card>? CardLongPressed;
 }

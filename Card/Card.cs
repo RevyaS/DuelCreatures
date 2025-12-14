@@ -13,6 +13,11 @@ public partial class Card : CardBaseComponent
         CardPressed?.Invoke(this);
     }
 
+    protected override void OnLongPress()
+    {
+        CardLongPressed?.Invoke(this);
+    }
+
     public override Card CreateClone()
     {
         var preview = SceneFactory.CreateCard(CurrentCard);
@@ -33,4 +38,5 @@ public partial class Card : CardBaseComponent
     }
 
     public event Action<Card>? CardPressed;
+    public event Action<Card>? CardLongPressed;
 }

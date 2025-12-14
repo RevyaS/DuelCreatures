@@ -77,6 +77,7 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         cardRotationContainer.CardDragging += OnCardDragging;
         cardRotationContainer.CardDragCancelled += OnCardDragCancelled;
         cardRotationContainer.CardPressed += OnCardPressed;
+        cardRotationContainer.CardLongPressed += OnCardLongPressed;
 
         dropArea = GetNode<DropArea>($"%{nameof(DropArea)}");
         dropArea.CardDropped += OnCardDropped;
@@ -90,6 +91,11 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         hoverArea.HoverReleased += OnHoverReleased;
 
         Render();
+    }
+
+    private void OnCardLongPressed(Card card)
+    {
+        LongPressed?.Invoke(this);
     }
 
     private void OnCardPressed(Card card)
@@ -249,4 +255,5 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
     public event Action<UnitCircleComponent>? Hovering;
     public event Action<UnitCircleComponent>? HoverReleased;
     public event Action<Card>? CardPressed;
+    public event Action<UnitCircleComponent>? LongPressed;
 }

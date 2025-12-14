@@ -57,10 +57,16 @@ public partial class DuelCreaturesBoard : Control
             rearguard.RearguardCardDragCancelled += OnPlayerRearGuardCardDragCancelled;
         });
 
+        PlayerVanguard.LongPressed += OnPlayerVanguardLongPressed;
         PlayerHand.CardPressed += OnHandCardPressed;
 
         PlayerDamageZone.CardPressed += OnDamageZoneCardPressed;
         OppDamageZone.CardPressed += OnDamageZoneCardPressed;
+    }
+
+    private void OnPlayerVanguardLongPressed(UnitCircleComponent _)
+    {
+        PlayerSoulPressed?.Invoke();
     }
 
     private void OnDamageZoneCardPressed(Card card)
@@ -360,4 +366,5 @@ public partial class DuelCreaturesBoard : Control
     public event Action<UnitCircleComponent>? PlayerCircleHoverReleased;
     public event Action<UnitCircleComponent>? OppCircleHovering;
     public event Action<UnitCircleComponent>? OppCircleHoverReleased;
+    public event Action? PlayerSoulPressed;
 }

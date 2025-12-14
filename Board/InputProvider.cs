@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ArC.CardGames;
 using ArC.CardGames.Components;
@@ -43,11 +44,16 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         board.PlayerDropZone.SetCardList(CardListComponent);
         board.OppDropZone.SetCardList(CardListComponent);
 
+        Board.PlayerSoulPressed += OnPlayerSoulPressed;
         Board.HandCardPressed += OnHandCardPressed;
         Board.UnitCircleCardPressed += OnUnitCircleCardPressed;
         Board.DamageZoneCardPressed += OnDamageZoneCardPressed;
     }
 
+    private void OnPlayerSoulPressed()
+    {
+        CardListComponent.Show("Soul", PlayArea.Soul.Cards.Cast<VanguardCard>().ToList());
+    }
 
     public void Setup(VanguardPlayArea playArea, VanguardPlayArea oppPlayArea, GameContext gameContext)
     {
