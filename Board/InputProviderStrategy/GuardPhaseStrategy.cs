@@ -13,6 +13,8 @@ public class GuardPhaseStrategy(DuelCreaturesBoard Board, UnitCircleComponent Gu
         Board.EnablePlayerHandDragging();
         Board.EnableGuardDropping();
 
+        Board.PlayerHand.SetGuardMode(true);
+
         List<VanguardCard> selectedCards = [];
         int basePower = Board.PlayerVanguard.UnitCircle.GetOverallPower();
 
@@ -84,6 +86,8 @@ public class GuardPhaseStrategy(DuelCreaturesBoard Board, UnitCircleComponent Gu
 
         Board.HideLeftButton();
         Board.DisablePlayerHandDragging();
+        Board.DisablePlayerHandDropping();
+        Board.PlayerHand.SetGuardMode(false);
 
         return selectedCards.Cast<CardBase>().ToList();
     }

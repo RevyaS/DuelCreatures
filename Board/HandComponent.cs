@@ -43,4 +43,13 @@ public partial class HandComponent : CardLineDynamic, IEventBusUtilizer
     {
         Hand = hand;
     }
+
+    public void SetGuardMode(bool value)
+    {
+        ContainerNodeManager.ApplyToChildren<CardContainer>(child =>
+        {
+            var containedCard = child.GetChild<VanguardCardComponent>(0);
+            containedCard.GuardMode = value;
+        });
+    }
 }

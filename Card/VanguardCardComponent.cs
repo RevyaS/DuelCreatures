@@ -4,9 +4,20 @@ using Godot;
 
 public partial class VanguardCardComponent : Card
 {
-    Label PowerLabel = null!, CriticalLabel = null!, GradeLabel = null!;
-    PanelContainer PowerPanel = null!, GradePanel = null!;
+    Label PowerLabel = null!, CriticalLabel = null!, GradeLabel = null!, GuardLabel = null!;
+    PanelContainer PowerPanel = null!, GradePanel = null!, GuardPanel = null!;
     public override VanguardCard CurrentCard => (VanguardCard)base.CurrentCard;
+
+    private bool _guardMode = false;
+    public bool GuardMode
+    {
+        get => _guardMode;
+        set
+        {
+            _guardMode = value;
+            Render();
+        }
+    }
     
     private int _power = 0;
     public int Power
@@ -24,7 +35,8 @@ public partial class VanguardCardComponent : Card
     {
         get => _critical;
         set
-        {
+        
+{
             _critical = value;
             Render();
         }
@@ -40,15 +52,27 @@ public partial class VanguardCardComponent : Card
             Render();
         }
     }
-    
+
+    private int _guard = 0;
+    public int Guard
+    {
+        get => _guard;
+        set
+        {
+            _guard = value;
+            Render();
+        }
+    }
     
     public override void _Ready()
     {
         PowerLabel = GetNode<Label>($"%{nameof(PowerLabel)}");
         CriticalLabel = GetNode<Label>($"%{nameof(CriticalLabel)}");
         GradeLabel = GetNode<Label>($"%{nameof(GradeLabel)}");
+        GuardLabel = GetNode<Label>($"%{nameof(GuardLabel)}");
         PowerPanel = GetNode<PanelContainer>($"%{nameof(PowerPanel)}");
         GradePanel = GetNode<PanelContainer>($"%{nameof(GradePanel)}");
+        GuardPanel = GetNode<PanelContainer>($"%{nameof(GuardPanel)}");
         base._Ready();
     }
 
@@ -58,9 +82,11 @@ public partial class VanguardCardComponent : Card
         PowerLabel.Text = Power.ToString();
         CriticalLabel.Text = Critical.ToString();
         GradeLabel.Text = Grade.ToString();
+        GuardLabel.Text = Guard.ToString();
 
-        PowerPanel.Visible = IsFront;
+        PowerPanel.Visible = IsFront && !GuardMode;
         GradePanel.Visible = IsFront;
+        GuardPanel.Visible = IsFront && GuardMode;
     }
 
     public override void LoadVanguardCard(CardBase card)
@@ -69,6 +95,7 @@ public partial class VanguardCardComponent : Card
         Power = vgcard.Power;
         Critical = vgcard.Critical;
         Grade = vgcard.Grade;
+        Guard = vgcard.Guard;
 
         base.LoadVanguardCard(card);
     }
@@ -76,6 +103,7 @@ public partial class VanguardCardComponent : Card
     public override Card CreateClone()
     {
         var card = SceneFactory.CreateVanguardCard(CurrentCard);
+        card.GuardMode = GuardMode;
         return card;
     }
 }

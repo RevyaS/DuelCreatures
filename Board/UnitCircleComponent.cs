@@ -135,8 +135,21 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
     public void SetEventBus(VanguardEventBus eventBus)
     {
         eventBus.CardAssignedToUnitCircle += OnCardAssignedToUnitCircle;
+        eventBus.CardRemovedFromUnitCircle += OnCardRemovedFromUnitCircle;
         eventBus.UnitCircleOrientationChanged += OnUnitCircleOrientationChanged;
         eventBus.PowerEffectUpdatedToUnitCircle += OnPowerEffectUpdatedToUnitCircle;
+    }
+
+    private Task OnCardRemovedFromUnitCircle(UnitCircle circle)
+    {
+        if(ReferenceEquals(circle, UnitCircle))
+        {
+            if(circle.Card is null)
+            {
+                cardRotationContainer.RemoveCardAndFree();
+            }
+        }
+        return Task.CompletedTask;
     }
 
     private void OnPowerEffectUpdatedToUnitCircle(UnitCircle unitCircle)

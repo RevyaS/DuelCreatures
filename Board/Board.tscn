@@ -199,7 +199,8 @@ grow_horizontal = 2
 grow_vertical = 2
 rotation = -1.5707964
 pivot_offset = Vector2(282, 96.5)
-Separation = 0
+MaxCards = 6
+Separation = -50
 
 [node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/OppBoard"]
 layout_mode = 1
@@ -371,7 +372,8 @@ grow_horizontal = 2
 grow_vertical = 2
 rotation = 1.5707964
 pivot_offset = Vector2(282, 96.5)
-Separation = 0
+MaxCards = 6
+Separation = -50
 
 [node name="Center" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -562,7 +564,7 @@ offset_right = 279.5
 offset_bottom = 96.5
 grow_horizontal = 2
 grow_vertical = 2
-MaxCards = 0
+MaxCards = 5
 Separation = 0
 Alignment = 1
 
