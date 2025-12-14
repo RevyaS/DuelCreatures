@@ -9,6 +9,8 @@ v.0002 Skills and Trigger selection
 - Can show DropZone cards by clicking on the drop zone 
 - Can show Card Info by clicking from the hand 
 - Can show Card Info by clicking from the unit circles 
+- Can show Card Info by clicking from the damage zone 
+- Can show Card Info by clicking from the card list 
 - Created CardList HUD for list of cards
 - Created CardInfo HUD for card info
 

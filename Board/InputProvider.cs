@@ -36,6 +36,8 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         board = GetNode<DuelCreaturesBoard>($"%{nameof(DuelCreaturesBoard)}");
         SelectCardsFromHandComponent = GetNode<SelectCardsFromHandComponent>($"%{nameof(SelectCardsFromHandComponent)}");
         CardListComponent = GetNode<CardList>($"%{nameof(CardListComponent)}");
+        CardListComponent.CardPressed += OnCardListCardPressed;
+
         CardInfoComponent = GetNode<CardInfo>($"%{nameof(CardInfoComponent)}");
 
         board.PlayerDropZone.SetCardList(CardListComponent);
@@ -43,7 +45,10 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
         Board.HandCardPressed += OnHandCardPressed;
         Board.UnitCircleCardPressed += OnUnitCircleCardPressed;
+        Board.DamageZoneCardPressed += OnDamageZoneCardPressed;
     }
+
+
     public void Setup(VanguardPlayArea playArea, VanguardPlayArea oppPlayArea, GameContext gameContext)
     {
         OpponentPlayArea = oppPlayArea;
@@ -99,6 +104,16 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
     }
 
     private void OnUnitCircleCardPressed(Card card)
+    {
+        ShowCardInfo(card);
+    }
+
+    private void OnCardListCardPressed(Card card)
+    {
+        ShowCardInfo(card);
+    }
+
+    private void OnDamageZoneCardPressed(Card card)
     {
         ShowCardInfo(card);
     }

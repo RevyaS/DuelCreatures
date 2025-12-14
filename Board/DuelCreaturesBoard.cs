@@ -58,6 +58,14 @@ public partial class DuelCreaturesBoard : Control
         });
 
         PlayerHand.CardPressed += OnHandCardPressed;
+
+        PlayerDamageZone.CardPressed += OnDamageZoneCardPressed;
+        OppDamageZone.CardPressed += OnDamageZoneCardPressed;
+    }
+
+    private void OnDamageZoneCardPressed(Card card)
+    {
+        DamageZoneCardPressed?.Invoke(card);
     }
 
     private void OnUnitCircleCardPressed(Card card)
@@ -511,6 +519,7 @@ public partial class DuelCreaturesBoard : Control
 
     public event Action<Card>? HandCardPressed;
     public event Action<Card>? UnitCircleCardPressed;
+    public event Action<Card>? DamageZoneCardPressed;
     public event Action<Card>? PlayerVanguardCardDropped;
     public event Action? LeftButtonPressed;
     public event Action<UnitCircleComponent, Card>? CardDroppedToPlayerRearguard;

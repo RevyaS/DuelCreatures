@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using ArC.CardGames.Predefined.Vanguard;
 using Godot;
@@ -37,9 +38,17 @@ public partial class CardList : Control
         {
             CardContainer container = new();
             container.AddCard(SceneFactory.CreateVanguardCard(card));
+            container.CardPressed += OnCardPressed;
             CardContainerList.AddChild(container);
         }
 
         Show();
     }
+
+    private void OnCardPressed(Card card)
+    {
+        CardPressed?.Invoke(card);
+    }
+
+    public event Action<Card>? CardPressed;
 }
