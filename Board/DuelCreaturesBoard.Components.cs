@@ -66,6 +66,10 @@ public partial class DuelCreaturesBoard : Control
         ..PlayerRearguards, PlayerVanguard
     ];
 
+    List<UnitCircleComponent> OpponentCircles => [
+        ..OppFrontRowCircles, OppBackLeft, OppBackCenter, OppBackRight
+    ];
+
     List<UnitCircleComponent> OppFrontRowCircles => [
         OppFrontLeft, OppFrontRight, OppVanguard
     ];

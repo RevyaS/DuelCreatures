@@ -42,8 +42,8 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         board.OppDropZone.SetCardList(CardListComponent);
 
         Board.HandCardPressed += OnHandCardPressed;
+        Board.UnitCircleCardPressed += OnUnitCircleCardPressed;
     }
-
     public void Setup(VanguardPlayArea playArea, VanguardPlayArea oppPlayArea, GameContext gameContext)
     {
         OpponentPlayArea = oppPlayArea;
@@ -94,6 +94,16 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
     }
 
     private void OnHandCardPressed(Card card)
+    {
+        ShowCardInfo(card);
+    }
+
+    private void OnUnitCircleCardPressed(Card card)
+    {
+        ShowCardInfo(card);
+    }
+
+    private void ShowCardInfo(Card card)
     {
         CardInfoComponent.Show((VanguardCard)card.CurrentCard);
     }

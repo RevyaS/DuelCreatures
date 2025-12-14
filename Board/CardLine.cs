@@ -142,7 +142,13 @@ public partial class CardLine : PanelContainer
     public virtual void AddCard(Card card)
     {
         card.CardDragging += OnCardDragging;
+        card.CardDragCancelled += OnCardDragCancelled;
         card.CardPressed += OnCardPressed;
+    }
+
+    private void OnCardDragCancelled(CardBaseComponent component)
+    {
+        CardDragCancelled?.Invoke(component);
     }
 
     private void OnCardPressed(Card card)
@@ -167,6 +173,7 @@ public partial class CardLine : PanelContainer
     }
 
     public event Action<CardBaseComponent>? CardDragging;
+    public event Action<CardBaseComponent>? CardDragCancelled;
     public event Action<Card>? CardDropped;
     public event Action<Card>? CardPressed;
 }

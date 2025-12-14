@@ -138,11 +138,13 @@ theme_override_constants/separation = 20
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
+Droppable = false
 
 [node name="OppFrontRight" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone" instance=ExtResource("3_iu5jy")]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
+Droppable = false
 
 [node name="Control" type="Control" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone/OppFrontRight"]
 layout_mode = 2
@@ -157,11 +159,13 @@ theme_override_constants/separation = 20
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
+Droppable = false
 
 [node name="OppVanguard" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center" instance=ExtResource("3_iu5jy")]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
+Droppable = false
 
 [node name="Control" type="Control" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center/OppVanguard"]
 layout_mode = 2
@@ -175,10 +179,12 @@ theme_override_constants/separation = 20
 [node name="OppBackLeft" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right" instance=ExtResource("3_iu5jy")]
 unique_name_in_owner = true
 layout_mode = 2
+Droppable = false
 
 [node name="OppFrontLeft" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right" instance=ExtResource("3_iu5jy")]
 unique_name_in_owner = true
 layout_mode = 2
+Droppable = false
 
 [node name="Control" type="Control" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right/OppFrontLeft"]
 layout_mode = 2
@@ -412,6 +418,7 @@ theme_override_constants/separation = 20
 [node name="PlayerFrontLeft" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone" instance=ExtResource("3_iu5jy")]
 unique_name_in_owner = true
 layout_mode = 2
+Droppable = false
 
 [node name="CenterGuide" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone/PlayerFrontLeft"]
 layout_mode = 2
@@ -421,6 +428,7 @@ size_flags_vertical = 4
 [node name="PlayerBackLeft" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone" instance=ExtResource("3_iu5jy")]
 unique_name_in_owner = true
 layout_mode = 2
+Droppable = false
 
 [node name="CenterGuide" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone/PlayerBackLeft"]
 layout_mode = 2
@@ -448,6 +456,7 @@ theme_override_constants/separation = 20
 [node name="PlayerVanguard" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center" instance=ExtResource("3_iu5jy")]
 unique_name_in_owner = true
 layout_mode = 2
+Droppable = false
 
 [node name="Control" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center/PlayerVanguard"]
 layout_mode = 2
@@ -457,6 +466,7 @@ size_flags_vertical = 4
 [node name="PlayerBackCenter" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center" instance=ExtResource("3_iu5jy")]
 unique_name_in_owner = true
 layout_mode = 2
+Droppable = false
 
 [node name="PlayerCenterBoostLine" type="Line2D" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center"]
 unique_name_in_owner = true
@@ -479,10 +489,12 @@ theme_override_constants/separation = 20
 [node name="PlayerFrontRight" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right" instance=ExtResource("3_iu5jy")]
 unique_name_in_owner = true
 layout_mode = 2
+Droppable = false
 
 [node name="PlayerBackRight" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right" instance=ExtResource("3_iu5jy")]
 unique_name_in_owner = true
 layout_mode = 2
+Droppable = false
 
 [node name="PlayerRightBoostLine" type="Line2D" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right"]
 unique_name_in_owner = true

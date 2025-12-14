@@ -31,6 +31,12 @@ public partial class DuelCreaturesBoard : Control
             circle.CardDropped += (card) => OnPlayerRearguardCardDropped(circle, card);
             circle.ScreenDragging += OnPlayerCircleScreenDragged;
             circle.ScreenDragRelease += OnPlayerCircleScreenDragRelease;
+            circle.CardPressed += OnUnitCircleCardPressed;
+        });
+
+        OpponentCircles.ForEach((circle) =>
+        {
+            circle.CardPressed += OnUnitCircleCardPressed;
         });
 
         PlayerFrontRowCircles.ForEach((circle) =>
@@ -52,6 +58,11 @@ public partial class DuelCreaturesBoard : Control
         });
 
         PlayerHand.CardPressed += OnHandCardPressed;
+    }
+
+    private void OnUnitCircleCardPressed(Card card)
+    {
+        UnitCircleCardPressed?.Invoke(card);
     }
 
     private void OnOppCircleHoverReleased(UnitCircleComponent component)
@@ -499,6 +510,7 @@ public partial class DuelCreaturesBoard : Control
     }
 
     public event Action<Card>? HandCardPressed;
+    public event Action<Card>? UnitCircleCardPressed;
     public event Action<Card>? PlayerVanguardCardDropped;
     public event Action? LeftButtonPressed;
     public event Action<UnitCircleComponent, Card>? CardDroppedToPlayerRearguard;

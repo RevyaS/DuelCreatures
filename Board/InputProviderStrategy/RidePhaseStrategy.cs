@@ -9,8 +9,8 @@ public class RidePhaseStrategy(DuelCreaturesBoard Board) : IInputProviderStrateg
     public async Task<CardBase?> SelectCardFromHandOrNot(VanguardCard currentVanguard)
     {
         Board.ShowLeftButton(TextConstants.EndPhase);
-        Board.EnablePlayerVanguardDropping();
         Board.EnablePlayerHandDragging();
+        Board.DisablePlayerRearguardDropping();
         
         VanguardCard? newVanguard = null;
 
@@ -25,9 +25,25 @@ public class RidePhaseStrategy(DuelCreaturesBoard Board) : IInputProviderStrateg
             };
             Board.LeftButtonPressed += endPhaseHandler;
 
+            Action<CardBaseComponent> handCardDraggingHandler = (card) =>
+            {
+                Board.EnablePlayerVanguardDropping();
+            };
+            Board.PlayerHand.CardDragging += handCardDraggingHandler;
+
+            Action<CardBaseComponent> handCardDraggingCancelHandler = (card) =>
+            {
+                card.CurrentlyDragged = false;
+                Board.DisablePlayerVanguardDropping();
+            };
+            Board.PlayerHand.CardDragCancelled += handCardDraggingCancelHandler;
+
             var result = await completionSource.Task;
+
             Board.PlayerVanguard.CardDropped -= selectionHandler; 
             Board.LeftButtonPressed -= endPhaseHandler; 
+            Board.PlayerHand.CardDragging -= handCardDraggingHandler;
+            Board.PlayerHand.CardDragCancelled -= handCardDraggingCancelHandler;
 
             if(result is null)
             {
