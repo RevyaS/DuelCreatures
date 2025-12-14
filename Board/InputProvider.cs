@@ -29,12 +29,14 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     SelectCardsFromHandComponent SelectCardsFromHandComponent = null!;
     CardList CardListComponent = null!;
+    CardInfo CardInfoComponent = null!;
 
     public override void _Ready()
     {
         board = GetNode<DuelCreaturesBoard>($"%{nameof(DuelCreaturesBoard)}");
         SelectCardsFromHandComponent = GetNode<SelectCardsFromHandComponent>($"%{nameof(SelectCardsFromHandComponent)}");
         CardListComponent = GetNode<CardList>($"%{nameof(CardListComponent)}");
+        CardInfoComponent = GetNode<CardInfo>($"%{nameof(CardInfoComponent)}");
 
         board.PlayerDropZone.SetCardList(CardListComponent);
         board.OppDropZone.SetCardList(CardListComponent);
@@ -93,7 +95,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     private void OnHandCardPressed(Card card)
     {
-        VanguardCardComponent component = (VanguardCardComponent)card;
+        CardInfoComponent.Show((VanguardCard)card.CurrentCard);
     }
 
     public Task<List<CardBase>> SelectCardsFromHandRange(int minimum, int maximum)

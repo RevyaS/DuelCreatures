@@ -8,15 +8,9 @@ public partial class Card : CardBaseComponent
     CardBase card = null!;
     public virtual CardBase CurrentCard => card;
 
-    public override void _GuiInput(InputEvent @event)
+    protected override void OnPressed()
     {
-        if(@event is InputEventMouseButton inputEventMouseButton)
-        {
-            if(inputEventMouseButton.ButtonIndex == MouseButton.Left && inputEventMouseButton.Pressed)
-            {
-                CardPressed?.Invoke(this);
-            }
-        }
+        CardPressed?.Invoke(this);
     }
 
     public override Card CreateClone()

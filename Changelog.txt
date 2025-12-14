@@ -7,6 +7,7 @@ v.0002 Skills and Trigger selection
     - When guarding, the cards shows Guard value temporarily
 - Rearguards can be retired when attacked successfully
 - Can show DropZone cards by clicking on the drop zone 
+- Can show Card Info by clicking from the hand 
 - Created CardList HUD for list of cards
 - Created CardInfo HUD for card info
 

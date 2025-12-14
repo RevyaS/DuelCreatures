@@ -24,14 +24,9 @@ public partial class CardLineDynamic : CardLine
         Container.AddChild(cardContainer);
         cardContainer.AddChild(card);
         card.IsFront = !_hideCards;
-        card.CardPressed += OnCardPressed;
         base.AddCard(card);
     }
 
-    private void OnCardPressed(Card card)
-    {
-        CardPressed?.Invoke(card);
-    }
 
     public void RemoveCard(Card card)
     {
@@ -88,6 +83,4 @@ public partial class CardLineDynamic : CardLine
     {
         return ContainerNodeManager.HasChild(predicate);
     }
-
-    public event Action<Card>? CardPressed;
 }

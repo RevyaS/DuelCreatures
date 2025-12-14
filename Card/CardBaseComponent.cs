@@ -5,6 +5,7 @@ using Godot;
 public abstract partial class CardBaseComponent : Control
 {
     TextureRect Front = null!;
+    private bool _pressed = false;
 
     private bool _currentlyDragged = false;
     public bool CurrentlyDragged { 
@@ -83,6 +84,44 @@ public abstract partial class CardBaseComponent : Control
                 CardDragCancelled?.Invoke(this);
             }
         }
+    }
+
+    public override void _GuiInput(InputEvent e)
+    {
+        // Mouse click or touch
+        if (e is InputEventMouseButton mb && mb.ButtonIndex == MouseButton.Left)
+        {
+            if(mb.Pressed)
+            {
+                _pressed = true;
+            }
+            else 
+            {
+                HandleRelease();
+            }
+        }
+
+        if (e is InputEventScreenTouch st)
+        {
+            if(st.Pressed)
+            {
+                _pressed = true;
+            }
+            else 
+            {
+                HandleRelease();
+            }
+        }
+    }
+
+    private void HandleRelease()
+    {
+        if(!_pressed) return;
+        OnPressed();
+    }
+
+    protected virtual void OnPressed()
+    {
     }
 
     public abstract CardBaseComponent CreateClone();

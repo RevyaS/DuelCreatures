@@ -25,7 +25,6 @@ public partial class DuelCreaturesBoard : Control
         LeftButton = GetNode<Button>($"%{nameof(LeftButton)}");
         LeftButton.Pressed += OnLeftButtonPressed;
         SetComponents();
-        PlayerHand.CardPressed += OnHandCardPressed;
 
         PlayerCircles.ForEach((circle) =>
         {
@@ -51,6 +50,8 @@ public partial class DuelCreaturesBoard : Control
             rearguard.RearguardCardDragging += OnPlayerRearGuardDragged;
             rearguard.RearguardCardDragCancelled += OnPlayerRearGuardCardDragCancelled;
         });
+
+        PlayerHand.CardPressed += OnHandCardPressed;
     }
 
     private void OnOppCircleHoverReleased(UnitCircleComponent component)

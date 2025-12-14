@@ -1,31 +1,34 @@
-[gd_scene load_steps=2 format=3 uid="uid://bl86gfg2luf5o"]
+[gd_scene load_steps=3 format=3 uid="uid://bl86gfg2luf5o"]
 
+[ext_resource type="Script" uid="uid://dqxfvgeb4t8dd" path="res://HUD/CardInfo.cs" id="1_fafky"]
 [ext_resource type="PackedScene" uid="uid://bd1411oyw560d" path="res://addons/rev_godot_core/Scenes/LabelValueContainer.tscn" id="1_fxwt2"]
 
-[node name="CardList" type="Control"]
+[node name="CardInfo" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_fafky")
 
 [node name="Panel" type="PanelContainer" parent="."]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = 5
 anchor_left = 0.5
-anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -93.0
-offset_top = -20.0
-offset_right = 93.0
-offset_bottom = 20.0
+offset_left = -450.0
+offset_top = 200.0
+offset_right = 450.0
+offset_bottom = 325.0
 grow_horizontal = 2
-grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="Panel"]
+layout_mode = 2
+color = Color(0.14406255, 0.14406255, 0.14406255, 1)
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel"]
-custom_minimum_size = Vector2(900, 257)
+custom_minimum_size = Vector2(900, 0)
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
@@ -39,7 +42,7 @@ theme_override_constants/separation = 7
 [node name="CardName" type="Label" parent="Panel/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 42
 text = "Blaster Blade"
 horizontal_alignment = 1
 
@@ -48,9 +51,10 @@ layout_mode = 2
 theme_override_constants/separation = 16
 
 [node name="Power" parent="Panel/MarginContainer/VBoxContainer/StatsList" instance=ExtResource("1_fxwt2")]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-FontSize = 28
+FontSize = 32
 Label = "Power"
 Value = "9000"
 
@@ -58,9 +62,10 @@ Value = "9000"
 layout_mode = 2
 
 [node name="Critical" parent="Panel/MarginContainer/VBoxContainer/StatsList" instance=ExtResource("1_fxwt2")]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-FontSize = 28
+FontSize = 32
 Label = "Critical"
 Value = "1"
 
@@ -68,16 +73,18 @@ Value = "1"
 layout_mode = 2
 
 [node name="Guard" parent="Panel/MarginContainer/VBoxContainer/StatsList" instance=ExtResource("1_fxwt2")]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-FontSize = 28
+FontSize = 32
 Label = "Guard"
-Value = "10000"
+Value = "5000"
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Panel/MarginContainer/VBoxContainer"]
+[node name="Skills" type="RichTextLabel" parent="Panel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_font_sizes/normal_font_size = 24
+theme_override_font_sizes/normal_font_size = 32
 text = "[AUTO]:[Counter Blast (2)] When this unit is placed on (VC), you may pay the cost. If you do, choose one of your opponent's rear-guards, and retire it.
 [AUTO]:[Counter Blast (2)] When this unit is placed on (RC), if you have a «Royal Paladin» vanguard, you may pay the cost. If you do, choose one of your opponent's grade 2 or greater rear-guards, and retire it."
 fit_content = true
