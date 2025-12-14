@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://cuqm30mdbu41k"]
+[gd_scene load_steps=9 format=3 uid="uid://cuqm30mdbu41k"]
 
 [ext_resource type="Script" uid="uid://d33oqm6uprjxl" path="res://Board/DuelCreaturesBoard.cs" id="1_s27tx"]
+[ext_resource type="PackedScene" uid="uid://dlahod6s4jx0i" path="res://Board/DropZoneComponent.tscn" id="2_a02pn"]
 [ext_resource type="PackedScene" uid="uid://dm8sksf3b1gcw" path="res://Board/UnitCircleComponent.tscn" id="3_iu5jy"]
 [ext_resource type="PackedScene" uid="uid://cvy4hb158pate" path="res://Board/DamageZoneComponent.tscn" id="4_iu5jy"]
 [ext_resource type="PackedScene" uid="uid://xfgt43rddlvv" path="res://Board/HorizontalCardArea.tscn" id="5_3hmgy"]
@@ -87,8 +88,13 @@ layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 20
 
-[node name="OppDropZone" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/VBoxContainer/MarginContainer/Control" instance=ExtResource("6_3hmgy")]
+[node name="OppDropZone" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/VBoxContainer/MarginContainer/Control" instance=ExtResource("2_a02pn")]
 unique_name_in_owner = true
+layout_mode = 2
+
+[node name="OppDropZone1" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/VBoxContainer/MarginContainer/Control" instance=ExtResource("6_3hmgy")]
+unique_name_in_owner = true
+visible = false
 layout_mode = 2
 
 [node name="OppDeck" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/VBoxContainer/MarginContainer/Control" instance=ExtResource("6_3hmgy")]
@@ -528,7 +534,12 @@ theme_override_constants/separation = 20
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="PlayerDropZone" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/VBoxContainer/Control/Verticals" instance=ExtResource("6_3hmgy")]
+[node name="PlayerDropZone1" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/VBoxContainer/Control/Verticals" instance=ExtResource("6_3hmgy")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="PlayerDropZone" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/VBoxContainer/Control/Verticals" instance=ExtResource("2_a02pn")]
 unique_name_in_owner = true
 layout_mode = 2
 
@@ -564,7 +575,7 @@ offset_right = 279.5
 offset_bottom = 96.5
 grow_horizontal = 2
 grow_vertical = 2
-MaxCards = 5
+MaxCards = 6
 Separation = 0
 Alignment = 1
 

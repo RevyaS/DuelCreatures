@@ -23,8 +23,9 @@ public partial class DuelCreaturesBoard : Control
     public HandComponent PlayerHand { get; private set; } = null!;
     HandComponent OppHand = null!;
 
-    CardVerticalStack PlayerDeck = null!, OppDeck = null!,
-        PlayerDropZone = null!, OppDropZone = null!;
+    CardVerticalStack PlayerDeck = null!, OppDeck = null!;
+    public DropZoneComponent PlayerDropZone { get; private set; } = null!;
+    public DropZoneComponent OppDropZone { get; private set; } = null!;
 
     List<UnitCircleComponent> AllExtraFields => [ 
         PlayerExtraLeft1, PlayerExtraLeft2, PlayerExtraRight1, PlayerExtraRight2,
@@ -109,8 +110,8 @@ public partial class DuelCreaturesBoard : Control
         PlayerHand = GetNode<HandComponent>($"%{nameof(PlayerHand)}");
         OppHand = GetNode<HandComponent>($"%{nameof(OppHand)}");
 
-        PlayerDropZone = GetNode<CardVerticalStack>($"%{nameof(PlayerDropZone)}");
-        OppDropZone = GetNode<CardVerticalStack>($"%{nameof(OppDropZone)}");
+        PlayerDropZone = GetNode<DropZoneComponent>($"%{nameof(PlayerDropZone)}");
+        OppDropZone = GetNode<DropZoneComponent>($"%{nameof(OppDropZone)}");
 
         PlayerVanguard = GetNode<UnitCircleComponent>($"%{nameof(PlayerVanguard)}");
         OppVanguard = GetNode<UnitCircleComponent>($"%{nameof(OppVanguard)}");

@@ -1,0 +1,88 @@
+[gd_scene load_steps=4 format=3 uid="uid://cl0t7q61is3ro"]
+
+[ext_resource type="Script" uid="uid://c0f5frscelvc7" path="res://HUD/CardList.cs" id="1_jtk0n"]
+[ext_resource type="Script" uid="uid://bqw5phtur46nx" path="res://Components/CardContainer.cs" id="2_jtk0n"]
+[ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Card/Card.tscn" id="3_vb51t"]
+
+[node name="CardList" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_jtk0n")
+
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -93.0
+offset_top = -20.0
+offset_right = 93.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="Panel"]
+layout_mode = 2
+color = Color(0.103743516, 0.10374353, 0.103743516, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel"]
+custom_minimum_size = Vector2(900, 257)
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer"]
+layout_mode = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer/VBoxContainer/CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Panel/MarginContainer/VBoxContainer/CenterContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Soul"
+horizontal_alignment = 1
+
+[node name="Amount" type="Label" parent="Panel/MarginContainer/VBoxContainer/CenterContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "(0)"
+horizontal_alignment = 1
+
+[node name="CardContainerList" type="HFlowContainer" parent="Panel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+alignment = 1
+
+[node name="CardContainer" type="Control" parent="Panel/MarginContainer/VBoxContainer/CardContainerList"]
+custom_minimum_size = Vector2(135, 189)
+layout_mode = 2
+script = ExtResource("2_jtk0n")
+metadata/_custom_type_script = "uid://bqw5phtur46nx"
+
+[node name="Card" parent="Panel/MarginContainer/VBoxContainer/CardContainerList/CardContainer" instance=ExtResource("3_vb51t")]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+scale = Vector2(0.45, 0.45)

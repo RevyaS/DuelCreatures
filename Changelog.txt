@@ -6,6 +6,9 @@ v.0002 Skills and Trigger selection
     - Can return cards back to hand
     - When guarding, the cards shows Guard value temporarily
 - Rearguards can be retired when attacked successfully
+- Can show DropZone cards by clicking on the drop zone 
+- Created CardList HUD for list of cards
+- Created CardInfo HUD for card info
 
 v.0001 Duel Creatures
 - Created Placeholder card

@@ -152,6 +152,9 @@ public partial class DuelCreaturesBoard : Control
 
         PlayerDamageZone.BindDamageZone(game.Board.Player1Area.DamageZone);
         OppDamageZone.BindDamageZone(game.Board.Player2Area.DamageZone);
+
+        PlayerDropZone.BindDropZone(game.Board.Player1Area.DropZone);
+        OppDropZone.BindDropZone(game.Board.Player2Area.DropZone);
     }
 
     private void SetupEventBus(VanguardEventBus eventBus)
@@ -180,6 +183,9 @@ public partial class DuelCreaturesBoard : Control
 
         PlayerDamageZone.SetEventBus(eventBus);
         OppDamageZone.SetEventBus(eventBus);
+
+        PlayerDropZone.SetEventBus(eventBus);
+        OppDropZone.SetEventBus(eventBus);
     }
 
     private Task OnCardAssignedToUnitCircle(UnitCircle unitCircle)

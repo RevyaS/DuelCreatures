@@ -28,11 +28,16 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
     IInputProviderStrategy strategy = null!;
 
     SelectCardsFromHandComponent SelectCardsFromHandComponent = null!;
+    CardList CardListComponent = null!;
 
     public override void _Ready()
     {
         board = GetNode<DuelCreaturesBoard>($"%{nameof(DuelCreaturesBoard)}");
         SelectCardsFromHandComponent = GetNode<SelectCardsFromHandComponent>($"%{nameof(SelectCardsFromHandComponent)}");
+        CardListComponent = GetNode<CardList>($"%{nameof(CardListComponent)}");
+
+        board.PlayerDropZone.SetCardList(CardListComponent);
+        board.OppDropZone.SetCardList(CardListComponent);
 
         Board.HandCardPressed += OnHandCardPressed;
     }
