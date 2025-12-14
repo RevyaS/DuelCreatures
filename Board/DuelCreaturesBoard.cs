@@ -128,17 +128,6 @@ public partial class DuelCreaturesBoard : Control
         LeftButtonPressed?.Invoke();
     }
 
-    public void ShowLeftButton(string caption)
-    {
-        LeftButton.Text = caption;
-        LeftButton.Show();
-    }
-
-    public void HideLeftButton()
-    {
-        LeftButton.Hide();
-    }
-
     private void OnHandCardPressed(Card card)
     {
         HandCardPressed?.Invoke(card);
@@ -330,14 +319,6 @@ public partial class DuelCreaturesBoard : Control
         OppTriggerZone.ClearCard();
     }
 
-    public void EnablePlayerVanguardDropping()
-    {
-        PlayerVanguard.Droppable = true;
-    }
-    public void DisablePlayerVanguardDropping()
-    {
-        PlayerVanguard.Droppable = false;
-    }
 
     public UnitCircleComponent GetPlayerOppositeCircle(UnitCircleComponent circle)
     {
@@ -355,16 +336,6 @@ public partial class DuelCreaturesBoard : Control
         return PlayerCircles.First(x => ReferenceEquals(x.UnitCircle, circle));
     }
 
-    public void EnablePlayerRearguardDropping()
-    {
-        EnablePlayerRearguardDropping(PlayerRearguards);
-    }
-
-    public void EnablePlayerRearguardDropping(List<UnitCircleComponent> rearguards)
-    {
-        rearguards.ForEach(rg => rg.Droppable = true);
-    }
-
     public bool IsBackRow(UnitCircleComponent unitCircle)
     {
         return PlayerBackRowCircles.Contains(unitCircle, ReferenceEqualityComparer.Instance);
@@ -373,148 +344,6 @@ public partial class DuelCreaturesBoard : Control
     public bool IsFrontRow(UnitCircleComponent unitCircle)
     {
         return PlayerFrontRowCircles.Contains(unitCircle, ReferenceEqualityComparer.Instance);
-    }
-
-    public void DisablePlayerRearguardDropping()
-    {
-        PlayerFrontLeft.Droppable = false;
-        PlayerBackLeft.Droppable = false;
-        PlayerBackCenter.Droppable = false;
-        PlayerFrontRight.Droppable = false;
-        PlayerBackRight.Droppable = false;
-    }
-
-    public void EnablePlayerRearguardDragging()
-    {
-        PlayerFrontLeft.Draggable = true;
-        PlayerBackLeft.Draggable = true;
-        PlayerBackCenter.Draggable = true;
-        PlayerFrontRight.Draggable = true;
-        PlayerBackRight.Draggable = true;
-    }
-    public void DisablePlayerRearguardDragging()
-    {
-        DisablePlayerRearguardDragging(PlayerRearguards);
-    }
-
-    public void DisablePlayerRearguardDragging(List<UnitCircleComponent> unitCircleComponents)
-    {
-        unitCircleComponents.ForEach(rg => rg.Draggable = false);
-    }
-
-    public void EnablePlayerHandDragging()
-    {
-        PlayerHand.Draggable = true;
-    }
-    public void DisablePlayerHandDragging()
-    {
-        PlayerHand.Draggable = false;
-    }
-
-    public void EnablePlayerHandDropping()
-    {
-        PlayerHand.Droppable = true;
-    }
-    public void DisablePlayerHandDropping()
-    {
-        PlayerHand.Droppable = false;
-    }
-
-    public void EnableGuardDragging()
-    {
-        GuardZone.Draggable = true;
-    }
-    public void DisableGuardDragging()
-    {
-        GuardZone.Draggable = false;
-    }
-
-    public void EnableGuardDropping()
-    {
-        GuardZone.Droppable = true;
-    }
-    public void DisableGuardDropping()
-    {
-        GuardZone.Droppable = false;
-    }
-
-    public void EnablePlayerUnitCircleScreenDragging()
-    {
-        PlayerVanguard.ScreenDraggable = true;
-        PlayerFrontLeft.ScreenDraggable = true;
-        PlayerBackLeft.ScreenDraggable = true;
-        PlayerBackCenter.ScreenDraggable = true;
-        PlayerFrontRight.ScreenDraggable = true;
-        PlayerBackRight.ScreenDraggable = true;
-    }
-    public void DisablePlayerUnitCircleScreenDragging()
-    {
-        PlayerVanguard.ScreenDraggable = false;
-        PlayerFrontLeft.ScreenDraggable = false;
-        PlayerBackLeft.ScreenDraggable = false;
-        PlayerBackCenter.ScreenDraggable = false;
-        PlayerFrontRight.ScreenDraggable = false;
-        PlayerBackRight.ScreenDraggable = false;
-    }
-
-    public void EnablePlayerFrontRowUnitCircleHovering()
-    {
-        PlayerFrontRowCircles.ForEach((circle) => circle.Hoverable = true);
-    }
-
-    public void DisablePlayerFrontRowUnitCircleHovering()
-    {
-        PlayerFrontRowCircles.ForEach((circle) => circle.ScreenDraggable = false);
-    }
-
-    public void EnableOppFrontRowUnitCircleHovering()
-    {
-        OppFrontRowCircles.ForEach((circle) => circle.Hoverable = true);
-    }
-
-    public void DisableOppFrontRowUnitCircleHovering()
-    {
-        OppFrontRowCircles.ForEach((circle) => circle.ScreenDraggable = false);
-    }
-
-    public void ShowBoostLine(UnitCircleComponent unitCircleComponent)
-    {
-        if(ReferenceEquals(PlayerFrontLeft, unitCircleComponent)) PlayerLeftBoostLine.Show();
-        if(ReferenceEquals(PlayerVanguard, unitCircleComponent)) PlayerCenterBoostLine.Show();
-        if(ReferenceEquals(PlayerFrontRight, unitCircleComponent)) PlayerRightBoostLine.Show();
-    }
-
-    public void HideBoostLines()
-    {
-        PlayerLeftBoostLine.Hide();
-        PlayerCenterBoostLine.Hide();
-        PlayerRightBoostLine.Hide();
-    }
-
-    public void ShowAttackLine(UnitCircleComponent attacker, UnitCircleComponent target)
-    {
-        if(ReferenceEquals(PlayerFrontLeft, attacker) && ReferenceEquals(OppFrontLeft, target)) PlayerLeftAttackLeftLine.Show();
-        if(ReferenceEquals(PlayerFrontLeft, attacker) && ReferenceEquals(OppVanguard, target)) PlayerLeftAttackCenterLine.Show();
-        if(ReferenceEquals(PlayerFrontLeft, attacker) && ReferenceEquals(OppFrontRight, target)) PlayerLeftAttackRightLine.Show();
-        if(ReferenceEquals(PlayerVanguard, attacker) && ReferenceEquals(OppFrontLeft, target)) PlayerCenterAttackLeftLine.Show();
-        if(ReferenceEquals(PlayerVanguard, attacker) && ReferenceEquals(OppVanguard, target)) PlayerCenterAttackCenterLine.Show();
-        if(ReferenceEquals(PlayerVanguard, attacker) && ReferenceEquals(OppFrontRight, target)) PlayerCenterAttackRightLine.Show();
-        if(ReferenceEquals(PlayerFrontRight, attacker) && ReferenceEquals(OppFrontLeft, target)) PlayerRightAttackLeftLine.Show();
-        if(ReferenceEquals(PlayerFrontRight, attacker) && ReferenceEquals(OppVanguard, target)) PlayerRightAttackCenterLine.Show();
-        if(ReferenceEquals(PlayerFrontRight, attacker) && ReferenceEquals(OppFrontRight, target)) PlayerRightAttackRightLine.Show();
-    }
-
-    public void HideAttackLines()
-    {
-        PlayerLeftAttackLeftLine.Hide();
-        PlayerLeftAttackCenterLine.Hide();
-        PlayerLeftAttackRightLine.Hide();
-        PlayerCenterAttackLeftLine.Hide();
-        PlayerCenterAttackCenterLine.Hide();
-        PlayerCenterAttackRightLine.Hide();
-        PlayerRightAttackLeftLine.Hide();
-        PlayerRightAttackCenterLine.Hide();
-        PlayerRightAttackRightLine.Hide();
     }
 
     public event Action<Card>? HandCardPressed;
