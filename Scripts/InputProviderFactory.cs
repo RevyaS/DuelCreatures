@@ -24,7 +24,15 @@ public class InputProviderFactory : IPlayerInputProviderFactory
         SkillService = skillService;
         Logger = logger;
 
-        WeightsBias = WeightsBiasData.LoadFromFile("/media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Scripts/VanguardAI/CurrentAI.bin");
+        using var file = FileAccess.Open("res://Scripts/VanguardAI/CurrentAI.bin", Godot.FileAccess.ModeFlags.Read);
+        // Read all bytes
+        ulong ulongLength = file.GetLength();
+        int length = (int)ulongLength; // safe as long as file < 2GB
+        byte[] buffer = file.GetBuffer(length);
+
+        // Wrap in a MemoryStream
+        var memoryStream = new System.IO.MemoryStream(buffer);
+        WeightsBias = WeightsBiasData.Load(memoryStream);
     }
     public IPlayerInputProvider GetInputProvider(PlayerProfile playerProfile)
     {
