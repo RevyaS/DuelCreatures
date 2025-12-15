@@ -13,11 +13,6 @@ public partial class HoverArea : Control
         {
             OnHover();
         }
-
-        if (e is InputEventScreenDrag)
-        {
-            OnHover();
-        }
     }
 
     private void OnHover()

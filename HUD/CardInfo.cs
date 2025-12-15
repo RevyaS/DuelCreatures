@@ -23,11 +23,6 @@ public partial class CardInfo : Control
         {
             Hide();
         }
-
-        if (e is InputEventScreenTouch st && st.Pressed)
-        {
-            Hide();
-        }
     }
 
     public void Show(VanguardCard card)

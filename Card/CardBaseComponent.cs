@@ -103,19 +103,6 @@ public abstract partial class CardBaseComponent : Control
                 HandleRelease();
             }
         }
-
-        if (e is InputEventScreenTouch st)
-        {
-            if(st.Pressed && !_pressed)
-            {
-                _pressed = true;
-                _pressTimeElapsed = 0;
-            }
-            else 
-            {
-                HandleRelease();
-            }
-        }
     }
 
     public override void _Process(double delta)

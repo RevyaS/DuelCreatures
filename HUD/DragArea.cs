@@ -14,11 +14,6 @@ public partial class DragArea : Control
         {
             OnDrag();
         }
-
-        if (e is InputEventScreenDrag)
-        {
-            OnDrag();
-        }
     }
 
     private void OnDrag()

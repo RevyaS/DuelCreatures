@@ -22,11 +22,6 @@ public partial class CardList : Control
         {
             Hide();
         }
-
-        if (e is InputEventScreenTouch st && st.Pressed)
-        {
-            Hide();
-        }
     }
 
     public void Show(string title, List<VanguardCard> cardsToShow)

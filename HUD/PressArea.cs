@@ -13,11 +13,6 @@ public partial class PressArea : Control
         {
             OnPressed();
         }
-
-        if (e is InputEventScreenTouch st && st.Pressed)
-        {
-            OnPressed();
-        }
     }
 
     private void OnPressed()
