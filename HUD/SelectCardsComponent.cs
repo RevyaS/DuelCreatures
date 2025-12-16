@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class SelectCardsFromHandComponent : PanelContainer
+public partial class SelectCardsComponent : PanelContainer
 {
     int minCards = 0, maxCards = 0;
 

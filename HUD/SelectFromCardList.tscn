@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://csdff6we3cpjo"]
+
+[ext_resource type="PackedScene" uid="uid://dt60jvmuuttc0" path="res://HUD/SelectCards.tscn" id="2_3g8pi"]
+[ext_resource type="PackedScene" uid="uid://cx38wvfuj0nja" path="res://HUD/CardListPanel.tscn" id="2_quvv4"]
+
+[node name="VBoxContainer" type="VBoxContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SelectCards" parent="." instance=ExtResource("2_3g8pi")]
+layout_mode = 2
+
+[node name="CardListPanel" parent="." instance=ExtResource("2_quvv4")]
+unique_name_in_owner = true
+layout_mode = 2

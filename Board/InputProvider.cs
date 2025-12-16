@@ -28,14 +28,14 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     IInputProviderStrategy strategy = null!;
 
-    SelectCardsFromHandComponent SelectCardsFromHandComponent = null!;
+    SelectCardsComponent SelectCardsComponent = null!;
     CardList CardListComponent = null!;
     CardInfo CardInfoComponent = null!;
 
     public override void _Ready()
     {
         board = GetNode<DuelCreaturesBoard>($"%{nameof(DuelCreaturesBoard)}");
-        SelectCardsFromHandComponent = GetNode<SelectCardsFromHandComponent>($"%{nameof(SelectCardsFromHandComponent)}");
+        SelectCardsComponent = GetNode<SelectCardsComponent>($"%{nameof(SelectCardsComponent)}");
         CardListComponent = GetNode<CardList>($"%{nameof(CardListComponent)}");
         CardListComponent.CardPressed += OnCardListCardPressed;
 
@@ -102,7 +102,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         switch(phase)
         {
             case MulliganPhase:
-                SetProviderStrategy(new MulliganPhaseStrategy(board, SelectCardsFromHandComponent));
+                SetProviderStrategy(new MulliganPhaseStrategy(board, SelectCardsComponent));
                 return;
             case RidePhase:
                 SetProviderStrategy(new RidePhaseStrategy(board));
