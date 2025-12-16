@@ -26,6 +26,7 @@ public class QueryActivateSkillStrategy(CardList CardList) : IInputProviderStrat
         var result = await completionSource.Task;
 
         CardList.CardDroppedOutside -= cardDroppedHandler;
+        CardList.OnClosed -= onClosedHandler;
         CardList.BaseDroppable = false;
         CardList.CardsDraggable = false;
         CardList.Hide();

@@ -15,6 +15,19 @@ public partial class DuelCreaturesBoard : Control
         LeftButton.Hide();
     }
 
+    public void DisableLeftButton()
+    {
+        LeftButton.Disabled = true;
+    }
+    public void EnableLeftButton()
+    {
+        LeftButton.Disabled = false;
+    }
+    public void EnableLeftButton(bool shouldEnable)
+    {
+        LeftButton.Disabled = !shouldEnable;
+    }
+
     public void EnablePlayerVanguardDropping()
     {
         PlayerVanguard.Droppable = true;

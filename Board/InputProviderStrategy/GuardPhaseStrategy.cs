@@ -9,6 +9,7 @@ public class GuardPhaseStrategy(DuelCreaturesBoard Board, UnitCircleComponent Gu
 {
     public async Task<List<CardBase>> SelectCardsFromHand()
     {
+        Board.PushPlayerPhaseIndicatorText("Guard Phase");
         Board.ShowLeftButton(TextConstants.ConfirmGuard);
         Board.EnablePlayerHandDragging();
         Board.EnableGuardDropping();
@@ -88,6 +89,7 @@ public class GuardPhaseStrategy(DuelCreaturesBoard Board, UnitCircleComponent Gu
         Board.DisablePlayerHandDragging();
         Board.DisablePlayerHandDropping();
         Board.PlayerHand.SetGuardMode(false);
+        Board.PopPlayerPhaseIndicatorText();
 
         return selectedCards.Cast<CardBase>().ToList();
     }

@@ -144,6 +144,12 @@ public partial class CardLine : PanelContainer
         card.CardDragging += OnCardDragging;
         card.CardDragCancelled += OnCardDragCancelled;
         card.CardPressed += OnCardPressed;
+        card.CardLongPressed += OnCardLongPressed;
+    }
+
+    private void OnCardLongPressed(Card card)
+    {
+        CardLongPressed?.Invoke(card);
     }
 
     private void OnCardDragCancelled(CardBaseComponent component)
@@ -172,8 +178,21 @@ public partial class CardLine : PanelContainer
             .Select(cont => cont.CurrentCard!);
     }
 
+    public IEnumerable<Card> GetNonEmptyCards()
+    {
+        return Container.GetChildren<CardContainer>()
+            .Where(cont => cont.HasCard)
+            .Select(cont => cont.CurrentCard!);
+    }
+
+    public IEnumerable<Card> GetFaceUpCards()
+    {
+        return GetNonEmptyCards().Where(x => x.IsFront);
+    }
+
     public event Action<CardBaseComponent>? CardDragging;
     public event Action<CardBaseComponent>? CardDragCancelled;
     public event Action<Card>? CardDropped;
     public event Action<Card>? CardPressed;
+    public event Action<Card>? CardLongPressed;
 }

@@ -18,6 +18,9 @@ v.0002 Skills and Trigger selection
 - Removed Screen related Gui input handling to reduce headaches and utilize Godot's emulate mouse from touch
 - Created QueryActivateSkillStrategy
 - Removed ManualAI implementation
+- Perform Counter Blast by holding the cards from DamageZone
+- Updated Board Indicator to be stackable for temporary indications 
+- Added Board Indicator for Guarding
 
 v.0001 Duel Creatures
 - Created Placeholder card

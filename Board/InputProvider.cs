@@ -67,6 +67,15 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         eventBus.PhaseChanged += OnPhaseChanged;
         eventBus.OnGuardRequested += OnGuardRequested;
         eventBus.QueryActivateSkillRequested += OnQueryActivateSkillRequested;
+        eventBus.CounterBlastRequested += OnCounterBlastRequested;
+    }
+
+    private void OnCounterBlastRequested(DamageZone zone)
+    {
+        if(ReferenceEquals(PlayArea.DamageZone, zone))
+        {
+            SetProviderStrategy(new CounterBlastSkillStrategy(board));
+        }
     }
 
     private void OnQueryActivateSkillRequested(UnitCircle invoker, VanguardAutomaticSkill skill)
@@ -195,7 +204,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     public Task<List<VanguardCard>> SelectCardsFromDamageZone(int amount)
     {
-        throw new NotImplementedException();
+        return ((ISelectCardsFromDamageZone)strategy).SelectCardsFromDamageZone(amount);
     }
 
     public Task<List<VanguardCard>> SelectCardsFromSoul(int amount)

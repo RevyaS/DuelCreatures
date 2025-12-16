@@ -16,7 +16,8 @@ public partial class DuelCreaturesBoard : Control
 
         PlayerFrontLeft = null!, PlayerBackLeft = null!, PlayerFrontRight = null!, PlayerBackRight = null!,
         OppFrontLeft = null!, OppBackLeft = null!, OppBackCenter = null!, OppFrontRight = null!, OppBackRight = null!;
-    DamageZoneComponent PlayerDamageZone = null!, OppDamageZone = null!;
+    public DamageZoneComponent PlayerDamageZone { get; private set; } = null!; 
+    DamageZoneComponent OppDamageZone = null!;
     HorizontalCardArea PlayerTriggerZone = null!, OppTriggerZone = null!;
     public CardLineStatic GuardZone { get; private set; } = null!; 
 

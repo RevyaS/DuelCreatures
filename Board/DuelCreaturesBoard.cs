@@ -14,6 +14,8 @@ public partial class DuelCreaturesBoard : Control
     VanguardGameSession _gameSession = null!;
     VanguardPlayerProfile player1 => _gameSession.Game.Player1;
     VanguardPlayerProfile player2 => _gameSession.Game.Player2;
+    Stack<string> playerPhaseIndicatorStack = new();
+    Stack<string> oppPhaseIndicatorStack = new();
 
     string mulliganPhase = "Mulligan Phase";
     string ridePhase = "Ride Phase";
@@ -278,15 +280,41 @@ public partial class DuelCreaturesBoard : Control
 
     private void SetPhaseIndicatorToCurrentPlayer(string message)
     {
+        if(oppPhaseIndicatorStack.Count > 0)
+        {
+            oppPhaseIndicatorStack.Pop();
+        }
+        if(playerPhaseIndicatorStack.Count > 0)
+        {
+            playerPhaseIndicatorStack.Pop();
+        }
         if (_gameSession.CurrentPlayerIsPlayer1)
         {
-            OppPhaseIndicator.Text = string.Empty;
-            PlayerPhaseIndicator.Text = message;
-        } else
-        {
-            PlayerPhaseIndicator.Text = string.Empty;
-            OppPhaseIndicator.Text = message;
+            playerPhaseIndicatorStack.Push(message);
         }
+        else
+        {
+            oppPhaseIndicatorStack.Push(message);
+        }
+        RenderPhaseIndicators();
+    }
+
+    private void RenderPhaseIndicators()
+    {
+        OppPhaseIndicator.Text = oppPhaseIndicatorStack.Count == 0 ? string.Empty : oppPhaseIndicatorStack.Peek();
+        PlayerPhaseIndicator.Text = playerPhaseIndicatorStack.Count == 0 ? string.Empty : playerPhaseIndicatorStack.Peek();
+    }
+
+    public void PushPlayerPhaseIndicatorText(string message)
+    {
+        playerPhaseIndicatorStack.Push(message);
+        RenderPhaseIndicators();
+    }
+
+    public void PopPlayerPhaseIndicatorText()
+    {
+        playerPhaseIndicatorStack.Pop();
+        RenderPhaseIndicators();
     }
 
     public void Reset()
