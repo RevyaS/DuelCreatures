@@ -11,7 +11,7 @@ public class MulliganPhaseStrategy(DuelCreaturesBoard board, SelectCardsComponen
         board.EnablePlayerHandDragging();
 
         TaskCompletionSource<List<CardBase>> completionSource = new();
-        selectCardsComponent.Activate(0, 5);
+        selectCardsComponent.Activate("Select Cards to Mulligan", 0, 5);
         
         Action<CardBaseComponent> cardDraggingHandler = (card) =>
         {

@@ -53,3 +53,8 @@ public interface ISelectCardsFromDamageZone
 {
     Task<List<VanguardCard>> SelectCardsFromDamageZone(int amount);
 }
+
+public interface ISelectCardsFromSoul
+{
+    public Task<List<VanguardCard>> SelectCardsFromSoul(int amount);
+}

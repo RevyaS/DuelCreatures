@@ -10,6 +10,8 @@ public partial class CardLine : PanelContainer
     protected IChildManagerComponent ContainerNodeManager => Container;    
     protected DropArea DropArea = null!;
 
+    public int CardCount => Container.GetChildCount<CardContainer>();
+
     private ComponentInputState inputState = ComponentInputState.None;
     [Export]
     public bool Droppable

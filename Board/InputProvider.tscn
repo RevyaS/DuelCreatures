@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://54vx7214u53f"]
+[gd_scene load_steps=7 format=3 uid="uid://54vx7214u53f"]
 
 [ext_resource type="Script" uid="uid://dg7uwa2tvdn5o" path="res://Board/InputProvider.cs" id="1_mnfo1"]
 [ext_resource type="PackedScene" uid="uid://cuqm30mdbu41k" path="res://Board/Board.tscn" id="2_g4tnu"]
 [ext_resource type="PackedScene" uid="uid://dt60jvmuuttc0" path="res://HUD/SelectCards.tscn" id="3_g4tnu"]
 [ext_resource type="PackedScene" uid="uid://cl0t7q61is3ro" path="res://HUD/CardList.tscn" id="4_3v0st"]
 [ext_resource type="PackedScene" uid="uid://bl86gfg2luf5o" path="res://HUD/CardInfo.tscn" id="5_jf7tj"]
+[ext_resource type="PackedScene" uid="uid://csdff6we3cpjo" path="res://HUD/SelectFromCardList.tscn" id="6_c2rk7"]
 
 [node name="InputProviderComponent" type="Control"]
 layout_mode = 3
@@ -46,3 +47,19 @@ layout_mode = 1
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
+
+[node name="SelectFromCardListComponent" parent="HUD" instance=ExtResource("6_c2rk7")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -455.0
+offset_top = -375.0
+offset_right = 455.0
+offset_bottom = 375.0
+grow_horizontal = 2
+grow_vertical = 2

@@ -29,6 +29,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
     IInputProviderStrategy strategy = null!;
 
     SelectCardsComponent SelectCardsComponent = null!;
+    SelectFromCardList SelectFromCardListComponent = null!;
     CardList CardListComponent = null!;
     CardInfo CardInfoComponent = null!;
 
@@ -36,6 +37,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
     {
         board = GetNode<DuelCreaturesBoard>($"%{nameof(DuelCreaturesBoard)}");
         SelectCardsComponent = GetNode<SelectCardsComponent>($"%{nameof(SelectCardsComponent)}");
+        SelectFromCardListComponent = GetNode<SelectFromCardList>($"%{nameof(SelectFromCardListComponent)}");
         CardListComponent = GetNode<CardList>($"%{nameof(CardListComponent)}");
         CardListComponent.CardPressed += OnCardListCardPressed;
 
@@ -68,6 +70,15 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         eventBus.OnGuardRequested += OnGuardRequested;
         eventBus.QueryActivateSkillRequested += OnQueryActivateSkillRequested;
         eventBus.CounterBlastRequested += OnCounterBlastRequested;
+        eventBus.SoulBlastRequested += OnSoulBlastRequested;
+    }
+
+    private void OnSoulBlastRequested(Soul soul)
+    {
+        if(ReferenceEquals(PlayArea.Soul, soul))
+        {
+            SetProviderStrategy(new SoulBlastSkillStrategy(soul, SelectFromCardListComponent));
+        }
     }
 
     private void OnCounterBlastRequested(DamageZone zone)
@@ -209,7 +220,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     public Task<List<VanguardCard>> SelectCardsFromSoul(int amount)
     {
-        throw new NotImplementedException();
+        return ((ISelectCardsFromSoul)strategy).SelectCardsFromSoul(amount);
     }
 
     public Task<bool> QueryActivateSkill(VanguardCard Invoker, VanguardAutomaticSkill Skill)

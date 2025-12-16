@@ -7,6 +7,7 @@ public partial class SelectCardsComponent : PanelContainer
 {
     int minCards = 0, maxCards = 0;
 
+    Label Title = null!;
     DropArea DropArea = null!;
     CardLineDynamic SelectedCards = null!;
     Button Confirm = null!;
@@ -26,15 +27,20 @@ public partial class SelectCardsComponent : PanelContainer
     {
         if(!IsInsideTree()) return;
         
+        int selectedCount = SelectedCards.CardCount;
+        Confirm.Disabled = selectedCount < minCards || selectedCount > maxCards;
         DropArea.Visible = Droppable;
     }
 
     public override void _Ready()
     {
+        Title = GetNode<Label>($"%{nameof(Title)}");
         DropArea = GetNode<DropArea>($"%{nameof(DropArea)}");
         DropArea.CardDropped += OnCardDropped;
 
         SelectedCards = GetNode<CardLineDynamic>($"%{nameof(SelectedCards)}");
+        SelectedCards.CardDragging += OnCardDragging;
+        
         Confirm = GetNode<Button>($"%{nameof(Confirm)}");
 
         Confirm.Pressed += OnConfirm;
@@ -42,14 +48,23 @@ public partial class SelectCardsComponent : PanelContainer
         Render();
     }
 
+    private void OnCardDragging(CardBaseComponent component)
+    {
+        CardDragging?.Invoke(component);
+    }
+
     private void OnConfirm()
     {
         ConfirmedCards?.Invoke(SelectedCards.GetCards().ToList());
     }
 
-    public void Activate(int minCards, int maxCards)
+    public void Activate(string title, int minCards, int maxCards)
     {
+        this.minCards = minCards;
+        this.maxCards = maxCards;
+        Title.Text = title;
         SelectedCards.ClearCards();
+        Render();
         Show();
     }
 
@@ -64,6 +79,13 @@ public partial class SelectCardsComponent : PanelContainer
         CardSelected?.Invoke(card);
         SelectedCards.AddCard(card);
         card.CurrentlyDragged = false;
+        Render();
+    }
+    
+    public void RemoveCard(Card card)
+    {
+        SelectedCards.RemoveCard(card);
+        Render();
     }
 
     public override void _Notification(int what)
@@ -74,7 +96,7 @@ public partial class SelectCardsComponent : PanelContainer
 
             if(containedCard is not null)
             {
-                SelectedCards.RemoveCard(containedCard);
+                RemoveCard(containedCard);
 
                 if(!IsDragSuccessful())
                 {
@@ -86,5 +108,6 @@ public partial class SelectCardsComponent : PanelContainer
 
     public event Action<Card>? CardReturned;
     public event Action<Card>? CardSelected;
+    public event Action<CardBaseComponent>? CardDragging;
     public event Action<List<Card>>? ConfirmedCards;
 }

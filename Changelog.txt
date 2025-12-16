@@ -22,6 +22,7 @@ v.0002 Skills and Trigger selection
 - Updated Board Indicator to be stackable for temporary indications 
 - Added Board Indicator for Guarding
 - Separated Panel from CardListPanel
+- Implemented Soul Blast
 
 v.0001 Duel Creatures
 - Created Placeholder card
