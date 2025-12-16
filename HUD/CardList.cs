@@ -5,11 +5,8 @@ using Godot;
 
 public partial class CardList : Control
 {
-    Label Title = null!, Amount = null!;
-    HFlowNodeContainer CardContainerList = null!;
-    IChildManagerComponent CardContainerManager = null!;
+    CardListPanel CardListPanel = null!;
     CardBaseComponent? draggedCard = null;
-
     private bool _cardDraggable = false;
     public bool CardsDraggable { 
         get => _cardDraggable;
@@ -24,11 +21,16 @@ public partial class CardList : Control
 
     public override void _Ready()
     {
-        Title = GetNode<Label>($"%{nameof(Title)}");
-        Amount = GetNode<Label>($"%{nameof(Amount)}");
-        CardContainerList = GetNode<HFlowNodeContainer>($"%{nameof(CardContainerList)}");
-        CardContainerManager = CardContainerList;
+        CardListPanel = GetNode<CardListPanel>($"%{nameof(CardListPanel)}");
+        CardListPanel.CardPressed += OnCardPressed;
+        CardListPanel.CardDragging += OnCardDragging;
+
         VisibilityChanged += OnVisibilityChanged;
+    }
+
+    private void OnCardDragging(CardBaseComponent component)
+    {
+        draggedCard = component;
     }
 
     private void OnVisibilityChanged()
@@ -39,17 +41,9 @@ public partial class CardList : Control
         }
     }
 
-    private void OnCardDragging(CardBaseComponent component)
-    {
-        draggedCard = component;
-    }
-
     private void Render()
     {
-        CardContainerManager.ApplyToChildren<CardContainer>(container =>
-        {
-            container.Draggable = CardsDraggable;
-        });
+        CardListPanel.CardsDraggable = CardsDraggable;
     }
 
     public override bool _CanDropData(Vector2 atPosition, Variant data)
@@ -72,26 +66,15 @@ public partial class CardList : Control
         }
     }
 
-    public void Show(string title, List<VanguardCard> cardsToShow)
-    {
-        Title.Text = title;
-        Amount.Text = $"({cardsToShow.Count})";
-        CardContainerList.ClearChildren();
-        foreach(var card in cardsToShow)
-        {
-            CardContainer container = new();
-            container.AddCard(SceneFactory.CreateVanguardCard(card));
-            container.CardPressed += OnCardPressed;
-            container.CardDragging += OnCardDragging;
-            CardContainerList.AddChild(container);
-        }
-
-        Show();
-    }
-
     private void OnCardPressed(Card card)
     {
         CardPressed?.Invoke(card);
+    }
+
+    public void Show(string title, List<VanguardCard> cardsToShow)
+    {
+        CardListPanel.Setup(title, cardsToShow);
+        Show();
     }
 
     public event Action<Card>? CardPressed;

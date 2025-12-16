@@ -21,6 +21,7 @@ v.0002 Skills and Trigger selection
 - Perform Counter Blast by holding the cards from DamageZone
 - Updated Board Indicator to be stackable for temporary indications 
 - Added Board Indicator for Guarding
+- Separated Panel from CardListPanel
 
 v.0001 Duel Creatures
 - Created Placeholder card
