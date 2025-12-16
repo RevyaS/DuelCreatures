@@ -16,6 +16,7 @@ v.0002 Skills and Trigger selection
 - Created CardInfo HUD for card info
 - AI can be loaded on exported APK
 - Removed Screen related Gui input handling to reduce headaches and utilize Godot's emulate mouse from touch
+- Prepared QueryActivateSkillStrategy
 
 v.0001 Duel Creatures
 - Created Placeholder card

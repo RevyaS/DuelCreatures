@@ -29,6 +29,7 @@ theme_override_constants/margin_bottom = 5
 layout_mode = 2
 
 [node name="Title" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Drag Cards to Mulligan"
@@ -49,9 +50,6 @@ mouse_filter = 2
 [node name="SelectedCards" parent="MarginContainer/VBoxContainer/Drop/CenterContainer" instance=ExtResource("3_g0jyd")]
 unique_name_in_owner = true
 layout_mode = 2
-Separation = 0
-HideCards = false
-Draggable = false
 Shrinks = true
 
 [node name="DropArea" type="Control" parent="MarginContainer/VBoxContainer/Drop"]

@@ -36,7 +36,7 @@ public partial class Session : Control
                 .AddCards(RoyalPaladin.KingOfKnightsAlfred, 4), RoyalPaladin.StardustTrumpeteer);
 
         var game = new VanguardGame(player1, player2, eventBus, effectService);
-        var skillService = new VanguardSkillService();
+        var skillService = new VanguardSkillService(eventBus, gameContext);
         var logger = new GodotLogger();
         logger.Enabled = true;
         var inputProviderFactory = new InputProviderFactory(game, InputProviderComponent, gameContext, skillService, logger);

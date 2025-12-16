@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Vanguard;
 using Godot;
@@ -9,6 +10,18 @@ public partial class DamageZoneComponent : CardLineStatic, IEventBusUtilizer
     public void SetEventBus(VanguardEventBus eventBus)
     {
         eventBus.CardAddedToDamageZone += OnCardAddedToDamageZone;
+        eventBus.CardsAddedToDamageZone += OnCardsAddedToDamageZone;
+    }
+
+    private void OnCardsAddedToDamageZone(DamageZone zone, List<CardBase> list)
+    {
+        if(ReferenceEquals(zone, DamageZone))
+        {
+            foreach(var card in list)
+            {
+                AddCard(SceneFactory.CreateVanguardCard((VanguardCard)card));
+            }
+        }
     }
 
     private void OnCardAddedToDamageZone(DamageZone zone, CardBase card)

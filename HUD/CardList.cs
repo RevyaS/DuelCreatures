@@ -6,13 +6,35 @@ using Godot;
 public partial class CardList : Control
 {
     Label Title = null!, Amount = null!;
-    HFlowContainer CardContainerList = null!;
+    HFlowNodeContainer CardContainerList = null!;
+    IChildManagerComponent CardContainerManager = null!;
+
+    private bool _cardDraggable = false;
+    public bool CardsDraggable { 
+        get => _cardDraggable;
+        set
+        {
+            _cardDraggable = value;
+            Render();
+        }
+    }
+
+    public bool BaseDroppable { get; set; }
 
     public override void _Ready()
     {
         Title = GetNode<Label>($"%{nameof(Title)}");
         Amount = GetNode<Label>($"%{nameof(Amount)}");
-        CardContainerList = GetNode<HFlowContainer>($"%{nameof(CardContainerList)}");
+        CardContainerList = GetNode<HFlowNodeContainer>($"%{nameof(CardContainerList)}");
+        CardContainerManager = CardContainerList;
+    }
+
+    private void Render()
+    {
+        CardContainerManager.ApplyToChildren<CardContainer>(container =>
+        {
+            container.Draggable = CardsDraggable;
+        });
     }
 
     public override void _GuiInput(InputEvent e)

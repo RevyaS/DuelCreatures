@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://cl0t7q61is3ro"]
+[gd_scene load_steps=5 format=3 uid="uid://cl0t7q61is3ro"]
 
 [ext_resource type="Script" uid="uid://c0f5frscelvc7" path="res://HUD/CardList.cs" id="1_jtk0n"]
 [ext_resource type="Script" uid="uid://bqw5phtur46nx" path="res://Components/CardContainer.cs" id="2_jtk0n"]
+[ext_resource type="Script" uid="uid://cc4nfnq62e6nd" path="res://addons/rev_godot_core/Components/HFlowNodeContainer.cs" id="2_vb51t"]
 [ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Card/Card.tscn" id="3_vb51t"]
 
 [node name="CardList" type="Control"]
@@ -67,6 +68,8 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 alignment = 1
+script = ExtResource("2_vb51t")
+metadata/_custom_type_script = "uid://cc4nfnq62e6nd"
 
 [node name="CardContainer" type="Control" parent="Panel/MarginContainer/VBoxContainer/CardContainerList"]
 custom_minimum_size = Vector2(135, 189)

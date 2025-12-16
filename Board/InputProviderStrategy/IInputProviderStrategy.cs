@@ -43,3 +43,8 @@ public interface ISelectOpponentFrontRow
 {
     Task<UnitCircle> SelectOpponentFrontRow(UnitSelector selector);
 }
+
+public interface IQueryActivateSkill
+{
+    Task<bool> QueryActivateSkill(VanguardSkillCost SkillCost);
+}

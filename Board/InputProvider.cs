@@ -66,6 +66,15 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
     {
         eventBus.PhaseChanged += OnPhaseChanged;
         eventBus.OnGuardRequested += OnGuardRequested;
+        eventBus.QueryActivateSkillRequested += OnQueryActivateSkillRequested;
+    }
+
+    private void OnQueryActivateSkillRequested(UnitCircle invoker, VanguardAutomaticSkill skill)
+    {
+        if(PlayArea.OwnsUnitCircle(invoker))
+        {
+            SetProviderStrategy(new QueryActivateSkillStrategy());
+        }
     }
 
     private Task OnGuardRequested(UnitCircle circle)
@@ -196,7 +205,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     public Task<bool> QueryActivateSkill(VanguardSkillCost SkillCost)
     {
-        throw new NotImplementedException();
+        return ((IQueryActivateSkill)strategy).QueryActivateSkill(SkillCost);
     }
 
     public Task<CardBase> SelectCardFromHand()
