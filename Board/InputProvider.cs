@@ -73,7 +73,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
     {
         if(PlayArea.OwnsUnitCircle(invoker))
         {
-            SetProviderStrategy(new QueryActivateSkillStrategy());
+            SetProviderStrategy(new QueryActivateSkillStrategy(CardListComponent));
         }
     }
 
@@ -203,9 +203,9 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         throw new NotImplementedException();
     }
 
-    public Task<bool> QueryActivateSkill(VanguardSkillCost SkillCost)
+    public Task<bool> QueryActivateSkill(VanguardCard Invoker, VanguardAutomaticSkill Skill)
     {
-        return ((IQueryActivateSkill)strategy).QueryActivateSkill(SkillCost);
+        return ((IQueryActivateSkill)strategy).QueryActivateSkill(Invoker, Skill);
     }
 
     public Task<CardBase> SelectCardFromHand()

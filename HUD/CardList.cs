@@ -8,6 +8,7 @@ public partial class CardList : Control
     Label Title = null!, Amount = null!;
     HFlowNodeContainer CardContainerList = null!;
     IChildManagerComponent CardContainerManager = null!;
+    CardBaseComponent? draggedCard = null;
 
     private bool _cardDraggable = false;
     public bool CardsDraggable { 
@@ -27,6 +28,20 @@ public partial class CardList : Control
         Amount = GetNode<Label>($"%{nameof(Amount)}");
         CardContainerList = GetNode<HFlowNodeContainer>($"%{nameof(CardContainerList)}");
         CardContainerManager = CardContainerList;
+        VisibilityChanged += OnVisibilityChanged;
+    }
+
+    private void OnVisibilityChanged()
+    {
+        if(!Visible)
+        {
+            OnClosed?.Invoke();
+        }
+    }
+
+    private void OnCardDragging(CardBaseComponent component)
+    {
+        draggedCard = component;
     }
 
     private void Render()
@@ -35,6 +50,17 @@ public partial class CardList : Control
         {
             container.Draggable = CardsDraggable;
         });
+    }
+
+    public override bool _CanDropData(Vector2 atPosition, Variant data)
+    {
+        return BaseDroppable && data.Obj is CardBaseComponent component && ReferenceEquals(draggedCard, component);
+    }
+
+    public override void _DropData(Vector2 atPosition, Variant data)
+    {
+        draggedCard = null;
+        CardDroppedOutside?.Invoke();
     }
 
     public override void _GuiInput(InputEvent e)
@@ -56,6 +82,7 @@ public partial class CardList : Control
             CardContainer container = new();
             container.AddCard(SceneFactory.CreateVanguardCard(card));
             container.CardPressed += OnCardPressed;
+            container.CardDragging += OnCardDragging;
             CardContainerList.AddChild(container);
         }
 
@@ -68,4 +95,6 @@ public partial class CardList : Control
     }
 
     public event Action<Card>? CardPressed;
+    public event Action? CardDroppedOutside;
+    public event Action? OnClosed;
 }

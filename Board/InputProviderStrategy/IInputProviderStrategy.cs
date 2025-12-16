@@ -46,5 +46,5 @@ public interface ISelectOpponentFrontRow
 
 public interface IQueryActivateSkill
 {
-    Task<bool> QueryActivateSkill(VanguardSkillCost SkillCost);
+    Task<bool> QueryActivateSkill(VanguardCard Invoker, VanguardAutomaticSkill Skill);
 }

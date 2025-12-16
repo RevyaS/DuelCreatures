@@ -2,10 +2,33 @@ using System;
 using System.Threading.Tasks;
 using ArC.CardGames.Predefined.Vanguard;
 
-public class QueryActivateSkillStrategy : IInputProviderStrategy, IQueryActivateSkill
+public class QueryActivateSkillStrategy(CardList CardList) : IInputProviderStrategy, IQueryActivateSkill
 {
-    public Task<bool> QueryActivateSkill(VanguardSkillCost SkillCost)
+    public async Task<bool> QueryActivateSkill(VanguardCard Invoker, VanguardAutomaticSkill Skill)
     {
-        throw new NotImplementedException();
+        CardList.Show("Select Skill to Activate", [Invoker]);
+        CardList.BaseDroppable = true;
+        CardList.CardsDraggable = true;
+        TaskCompletionSource<bool> completionSource = new TaskCompletionSource<bool>();
+
+        Action cardDroppedHandler = () =>
+        {
+            completionSource.SetResult(true);
+        };
+        CardList.CardDroppedOutside += cardDroppedHandler;
+
+        Action onClosedHandler = () =>
+        {
+            completionSource.SetResult(false);
+        };
+        CardList.OnClosed += onClosedHandler;
+
+        var result = await completionSource.Task;
+
+        CardList.CardDroppedOutside -= cardDroppedHandler;
+        CardList.BaseDroppable = false;
+        CardList.CardsDraggable = false;
+        CardList.Hide();
+        return result;
     }
 }
