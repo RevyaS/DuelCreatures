@@ -33,10 +33,10 @@ mouse_filter = 2
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
-offset_left = -405.0
+offset_left = -455.0
 offset_top = -214.5
-offset_right = 405.0
-offset_bottom = 214.5
+offset_right = 455.0
+offset_bottom = 134.5
 
 [node name="CardListComponent" parent="HUD" instance=ExtResource("4_3v0st")]
 unique_name_in_owner = true

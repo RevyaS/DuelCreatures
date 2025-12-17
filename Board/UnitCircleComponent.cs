@@ -11,10 +11,25 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
     DropArea dropArea = null!;
     DragArea dragArea = null!;
     HoverArea hoverArea = null!;
+    Button SelectButton = null!;
 
     public UnitCircle UnitCircle { get; private set; } = null!;
 
+    private bool isSelected = false;
+    public bool IsSelected => isSelected;
+
     private ComponentInputState inputState = ComponentInputState.None;
+    [Export]
+    public bool Selectable
+    {
+        get => inputState == ComponentInputState.Selectable;
+        set
+        {
+            SetState(ComponentInputState.Selectable, value);
+            Render();
+        }
+    }
+
     [Export]
     public bool Droppable
     {
@@ -90,7 +105,23 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         hoverArea.Hovering += OnHovering;
         hoverArea.HoverReleased += OnHoverReleased;
 
+        SelectButton = GetNode<Button>($"%{nameof(SelectButton)}");
+        SelectButton.Pressed += OnSelectButtonPressed;
+
         Render();
+    }
+
+    private void OnSelectButtonPressed()
+    {
+        isSelected = !isSelected;
+        SelectButton.Text = IsSelected ? "Deselect" : "Select";
+        if(isSelected)
+        {
+            Selected?.Invoke(this);
+        } else
+        {
+            Deselected?.Invoke(this);
+        }
     }
 
     private void OnCardLongPressed(Card card)
@@ -218,6 +249,7 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         cardRotationContainer.CardScale = CardScale;
         dragArea.Visible = ScreenDraggable;
         hoverArea.Visible = Hoverable;
+        SelectButton.Visible = Selectable;
     }
 
     protected virtual void OnCardDropped(Card card)
@@ -256,4 +288,6 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
     public event Action<UnitCircleComponent>? HoverReleased;
     public event Action<Card>? CardPressed;
     public event Action<UnitCircleComponent>? LongPressed;
+    public event Action<UnitCircleComponent>? Selected;
+    public event Action<UnitCircleComponent>? Deselected;
 }

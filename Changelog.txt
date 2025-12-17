@@ -23,6 +23,7 @@ v.0002 Skills and Trigger selection
 - Added Board Indicator for Guarding
 - Separated Panel from CardListPanel
 - Implemented Soul Blast
+- Implemented Selecting Opp rearguard for Retire effect
 
 v.0001 Duel Creatures
 - Created Placeholder card

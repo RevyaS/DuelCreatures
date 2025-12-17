@@ -33,6 +33,8 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
     CardList CardListComponent = null!;
     CardInfo CardInfoComponent = null!;
 
+    Stack<IInputProviderStrategy> strategyStack = new();
+
     public override void _Ready()
     {
         board = GetNode<DuelCreaturesBoard>($"%{nameof(DuelCreaturesBoard)}");
@@ -68,32 +70,23 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
     {
         eventBus.PhaseChanged += OnPhaseChanged;
         eventBus.OnGuardRequested += OnGuardRequested;
-        eventBus.QueryActivateSkillRequested += OnQueryActivateSkillRequested;
-        eventBus.CounterBlastRequested += OnCounterBlastRequested;
-        eventBus.SoulBlastRequested += OnSoulBlastRequested;
+        eventBus.SkillExecution += OnSkillExecution;
+        eventBus.SkillExecuted += OnSkillExecuted;
     }
 
-    private void OnSoulBlastRequested(Soul soul)
+    private void OnSkillExecuted(UnitCircle circle, VanguardSkill skill)
     {
-        if(ReferenceEquals(PlayArea.Soul, soul))
+        if(PlayArea.OwnsUnitCircle(circle))
         {
-            SetProviderStrategy(new SoulBlastSkillStrategy(soul, SelectFromCardListComponent));
+            PopProviderStrategy();
         }
     }
 
-    private void OnCounterBlastRequested(DamageZone zone)
+    private void OnSkillExecution(UnitCircle circle, VanguardSkill skill)
     {
-        if(ReferenceEquals(PlayArea.DamageZone, zone))
+        if(PlayArea.OwnsUnitCircle(circle))
         {
-            SetProviderStrategy(new CounterBlastSkillStrategy(board));
-        }
-    }
-
-    private void OnQueryActivateSkillRequested(UnitCircle invoker, VanguardAutomaticSkill skill)
-    {
-        if(PlayArea.OwnsUnitCircle(invoker))
-        {
-            SetProviderStrategy(new QueryActivateSkillStrategy(CardListComponent));
+            PushProviderStrategy(new SkillExecutionStrategy(board, PlayArea, CardListComponent, SelectFromCardListComponent));
         }
     }
 
@@ -130,7 +123,26 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     public void SetProviderStrategy(IInputProviderStrategy strategy)
     {
-        this.strategy = strategy;
+        strategyStack.Clear();
+        strategyStack.Push(strategy);
+        SetProviderStrategyCore();
+    }
+
+    public void PushProviderStrategy(IInputProviderStrategy strategy)
+    {
+        strategyStack.Push(strategy);
+        SetProviderStrategyCore();
+    }
+
+    public void PopProviderStrategy()
+    {
+        strategyStack.Pop();
+        SetProviderStrategyCore();
+    }
+
+    private void SetProviderStrategyCore()
+    {
+        strategy = strategyStack.Peek();
     }
 
     private void OnHandCardPressed(Card card)
@@ -178,9 +190,9 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         return ((ISelectOwnRearguard)strategy).SelectOwnRearguard();
     }
 
-    public Task<UnitCircle> SelectOpponentFrontRow(UnitSelector selector)
+    public Task<UnitCircle> SelectOpponentCircle(UnitSelector selector)
     {
-        return ((ISelectOpponentFrontRow)strategy).SelectOpponentFrontRow(selector);
+        return ((ISelectOpponentCircle)strategy).SelectOpponentCircle(selector);
     }
 
     public Task<UnitCircle> SelectOwnUnitCircle()

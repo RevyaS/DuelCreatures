@@ -7,7 +7,7 @@ using ArC.CardGames.Predefined.Vanguard;
 using ArC.Common.Extensions;
 using Godot;
 
-public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameContext) : IInputProviderStrategy, IRequestAttackPhaseAction, ISelectOwnUnitCircle, ISelectOpponentFrontRow
+public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameContext) : IInputProviderStrategy, IRequestAttackPhaseAction, ISelectOwnUnitCircle, ISelectOpponentCircle
 {
     UnitCircleComponent? boostingCircle = null;
     UnitCircleComponent? attackingCircle = null;
@@ -123,7 +123,7 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
         return result;
     }
 
-    public Task<UnitCircle> SelectOpponentFrontRow(UnitSelector selector)
+    public Task<UnitCircle> SelectOpponentCircle(UnitSelector selector)
     {
         if(targetCircle is null) throw new InvalidOperationException();
         return Task.FromResult(targetCircle.UnitCircle);

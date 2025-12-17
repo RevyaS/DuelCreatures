@@ -68,11 +68,17 @@ public partial class DuelCreaturesBoard : Control
     ];
 
     List<UnitCircleComponent> OpponentCircles => [
-        ..OppFrontRowCircles, OppBackLeft, OppBackCenter, OppBackRight
+        ..OppFrontRowCircles, ..OppBackRowRearguards
+    ];
+    List<UnitCircleComponent> OppBackRowRearguards => [
+        OppBackLeft, OppBackCenter, OppBackRight
     ];
 
+    List<UnitCircleComponent> OppFrontRowRearguards => [
+        OppFrontLeft, OppFrontRight
+    ];
     List<UnitCircleComponent> OppFrontRowCircles => [
-        OppFrontLeft, OppFrontRight, OppVanguard
+        OppVanguard, ..OppFrontRowRearguards
     ];
 
     Line2D PlayerLeftBoostLine = null!, PlayerCenterBoostLine = null!, PlayerRightBoostLine = null!,

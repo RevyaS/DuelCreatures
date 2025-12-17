@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Vanguard;
@@ -15,6 +16,15 @@ public partial class DropZoneComponent: CardVerticalStack, IEventBusUtilizer, IS
     public void SetEventBus(VanguardEventBus eventBus)
     {
         eventBus.CardAddedToDropZone += OnCardAddedToDropZone;
+        eventBus.CardsAddedToDropZone += OnCardsAddedToDropZone;
+    }
+
+    private void OnCardsAddedToDropZone(DropZone zone, List<CardBase> list)
+    {
+        if(ReferenceEquals(DropZone, zone))
+        {
+            Render();
+        }
     }
 
     public void SetCardList(CardList cardList)
@@ -26,16 +36,21 @@ public partial class DropZoneComponent: CardVerticalStack, IEventBusUtilizer, IS
     {
         if(ReferenceEquals(DropZone, zone))
         {
-            if(DropZone.Cards.Count > 0)
-            {
-                SetCard((VanguardCard)DropZone.Cards.Last());
-            } else
-            {
-                ClearCard();
-            }
+            Render();
         }
     }
 
+    private void Render()
+    {
+        if (DropZone.Cards.Count > 0)
+        {
+            SetCard((VanguardCard)DropZone.Cards.Last());
+        }
+        else
+        {
+            ClearCard();
+        }
+    }
 
     protected override void OnPressed()
     {

@@ -39,6 +39,8 @@ public partial class DuelCreaturesBoard : Control
         OpponentCircles.ForEach((circle) =>
         {
             circle.CardPressed += OnUnitCircleCardPressed;
+            circle.Selected += OnOppUnitCircleSelected;
+            circle.Deselected += OnOppUnitCircleDeselected;
         });
 
         PlayerFrontRowCircles.ForEach((circle) =>
@@ -64,6 +66,16 @@ public partial class DuelCreaturesBoard : Control
 
         PlayerDamageZone.CardPressed += OnDamageZoneCardPressed;
         OppDamageZone.CardPressed += OnDamageZoneCardPressed;
+    }
+
+    private void OnOppUnitCircleDeselected(UnitCircleComponent component)
+    {
+        OppCircleDeselected?.Invoke(component);
+    }
+
+    private void OnOppUnitCircleSelected(UnitCircleComponent component)
+    {
+        OppCircleSelected?.Invoke(component);
     }
 
     private void OnPlayerVanguardLongPressed(UnitCircleComponent _)
@@ -394,5 +406,7 @@ public partial class DuelCreaturesBoard : Control
     public event Action<UnitCircleComponent>? PlayerCircleHoverReleased;
     public event Action<UnitCircleComponent>? OppCircleHovering;
     public event Action<UnitCircleComponent>? OppCircleHoverReleased;
+    public event Action<UnitCircleComponent>? OppCircleSelected;
+    public event Action<UnitCircleComponent>? OppCircleDeselected;
     public event Action? PlayerSoulPressed;
 }

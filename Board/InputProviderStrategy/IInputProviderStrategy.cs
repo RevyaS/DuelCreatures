@@ -39,9 +39,9 @@ public interface ISelectOwnUnitCircle
     Task<UnitCircle> SelectOwnUnitCircle();
 }
 
-public interface ISelectOpponentFrontRow
+public interface ISelectOpponentCircle
 {
-    Task<UnitCircle> SelectOpponentFrontRow(UnitSelector selector);
+    Task<UnitCircle> SelectOpponentCircle(UnitSelector selector);
 }
 
 public interface IQueryActivateSkill

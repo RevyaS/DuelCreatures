@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using ArC.CardGames.Predefined.Vanguard;
 using Godot;
 
 
@@ -186,5 +188,32 @@ public partial class DuelCreaturesBoard : Control
         PlayerRightAttackLeftLine.Hide();
         PlayerRightAttackCenterLine.Hide();
         PlayerRightAttackRightLine.Hide();
+    }
+
+    public void EnableSelectOppCircle(UnitSelector selector)
+    {
+        List<UnitCircleComponent> selection = [];
+        if(selector.HasFlag(UnitSelector.VANGUARD))
+        {
+            selection.Add(OppVanguard);
+        }
+        if(selector.HasFlag(UnitSelector.REARGUARD))
+        {
+            if(selector.HasFlag(UnitSelector.FRONT))
+            {
+                selection.AddRange(OppFrontRowRearguards);
+            }
+            if(selector.HasFlag(UnitSelector.BACK))
+            {
+                selection.AddRange(OppBackRowRearguards);
+            }
+        }
+
+        selection.Where(uc => !uc.UnitCircle.IsEmpty).ToList().ForEach((circle) => circle.Selectable = true);
+    }
+
+    public void DisableSelectOppUnitCircle()
+    {
+        OpponentCircles.ForEach((circle) => circle.Selectable = false);
     }
 }

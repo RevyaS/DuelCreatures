@@ -1,4 +1,4 @@
 public enum ComponentInputState
 {
-    Droppable, Draggable, ScreenDraggable, Hoverable, None
+    Droppable, Draggable, ScreenDraggable, Hoverable, Selectable, None
 }
