@@ -1,3 +1,4 @@
+using System;
 using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Vanguard;
 using Godot;
@@ -5,8 +6,15 @@ using Godot;
 public partial class VanguardCardComponent : Card
 {
     Label PowerLabel = null!, CriticalLabel = null!, GradeLabel = null!, GuardLabel = null!;
-    PanelContainer PowerPanel = null!, GradePanel = null!, GuardPanel = null!;
+    PanelContainer PowerPanel = null!, GradePanel = null!, GuardPanel = null!, TriggerPanel = null!;
+    TextureRect TriggerRect = null!;
     public override VanguardCard CurrentCard => (VanguardCard)base.CurrentCard;
+
+    const string DrawTriggerTexturePath = "res://Assets/Triggers/Draw.png";
+    const string CriticalTriggerTexturePath = "res://Assets/Triggers/Critical.png";
+    const string HealTriggerTexturePath = "res://Assets/Triggers/Heal.png";
+
+    private VanguardTrigger Trigger { get; set; } = VanguardTrigger.NONE;
 
     private bool _guardMode = false;
     public bool GuardMode
@@ -35,8 +43,7 @@ public partial class VanguardCardComponent : Card
     {
         get => _critical;
         set
-        
-{
+        {
             _critical = value;
             Render();
         }
@@ -66,6 +73,7 @@ public partial class VanguardCardComponent : Card
     
     public override void _Ready()
     {
+        TriggerRect = GetNode<TextureRect>($"%{nameof(TriggerRect)}");
         PowerLabel = GetNode<Label>($"%{nameof(PowerLabel)}");
         CriticalLabel = GetNode<Label>($"%{nameof(CriticalLabel)}");
         GradeLabel = GetNode<Label>($"%{nameof(GradeLabel)}");
@@ -73,6 +81,7 @@ public partial class VanguardCardComponent : Card
         PowerPanel = GetNode<PanelContainer>($"%{nameof(PowerPanel)}");
         GradePanel = GetNode<PanelContainer>($"%{nameof(GradePanel)}");
         GuardPanel = GetNode<PanelContainer>($"%{nameof(GuardPanel)}");
+        TriggerPanel = GetNode<PanelContainer>($"%{nameof(TriggerPanel)}");
         base._Ready();
     }
 
@@ -87,6 +96,17 @@ public partial class VanguardCardComponent : Card
         PowerPanel.Visible = IsFront && !GuardMode;
         GradePanel.Visible = IsFront;
         GuardPanel.Visible = IsFront && GuardMode;
+
+        TriggerPanel.Visible = IsFront && Trigger != VanguardTrigger.NONE;
+        if(TriggerPanel.Visible)
+        {
+            var texturePath = Trigger switch
+            {
+                VanguardTrigger.DRAW => DrawTriggerTexturePath,
+                _ => throw new NotImplementedException()
+            };
+            TriggerRect.Texture = ResourceLoader.Load<Texture2D>(texturePath);
+        }
     }
 
     public override void LoadVanguardCard(CardBase card)
@@ -96,6 +116,7 @@ public partial class VanguardCardComponent : Card
         Critical = vgcard.Critical;
         Grade = vgcard.Grade;
         Guard = vgcard.Guard;
+        Trigger = vgcard.Trigger;
 
         base.LoadVanguardCard(card);
     }

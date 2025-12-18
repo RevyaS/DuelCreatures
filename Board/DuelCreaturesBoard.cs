@@ -210,6 +210,7 @@ public partial class DuelCreaturesBoard : Control
         eventBus.OnDamageChecked += OnDamageChecked;
         eventBus.OnDriveChecked += OnDriveChecked;
         eventBus.CardAssignedToUnitCircle += OnCardAssignedToUnitCircle;
+        eventBus.TriggerResolved += OnTriggerResolved;
 
         PlayerHand.SetEventBus(eventBus);
         OppHand.SetEventBus(eventBus);
@@ -245,17 +246,18 @@ public partial class DuelCreaturesBoard : Control
         PlayerCircles.ForEach(circle => circle.UpdateStats());
     }
 
-    private async Task OnDriveChecked(VanguardPlayArea area, VanguardCard card)
+    private Task OnDriveChecked(VanguardPlayArea area, VanguardCard card)
     {
-        await TriggerCheckCore(area, card);
+        return TriggerCheckCore(area, card);
     }
 
-    private async Task OnDamageChecked(VanguardPlayArea area, VanguardCard card)
+    private Task OnDamageChecked(VanguardPlayArea area, VanguardCard card)
     {
-        await TriggerCheckCore(area, card);
+        return TriggerCheckCore(area, card);
     }
 
-    private async Task TriggerCheckCore(VanguardPlayArea area, VanguardCard card)
+    #region Trigger Checks
+    private Task TriggerCheckCore(VanguardPlayArea area, VanguardCard card)
     {
         Card cardComponent = SceneFactory.CreateVanguardCard(card);
         bool isPlayer1 = ReferenceEquals(area, _gameSession.Game.Board.Player1Area);
@@ -266,24 +268,23 @@ public partial class DuelCreaturesBoard : Control
         {
             OppTriggerZone.AddCard(cardComponent);
         }
-
-        // Wait for a bit
-        await ToSignal(GetTree().CreateTimer(1.0f), "timeout");
-
-        if(isPlayer1)
-        {
-            PlayerTriggerZone.ClearCard();
-        } else
-        {
-            OppTriggerZone.ClearCard();
-        }
+        return Task.CompletedTask;
     }
+
+    private async Task OnTriggerResolved()
+    {
+        await ToSignal(GetTree().CreateTimer(0.4f), "timeout");
+        PlayerTriggerZone.ClearCard();
+        OppTriggerZone.ClearCard();
+    }
+    #endregion
 
     private Task OnAttackEnded()
     {
         GuardZone.ClearCards();
         HideAttackLines();
         HideBoostLines();
+        RecalculateStats();
         return Task.CompletedTask;
     }
 
@@ -406,7 +407,7 @@ public partial class DuelCreaturesBoard : Control
 
     public bool IsBackRow(UnitCircleComponent unitCircle)
     {
-        return PlayerBackRowCircles.Contains(unitCircle, ReferenceEqualityComparer.Instance);
+        return PlayerBackRowRearguards.Contains(unitCircle, ReferenceEqualityComparer.Instance);
     }
 
     public bool IsFrontRow(UnitCircleComponent unitCircle)

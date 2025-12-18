@@ -21,19 +21,23 @@ public partial class Session : Control
 
         var player1 = new VanguardPlayerProfile(
             DeckBuilder.Create()
+                .AddCards(RoyalPaladin.DevotingJewelKnightTabitha, 4)
                 .AddCards(RoyalPaladin.LittleSageMarron, 4)
                 .AddCards(RoyalPaladin.SailorGuardianMichiru, 4)
                 .AddCards(RoyalPaladin.BlasterBlade, 4)
                 .AddCards(RoyalPaladin.KnightOfSilenceGallatin, 4)
-                .AddCards(RoyalPaladin.KingOfKnightsAlfred, 4), RoyalPaladin.StardustTrumpeteer);
+                .AddCards(RoyalPaladin.KingOfKnightsAlfred, 4), 
+                RoyalPaladin.StardustTrumpeteer);
 
         var player2 = new VanguardPlayerProfile(
             DeckBuilder.Create()
+                .AddCards(RoyalPaladin.DevotingJewelKnightTabitha, 4)
                 .AddCards(RoyalPaladin.LittleSageMarron, 4)
                 .AddCards(RoyalPaladin.SailorGuardianMichiru, 4)
                 .AddCards(RoyalPaladin.BlasterBlade, 4)
                 .AddCards(RoyalPaladin.KnightOfSilenceGallatin, 4)
-                .AddCards(RoyalPaladin.KingOfKnightsAlfred, 4), RoyalPaladin.StardustTrumpeteer);
+                .AddCards(RoyalPaladin.KingOfKnightsAlfred, 4), 
+                RoyalPaladin.StardustTrumpeteer);
 
         var game = new VanguardGame(player1, player2, eventBus, effectService);
         var skillService = new VanguardSkillService(eventBus, gameContext);
@@ -64,5 +68,7 @@ public partial class Session : Control
         {
             GD.Print("You lose");
         }
+
+        GD.Print("Win Condition ", session.GameOverContext.ToString());
     }
 }

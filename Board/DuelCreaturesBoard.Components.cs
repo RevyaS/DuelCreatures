@@ -47,7 +47,7 @@ public partial class DuelCreaturesBoard : Control
     ];
 
 
-    List<UnitCircleComponent> PlayerBackRowCircles => [
+    List<UnitCircleComponent> PlayerBackRowRearguards => [
         PlayerBackLeft, PlayerBackCenter, PlayerBackRight
     ];
 
@@ -60,7 +60,7 @@ public partial class DuelCreaturesBoard : Control
     ];
 
     List<UnitCircleComponent> PlayerRearguards => [
-        ..PlayerFrontRowRearguards, ..PlayerBackRowCircles
+        ..PlayerFrontRowRearguards, ..PlayerBackRowRearguards
     ];
 
     List<UnitCircleComponent> PlayerCircles => [

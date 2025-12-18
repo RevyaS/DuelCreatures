@@ -10,7 +10,7 @@ public static class DuelMaidensCardsFactory
         public static VanguardCard StardustTrumpeteer => new VanguardCard(0, "Stardust Trumpeteer", 6000, 1, 10000, VanguardCardSkill.BOOST, VanguardTrigger.NONE, []);
         // public static VanguardCard Barcgal => new VanguardCard(0, "Barcgal", 4000, 1, 15000, VanguardCardSkill.BOOST, VanguardTrigger.NONE, []);
         // public static VanguardCard FutureKnightLlew => new VanguardCard(0, "Future Knight, Llew", 4000, 1, 10000, VanguardCardSkill.BOOST, VanguardTrigger.CRITICAL, []);
-        // public static VanguardCard DevotingJewelKnightTabitha => new VanguardCard(0, "Devoting Jewel Knight, Tabitha", 4000, 1, 5000, VanguardCardSkill.BOOST, VanguardTrigger.DRAW, []);
+        public static VanguardCard DevotingJewelKnightTabitha => new VanguardCard(0, "Devoting Jewel Knight, Tabitha", 4000, 1, 5000, VanguardCardSkill.BOOST, VanguardTrigger.DRAW, []);
         // public static VanguardCard ArdentJewelKnightPolli => new VanguardCard(0, "Ardent Jewel Knight, Polli", 5000, 1, 15000, VanguardCardSkill.BOOST, VanguardTrigger.HEAL, []);
 
         // Lake Maiden Lien

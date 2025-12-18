@@ -7,7 +7,7 @@ using ArC.CardGames.Predefined.Vanguard;
 using ArC.Common.Extensions;
 using Godot;
 
-public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameContext) : IInputProviderStrategy, IRequestAttackPhaseAction, ISelectOwnUnitCircle, ISelectOpponentCircle
+public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameContext) : BaseStrategy(Board), IRequestAttackPhaseAction, ISelectOwnUnitCircle, ISelectOpponentCircle
 {
     UnitCircleComponent? boostingCircle = null;
     UnitCircleComponent? attackingCircle = null;
@@ -15,9 +15,9 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
 
     public async Task<IAttackPhaseAction> RequestAttackPhaseAction(List<IAttackPhaseAction> actions)
     {
-        Board.ShowLeftButton(TextConstants.EndPhase);
-        Board.DisablePlayerFrontRowUnitCircleHovering();
-        Board.EnablePlayerUnitCircleScreenDragging();
+        GameBoard.ShowLeftButton(TextConstants.EndPhase);
+        GameBoard.DisablePlayerFrontRowUnitCircleHovering();
+        GameBoard.EnablePlayerUnitCircleScreenDragging();
 
         TaskCompletionSource<IAttackPhaseAction> completionSource = new();
 
@@ -37,7 +37,7 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
                 GD.Print("Release targetCircle");
                 // Release
                 targetCircle = null;
-                Board.HideAttackLines();
+                GameBoard.HideAttackLines();
             }
         };
 
@@ -60,10 +60,10 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
                 boostingCircle = null;
                 attackingCircle = null;
                 targetCircle = null;
-                Board.EnablePlayerUnitCircleScreenDragging();
-                Board.DisableOppFrontRowUnitCircleHovering();
-                Board.HideBoostLines();
-                Board.HideAttackLines();
+                GameBoard.EnablePlayerUnitCircleScreenDragging();
+                GameBoard.DisableOppFrontRowUnitCircleHovering();
+                GameBoard.HideBoostLines();
+                GameBoard.HideAttackLines();
             }
         };
 
@@ -72,53 +72,53 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
             if(attackingCircle is not null)
             {
                 targetCircle = unitCircleComponent;
-                Board.HideAttackLines();
-                Board.ShowAttackLine(attackingCircle, targetCircle);
+                GameBoard.HideAttackLines();
+                GameBoard.ShowAttackLine(attackingCircle, targetCircle);
             }
         };
 
         Action<UnitCircleComponent> playerFrontRowHoverHandler = (unitCircleComponent) =>
         {
-            if(boostingCircle is not null && ReferenceEquals(Board.GetPlayerOppositeCircle(unitCircleComponent), boostingCircle))
+            if(boostingCircle is not null && ReferenceEquals(GameBoard.GetPlayerOppositeCircle(unitCircleComponent), boostingCircle))
             {
                 attackingCircle = unitCircleComponent;
-                Board.ShowBoostLine(unitCircleComponent);
-                Board.DisablePlayerFrontRowUnitCircleHovering();
-                Board.EnableOppFrontRowUnitCircleHovering();
+                GameBoard.ShowBoostLine(unitCircleComponent);
+                GameBoard.DisablePlayerFrontRowUnitCircleHovering();
+                GameBoard.EnableOppFrontRowUnitCircleHovering();
             }
         };
 
         Action<UnitCircleComponent> screenDragHandler = (unitCircleComponent) => {
             // Catalyst for Boosted attack
-            if(Board.IsBackRow(unitCircleComponent))
+            if(GameBoard.IsBackRow(unitCircleComponent))
             {
                 boostingCircle = unitCircleComponent;
-                Board.DisablePlayerUnitCircleScreenDragging();
-                Board.EnablePlayerFrontRowUnitCircleHovering();
+                GameBoard.DisablePlayerUnitCircleScreenDragging();
+                GameBoard.EnablePlayerFrontRowUnitCircleHovering();
             }
-            if(Board.IsFrontRow(unitCircleComponent))
+            if(GameBoard.IsFrontRow(unitCircleComponent))
             {
                 GD.Print("Front row dragging");
                 attackingCircle = unitCircleComponent;
-                Board.DisablePlayerUnitCircleScreenDragging();
-                Board.EnableOppFrontRowUnitCircleHovering();
+                GameBoard.DisablePlayerUnitCircleScreenDragging();
+                GameBoard.EnableOppFrontRowUnitCircleHovering();
             }
         };
 
-        Board.LeftButtonPressed += endPhaseHandler;
-        Board.PlayerCircleHovering += playerFrontRowHoverHandler;
-        Board.PlayerCircleScreenDragged += screenDragHandler;
-        Board.OppCircleHovering += oppFrontRowHoverHandler;
-        Board.OppCircleHoverReleased += oppHoverReleaseHandler;
-        Board.PlayerCircleScreenDragReleased += dragReleaseHandler;
+        GameBoard.LeftButtonPressed += endPhaseHandler;
+        GameBoard.PlayerCircleHovering += playerFrontRowHoverHandler;
+        GameBoard.PlayerCircleScreenDragged += screenDragHandler;
+        GameBoard.OppCircleHovering += oppFrontRowHoverHandler;
+        GameBoard.OppCircleHoverReleased += oppHoverReleaseHandler;
+        GameBoard.PlayerCircleScreenDragReleased += dragReleaseHandler;
 
         var result = await completionSource.Task;
-        Board.LeftButtonPressed -= endPhaseHandler;
-        Board.PlayerCircleScreenDragged -= screenDragHandler;
-        Board.PlayerCircleHovering -= playerFrontRowHoverHandler;
-        Board.OppCircleHovering -= oppFrontRowHoverHandler;
-        Board.PlayerCircleScreenDragReleased -= dragReleaseHandler;
-        Board.OppCircleHoverReleased -= oppHoverReleaseHandler;
+        GameBoard.LeftButtonPressed -= endPhaseHandler;
+        GameBoard.PlayerCircleScreenDragged -= screenDragHandler;
+        GameBoard.PlayerCircleHovering -= playerFrontRowHoverHandler;
+        GameBoard.OppCircleHovering -= oppFrontRowHoverHandler;
+        GameBoard.PlayerCircleScreenDragReleased -= dragReleaseHandler;
+        GameBoard.OppCircleHoverReleased -= oppHoverReleaseHandler;
 
         return result;
     }
@@ -131,7 +131,20 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
 
     public Task<UnitCircle> SelectOwnUnitCircle()
     {
-        if(attackingCircle is null) throw new InvalidOperationException();
-        return Task.FromResult(attackingCircle.UnitCircle);
+        if(GameContext.GameState is BoostedAttackState || GameContext.GameState is AttackState)
+        {
+            if (attackingCircle is null) throw new InvalidOperationException();
+            return Task.FromResult(attackingCircle.UnitCircle);
+        }
+        if(GameContext.GameState is TriggerPowerState)
+        {
+            return SelectOwnUnitCircle(UnitSelector.ALL_CIRCLES);
+        }
+        if(GameContext.GameState is TriggerCriticalState)
+        {
+            return SelectOwnUnitCircle(UnitSelector.ALL_CIRCLES);
+        }
+        throw new InvalidOperationException();
     }
+
 }

@@ -220,13 +220,32 @@ public partial class DuelCreaturesBoard : Control
         OpponentCircles.ForEach((circle) => circle.Selectable = false);
     }
 
-    public void EnableSelectOwnRearguard()
+    public void EnableSelectOwnUnitCircle(UnitSelector selector)
     {
-        PlayerRearguards.ToList().ForEach((circle) => circle.Selectable = true);
+        List<UnitCircleComponent> selection = [];
+        if(selector.HasFlag(UnitSelector.VANGUARD))
+        {
+            selection.Add(PlayerVanguard);
+        }
+        if(selector.HasFlag(UnitSelector.REARGUARD))
+        {
+            if(selector.HasFlag(UnitSelector.FRONT))
+            {
+                selection.AddRange(PlayerFrontRowRearguards);
+            }
+            if(selector.HasFlag(UnitSelector.BACK))
+            {
+                selection.AddRange(PlayerBackRowRearguards);
+            }
+        }
+
+        Func<UnitCircleComponent, bool> predicate = (uc) => selector.HasFlag(UnitSelector.EMPTY) ? true : !uc.UnitCircle.IsEmpty;
+
+        selection.Where(predicate).ToList().ForEach((circle) => circle.Selectable = true);
     }
 
-    public void DisableSelectOwnRearguard()
+    public void DisableSelectOwnUnitCircle()
     {
-        PlayerRearguards.Where(uc => !uc.UnitCircle.IsEmpty).ToList().ForEach((circle) => circle.Selectable = true);
+        PlayerCircles.ForEach((circle) => circle.Selectable = false);
     }
 }

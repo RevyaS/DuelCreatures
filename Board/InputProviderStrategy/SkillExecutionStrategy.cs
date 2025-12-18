@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ArC.CardGames.Predefined.Vanguard;
 
-public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea PlayArea, CardList CardList, SelectFromCardList SelectFromCardList) : IInputProviderStrategy, ISelectOpponentCircle, IQueryActivateSkill, ISelectCardsFromDamageZone, ISelectCardsFromSoul, ISelectCardFromDeck, ISelectOwnRearguard
+public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea PlayArea, CardList CardList, SelectFromCardList SelectFromCardList) : BaseStrategy(Board), ISelectOpponentCircle, IQueryActivateSkill, ISelectCardsFromDamageZone, ISelectCardsFromSoul, ISelectCardFromDeck, ISelectOwnRearguard
 {
     // QueryActivateSkill
     public async Task<bool> QueryActivateSkill(VanguardCard Invoker, VanguardAutomaticSkill Skill)
@@ -147,7 +147,7 @@ public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea P
 
     public async Task<RearGuard> SelectOwnRearguard()
     {
-        Board.EnableSelectOwnRearguard();
+        Board.EnableSelectOwnUnitCircle(UnitSelector.REARGUARD);
         TaskCompletionSource<RearGuard> completionSource = new();
         
         Action<UnitCircleComponent> playerCircleSelectedHandler = (uc) =>
@@ -157,7 +157,7 @@ public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea P
         Board.PlayerCircleSelected += playerCircleSelectedHandler;
 
         var result = await completionSource.Task;
-        Board.DisableSelectOwnRearguard();
+        Board.DisableSelectOwnUnitCircle();
         Board.PlayerCircleSelected -= playerCircleSelectedHandler;
 
         return result;
