@@ -101,3 +101,10 @@ theme_override_font_sizes/normal_font_size = 32
 text = "[AUTO]:[Counter Blast (2)] When this unit is placed on (VC), you may pay the cost. If you do, choose one of your opponent's rear-guards, and retire it.
 [AUTO]:[Counter Blast (2)] When this unit is placed on (RC), if you have a «Royal Paladin» vanguard, you may pay the cost. If you do, choose one of your opponent's grade 2 or greater rear-guards, and retire it."
 fit_content = true
+
+[node name="ActivateButton" type="Button" parent="Panel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "ACTIVATE"

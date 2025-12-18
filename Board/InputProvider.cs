@@ -20,11 +20,13 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     public VanguardPlayArea OpponentPlayArea { get; private set; } = null!;
 
-    public VanguardSkillService SkillService => throw new NotImplementedException();
+    public VanguardSkillService SkillService { get; private set; } = null!;
 
     VanguardCard CurrentVanguard => PlayArea.Vanguard.Card!;
     PlayAreaBase IPlayerInputProvider.PlayArea => PlayArea;
     GameContext GameContext = null!;
+
+    private bool Active = false;
 
     IInputProviderStrategy strategy = null!;
 
@@ -51,7 +53,14 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         Board.PlayerSoulPressed += OnPlayerSoulPressed;
         Board.HandCardPressed += OnHandCardPressed;
         Board.UnitCircleCardPressed += OnUnitCircleCardPressed;
+        Board.PlayerUnitCircleCardPressed += OnPlayerUnitCircleCardPressed;
         Board.DamageZoneCardPressed += OnDamageZoneCardPressed;
+    }
+
+    private void OnPlayerUnitCircleCardPressed(UnitCircleComponent unitCircle, Card card)
+    {
+        var enableActivateButton = VanguardGameRules.UnitCircleCanActivateSkill(this, unitCircle.UnitCircle);
+        ShowCardInfo(card, enableActivateButton);
     }
 
     private void OnPlayerSoulPressed()
@@ -59,11 +68,18 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         CardListComponent.Show("Soul", PlayArea.Soul.Cards.Cast<VanguardCard>().ToList());
     }
 
-    public void Setup(VanguardPlayArea playArea, VanguardPlayArea oppPlayArea, GameContext gameContext)
+    public void Activate(VanguardPlayArea playArea, VanguardPlayArea oppPlayArea, VanguardSkillService vanguardSkillService, GameContext gameContext)
     {
+        Active = true;
         OpponentPlayArea = oppPlayArea;
         PlayArea = playArea;
         GameContext = gameContext;
+        SkillService = vanguardSkillService;
+    }
+
+    public void Deactivate()
+    {
+        Active = false;
     }
 
     public void SetEventBus(VanguardEventBus eventBus)
@@ -112,7 +128,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
                 SetProviderStrategy(new RidePhaseStrategy(board));
                 return;
             case MainPhase:
-                SetProviderStrategy(new MainPhaseStrategy(board, PlayArea, GameContext));
+                SetProviderStrategy(new MainPhaseStrategy(board, CardInfoComponent, GameContext));
                 return;
             case VanguardAttackPhase:
                 SetProviderStrategy(new AttackPhaseStrategy(board, GameContext));
@@ -165,9 +181,9 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         ShowCardInfo(card);
     }
 
-    private void ShowCardInfo(Card card)
+    private void ShowCardInfo(Card card, bool canActivate = false)
     {
-        CardInfoComponent.Show((VanguardCard)card.CurrentCard);
+        CardInfoComponent.Show((VanguardCard)card.CurrentCard, canActivate);
     }
 
     public Task<List<CardBase>> SelectCardsFromHandRange(int minimum, int maximum)
@@ -202,7 +218,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     public Task<VanguardActivationSkill> SelectSkillToActivate(List<VanguardActivationSkill> skills)
     {
-        throw new NotImplementedException();
+        return ((ISelectSkillToActivate)strategy).SelectSkillToActivate(skills);
     }
 
     public Task<UnitCircle> SelectCircleToProvideCritical()
@@ -222,7 +238,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     public Task<VanguardCard> SelectCardFromDeck(int minGrade, int maxGrade)
     {
-        throw new NotImplementedException();
+        return ((ISelectCardFromDeck)strategy).SelectCardFromDeck(minGrade, maxGrade);
     }
 
     public Task<List<VanguardCard>> SelectCardsFromDamageZone(int amount)

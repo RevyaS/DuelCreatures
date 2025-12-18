@@ -17,6 +17,7 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
 
     private bool isSelected = false;
     public bool IsSelected => isSelected;
+    public Card? CurrentCard => cardRotationContainer.CurrentCard;
 
     private ComponentInputState inputState = ComponentInputState.None;
     [Export]

@@ -24,6 +24,8 @@ v.0002 Skills and Trigger selection
 - Separated Panel from CardListPanel
 - Implemented Soul Blast
 - Implemented Selecting Opp rearguard for Retire effect
+- Implemented Selecting card from Deck for skills
+- Implemented selecting own unit circle for skills (Completed Superior call)
 
 v.0001 Duel Creatures
 - Created Placeholder card

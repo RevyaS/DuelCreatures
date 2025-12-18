@@ -38,10 +38,11 @@ public class InputProviderFactory : IPlayerInputProviderFactory
     {
         if(ReferenceEquals(Game.Player1, playerProfile))
         {
-            InputProviderComponent.Setup(Game.Board.Player1Area, Game.Board.Player2Area, GameContext);
+            InputProviderComponent.Activate(Game.Board.Player1Area, Game.Board.Player2Area, SkillService, GameContext);
             return InputProviderComponent;
         } else
         {
+            InputProviderComponent.Deactivate();
             return new VanguardAIInputProvider(WeightsBias, Game.Board.Player2Area, Game.Board.Player1Area, SkillService, GameContext, Logger);
         }
     }

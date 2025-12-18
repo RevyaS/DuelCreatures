@@ -56,5 +56,15 @@ public interface ISelectCardsFromDamageZone
 
 public interface ISelectCardsFromSoul
 {
-    public Task<List<VanguardCard>> SelectCardsFromSoul(int amount);
+    Task<List<VanguardCard>> SelectCardsFromSoul(int amount);
+}
+
+public interface ISelectSkillToActivate
+{
+    Task<VanguardActivationSkill> SelectSkillToActivate(List<VanguardActivationSkill> skills);
+}
+
+public interface ISelectCardFromDeck
+{
+    Task<VanguardCard> SelectCardFromDeck(int minGrade, int maxGrade);
 }

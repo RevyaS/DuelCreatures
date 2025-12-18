@@ -7,6 +7,9 @@ public partial class CardList : Control
 {
     CardListPanel CardListPanel = null!;
     CardBaseComponent? draggedCard = null;
+    
+    public bool CanClose { get; set; } = true;
+
     private bool _cardDraggable = false;
     public bool CardsDraggable { 
         get => _cardDraggable;
@@ -54,7 +57,7 @@ public partial class CardList : Control
     public override void _DropData(Vector2 atPosition, Variant data)
     {
         draggedCard = null;
-        CardDroppedOutside?.Invoke();
+        CardDroppedOutside?.Invoke((Card)data.Obj!);
     }
 
     public override void _GuiInput(InputEvent e)
@@ -62,7 +65,10 @@ public partial class CardList : Control
         // Mouse click or touch
         if (e is InputEventMouseButton mb && mb.Pressed && mb.ButtonIndex == MouseButton.Left)
         {
-            Hide();
+            if(CanClose)
+            {
+                Hide();
+            }
         }
     }
 
@@ -78,6 +84,6 @@ public partial class CardList : Control
     }
 
     public event Action<Card>? CardPressed;
-    public event Action? CardDroppedOutside;
+    public event Action<Card>? CardDroppedOutside;
     public event Action? OnClosed;
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ArC.CardGames.Predefined.Vanguard;
 
-public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea PlayArea, CardList CardList, SelectFromCardList SelectFromCardList) : IInputProviderStrategy, ISelectOpponentCircle, IQueryActivateSkill, ISelectCardsFromDamageZone, ISelectCardsFromSoul
+public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea PlayArea, CardList CardList, SelectFromCardList SelectFromCardList) : IInputProviderStrategy, ISelectOpponentCircle, IQueryActivateSkill, ISelectCardsFromDamageZone, ISelectCardsFromSoul, ISelectCardFromDeck, ISelectOwnRearguard
 {
     // QueryActivateSkill
     public async Task<bool> QueryActivateSkill(VanguardCard Invoker, VanguardAutomaticSkill Skill)
@@ -14,7 +14,7 @@ public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea P
         CardList.CardsDraggable = true;
         TaskCompletionSource<bool> completionSource = new TaskCompletionSource<bool>();
 
-        Action cardDroppedHandler = () =>
+        Action<Card> cardDroppedHandler = (card) =>
         {
             completionSource.SetResult(true);
         };
@@ -61,7 +61,7 @@ public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea P
     // CounterBlast
     public async Task<List<VanguardCard>> SelectCardsFromDamageZone(int amount)
     {
-        Board.PushPlayerPhaseIndicatorText("Counter Blast");
+        Board.PushPlayerPhaseIndicatorText($"Counter Blast ({amount})");
         Board.ShowLeftButton(TextConstants.Confirm);
         Board.DisableLeftButton();
         List<VanguardCard> cards = new();
@@ -116,6 +116,49 @@ public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea P
         var result = await completionSource.Task;
         Board.DisableSelectOppUnitCircle();
         Board.OppCircleSelected -= oppCircleSelectedHandler;
+
+        return result;
+    }
+
+    public async Task<VanguardCard> SelectCardFromDeck(int minGrade, int maxGrade)
+    {
+        var selection = PlayArea.Deck.Cards.Cast<VanguardCard>().Where(x => minGrade <= x.Grade && x.Grade <= maxGrade).ToList();
+        CardList.Show("Select card from deck", selection);
+        CardList.BaseDroppable = true;
+        CardList.CardsDraggable = true;
+        CardList.CanClose = false;
+        TaskCompletionSource<VanguardCard> completionSource = new TaskCompletionSource<VanguardCard>();
+
+        Action<Card> cardDroppedHandler = (card) =>
+        {
+            completionSource.SetResult((VanguardCard)card.CurrentCard);
+        };
+        CardList.CardDroppedOutside += cardDroppedHandler;
+
+        var result = await completionSource.Task;
+
+        CardList.CardDroppedOutside -= cardDroppedHandler;
+        CardList.BaseDroppable = false;
+        CardList.CardsDraggable = false;
+        CardList.CanClose = true;
+        CardList.Hide();
+        return result;
+    }
+
+    public async Task<RearGuard> SelectOwnRearguard()
+    {
+        Board.EnableSelectOwnRearguard();
+        TaskCompletionSource<RearGuard> completionSource = new();
+        
+        Action<UnitCircleComponent> playerCircleSelectedHandler = (uc) =>
+        {
+            completionSource.SetResult((RearGuard)uc.UnitCircle);
+        };
+        Board.PlayerCircleSelected += playerCircleSelectedHandler;
+
+        var result = await completionSource.Task;
+        Board.DisableSelectOwnRearguard();
+        Board.PlayerCircleSelected -= playerCircleSelectedHandler;
 
         return result;
     }

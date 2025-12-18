@@ -7,11 +7,13 @@ using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Predefined.Vanguard;
 using ArC.Common.Extensions;
 
-public class MainPhaseStrategy(DuelCreaturesBoard Board, VanguardPlayArea playArea, GameContext gameContext) : IInputProviderStrategy, IRequestMainPhaseAction, ISelectCardFromHand, ISelectOwnRearguard
+public class MainPhaseStrategy(DuelCreaturesBoard Board, CardInfo CardInfo, GameContext gameContext) : IInputProviderStrategy, IRequestMainPhaseAction, ISelectCardFromHand, ISelectOwnRearguard, ISelectOwnUnitCircle, ISelectSkillToActivate
 {
     CardBase selectedCardForCall = null!;
     RearGuard selectedRearguardForCall = null!;
     RearGuard selectedRearguardForSwap = null!;
+    UnitCircle selectedUnitCircleActivation = null!;
+    VanguardActivationSkill selectedSkillForActivation = null!;
 
     bool rearguardDragging = false;
     UnitCircleComponent rearguardDraggedFrom = null!;
@@ -23,9 +25,19 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, VanguardPlayArea playAr
         Board.DisablePlayerRearguardDragging([Board.PlayerBackCenter]);
         Board.EnablePlayerHandDragging();
         Board.ShowLeftButton(TextConstants.EndPhase);
+        CardInfo.ShowActivateButton = true;
 
         rearguardDragging = false;
         rearguardDraggedFrom = null!;
+
+        Action<VanguardCard> activatedHandler = (card) =>
+        {
+            selectedUnitCircleActivation = Board.GetPlayerUnitCircleComponent(card).UnitCircle;
+            selectedSkillForActivation = card.Skills.FirstOf<VanguardActivationSkill>();
+            var selected = actions.FirstOf<ActivateSkill>();
+            completionSource.SetResult(selected);
+        };
+        CardInfo.ActivationPressed += activatedHandler;
 
         Action endPhaseHandler = () => {
             var selected = actions.FirstOf<EndMainPhase>();
@@ -75,6 +87,7 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, VanguardPlayArea playAr
 
         var result = await completionSource.Task;
 
+        CardInfo.ActivationPressed -= activatedHandler;
         Board.LeftButtonPressed -=  endPhaseHandler;
         Board.CardDroppedToPlayerRearguard -=  onCardPlacedToRGHandler;
         Board.PlayerRearGuardCardDragCancelled -= onCardDragCancelledHandler;
@@ -84,6 +97,7 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, VanguardPlayArea playAr
         Board.HideLeftButton();
         Board.DisablePlayerRearguardDropping();
         Board.DisablePlayerHandDragging();
+        CardInfo.ShowActivateButton = false;
 
         return result;
     }
@@ -112,6 +126,28 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, VanguardPlayArea playAr
         {
             var result = selectedRearguardForSwap;
             selectedRearguardForSwap = null!;
+            return Task.FromResult(result);
+        }
+        throw new NotImplementedException();
+    }
+
+    public Task<UnitCircle> SelectOwnUnitCircle()
+    {
+        if(gameContext.GameState is ActivateSkillState && selectedUnitCircleActivation is not null)
+        {
+            var result = selectedUnitCircleActivation;
+            selectedUnitCircleActivation = null!;
+            return Task.FromResult(result);
+        }
+        throw new NotImplementedException();
+    }
+
+    public Task<VanguardActivationSkill> SelectSkillToActivate(List<VanguardActivationSkill> skills)
+    {
+        if(gameContext.GameState is ActivateSkillState && selectedSkillForActivation is not null)
+        {
+            var result = selectedSkillForActivation;
+            selectedSkillForActivation = null!;
             return Task.FromResult(result);
         }
         throw new NotImplementedException();

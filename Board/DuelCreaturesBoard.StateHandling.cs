@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ArC.CardGames.Predefined.Vanguard;
@@ -209,11 +210,23 @@ public partial class DuelCreaturesBoard : Control
             }
         }
 
-        selection.Where(uc => !uc.UnitCircle.IsEmpty).ToList().ForEach((circle) => circle.Selectable = true);
+        Func<UnitCircleComponent, bool> predicate = (uc) => selector.HasFlag(UnitSelector.EMPTY) ? true : !uc.UnitCircle.IsEmpty;
+
+        selection.Where(predicate).ToList().ForEach((circle) => circle.Selectable = true);
     }
 
     public void DisableSelectOppUnitCircle()
     {
         OpponentCircles.ForEach((circle) => circle.Selectable = false);
+    }
+
+    public void EnableSelectOwnRearguard()
+    {
+        PlayerRearguards.ToList().ForEach((circle) => circle.Selectable = true);
+    }
+
+    public void DisableSelectOwnRearguard()
+    {
+        PlayerRearguards.Where(uc => !uc.UnitCircle.IsEmpty).ToList().ForEach((circle) => circle.Selectable = true);
     }
 }

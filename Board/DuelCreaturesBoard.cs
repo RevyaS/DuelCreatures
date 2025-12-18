@@ -33,7 +33,9 @@ public partial class DuelCreaturesBoard : Control
             circle.CardDropped += (card) => OnPlayerRearguardCardDropped(circle, card);
             circle.ScreenDragging += OnPlayerCircleScreenDragged;
             circle.ScreenDragRelease += OnPlayerCircleScreenDragRelease;
-            circle.CardPressed += OnUnitCircleCardPressed;
+            circle.CardPressed += (card) => OnPlayerUnitCircleCardPressed(circle, card);
+            circle.Selected += OnPlayerCircleSelected;
+            circle.Deselected += OnPlayerCircleDeselected;
         });
 
         OpponentCircles.ForEach((circle) =>
@@ -66,6 +68,21 @@ public partial class DuelCreaturesBoard : Control
 
         PlayerDamageZone.CardPressed += OnDamageZoneCardPressed;
         OppDamageZone.CardPressed += OnDamageZoneCardPressed;
+    }
+
+    private void OnPlayerCircleDeselected(UnitCircleComponent component)
+    {
+        PlayerCircleDeselected?.Invoke(component);
+    }
+
+    private void OnPlayerCircleSelected(UnitCircleComponent component)
+    {
+        PlayerCircleSelected?.Invoke(component);
+    }
+
+    private void OnPlayerUnitCircleCardPressed(UnitCircleComponent unitCircle, Card card)
+    {
+        PlayerUnitCircleCardPressed?.Invoke(unitCircle, card);
     }
 
     private void OnOppUnitCircleDeselected(UnitCircleComponent component)
@@ -377,6 +394,11 @@ public partial class DuelCreaturesBoard : Control
         throw new InvalidOperationException();
     }
 
+    public UnitCircleComponent GetPlayerUnitCircleComponent(VanguardCard card)
+    {
+        return PlayerCircles.First(x => ReferenceEquals(x.CurrentCard?.CurrentCard, card));
+    }
+
     public UnitCircleComponent GetPlayerUnitCircleComponent(UnitCircle circle)
     {
         return PlayerCircles.First(x => ReferenceEquals(x.UnitCircle, circle));
@@ -393,6 +415,7 @@ public partial class DuelCreaturesBoard : Control
     }
 
     public event Action<Card>? HandCardPressed;
+    public event Action<UnitCircleComponent, Card>? PlayerUnitCircleCardPressed;
     public event Action<Card>? UnitCircleCardPressed;
     public event Action<Card>? DamageZoneCardPressed;
     public event Action<Card>? PlayerVanguardCardDropped;
@@ -408,5 +431,7 @@ public partial class DuelCreaturesBoard : Control
     public event Action<UnitCircleComponent>? OppCircleHoverReleased;
     public event Action<UnitCircleComponent>? OppCircleSelected;
     public event Action<UnitCircleComponent>? OppCircleDeselected;
+    public event Action<UnitCircleComponent>? PlayerCircleSelected;
+    public event Action<UnitCircleComponent>? PlayerCircleDeselected;
     public event Action? PlayerSoulPressed;
 }
