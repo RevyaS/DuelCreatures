@@ -9,6 +9,7 @@
   <ItemGroup>
     <Reference Include="/media/rev/DATA/Users/Files/Works/Revya/ArC/bin/Debug/net8.0/ArC.CardGames.dll" />
     <Reference Include="/media/rev/DATA/Users/Files/Works/Revya/ArC/bin/Debug/net8.0/ArC.Common.dll" />
+    <Reference Include="/media/rev/DATA/Users/Files/Works/Revya/ArC/bin/Debug/net9.0/ArC.VanguardAI.dll" />
     <Reference Include="/media/rev/DATA/Users/Files/Works/Godot Libraries/Rev Godot Core/.godot/mono/temp/bin/Debug/RevGodotCore.dll" />
   </ItemGroup>
 </Project>

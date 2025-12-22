@@ -8,7 +8,7 @@ public interface IInputProviderStrategy;
 
 public interface ISelectCardsFromHand
 {
-    Task<List<CardBase>> SelectCardsFromHand();
+    Task<List<CardBase>> SelectCardsFromHand(int minimum, int maximum);
 }
 
 public interface ISelectCardFromHandOrNot
@@ -39,7 +39,37 @@ public interface ISelectOwnUnitCircle
     Task<UnitCircle> SelectOwnUnitCircle();
 }
 
-public interface ISelectOpponentFrontRow
+public interface ISelectOpponentCircle
 {
-    Task<UnitCircle> SelectOpponentFrontRow(UnitSelector selector);
+    Task<UnitCircle> SelectOpponentCircle(UnitSelector selector);
+}
+
+public interface IQueryActivateSkill
+{
+    Task<bool> QueryActivateSkill(VanguardCard Invoker, VanguardAutomaticSkill Skill);
+}
+
+public interface ISelectCardsFromDamageZone
+{
+    Task<List<VanguardCard>> SelectCardsFromDamageZone(int amount);
+}
+
+public interface ISelectCardsFromSoul
+{
+    Task<List<VanguardCard>> SelectCardsFromSoul(int amount);
+}
+
+public interface ISelectSkillToActivate
+{
+    Task<VanguardActivationSkill> SelectSkillToActivate(List<VanguardActivationSkill> skills);
+}
+
+public interface ISelectCardFromDeck
+{
+    Task<VanguardCard> SelectCardFromDeck(int minGrade, int maxGrade);
+}
+
+public interface ISelectCardFromDamageZone
+{
+    Task<VanguardCard> SelectCardFromDamageZone();
 }

@@ -19,28 +19,41 @@ public partial class Session : Control
         InputProviderComponent = GetNode<InputProvider>($"%{nameof(InputProviderComponent)}");
         InputProviderComponent.SetEventBus(eventBus);
 
-        var player1 = new VanguardPlayerProfile(new(
+        var player1 = new VanguardPlayerProfile(
             DeckBuilder.Create()
+                .AddCards(RoyalPaladin.ArdentJewelKnightPolli, 4)
+                .AddCards(RoyalPaladin.FutureKnightLlew, 4)
+                .AddCards(RoyalPaladin.DevotingJewelKnightTabitha, 4)
+                .AddCards(RoyalPaladin.Wingal, 4)
+                .AddCards(RoyalPaladin.KnightOfRoseMorgana, 4)
                 .AddCards(RoyalPaladin.LittleSageMarron, 4)
                 .AddCards(RoyalPaladin.SailorGuardianMichiru, 4)
                 .AddCards(RoyalPaladin.BlasterBlade, 4)
                 .AddCards(RoyalPaladin.KnightOfSilenceGallatin, 4)
-                .AddCards(RoyalPaladin.KingOfKnightsAlfred, 4)
-                .GetCards(), eventBus), RoyalPaladin.StardustTrumpeteer);
+                .AddCards(RoyalPaladin.KingOfKnightsAlfred, 4), 
+                RoyalPaladin.StardustTrumpeteer);
 
-        var player2 = new VanguardPlayerProfile(new(DeckBuilder.Create()
+        var player2 = new VanguardPlayerProfile(
+            DeckBuilder.Create()
+                .AddCards(RoyalPaladin.ArdentJewelKnightPolli, 4)
+                .AddCards(RoyalPaladin.FutureKnightLlew, 4)
+                .AddCards(RoyalPaladin.DevotingJewelKnightTabitha, 4)
+                .AddCards(RoyalPaladin.Wingal, 4)
+                .AddCards(RoyalPaladin.KnightOfRoseMorgana, 4)
                 .AddCards(RoyalPaladin.LittleSageMarron, 4)
                 .AddCards(RoyalPaladin.SailorGuardianMichiru, 4)
                 .AddCards(RoyalPaladin.BlasterBlade, 4)
                 .AddCards(RoyalPaladin.KnightOfSilenceGallatin, 4)
-                .AddCards(RoyalPaladin.KingOfKnightsAlfred, 4)
-                .GetCards(), eventBus), RoyalPaladin.StardustTrumpeteer);
+                .AddCards(RoyalPaladin.KingOfKnightsAlfred, 4), 
+                RoyalPaladin.StardustTrumpeteer);
 
         var game = new VanguardGame(player1, player2, eventBus, effectService);
-        var inputProviderFactory = new InputProviderFactory(game, InputProviderComponent, gameContext);
-        var skillService = new VanguardSkillService(game);
-
-        var session = new VanguardGameSession(game, inputProviderFactory, eventBus, effectService, skillService, gameContext);
+        var skillService = new VanguardSkillService(eventBus, gameContext);
+        var logger = new GodotLogger();
+        logger.Enabled = true;
+        var inputProviderFactory = new InputProviderFactory(game, InputProviderComponent, gameContext, skillService, logger);
+        
+        var session = new VanguardGameSession(game, inputProviderFactory, eventBus, effectService, skillService, gameContext, logger);
 
         await StartGame(session);
     }
@@ -63,5 +76,7 @@ public partial class Session : Control
         {
             GD.Print("You lose");
         }
+
+        GD.Print("Win Condition ", session.GameOverContext.ToString());
     }
 }

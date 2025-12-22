@@ -16,14 +16,17 @@ public partial class DuelCreaturesBoard : Control
 
         PlayerFrontLeft = null!, PlayerBackLeft = null!, PlayerFrontRight = null!, PlayerBackRight = null!,
         OppFrontLeft = null!, OppBackLeft = null!, OppBackCenter = null!, OppFrontRight = null!, OppBackRight = null!;
-    DamageZoneComponent PlayerDamageZone = null!, OppDamageZone = null!;
+    public DamageZoneComponent PlayerDamageZone { get; private set; } = null!; 
+    DamageZoneComponent OppDamageZone = null!;
     HorizontalCardArea PlayerTriggerZone = null!, OppTriggerZone = null!;
+    public CardLineStatic GuardZone { get; private set; } = null!; 
 
     public HandComponent PlayerHand { get; private set; } = null!;
     HandComponent OppHand = null!;
 
-    CardVerticalStack PlayerDeck = null!, OppDeck = null!,
-        PlayerDropZone = null!, OppDropZone = null!;
+    DeckComponent PlayerDeck = null!, OppDeck = null!;
+    public DropZoneComponent PlayerDropZone { get; private set; } = null!;
+    public DropZoneComponent OppDropZone { get; private set; } = null!;
 
     List<UnitCircleComponent> AllExtraFields => [ 
         PlayerExtraLeft1, PlayerExtraLeft2, PlayerExtraRight1, PlayerExtraRight2,
@@ -44,7 +47,7 @@ public partial class DuelCreaturesBoard : Control
     ];
 
 
-    List<UnitCircleComponent> PlayerBackRowCircles => [
+    List<UnitCircleComponent> PlayerBackRowRearguards => [
         PlayerBackLeft, PlayerBackCenter, PlayerBackRight
     ];
 
@@ -57,15 +60,25 @@ public partial class DuelCreaturesBoard : Control
     ];
 
     List<UnitCircleComponent> PlayerRearguards => [
-        ..PlayerFrontRowRearguards, ..PlayerBackRowCircles
+        ..PlayerFrontRowRearguards, ..PlayerBackRowRearguards
     ];
 
     List<UnitCircleComponent> PlayerCircles => [
         ..PlayerRearguards, PlayerVanguard
     ];
 
+    List<UnitCircleComponent> OpponentCircles => [
+        ..OppFrontRowCircles, ..OppBackRowRearguards
+    ];
+    List<UnitCircleComponent> OppBackRowRearguards => [
+        OppBackLeft, OppBackCenter, OppBackRight
+    ];
+
+    List<UnitCircleComponent> OppFrontRowRearguards => [
+        OppFrontLeft, OppFrontRight
+    ];
     List<UnitCircleComponent> OppFrontRowCircles => [
-        OppFrontLeft, OppFrontRight, OppVanguard
+        OppVanguard, ..OppFrontRowRearguards
     ];
 
     Line2D PlayerLeftBoostLine = null!, PlayerCenterBoostLine = null!, PlayerRightBoostLine = null!,
@@ -77,6 +90,11 @@ public partial class DuelCreaturesBoard : Control
     {
         OppPhaseIndicator = GetNode<Label>($"%{nameof(OppPhaseIndicator)}");
         PlayerPhaseIndicator = GetNode<Label>($"%{nameof(PlayerPhaseIndicator)}");
+
+        GuardZone = GetNode<CardLineStatic>($"%{nameof(GuardZone)}");
+
+        PlayerDeck = GetNode<DeckComponent>($"%{nameof(PlayerDeck)}");
+        OppDeck = GetNode<DeckComponent>($"%{nameof(OppDeck)}");
 
         PlayerExtraLeft1 = GetNode<UnitCircleComponent>($"%{nameof(PlayerExtraLeft1)}");
         PlayerExtraLeft2 = GetNode<UnitCircleComponent>($"%{nameof(PlayerExtraLeft2)}");
@@ -106,8 +124,8 @@ public partial class DuelCreaturesBoard : Control
         PlayerHand = GetNode<HandComponent>($"%{nameof(PlayerHand)}");
         OppHand = GetNode<HandComponent>($"%{nameof(OppHand)}");
 
-        PlayerDropZone = GetNode<CardVerticalStack>($"%{nameof(PlayerDropZone)}");
-        OppDropZone = GetNode<CardVerticalStack>($"%{nameof(OppDropZone)}");
+        PlayerDropZone = GetNode<DropZoneComponent>($"%{nameof(PlayerDropZone)}");
+        OppDropZone = GetNode<DropZoneComponent>($"%{nameof(OppDropZone)}");
 
         PlayerVanguard = GetNode<UnitCircleComponent>($"%{nameof(PlayerVanguard)}");
         OppVanguard = GetNode<UnitCircleComponent>($"%{nameof(OppVanguard)}");

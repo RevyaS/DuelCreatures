@@ -3,17 +3,13 @@ using Godot;
 
 [GlobalClass]
 [Icon("res://Assets/Icons/Control.svg")]
+[Tool]
 public partial class HoverArea : Control
 {    
     private bool Hovered = false;
     public override void _GuiInput(InputEvent e)
     {
         if (e is InputEventMouseMotion mm)
-        {
-            OnHover();
-        }
-
-        if (e is InputEventScreenDrag)
         {
             OnHover();
         }
@@ -34,7 +30,6 @@ public partial class HoverArea : Control
 
         if(!inside && Hovered)
         {
-            GD.Print($"Hovering: false");
             Hovered = false;
             HoverReleased?.Invoke();
         }

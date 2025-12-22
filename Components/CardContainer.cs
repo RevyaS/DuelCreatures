@@ -78,12 +78,24 @@ public partial class CardContainer : Control
     {
         if(currentCard is not null)
         {
-            RemoveCard();
+            RemoveCardAndFree();
         }
         card.Draggable = Draggable;
         card.CardDragging += OnCardDragging;
         card.CardDragCancelled += OnCardDragCancelled;
+        card.CardPressed += OnCardPressed;
+        card.CardLongPressed += OnCardLongPressed;
         AddChild(card);
+    }
+
+    private void OnCardLongPressed(Card card)
+    {
+        CardLongPressed?.Invoke(card);
+    }
+
+    private void OnCardPressed(Card card)
+    {
+        CardPressed?.Invoke(card);
     }
 
     private void Render()
@@ -108,11 +120,16 @@ public partial class CardContainer : Control
         CardDragging?.Invoke(component);
     }
 
+    public void RemoveCardAndFree()
+    {
+        currentCard?.QueueFree();
+        RemoveCard();
+    }
+
     public void RemoveCard()
     {
         if(currentCard is not null)
         {
-            currentCard.QueueFree();
             RemoveChild(currentCard);
         }
     }
@@ -176,4 +193,6 @@ public partial class CardContainer : Control
 
     public Action<CardBaseComponent>? CardDragging;
     public Action<CardBaseComponent>? CardDragCancelled;
+    public event Action<Card>? CardPressed;
+    public event Action<Card>? CardLongPressed;
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ArC.CardGames;
 using ArC.CardGames.Components;
@@ -19,34 +20,126 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     public VanguardPlayArea OpponentPlayArea { get; private set; } = null!;
 
-    public VanguardSkillService SkillService => throw new NotImplementedException();
+    public VanguardSkillService SkillService { get; private set; } = null!;
 
     VanguardCard CurrentVanguard => PlayArea.Vanguard.Card!;
     PlayAreaBase IPlayerInputProvider.PlayArea => PlayArea;
     GameContext GameContext = null!;
 
+    private bool Active = false;
+
     IInputProviderStrategy strategy = null!;
 
-    SelectCardsFromHandComponent SelectCardsFromHandComponent = null!;
+    SelectCardsComponent SelectCardsComponent = null!;
+    SelectFromCardList SelectFromCardListComponent = null!;
+    CardList CardListComponent = null!;
+    CardInfo CardInfoComponent = null!;
+
+    Stack<IInputProviderStrategy> strategyStack = new();
 
     public override void _Ready()
     {
         board = GetNode<DuelCreaturesBoard>($"%{nameof(DuelCreaturesBoard)}");
-        SelectCardsFromHandComponent = GetNode<SelectCardsFromHandComponent>($"%{nameof(SelectCardsFromHandComponent)}");
+        SelectCardsComponent = GetNode<SelectCardsComponent>($"%{nameof(SelectCardsComponent)}");
+        SelectFromCardListComponent = GetNode<SelectFromCardList>($"%{nameof(SelectFromCardListComponent)}");
+        CardListComponent = GetNode<CardList>($"%{nameof(CardListComponent)}");
+        CardListComponent.CardPressed += OnCardListCardPressed;
 
+        CardInfoComponent = GetNode<CardInfo>($"%{nameof(CardInfoComponent)}");
+
+        board.PlayerDropZone.SetCardList(CardListComponent);
+        board.OppDropZone.SetCardList(CardListComponent);
+
+        Board.PlayerSoulPressed += OnPlayerSoulPressed;
         Board.HandCardPressed += OnHandCardPressed;
+        Board.UnitCircleCardPressed += OnUnitCircleCardPressed;
+        Board.PlayerUnitCircleCardPressed += OnPlayerUnitCircleCardPressed;
+        Board.DamageZoneCardPressed += OnDamageZoneCardPressed;
     }
 
-    public void Setup(VanguardPlayArea playArea, VanguardPlayArea oppPlayArea, GameContext gameContext)
+    private void OnPlayerUnitCircleCardPressed(UnitCircleComponent unitCircle, Card card)
     {
+        var enableActivateButton = VanguardGameRules.UnitCircleCanActivateSkill(this, unitCircle.UnitCircle);
+        ShowCardInfo(card, enableActivateButton);
+    }
+
+    private void OnPlayerSoulPressed()
+    {
+        CardListComponent.Show("Soul", PlayArea.Soul.Cards.Cast<VanguardCard>().ToList());
+    }
+
+    public void Activate(VanguardPlayArea playArea, VanguardPlayArea oppPlayArea, VanguardSkillService vanguardSkillService, GameContext gameContext)
+    {
+        Active = true;
         OpponentPlayArea = oppPlayArea;
         PlayArea = playArea;
         GameContext = gameContext;
+        SkillService = vanguardSkillService;
+    }
+
+    public void Deactivate()
+    {
+        Active = false;
     }
 
     public void SetEventBus(VanguardEventBus eventBus)
     {
         eventBus.PhaseChanged += OnPhaseChanged;
+        eventBus.OnGuardRequested += OnGuardRequested;
+        eventBus.SkillExecution += OnSkillExecution;
+        eventBus.SkillExecuted += OnSkillExecuted;
+        eventBus.OnDamageChecked += OnDamageChecked;
+        eventBus.OnDriveChecked += OnDriveChecked;
+        eventBus.TriggerResolved += OnTriggerResolved;
+    }
+
+    private async Task OnDriveChecked(VanguardPlayArea area, VanguardCard card)
+    {
+        if(ReferenceEquals(PlayArea, area))
+        {
+            PushProviderStrategy(new TriggerStrategy(board, PlayArea, SelectFromCardListComponent, GameContext));
+        }
+    }
+
+    private async Task OnDamageChecked(VanguardPlayArea area, VanguardCard card)
+    {
+        if(ReferenceEquals(PlayArea, area))
+        {
+            PushProviderStrategy(new TriggerStrategy(board, PlayArea, SelectFromCardListComponent, GameContext));
+        }
+    }
+
+    private async Task OnTriggerResolved()
+    {
+        if(strategy is TriggerStrategy)
+        {
+            PopProviderStrategy();
+        }
+    }
+
+    private void OnSkillExecuted(UnitCircle circle, VanguardSkill skill)
+    {
+        if(PlayArea.OwnsUnitCircle(circle))
+        {
+            PopProviderStrategy();
+        }
+    }
+
+    private void OnSkillExecution(UnitCircle circle, VanguardSkill skill)
+    {
+        if(PlayArea.OwnsUnitCircle(circle))
+        {
+            PushProviderStrategy(new SkillExecutionStrategy(board, PlayArea, CardListComponent, SelectFromCardListComponent));
+        }
+    }
+
+    private Task OnGuardRequested(UnitCircle circle)
+    {
+        if(PlayArea.OwnsUnitCircle(circle))
+        {
+            SetProviderStrategy(new GuardPhaseStrategy(board, board.GetPlayerUnitCircleComponent(circle)));
+        }
+        return Task.CompletedTask;
     }
 
     private void OnPhaseChanged(IPhase phase)
@@ -56,13 +149,13 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         switch(phase)
         {
             case MulliganPhase:
-                SetProviderStrategy(new MulliganPhaseStrategy(board, SelectCardsFromHandComponent));
+                SetProviderStrategy(new MulliganPhaseStrategy(board, SelectCardsComponent));
                 return;
             case RidePhase:
                 SetProviderStrategy(new RidePhaseStrategy(board));
                 return;
             case MainPhase:
-                SetProviderStrategy(new MainPhaseStrategy(board, PlayArea, GameContext));
+                SetProviderStrategy(new MainPhaseStrategy(board, CardInfoComponent, GameContext));
                 return;
             case VanguardAttackPhase:
                 SetProviderStrategy(new AttackPhaseStrategy(board, GameContext));
@@ -73,17 +166,56 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     public void SetProviderStrategy(IInputProviderStrategy strategy)
     {
-        this.strategy = strategy;
+        strategyStack.Clear();
+        strategyStack.Push(strategy);
+        SetProviderStrategyCore();
+    }
+
+    public void PushProviderStrategy(IInputProviderStrategy strategy)
+    {
+        strategyStack.Push(strategy);
+        SetProviderStrategyCore();
+    }
+
+    public void PopProviderStrategy()
+    {
+        strategyStack.Pop();
+        SetProviderStrategyCore();
+    }
+
+    private void SetProviderStrategyCore()
+    {
+        strategy = strategyStack.Peek();
     }
 
     private void OnHandCardPressed(Card card)
     {
-        VanguardCardComponent component = (VanguardCardComponent)card;
+        ShowCardInfo(card);
+    }
+
+    private void OnUnitCircleCardPressed(Card card)
+    {
+        ShowCardInfo(card);
+    }
+
+    private void OnCardListCardPressed(Card card)
+    {
+        ShowCardInfo(card);
+    }
+
+    private void OnDamageZoneCardPressed(Card card)
+    {
+        ShowCardInfo(card);
+    }
+
+    private void ShowCardInfo(Card card, bool canActivate = false)
+    {
+        CardInfoComponent.Show((VanguardCard)card.CurrentCard, canActivate);
     }
 
     public Task<List<CardBase>> SelectCardsFromHandRange(int minimum, int maximum)
     {
-        return ((ISelectCardsFromHand)strategy).SelectCardsFromHand();
+        return ((ISelectCardsFromHand)strategy).SelectCardsFromHand(minimum, maximum);
     }
 
     public Task<CardBase?> SelectCardFromHandOrNot()
@@ -101,9 +233,9 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         return ((ISelectOwnRearguard)strategy).SelectOwnRearguard();
     }
 
-    public Task<UnitCircle> SelectOpponentFrontRow(UnitSelector selector)
+    public Task<UnitCircle> SelectOpponentCircle(UnitSelector selector)
     {
-        return ((ISelectOpponentFrontRow)strategy).SelectOpponentFrontRow(selector);
+        return ((ISelectOpponentCircle)strategy).SelectOpponentCircle(selector);
     }
 
     public Task<UnitCircle> SelectOwnUnitCircle()
@@ -113,7 +245,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     public Task<VanguardActivationSkill> SelectSkillToActivate(List<VanguardActivationSkill> skills)
     {
-        throw new NotImplementedException();
+        return ((ISelectSkillToActivate)strategy).SelectSkillToActivate(skills);
     }
 
     public Task<UnitCircle> SelectCircleToProvideCritical()
@@ -128,27 +260,27 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     public Task<VanguardCard> SelectCardFromDamageZone()
     {
-        throw new NotImplementedException();
+        return ((ISelectCardFromDamageZone)strategy).SelectCardFromDamageZone();
     }
 
     public Task<VanguardCard> SelectCardFromDeck(int minGrade, int maxGrade)
     {
-        throw new NotImplementedException();
+        return ((ISelectCardFromDeck)strategy).SelectCardFromDeck(minGrade, maxGrade);
     }
 
     public Task<List<VanguardCard>> SelectCardsFromDamageZone(int amount)
     {
-        throw new NotImplementedException();
+        return ((ISelectCardsFromDamageZone)strategy).SelectCardsFromDamageZone(amount);
     }
 
     public Task<List<VanguardCard>> SelectCardsFromSoul(int amount)
     {
-        throw new NotImplementedException();
+        return ((ISelectCardsFromSoul)strategy).SelectCardsFromSoul(amount);
     }
 
-    public Task<bool> QueryActivateSkill(VanguardSkillCost SkillCost)
+    public Task<bool> QueryActivateSkill(VanguardCard Invoker, VanguardAutomaticSkill Skill)
     {
-        throw new NotImplementedException();
+        return ((IQueryActivateSkill)strategy).QueryActivateSkill(Invoker, Skill);
     }
 
     public Task<CardBase> SelectCardFromHand()

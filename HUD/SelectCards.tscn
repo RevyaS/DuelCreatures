@@ -1,10 +1,10 @@
 [gd_scene load_steps=4 format=3 uid="uid://dt60jvmuuttc0"]
 
-[ext_resource type="Script" uid="uid://cd7ssfasr14ha" path="res://HUD/SelectCardsFromHandComponent.cs" id="1_1ypnk"]
+[ext_resource type="Script" uid="uid://cd7ssfasr14ha" path="res://HUD/SelectCardsComponent.cs" id="1_1ypnk"]
 [ext_resource type="Script" uid="uid://dwrq2pnaqfw1s" path="res://HUD/DropArea.cs" id="2_ma3nu"]
 [ext_resource type="PackedScene" uid="uid://cnp5v17a7qgwg" path="res://Board/CardLineDynamic.tscn" id="3_g0jyd"]
 
-[node name="SelectCardsFromHand" type="PanelContainer"]
+[node name="SelectCards" type="PanelContainer"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -29,12 +29,13 @@ theme_override_constants/margin_bottom = 5
 layout_mode = 2
 
 [node name="Title" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Drag Cards to Mulligan"
 
 [node name="Drop" type="Control" parent="MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(900, 300)
+custom_minimum_size = Vector2(900, 220)
 layout_mode = 2
 
 [node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer/Drop"]
@@ -49,10 +50,6 @@ mouse_filter = 2
 [node name="SelectedCards" parent="MarginContainer/VBoxContainer/Drop/CenterContainer" instance=ExtResource("3_g0jyd")]
 unique_name_in_owner = true
 layout_mode = 2
-Separation = 0
-HideCards = false
-Draggable = false
-Shrinks = true
 
 [node name="DropArea" type="Control" parent="MarginContainer/VBoxContainer/Drop"]
 unique_name_in_owner = true

@@ -1,5 +1,4 @@
 using System;
-using System.Data;
 using System.Threading.Tasks;
 using ArC.CardGames.Predefined.Vanguard;
 using Godot;
@@ -12,10 +11,26 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
     DropArea dropArea = null!;
     DragArea dragArea = null!;
     HoverArea hoverArea = null!;
+    Button SelectButton = null!;
 
     public UnitCircle UnitCircle { get; private set; } = null!;
 
+    private bool isSelected = false;
+    public bool IsSelected => isSelected;
+    public Card? CurrentCard => cardRotationContainer.CurrentCard;
+
     private ComponentInputState inputState = ComponentInputState.None;
+    [Export]
+    public bool Selectable
+    {
+        get => inputState == ComponentInputState.Selectable;
+        set
+        {
+            SetState(ComponentInputState.Selectable, value);
+            Render();
+        }
+    }
+
     [Export]
     public bool Droppable
     {
@@ -60,11 +75,25 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         }
     }
 
+    private float _cardScale = SizeConstants.CardScaleFactor;
+    [Export(PropertyHint.Range, "0.0, 1.0")]
+    public float CardScale
+    {
+        get => _cardScale;
+        set
+        {
+            _cardScale = value;
+            Render();
+        }
+    }
+
     public override void _Ready()
     {
         cardRotationContainer = GetNode<CardRotationContainer>($"%{nameof(CardRotationContainer)}");
         cardRotationContainer.CardDragging += OnCardDragging;
         cardRotationContainer.CardDragCancelled += OnCardDragCancelled;
+        cardRotationContainer.CardPressed += OnCardPressed;
+        cardRotationContainer.CardLongPressed += OnCardLongPressed;
 
         dropArea = GetNode<DropArea>($"%{nameof(DropArea)}");
         dropArea.CardDropped += OnCardDropped;
@@ -77,7 +106,38 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         hoverArea.Hovering += OnHovering;
         hoverArea.HoverReleased += OnHoverReleased;
 
+        SelectButton = GetNode<Button>($"%{nameof(SelectButton)}");
+        SelectButton.Pressed += OnSelectButtonPressed;
+
         Render();
+    }
+
+    private void OnSelectButtonPressed()
+    {
+        isSelected = !isSelected;
+        RenderSelectButton();
+        if(isSelected)
+        {
+            Selected?.Invoke(this);
+        } else
+        {
+            Deselected?.Invoke(this);
+        }
+    }
+
+    private void RenderSelectButton()
+    {
+        SelectButton.Text = IsSelected ? "Deselect" : "Select";
+    }
+
+    private void OnCardLongPressed(Card card)
+    {
+        LongPressed?.Invoke(this);
+    }
+
+    private void OnCardPressed(Card card)
+    {
+        CardPressed?.Invoke(card);
     }
 
     private void OnHoverReleased()
@@ -124,8 +184,30 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
     public void SetEventBus(VanguardEventBus eventBus)
     {
         eventBus.CardAssignedToUnitCircle += OnCardAssignedToUnitCircle;
+        eventBus.CardRemovedFromUnitCircle += OnCardRemovedFromUnitCircle;
         eventBus.UnitCircleOrientationChanged += OnUnitCircleOrientationChanged;
         eventBus.PowerEffectUpdatedToUnitCircle += OnPowerEffectUpdatedToUnitCircle;
+        eventBus.CriticalEffectUpdatedToUnitCircle += OnCriticalEffectUpdatedToUnitCircle;
+    }
+
+    private void OnCriticalEffectUpdatedToUnitCircle(UnitCircle circle)
+    {
+        if(ReferenceEquals(circle, UnitCircle))
+        {
+            UpdateStats();
+        }
+    }
+
+    private Task OnCardRemovedFromUnitCircle(UnitCircle circle)
+    {
+        if(ReferenceEquals(circle, UnitCircle))
+        {
+            if(circle.Card is null)
+            {
+                cardRotationContainer.RemoveCardAndFree();
+            }
+        }
+        return Task.CompletedTask;
     }
 
     private void OnPowerEffectUpdatedToUnitCircle(UnitCircle unitCircle)
@@ -145,12 +227,13 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         }
     }
 
-    private async Task OnUnitCircleOrientationChanged(UnitCircle circle, Orientation orientation)
+    private Task OnUnitCircleOrientationChanged(UnitCircle circle, Orientation orientation)
     {
         if(ReferenceEquals(circle, UnitCircle))
         {
             cardRotationContainer.ChangeOrientation(orientation);
         }
+        return Task.CompletedTask;
     }
 
     private Task OnCardAssignedToUnitCircle(UnitCircle circle)
@@ -159,7 +242,7 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         {
             if(circle.Card is null)
             {
-                cardRotationContainer.RemoveCard();
+                cardRotationContainer.RemoveCardAndFree();
             } else
             {
                 SetCard(circle.Card!);
@@ -178,8 +261,10 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         if(!IsInsideTree()) return;
         dropArea.Visible = Droppable;
         cardRotationContainer.Draggable = Draggable;
+        cardRotationContainer.CardScale = CardScale;
         dragArea.Visible = ScreenDraggable;
         hoverArea.Visible = Hoverable;
+        SelectButton.Visible = Selectable;
     }
 
     protected virtual void OnCardDropped(Card card)
@@ -189,7 +274,7 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
 
     public void ClearCard()
     {
-        cardRotationContainer.RemoveCard();
+        cardRotationContainer.RemoveCardAndFree();
     }
 
     public void FaceUp()
@@ -203,6 +288,18 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         cardRotationContainer.AddCard(cardComponent);
         cardRotationContainer.FaceUp();
     }
+
+    public void UpdatePower(int newPower)
+    {
+        cardRotationContainer.UpdatePower(newPower);
+    }
+
+    public void ResetSelection()
+    {
+        isSelected = false;
+        RenderSelectButton();
+    }
+
     public event Action<Card>? CardDropped;
     public event Action<UnitCircleComponent, CardBaseComponent>? RearguardCardDragging;
     public event Action<UnitCircleComponent, CardBaseComponent>? RearguardCardDragCancelled;
@@ -210,4 +307,8 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
     public event Action<UnitCircleComponent>? ScreenDragRelease;
     public event Action<UnitCircleComponent>? Hovering;
     public event Action<UnitCircleComponent>? HoverReleased;
+    public event Action<Card>? CardPressed;
+    public event Action<UnitCircleComponent>? LongPressed;
+    public event Action<UnitCircleComponent>? Selected;
+    public event Action<UnitCircleComponent>? Deselected;
 }

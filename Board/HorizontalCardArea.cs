@@ -11,7 +11,7 @@ public partial class HorizontalCardArea : PanelContainer
 
     public void ClearCard()
     {
-        Container.RemoveCard();
+        Container.RemoveCardAndFree();
     }
 
     public void AddCard(Card card)

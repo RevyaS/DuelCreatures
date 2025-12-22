@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://d0hdjku8idjs"]
+
+[ext_resource type="PackedScene" uid="uid://cow87og7qhndr" path="res://Board/CardVerticalStack.tscn" id="1_x5in1"]
+[ext_resource type="Script" uid="uid://bi157fqytj3ay" path="res://Board/DeckComponent.cs" id="2_d6f50"]
+
+[node name="CardVerticalStack" instance=ExtResource("1_x5in1")]
+script = ExtResource("2_d6f50")

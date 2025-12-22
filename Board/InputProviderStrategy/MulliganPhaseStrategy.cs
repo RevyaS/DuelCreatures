@@ -4,47 +4,47 @@ using System.Linq;
 using System.Threading.Tasks;
 using ArC.CardGames.Components;
 
-public class MulliganPhaseStrategy(DuelCreaturesBoard board, SelectCardsFromHandComponent selectCardsFromHandComponent) : IInputProviderStrategy, ISelectCardsFromHand
+public class MulliganPhaseStrategy(DuelCreaturesBoard board, SelectCardsComponent selectCardsComponent) : IInputProviderStrategy, ISelectCardsFromHand
 {
-    public async Task<List<CardBase>> SelectCardsFromHand()
+    public async Task<List<CardBase>> SelectCardsFromHand(int minimum, int maximum)
     {
         board.EnablePlayerHandDragging();
 
         TaskCompletionSource<List<CardBase>> completionSource = new();
-        selectCardsFromHandComponent.Activate(0, 5);
+        selectCardsComponent.Activate("Select Cards to Mulligan", minimum, maximum);
         
         Action<CardBaseComponent> cardDraggingHandler = (card) =>
         {
-            selectCardsFromHandComponent.Droppable = true;
+            selectCardsComponent.Droppable = true;
         };
         board.PlayerHand.CardDragging += cardDraggingHandler;
 
         Action<Card> cardSelectedHandler = (card) => { 
-            selectCardsFromHandComponent.Droppable = false;
+            selectCardsComponent.Droppable = false;
             board.PlayerHand.RemoveCard(card);
         };
-        selectCardsFromHandComponent.CardSelected += cardSelectedHandler;
+        selectCardsComponent.CardSelected += cardSelectedHandler;
 
         Action<Card> cardReturnedHandler = (card) =>
         {
             board.PlayerHand.AddCard(card);
             card.CurrentlyDragged = false;
         };
-        selectCardsFromHandComponent.CardReturned += cardReturnedHandler;
+        selectCardsComponent.CardReturned += cardReturnedHandler;
 
         Action<List<Card>> confirmedCardHandler = (cards) =>
         {
-            selectCardsFromHandComponent.Deactivate();
+            selectCardsComponent.Deactivate();
             completionSource.SetResult(cards.Select(x => x.CurrentCard).ToList());
         };
-        selectCardsFromHandComponent.ConfirmedCards += confirmedCardHandler;
+        selectCardsComponent.ConfirmedCards += confirmedCardHandler;
         
         var result = await completionSource.Task;
 
-        selectCardsFromHandComponent.ConfirmedCards -= confirmedCardHandler;
+        selectCardsComponent.ConfirmedCards -= confirmedCardHandler;
         board.PlayerHand.CardDragging -= cardDraggingHandler;
-        selectCardsFromHandComponent.CardSelected -= cardSelectedHandler;
-        selectCardsFromHandComponent.CardReturned -= cardReturnedHandler;
+        selectCardsComponent.CardSelected -= cardSelectedHandler;
+        selectCardsComponent.CardReturned -= cardReturnedHandler;
         board.DisablePlayerHandDragging();
 
         return result;

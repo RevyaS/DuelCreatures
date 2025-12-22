@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://cl0t7q61is3ro"]
+
+[ext_resource type="Script" uid="uid://c0f5frscelvc7" path="res://HUD/CardList.cs" id="1_jtk0n"]
+[ext_resource type="PackedScene" uid="uid://cx38wvfuj0nja" path="res://HUD/CardListPanel.tscn" id="2_6jngw"]
+
+[node name="CardList" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_jtk0n")
+
+[node name="CardListPanel" parent="." instance=ExtResource("2_6jngw")]
+unique_name_in_owner = true
+layout_mode = 1
+offset_left = -450.0
+offset_top = -128.5
+offset_right = 450.0
+offset_bottom = 128.5

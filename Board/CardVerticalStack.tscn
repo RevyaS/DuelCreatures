@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://cow87og7qhndr"]
+[gd_scene load_steps=5 format=3 uid="uid://cow87og7qhndr"]
 
 [ext_resource type="Script" uid="uid://b1xmmaeakmxt2" path="res://Board/CardVerticalStack.cs" id="1_84xpp"]
 [ext_resource type="Script" uid="uid://bqw5phtur46nx" path="res://Components/CardContainer.cs" id="1_lyp1o"]
 [ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Card/Card.tscn" id="2_phta5"]
+[ext_resource type="Script" uid="uid://d2f15galko8gy" path="res://HUD/PressArea.cs" id="4_bpvqm"]
 
 [node name="CardVerticalStack" type="PanelContainer"]
 custom_minimum_size = Vector2(139, 193)
@@ -31,3 +32,17 @@ metadata/_custom_type_script = "uid://bqw5phtur46nx"
 [node name="Card" parent="MarginContainer/CardContainer" instance=ExtResource("2_phta5")]
 layout_mode = 1
 scale = Vector2(0.45, 0.45)
+
+[node name="PressArea" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("4_bpvqm")
+metadata/_custom_type_script = "uid://d2f15galko8gy"
+
+[node name="CardCount" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "0"
+horizontal_alignment = 1

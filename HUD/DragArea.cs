@@ -3,6 +3,7 @@ using Godot;
 
 [GlobalClass]
 [Icon("res://Assets/Icons/Control.svg")]
+[Tool]
 public partial class DragArea : Control
 {
     private bool IsDragging = false;
@@ -13,16 +14,10 @@ public partial class DragArea : Control
         {
             OnDrag();
         }
-
-        if (e is InputEventScreenDrag)
-        {
-            OnDrag();
-        }
     }
 
     private void OnDrag()
     {
-        GD.Print($"Dragging: true");
         IsDragging = true;
         Dragging?.Invoke();
     }

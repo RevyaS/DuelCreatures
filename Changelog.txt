@@ -1,3 +1,37 @@
+v.0002 Skills and Trigger selection
+- Updated for ArC v.0000004
+- Utilize VanguardAI from ArC, InputProviderFactory loads the AI data
+- Added Guard value in Card
+- Implemented Card can be placed for Guarding
+    - Can return cards back to hand
+    - When guarding, the cards shows Guard value temporarily
+- Rearguards can be retired when attacked successfully
+- Can show DropZone cards by clicking on the drop zone 
+- Can show Soul cards by long pressing on the vanguard 
+- Can show Card Info by clicking from the hand 
+- Can show Card Info by clicking from the unit circles 
+- Can show Card Info by clicking from the damage zone 
+- Can show Card Info by clicking from the card list 
+- Created CardList HUD for list of cards
+- Created CardInfo HUD for card info
+- AI can be loaded on exported APK
+- Removed Screen related Gui input handling to reduce headaches and utilize Godot's emulate mouse from touch
+- Created QueryActivateSkillStrategy
+- Removed ManualAI implementation
+- Perform Counter Blast by holding the cards from DamageZone
+- Updated Board Indicator to be stackable for temporary indications 
+- Added Board Indicator for Guarding
+- Separated Panel from CardListPanel
+- Implemented Soul Blast
+- Implemented Selecting Opp rearguard for Retire effect
+- Implemented Selecting card from Deck for skills
+- Implemented selecting own unit circle for skills (Completed Superior call)
+- Implemented Draw Trigger
+- Implemented Critical Trigger
+- Created TriggerStrategy to handle trigger inputs properly
+- Implemented Heal Trigger
+- Implemented Hand Discard skill cost
+
 v.0001 Duel Creatures
 - Created Placeholder card
 - Designed Player Board (Good for android)

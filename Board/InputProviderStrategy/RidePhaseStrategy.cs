@@ -8,9 +8,9 @@ public class RidePhaseStrategy(DuelCreaturesBoard Board) : IInputProviderStrateg
 {
     public async Task<CardBase?> SelectCardFromHandOrNot(VanguardCard currentVanguard)
     {
-        Board.ShowEndPhaseButton();
-        Board.EnablePlayerVanguardDropping();
+        Board.ShowLeftButton(TextConstants.EndPhase);
         Board.EnablePlayerHandDragging();
+        Board.DisablePlayerRearguardDropping();
         
         VanguardCard? newVanguard = null;
 
@@ -23,11 +23,27 @@ public class RidePhaseStrategy(DuelCreaturesBoard Board) : IInputProviderStrateg
             {
                 completionSource.SetResult(null);
             };
-            Board.EndPhasePressed += endPhaseHandler;
+            Board.LeftButtonPressed += endPhaseHandler;
+
+            Action<CardBaseComponent> handCardDraggingHandler = (card) =>
+            {
+                Board.EnablePlayerVanguardDropping();
+            };
+            Board.PlayerHand.CardDragging += handCardDraggingHandler;
+
+            Action<CardBaseComponent> handCardDraggingCancelHandler = (card) =>
+            {
+                card.CurrentlyDragged = false;
+                Board.DisablePlayerVanguardDropping();
+            };
+            Board.PlayerHand.CardDragCancelled += handCardDraggingCancelHandler;
 
             var result = await completionSource.Task;
+
             Board.PlayerVanguard.CardDropped -= selectionHandler; 
-            Board.EndPhasePressed -= endPhaseHandler; 
+            Board.LeftButtonPressed -= endPhaseHandler; 
+            Board.PlayerHand.CardDragging -= handCardDraggingHandler;
+            Board.PlayerHand.CardDragCancelled -= handCardDraggingCancelHandler;
 
             if(result is null)
             {
@@ -35,7 +51,7 @@ public class RidePhaseStrategy(DuelCreaturesBoard Board) : IInputProviderStrateg
             }
 
             newVanguard = (VanguardCard)result.CurrentCard;
-            var exception = VanguardValidator.ValidateRide(currentVanguard, newVanguard);
+            var exception = VanguardGameRules.ValidateRide(currentVanguard, newVanguard);
 
             if (exception is not null)
             {
@@ -48,7 +64,7 @@ public class RidePhaseStrategy(DuelCreaturesBoard Board) : IInputProviderStrateg
         }
 
         Board.DisablePlayerVanguardDropping();
-        Board.HideEndPhaseButton();
+        Board.HideLeftButton();
         Board.DisablePlayerHandDragging();
 
         return newVanguard;

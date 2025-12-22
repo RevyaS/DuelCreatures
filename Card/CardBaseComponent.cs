@@ -4,7 +4,10 @@ using Godot;
 [Tool]
 public abstract partial class CardBaseComponent : Control
 {
+    private double LONG_PRESS_TRESHOLD = 0.5;
     TextureRect Front = null!;
+    private bool _pressed = false;
+    private double _pressTimeElapsed = 0;
 
     private bool _currentlyDragged = false;
     public bool CurrentlyDragged { 
@@ -83,6 +86,54 @@ public abstract partial class CardBaseComponent : Control
                 CardDragCancelled?.Invoke(this);
             }
         }
+    }
+
+    public override void _GuiInput(InputEvent e)
+    {
+        // Mouse click or touch
+        if (e is InputEventMouseButton mb && mb.ButtonIndex == MouseButton.Left)
+        {
+            if(mb.Pressed && !_pressed)
+            {
+                _pressed = true;
+                _pressTimeElapsed = 0;
+            }
+            else 
+            {
+                HandleRelease();
+            }
+        }
+    }
+
+    public override void _Process(double delta)
+    {
+        if (_pressed)
+        {
+            _pressTimeElapsed += delta;
+
+            if (_pressTimeElapsed >= LONG_PRESS_TRESHOLD)
+            {
+                _pressed = false;
+                OnLongPress();
+            }
+        }
+    }
+
+    protected virtual void OnLongPress()
+    {
+        
+    }
+
+    private void HandleRelease()
+    {
+        if(!_pressed) return;
+
+        _pressed = false;
+        OnPressed();
+    }
+
+    protected virtual void OnPressed()
+    {
     }
 
     public abstract CardBaseComponent CreateClone();

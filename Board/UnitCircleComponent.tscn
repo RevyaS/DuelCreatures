@@ -28,8 +28,8 @@ theme_override_constants/margin_bottom = 2
 
 [node name="CardRotationContainer" type="Control" parent="MarginContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(189, 189)
 layout_mode = 2
+mouse_filter = 1
 script = ExtResource("2_o1h87")
 metadata/_custom_type_script = "uid://d0xdsvmtayatq"
 
@@ -39,7 +39,6 @@ scale = Vector2(0.45, 0.45)
 
 [node name="DropArea" type="Control" parent="."]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 script = ExtResource("4_5133l")
 metadata/_custom_type_script = "uid://dwrq2pnaqfw1s"
@@ -57,3 +56,25 @@ visible = false
 layout_mode = 2
 script = ExtResource("6_j7olg")
 metadata/_custom_type_script = "uid://bcw76jvvuy61w"
+
+[node name="ButtonContainer" type="Control" parent="."]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="SelectButton" type="Button" parent="ButtonContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -55.5
+offset_top = -29.0
+offset_right = 55.5
+offset_bottom = 29.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 36
+text = "Select"
