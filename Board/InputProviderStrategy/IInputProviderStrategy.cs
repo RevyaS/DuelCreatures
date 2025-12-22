@@ -68,3 +68,8 @@ public interface ISelectCardFromDeck
 {
     Task<VanguardCard> SelectCardFromDeck(int minGrade, int maxGrade);
 }
+
+public interface ISelectCardFromDamageZone
+{
+    Task<VanguardCard> SelectCardFromDamageZone();
+}

@@ -1,4 +1,5 @@
 using System;
+using ArC.CardGames.Components;
 using Godot;
 
 [Tool]
@@ -80,6 +81,19 @@ public partial class CardLineStatic : CardLine
         }
     }
 
+    public void RemoveCard(CardBase card, bool freeCard = true)
+    {
+        CardContainer cardComponent = Container.FirstChild<CardContainer>(child =>
+        {
+            var cardContainer = child;
+            if(ReferenceEquals(cardContainer.CurrentCard?.CurrentCard, card))
+            {
+                return true;
+            }
+            return false;
+        });
+        RemoveCard(cardComponent.CurrentCard!, freeCard);
+    }
     public void RemoveCard(Card card, bool freeCard = true)
     {
         int removeIndex = -1;
@@ -106,7 +120,9 @@ public partial class CardLineStatic : CardLine
             var nextContainer = Container.GetChild<CardContainer>(i + 1);
             if(nextContainer.HasCard)
             {
-                currentContainer.AddCard(nextContainer.CurrentCard!);
+                var nextCard = nextContainer.CurrentCard;
+                nextContainer.RemoveCard();
+                currentContainer.AddCard(nextCard!);
             } else
             {
                 if(freeCard)
@@ -118,6 +134,8 @@ public partial class CardLineStatic : CardLine
                 }
             }
         }
+
+        lastIndex--;
     }
 
     public override void AddCard(Card card)

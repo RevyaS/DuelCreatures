@@ -97,7 +97,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
     {
         if(ReferenceEquals(PlayArea, area))
         {
-            PushProviderStrategy(new TriggerStrategy(board, GameContext));
+            PushProviderStrategy(new TriggerStrategy(board, PlayArea, SelectFromCardListComponent, GameContext));
         }
     }
 
@@ -105,7 +105,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
     {
         if(ReferenceEquals(PlayArea, area))
         {
-            PushProviderStrategy(new TriggerStrategy(board, GameContext));
+            PushProviderStrategy(new TriggerStrategy(board, PlayArea, SelectFromCardListComponent, GameContext));
         }
     }
 
@@ -260,7 +260,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     public Task<VanguardCard> SelectCardFromDamageZone()
     {
-        throw new NotImplementedException();
+        return ((ISelectCardFromDamageZone)strategy).SelectCardFromDamageZone();
     }
 
     public Task<VanguardCard> SelectCardFromDeck(int minGrade, int maxGrade)

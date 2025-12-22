@@ -29,6 +29,7 @@ v.0002 Skills and Trigger selection
 - Implemented Draw Trigger
 - Implemented Critical Trigger
 - Created TriggerStrategy to handle trigger inputs properly
+- Implemented Heal Trigger
 
 v.0001 Duel Creatures
 - Created Placeholder card

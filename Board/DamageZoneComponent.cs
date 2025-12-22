@@ -11,6 +11,15 @@ public partial class DamageZoneComponent : CardLineStatic, IEventBusUtilizer
     {
         eventBus.CardAddedToDamageZone += OnCardAddedToDamageZone;
         eventBus.CardsAddedToDamageZone += OnCardsAddedToDamageZone;
+        eventBus.CardTakenFromDamageZone += OnCardTakenFromDamageZone;
+    }
+
+    private void OnCardTakenFromDamageZone(DamageZone zone, CardBase card)
+    {
+        if(ReferenceEquals(zone, DamageZone))
+        {
+            RemoveCard(card);
+        }
     }
 
     private void OnCardsAddedToDamageZone(DamageZone zone, List<CardBase> list)
