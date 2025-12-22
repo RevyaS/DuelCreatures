@@ -30,6 +30,7 @@ v.0002 Skills and Trigger selection
 - Implemented Critical Trigger
 - Created TriggerStrategy to handle trigger inputs properly
 - Implemented Heal Trigger
+- Implemented Hand Discard skill cost
 
 v.0001 Duel Creatures
 - Created Placeholder card

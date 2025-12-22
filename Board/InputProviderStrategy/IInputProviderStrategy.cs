@@ -8,7 +8,7 @@ public interface IInputProviderStrategy;
 
 public interface ISelectCardsFromHand
 {
-    Task<List<CardBase>> SelectCardsFromHand();
+    Task<List<CardBase>> SelectCardsFromHand(int minimum, int maximum);
 }
 
 public interface ISelectCardFromHandOrNot

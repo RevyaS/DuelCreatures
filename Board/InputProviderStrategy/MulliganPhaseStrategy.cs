@@ -6,12 +6,12 @@ using ArC.CardGames.Components;
 
 public class MulliganPhaseStrategy(DuelCreaturesBoard board, SelectCardsComponent selectCardsComponent) : IInputProviderStrategy, ISelectCardsFromHand
 {
-    public async Task<List<CardBase>> SelectCardsFromHand()
+    public async Task<List<CardBase>> SelectCardsFromHand(int minimum, int maximum)
     {
         board.EnablePlayerHandDragging();
 
         TaskCompletionSource<List<CardBase>> completionSource = new();
-        selectCardsComponent.Activate("Select Cards to Mulligan", 0, 5);
+        selectCardsComponent.Activate("Select Cards to Mulligan", minimum, maximum);
         
         Action<CardBaseComponent> cardDraggingHandler = (card) =>
         {

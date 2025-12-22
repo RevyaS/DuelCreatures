@@ -215,7 +215,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     public Task<List<CardBase>> SelectCardsFromHandRange(int minimum, int maximum)
     {
-        return ((ISelectCardsFromHand)strategy).SelectCardsFromHand();
+        return ((ISelectCardsFromHand)strategy).SelectCardsFromHand(minimum, maximum);
     }
 
     public Task<CardBase?> SelectCardFromHandOrNot()

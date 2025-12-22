@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Vanguard;
 
-public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea PlayArea, CardList CardList, SelectFromCardList SelectFromCardList) : BaseStrategy(Board), ISelectOpponentCircle, IQueryActivateSkill, ISelectCardsFromDamageZone, ISelectCardsFromSoul, ISelectCardFromDeck, ISelectOwnRearguard
+public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea PlayArea, CardList CardList, SelectFromCardList SelectFromCardList) : BaseStrategy(Board), ISelectOpponentCircle, IQueryActivateSkill, ISelectCardsFromDamageZone, ISelectCardsFromSoul, ISelectCardFromDeck, ISelectOwnRearguard, ISelectCardFromHand, ISelectCardsFromHand
 {
     // QueryActivateSkill
     public async Task<bool> QueryActivateSkill(VanguardCard Invoker, VanguardAutomaticSkill Skill)
@@ -61,11 +62,11 @@ public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea P
     // CounterBlast
     public async Task<List<VanguardCard>> SelectCardsFromDamageZone(int amount)
     {
-        Board.PushPlayerPhaseIndicatorText($"Counter Blast ({amount})");
-        Board.ShowLeftButton(TextConstants.Confirm);
-        Board.DisableLeftButton();
+        GameBoard.PushPlayerPhaseIndicatorText($"Counter Blast ({amount})");
+        GameBoard.ShowLeftButton(TextConstants.Confirm);
+        GameBoard.DisableLeftButton();
         List<VanguardCard> cards = new();
-        List<Card> options = Board.PlayerDamageZone.GetFaceUpCards().ToList();
+        List<Card> options = GameBoard.PlayerDamageZone.GetFaceUpCards().ToList();
 
         TaskCompletionSource completionSource = new();
 
@@ -84,38 +85,38 @@ public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea P
                     card.IsFront = true;
                     cards.Remove((VanguardCard)card.CurrentCard);
                 }
-                Board.EnableLeftButton(cards.Count == amount);
+                GameBoard.EnableLeftButton(cards.Count == amount);
             }
         };
-        Board.PlayerDamageZone.CardLongPressed += cardLongPressedHandler;
+        GameBoard.PlayerDamageZone.CardLongPressed += cardLongPressedHandler;
 
         Action leftButtonHandler = completionSource.SetResult;
-        Board.LeftButtonPressed += leftButtonHandler;
+        GameBoard.LeftButtonPressed += leftButtonHandler;
 
         await completionSource.Task;
 
-        Board.PlayerDamageZone.CardLongPressed -= cardLongPressedHandler;
-        Board.LeftButtonPressed -= leftButtonHandler;
-        Board.EnableLeftButton();
-        Board.HideLeftButton();
-        Board.PopPlayerPhaseIndicatorText();
+        GameBoard.PlayerDamageZone.CardLongPressed -= cardLongPressedHandler;
+        GameBoard.LeftButtonPressed -= leftButtonHandler;
+        GameBoard.EnableLeftButton();
+        GameBoard.HideLeftButton();
+        GameBoard.PopPlayerPhaseIndicatorText();
         return cards;
     }
 
     public async Task<UnitCircle> SelectOpponentCircle(UnitSelector selector)
     {
-        Board.EnableSelectOppCircle(selector);
+        GameBoard.EnableSelectOppCircle(selector);
         TaskCompletionSource<UnitCircle> completionSource = new();
         
         Action<UnitCircleComponent> oppCircleSelectedHandler = (uc) =>
         {
             completionSource.SetResult(uc.UnitCircle);
         };
-        Board.OppCircleSelected += oppCircleSelectedHandler;
+        GameBoard.OppCircleSelected += oppCircleSelectedHandler;
 
         var result = await completionSource.Task;
-        Board.DisableSelectOppUnitCircle();
-        Board.OppCircleSelected -= oppCircleSelectedHandler;
+        GameBoard.DisableSelectOppUnitCircle();
+        GameBoard.OppCircleSelected -= oppCircleSelectedHandler;
 
         return result;
     }
@@ -147,19 +148,61 @@ public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea P
 
     public async Task<RearGuard> SelectOwnRearguard()
     {
-        Board.EnableSelectOwnUnitCircle(UnitSelector.REARGUARD);
+        GameBoard.EnableSelectOwnUnitCircle(UnitSelector.REARGUARD);
         TaskCompletionSource<RearGuard> completionSource = new();
         
         Action<UnitCircleComponent> playerCircleSelectedHandler = (uc) =>
         {
             completionSource.SetResult((RearGuard)uc.UnitCircle);
         };
-        Board.PlayerCircleSelected += playerCircleSelectedHandler;
+        GameBoard.PlayerCircleSelected += playerCircleSelectedHandler;
 
         var result = await completionSource.Task;
-        Board.DisableSelectOwnUnitCircle();
-        Board.PlayerCircleSelected -= playerCircleSelectedHandler;
+        GameBoard.DisableSelectOwnUnitCircle();
+        GameBoard.PlayerCircleSelected -= playerCircleSelectedHandler;
 
+        return result;
+    }
+
+    public async Task<CardBase> SelectCardFromHand()
+    {
+        SelectFromCardList.Show("Hand", $"Discard", 1, 1, PlayArea.Hand.Cards.Cast<VanguardCard>().ToList());
+
+        TaskCompletionSource<CardBase> completionSource = new();
+
+        Action<List<Card>> onConfirmHandler = (cards) =>
+        {
+            completionSource.SetResult(cards.First().CurrentCard);
+        };
+
+        SelectFromCardList.ConfirmedCards += onConfirmHandler;
+
+        var result = await completionSource.Task;
+
+        SelectFromCardList.ConfirmedCards -= onConfirmHandler;
+        SelectFromCardList.Deactivate();
+        
+        return result;
+    }
+
+    public async Task<List<CardBase>> SelectCardsFromHand(int minimum, int maximum)
+    {
+        SelectFromCardList.Show("Hand", $"Discard", minimum, maximum, PlayArea.Hand.Cards.Cast<VanguardCard>().ToList());
+
+        TaskCompletionSource<List<CardBase>> completionSource = new();
+
+        Action<List<Card>> onConfirmHandler = (cards) =>
+        {
+            completionSource.SetResult(cards.Select(x => x.CurrentCard).ToList());
+        };
+
+        SelectFromCardList.ConfirmedCards += onConfirmHandler;
+
+        var result = await completionSource.Task;
+
+        SelectFromCardList.ConfirmedCards -= onConfirmHandler;
+        SelectFromCardList.Deactivate();
+        
         return result;
     }
 }

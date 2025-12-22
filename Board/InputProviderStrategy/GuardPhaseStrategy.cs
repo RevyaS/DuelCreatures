@@ -7,7 +7,7 @@ using ArC.CardGames.Predefined.Vanguard;
 
 public class GuardPhaseStrategy(DuelCreaturesBoard Board, UnitCircleComponent GuardedCircle) : IInputProviderStrategy, ISelectCardsFromHand
 {
-    public async Task<List<CardBase>> SelectCardsFromHand()
+    public async Task<List<CardBase>> SelectCardsFromHand(int minimum, int maximum)
     {
         Board.PushPlayerPhaseIndicatorText("Guard Phase");
         Board.ShowLeftButton(TextConstants.ConfirmGuard);
