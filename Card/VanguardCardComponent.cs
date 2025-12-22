@@ -103,6 +103,8 @@ public partial class VanguardCardComponent : Card
             var texturePath = Trigger switch
             {
                 VanguardTrigger.DRAW => DrawTriggerTexturePath,
+                VanguardTrigger.CRITICAL => CriticalTriggerTexturePath,
+                VanguardTrigger.HEAL => HealTriggerTexturePath,
                 _ => throw new NotImplementedException()
             };
             TriggerRect.Texture = ResourceLoader.Load<Texture2D>(texturePath);

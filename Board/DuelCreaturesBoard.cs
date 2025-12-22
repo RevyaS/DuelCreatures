@@ -335,6 +335,14 @@ public partial class DuelCreaturesBoard : Control
         PlayerPhaseIndicator.Text = playerPhaseIndicatorStack.Count == 0 ? string.Empty : playerPhaseIndicatorStack.Peek();
     }
 
+    public async Task<T> DoFuncWithIndicatorAsync<T>(string indicator, Func<Task<T>> action)
+    {
+        PushPlayerPhaseIndicatorText(indicator);
+        var val = await action();
+        PopPlayerPhaseIndicatorText();
+        return val;
+    }
+
     public void PushPlayerPhaseIndicatorText(string message)
     {
         playerPhaseIndicatorStack.Push(message);

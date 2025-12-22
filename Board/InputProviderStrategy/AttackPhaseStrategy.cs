@@ -7,7 +7,7 @@ using ArC.CardGames.Predefined.Vanguard;
 using ArC.Common.Extensions;
 using Godot;
 
-public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameContext) : BaseStrategy(Board), IRequestAttackPhaseAction, ISelectOwnUnitCircle, ISelectOpponentCircle
+public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameContext) : BaseStrategy(Board), IRequestAttackPhaseAction, ISelectOpponentCircle, ISelectOwnUnitCircle
 {
     UnitCircleComponent? boostingCircle = null;
     UnitCircleComponent? attackingCircle = null;
@@ -136,15 +136,6 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
             if (attackingCircle is null) throw new InvalidOperationException();
             return Task.FromResult(attackingCircle.UnitCircle);
         }
-        if(GameContext.GameState is TriggerPowerState)
-        {
-            return SelectOwnUnitCircle(UnitSelector.ALL_CIRCLES);
-        }
-        if(GameContext.GameState is TriggerCriticalState)
-        {
-            return SelectOwnUnitCircle(UnitSelector.ALL_CIRCLES);
-        }
         throw new InvalidOperationException();
     }
-
 }

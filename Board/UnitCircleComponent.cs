@@ -115,7 +115,7 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
     private void OnSelectButtonPressed()
     {
         isSelected = !isSelected;
-        SelectButton.Text = IsSelected ? "Deselect" : "Select";
+        RenderSelectButton();
         if(isSelected)
         {
             Selected?.Invoke(this);
@@ -123,6 +123,11 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         {
             Deselected?.Invoke(this);
         }
+    }
+
+    private void RenderSelectButton()
+    {
+        SelectButton.Text = IsSelected ? "Deselect" : "Select";
     }
 
     private void OnCardLongPressed(Card card)
@@ -182,6 +187,15 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         eventBus.CardRemovedFromUnitCircle += OnCardRemovedFromUnitCircle;
         eventBus.UnitCircleOrientationChanged += OnUnitCircleOrientationChanged;
         eventBus.PowerEffectUpdatedToUnitCircle += OnPowerEffectUpdatedToUnitCircle;
+        eventBus.CriticalEffectUpdatedToUnitCircle += OnCriticalEffectUpdatedToUnitCircle;
+    }
+
+    private void OnCriticalEffectUpdatedToUnitCircle(UnitCircle circle)
+    {
+        if(ReferenceEquals(circle, UnitCircle))
+        {
+            UpdateStats();
+        }
     }
 
     private Task OnCardRemovedFromUnitCircle(UnitCircle circle)
@@ -278,6 +292,12 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
     public void UpdatePower(int newPower)
     {
         cardRotationContainer.UpdatePower(newPower);
+    }
+
+    public void ResetSelection()
+    {
+        isSelected = false;
+        RenderSelectButton();
     }
 
     public event Action<Card>? CardDropped;

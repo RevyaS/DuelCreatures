@@ -88,6 +88,33 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         eventBus.OnGuardRequested += OnGuardRequested;
         eventBus.SkillExecution += OnSkillExecution;
         eventBus.SkillExecuted += OnSkillExecuted;
+        eventBus.OnDamageChecked += OnDamageChecked;
+        eventBus.OnDriveChecked += OnDriveChecked;
+        eventBus.TriggerResolved += OnTriggerResolved;
+    }
+
+    private async Task OnDriveChecked(VanguardPlayArea area, VanguardCard card)
+    {
+        if(ReferenceEquals(PlayArea, area))
+        {
+            PushProviderStrategy(new TriggerStrategy(board, GameContext));
+        }
+    }
+
+    private async Task OnDamageChecked(VanguardPlayArea area, VanguardCard card)
+    {
+        if(ReferenceEquals(PlayArea, area))
+        {
+            PushProviderStrategy(new TriggerStrategy(board, GameContext));
+        }
+    }
+
+    private async Task OnTriggerResolved()
+    {
+        if(strategy is TriggerStrategy)
+        {
+            PopProviderStrategy();
+        }
     }
 
     private void OnSkillExecuted(UnitCircle circle, VanguardSkill skill)

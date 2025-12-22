@@ -246,6 +246,9 @@ public partial class DuelCreaturesBoard : Control
 
     public void DisableSelectOwnUnitCircle()
     {
-        PlayerCircles.ForEach((circle) => circle.Selectable = false);
+        PlayerCircles.ForEach((circle) => { 
+            circle.ResetSelection();
+            circle.Selectable = false;
+        });
     }
 }

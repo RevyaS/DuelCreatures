@@ -21,6 +21,7 @@ public partial class Session : Control
 
         var player1 = new VanguardPlayerProfile(
             DeckBuilder.Create()
+                .AddCards(RoyalPaladin.FutureKnightLlew, 4)
                 .AddCards(RoyalPaladin.DevotingJewelKnightTabitha, 4)
                 .AddCards(RoyalPaladin.LittleSageMarron, 4)
                 .AddCards(RoyalPaladin.SailorGuardianMichiru, 4)
@@ -31,6 +32,7 @@ public partial class Session : Control
 
         var player2 = new VanguardPlayerProfile(
             DeckBuilder.Create()
+                .AddCards(RoyalPaladin.FutureKnightLlew, 4)
                 .AddCards(RoyalPaladin.DevotingJewelKnightTabitha, 4)
                 .AddCards(RoyalPaladin.LittleSageMarron, 4)
                 .AddCards(RoyalPaladin.SailorGuardianMichiru, 4)
