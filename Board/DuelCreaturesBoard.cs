@@ -189,6 +189,9 @@ public partial class DuelCreaturesBoard : Control
         PlayerFrontRight.BindUnitCircle(game.Board.Player1Area.FrontRight);
         PlayerBackRight.BindUnitCircle(game.Board.Player1Area.BackRight);
 
+        PlayerDeck.BindDeck(game.Board.Player1Area.Deck);
+        OppDeck.BindDeck(game.Board.Player2Area.Deck);
+
         OppVanguard.BindUnitCircle(game.Board.Player2Area.Vanguard);
         OppFrontLeft.BindUnitCircle(game.Board.Player2Area.FrontLeft);
         OppBackLeft.BindUnitCircle(game.Board.Player2Area.BackLeft);
@@ -220,6 +223,9 @@ public partial class DuelCreaturesBoard : Control
         PlayerBackCenter.SetEventBus(eventBus);
         PlayerFrontRight.SetEventBus(eventBus);
         PlayerBackRight.SetEventBus(eventBus);
+
+        PlayerDeck.SetEventBus(eventBus);
+        OppDeck.SetEventBus(eventBus);
 
         OppVanguard.SetEventBus(eventBus);
         OppFrontLeft.SetEventBus(eventBus);

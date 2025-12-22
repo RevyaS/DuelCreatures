@@ -24,7 +24,7 @@ public partial class DuelCreaturesBoard : Control
     public HandComponent PlayerHand { get; private set; } = null!;
     HandComponent OppHand = null!;
 
-    CardVerticalStack PlayerDeck = null!, OppDeck = null!;
+    DeckComponent PlayerDeck = null!, OppDeck = null!;
     public DropZoneComponent PlayerDropZone { get; private set; } = null!;
     public DropZoneComponent OppDropZone { get; private set; } = null!;
 
@@ -92,6 +92,9 @@ public partial class DuelCreaturesBoard : Control
         PlayerPhaseIndicator = GetNode<Label>($"%{nameof(PlayerPhaseIndicator)}");
 
         GuardZone = GetNode<CardLineStatic>($"%{nameof(GuardZone)}");
+
+        PlayerDeck = GetNode<DeckComponent>($"%{nameof(PlayerDeck)}");
+        OppDeck = GetNode<DeckComponent>($"%{nameof(OppDeck)}");
 
         PlayerExtraLeft1 = GetNode<UnitCircleComponent>($"%{nameof(PlayerExtraLeft1)}");
         PlayerExtraLeft2 = GetNode<UnitCircleComponent>($"%{nameof(PlayerExtraLeft2)}");

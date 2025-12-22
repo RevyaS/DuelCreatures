@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cuqm30mdbu41k"]
+[gd_scene load_steps=10 format=3 uid="uid://cuqm30mdbu41k"]
 
 [ext_resource type="Script" uid="uid://d33oqm6uprjxl" path="res://Board/DuelCreaturesBoard.cs" id="1_s27tx"]
 [ext_resource type="PackedScene" uid="uid://dlahod6s4jx0i" path="res://Board/DropZoneComponent.tscn" id="2_a02pn"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://b7fl8cs62jr2v" path="res://Board/Hand.tscn" id="5_iu5jy"]
 [ext_resource type="PackedScene" uid="uid://cow87og7qhndr" path="res://Board/CardVerticalStack.tscn" id="6_3hmgy"]
 [ext_resource type="PackedScene" uid="uid://bevj84kr2566s" path="res://Board/CardLineStatic.tscn" id="7_3hmgy"]
+[ext_resource type="PackedScene" uid="uid://d0hdjku8idjs" path="res://Board/DeckComponent.tscn" id="7_6kkbp"]
 
 [node name="Board" type="Control"]
 layout_mode = 3
@@ -92,14 +93,15 @@ theme_override_constants/separation = 20
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="OppDropZone1" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/VBoxContainer/MarginContainer/Control" instance=ExtResource("6_3hmgy")]
+[node name="OppDeck1" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/VBoxContainer/MarginContainer/Control" instance=ExtResource("6_3hmgy")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="OppDeck" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/VBoxContainer/MarginContainer/Control" instance=ExtResource("6_3hmgy")]
+[node name="OppDeck" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/VBoxContainer/MarginContainer/Control" instance=ExtResource("7_6kkbp")]
 unique_name_in_owner = true
 layout_mode = 2
+ShowCount = true
 
 [node name="OppTriggerZone" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/VBoxContainer" instance=ExtResource("5_3hmgy")]
 unique_name_in_owner = true
@@ -542,14 +544,16 @@ layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 20
 
-[node name="PlayerDeck" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/VBoxContainer/Control/Verticals" instance=ExtResource("6_3hmgy")]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="PlayerDropZone1" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/VBoxContainer/Control/Verticals" instance=ExtResource("6_3hmgy")]
+[node name="PlayerDeck1" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/VBoxContainer/Control/Verticals" instance=ExtResource("6_3hmgy")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
+ShowCount = true
+
+[node name="PlayerDeck" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/VBoxContainer/Control/Verticals" instance=ExtResource("7_6kkbp")]
+unique_name_in_owner = true
+layout_mode = 2
+ShowCount = true
 
 [node name="PlayerDropZone" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Right/VBoxContainer/Control/Verticals" instance=ExtResource("2_a02pn")]
 unique_name_in_owner = true

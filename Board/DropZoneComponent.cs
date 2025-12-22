@@ -40,15 +40,18 @@ public partial class DropZoneComponent: CardVerticalStack, IEventBusUtilizer, IS
         }
     }
 
-    private void Render()
+    protected override void BeforeRender()
     {
-        if (DropZone.Cards.Count > 0)
+        if (DropZone is not null)
         {
-            SetCard((VanguardCard)DropZone.Cards.Last());
-        }
-        else
-        {
-            ClearCard();
+            if (DropZone.Cards.Count > 0)
+            {
+                SetCard((VanguardCard)DropZone.Cards.Last());
+            }
+            else
+            {
+                ClearCard();
+            }
         }
     }
 
