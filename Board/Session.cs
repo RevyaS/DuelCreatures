@@ -27,10 +27,11 @@ public partial class Session : Control
                 .AddCards(RoyalPaladin.Wingal, 4)
                 .AddCards(RoyalPaladin.KnightOfRoseMorgana, 4)
                 .AddCards(RoyalPaladin.LittleSageMarron, 4)
-                .AddCards(RoyalPaladin.SailorGuardianMichiru, 4)
                 .AddCards(RoyalPaladin.BlasterBlade, 4)
                 .AddCards(RoyalPaladin.KnightOfSilenceGallatin, 4)
-                .AddCards(RoyalPaladin.KingOfKnightsAlfred, 4), 
+                .AddCards(RoyalPaladin.KnightOfTheHarpTristan, 4)
+                .AddCards(RoyalPaladin.KingOfKnightsAlfred, 4) 
+                .AddCards(RoyalPaladin.CrimsonButterflyBrigitte, 4), 
                 RoyalPaladin.StardustTrumpeteer);
 
         var player2 = new VanguardPlayerProfile(
@@ -41,10 +42,11 @@ public partial class Session : Control
                 .AddCards(RoyalPaladin.Wingal, 4)
                 .AddCards(RoyalPaladin.KnightOfRoseMorgana, 4)
                 .AddCards(RoyalPaladin.LittleSageMarron, 4)
-                .AddCards(RoyalPaladin.SailorGuardianMichiru, 4)
                 .AddCards(RoyalPaladin.BlasterBlade, 4)
                 .AddCards(RoyalPaladin.KnightOfSilenceGallatin, 4)
-                .AddCards(RoyalPaladin.KingOfKnightsAlfred, 4), 
+                .AddCards(RoyalPaladin.KnightOfTheHarpTristan, 4)
+                .AddCards(RoyalPaladin.KingOfKnightsAlfred, 4)
+                .AddCards(RoyalPaladin.CrimsonButterflyBrigitte, 4), 
                 RoyalPaladin.StardustTrumpeteer);
 
         var game = new VanguardGame(player1, player2, eventBus, effectService);

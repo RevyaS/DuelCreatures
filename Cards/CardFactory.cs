@@ -20,13 +20,13 @@ public static class DuelMaidensCardsFactory
         public static VanguardCard KnightOfRoseMorgana => new VanguardCard(1, "Knight Of Rose, Morgana", 6000, 1, 5000, VanguardCardSkill.BOOST, VanguardTrigger.NONE, [
             new VanguardAutomaticSkill(VanguardSkillCardLocation.VANGUARD | VanguardSkillCardLocation.REARGUARD, new OnAttackTiming(),
                     new VanguardSkillCost{ Hand = 1 }, [
-                        new ProvidePowerToInvokerTurn(4000)
+                        new ProvidePowerToInvoker(4000, EffectDuration.ATTACK)
                     ])
         ]);
         public static VanguardCard Wingal => new VanguardCard(1, "Wingal", 6000, 1, 5000, VanguardCardSkill.BOOST, VanguardTrigger.NONE, [
             new VanguardAutomaticSkill(VanguardSkillCardLocation.VANGUARD | VanguardSkillCardLocation.REARGUARD, new OnBoostTiming(BlasterBlade.Name),
             new VanguardSkillCost(), [
-                new ProvidePowerToInvokerTurn(4000)
+                new ProvidePowerToInvoker(4000, EffectDuration.ATTACK)
             ])
         ]);
 
@@ -39,9 +39,21 @@ public static class DuelMaidensCardsFactory
                 new RetireFrontRow()
             ])
         ]);
+        public static VanguardCard KnightOfTheHarpTristan => new VanguardCard(2, "Knight of the Harp, Tristan", 8000, 1, 5000, VanguardCardSkill.INTERCEPT, VanguardTrigger.NONE, [
+            new VanguardAutomaticSkill(VanguardSkillCardLocation.VANGUARD, new OnDriveCheckSpecificGradeTiming(3), new VanguardSkillCost(), [
+                new ProvidePowerToInvoker(5000, EffectDuration.ATTACK)
+            ])
+        ]);
+
+        //G3
         public static VanguardCard KingOfKnightsAlfred => new VanguardCard(3, "King of Knights, Alfred", 10000, 1, 0, VanguardCardSkill.TWIN_DRIVE, VanguardTrigger.NONE, [
             new VanguardActivationSkill(VanguardSkillCardLocation.VANGUARD, new VanguardSkillCost { CounterBlast = 2 }, [
                 new SuperiorCallFromDeck(0, 2)
+            ])
+        ]);
+        public static VanguardCard CrimsonButterflyBrigitte => new VanguardCard(3, "Crimson Butterfly, Brigitte", 10000, 1, 0, VanguardCardSkill.TWIN_DRIVE, VanguardTrigger.NONE, [
+            new VanguardAutomaticSkill(VanguardSkillCardLocation.VANGUARD, new OnDriveCheckSpecificGradeTiming(3), new VanguardSkillCost(), [
+                new ProvidePowerToInvoker(5000, EffectDuration.ATTACK)
             ])
         ]);
     }
