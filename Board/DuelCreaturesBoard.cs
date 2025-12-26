@@ -180,40 +180,40 @@ public partial class DuelCreaturesBoard : Control
         SetupEventBus(gameSession.EventBus);
 
         var game = gameSession.Game;
-        PlayerHand.BindHand(game.Board.Player1Area.Hand);
-        OppHand.BindHand(game.Board.Player2Area.Hand);
-        PlayerVanguard.BindUnitCircle(game.Board.Player1Area.Vanguard);
-        PlayerFrontLeft.BindUnitCircle(game.Board.Player1Area.FrontLeft);
-        PlayerBackLeft.BindUnitCircle(game.Board.Player1Area.BackLeft);
-        PlayerBackCenter.BindUnitCircle(game.Board.Player1Area.BackCenter);
-        PlayerFrontRight.BindUnitCircle(game.Board.Player1Area.FrontRight);
-        PlayerBackRight.BindUnitCircle(game.Board.Player1Area.BackRight);
+        PlayerHand.Bind(game.Board.Player1Area.Hand);
+        OppHand.Bind(game.Board.Player2Area.Hand);
+        PlayerVanguard.Bind(game.Board.Player1Area.Vanguard);
+        PlayerFrontLeft.Bind(game.Board.Player1Area.FrontLeft);
+        PlayerBackLeft.Bind(game.Board.Player1Area.BackLeft);
+        PlayerBackCenter.Bind(game.Board.Player1Area.BackCenter);
+        PlayerFrontRight.Bind(game.Board.Player1Area.FrontRight);
+        PlayerBackRight.Bind(game.Board.Player1Area.BackRight);
 
-        PlayerDeck.BindDeck(game.Board.Player1Area.Deck);
-        OppDeck.BindDeck(game.Board.Player2Area.Deck);
+        PlayerDeck.Bind(game.Board.Player1Area.Deck);
+        OppDeck.Bind(game.Board.Player2Area.Deck);
 
-        OppVanguard.BindUnitCircle(game.Board.Player2Area.Vanguard);
-        OppFrontLeft.BindUnitCircle(game.Board.Player2Area.FrontLeft);
-        OppBackLeft.BindUnitCircle(game.Board.Player2Area.BackLeft);
-        OppBackCenter.BindUnitCircle(game.Board.Player2Area.BackCenter);
-        OppFrontRight.BindUnitCircle(game.Board.Player2Area.FrontRight);
-        OppBackRight.BindUnitCircle(game.Board.Player2Area.BackRight);
+        OppVanguard.Bind(game.Board.Player2Area.Vanguard);
+        OppFrontLeft.Bind(game.Board.Player2Area.FrontLeft);
+        OppBackLeft.Bind(game.Board.Player2Area.BackLeft);
+        OppBackCenter.Bind(game.Board.Player2Area.BackCenter);
+        OppFrontRight.Bind(game.Board.Player2Area.FrontRight);
+        OppBackRight.Bind(game.Board.Player2Area.BackRight);
 
-        PlayerDamageZone.BindDamageZone(game.Board.Player1Area.DamageZone);
-        OppDamageZone.BindDamageZone(game.Board.Player2Area.DamageZone);
+        PlayerDamageZone.Bind(game.Board.Player1Area.DamageZone);
+        OppDamageZone.Bind(game.Board.Player2Area.DamageZone);
 
-        PlayerDropZone.BindDropZone(game.Board.Player1Area.DropZone);
-        OppDropZone.BindDropZone(game.Board.Player2Area.DropZone);
+        PlayerDropZone.Bind(game.Board.Player1Area.DropZone);
+        OppDropZone.Bind(game.Board.Player2Area.DropZone);
+
+        PlayerTriggerZone.Bind(game.Board.Player1Area.TriggerZone);
+        OppTriggerZone.Bind(game.Board.Player2Area.TriggerZone);
     }
 
     private void SetupEventBus(VanguardEventBus eventBus)
     {
         eventBus.PhaseChanged += OnPhaseChanged;
         eventBus.AttackEnded += OnAttackEnded;
-        eventBus.OnDamageChecked += OnDamageChecked;
-        eventBus.OnDriveChecked += OnDriveChecked;
         eventBus.CardAssignedToUnitCircle += OnCardAssignedToUnitCircle;
-        eventBus.TriggerResolved += OnTriggerResolved;
 
         PlayerHand.SetEventBus(eventBus);
         OppHand.SetEventBus(eventBus);
@@ -239,6 +239,9 @@ public partial class DuelCreaturesBoard : Control
 
         PlayerDropZone.SetEventBus(eventBus);
         OppDropZone.SetEventBus(eventBus);
+
+        PlayerTriggerZone.SetEventBus(eventBus);
+        OppTriggerZone.SetEventBus(eventBus);
     }
 
     private Task OnCardAssignedToUnitCircle(UnitCircle unitCircle)
@@ -251,39 +254,6 @@ public partial class DuelCreaturesBoard : Control
     {
         PlayerCircles.ForEach(circle => circle.UpdateStats());
     }
-
-    private Task OnDriveChecked(VanguardPlayArea area, VanguardCard card)
-    {
-        return TriggerCheckCore(area, card);
-    }
-
-    private Task OnDamageChecked(VanguardPlayArea area, VanguardCard card)
-    {
-        return TriggerCheckCore(area, card);
-    }
-
-    #region Trigger Checks
-    private Task TriggerCheckCore(VanguardPlayArea area, VanguardCard card)
-    {
-        Card cardComponent = SceneFactory.CreateVanguardCard(card);
-        bool isPlayer1 = ReferenceEquals(area, _gameSession.Game.Board.Player1Area);
-        if(isPlayer1)
-        {
-            PlayerTriggerZone.AddCard(cardComponent);
-        } else
-        {
-            OppTriggerZone.AddCard(cardComponent);
-        }
-        return Task.CompletedTask;
-    }
-
-    private async Task OnTriggerResolved()
-    {
-        await ToSignal(GetTree().CreateTimer(0.4f), "timeout");
-        PlayerTriggerZone.ClearCard();
-        OppTriggerZone.ClearCard();
-    }
-    #endregion
 
     private Task OnAttackEnded()
     {

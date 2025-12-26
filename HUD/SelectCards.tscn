@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cd7ssfasr14ha" path="res://HUD/SelectCardsComponent.cs" id="1_1ypnk"]
 [ext_resource type="Script" uid="uid://dwrq2pnaqfw1s" path="res://HUD/DropArea.cs" id="2_ma3nu"]
-[ext_resource type="PackedScene" uid="uid://cnp5v17a7qgwg" path="res://Board/CardLineDynamic.tscn" id="3_g0jyd"]
+[ext_resource type="PackedScene" uid="uid://cnp5v17a7qgwg" path="res://Board/BaseComponents/CardLineDynamic.tscn" id="3_g0jyd"]
 
 [node name="SelectCards" type="PanelContainer"]
 anchors_preset = 8

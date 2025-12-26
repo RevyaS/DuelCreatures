@@ -93,28 +93,31 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         eventBus.TriggerResolved += OnTriggerResolved;
     }
 
-    private async Task OnDriveChecked(VanguardPlayArea area, VanguardCard card)
+    private Task OnDriveChecked(VanguardPlayArea area, VanguardCard card)
     {
         if(ReferenceEquals(PlayArea, area))
         {
             PushProviderStrategy(new TriggerStrategy(board, PlayArea, SelectFromCardListComponent, GameContext));
         }
+        return Task.CompletedTask;
     }
 
-    private async Task OnDamageChecked(VanguardPlayArea area, VanguardCard card)
+    private Task OnDamageChecked(VanguardPlayArea area, VanguardCard card)
     {
         if(ReferenceEquals(PlayArea, area))
         {
             PushProviderStrategy(new TriggerStrategy(board, PlayArea, SelectFromCardListComponent, GameContext));
         }
+        return Task.CompletedTask;
     }
 
-    private async Task OnTriggerResolved()
+    private Task OnTriggerResolved()
     {
         if(strategy is TriggerStrategy)
         {
             PopProviderStrategy();
         }
+        return Task.CompletedTask;
     }
 
     private void OnSkillExecuted(UnitCircle circle, VanguardSkill skill)

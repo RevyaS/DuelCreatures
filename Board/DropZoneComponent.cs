@@ -3,12 +3,12 @@ using System.Linq;
 using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Vanguard;
 
-public partial class DropZoneComponent: CardVerticalStack, IEventBusUtilizer, ISetupCardList
+public partial class DropZoneComponent: CardVerticalStack, ICardSpaceBindable<DropZone>, IEventBusUtilizer, ISetupCardList
 {
     DropZone DropZone = null!;
     CardList CardList = null!;
 
-    public void BindDropZone(DropZone dropZone)
+    public void Bind(DropZone dropZone)
     {
         DropZone = dropZone;
     }

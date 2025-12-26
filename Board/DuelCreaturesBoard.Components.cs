@@ -18,7 +18,7 @@ public partial class DuelCreaturesBoard : Control
         OppFrontLeft = null!, OppBackLeft = null!, OppBackCenter = null!, OppFrontRight = null!, OppBackRight = null!;
     public DamageZoneComponent PlayerDamageZone { get; private set; } = null!; 
     DamageZoneComponent OppDamageZone = null!;
-    HorizontalCardArea PlayerTriggerZone = null!, OppTriggerZone = null!;
+    TriggerZoneComponent PlayerTriggerZone = null!, OppTriggerZone = null!;
     public CardLineStatic GuardZone { get; private set; } = null!; 
 
     public HandComponent PlayerHand { get; private set; } = null!;
@@ -130,8 +130,8 @@ public partial class DuelCreaturesBoard : Control
         PlayerVanguard = GetNode<UnitCircleComponent>($"%{nameof(PlayerVanguard)}");
         OppVanguard = GetNode<UnitCircleComponent>($"%{nameof(OppVanguard)}");
 
-        PlayerTriggerZone = GetNode<HorizontalCardArea>($"%{nameof(PlayerTriggerZone)}");
-        OppTriggerZone = GetNode<HorizontalCardArea>($"%{nameof(OppTriggerZone)}");
+        PlayerTriggerZone = GetNode<TriggerZoneComponent>($"%{nameof(PlayerTriggerZone)}");
+        OppTriggerZone = GetNode<TriggerZoneComponent>($"%{nameof(OppTriggerZone)}");
 
         PlayerLeftBoostLine = GetNode<Line2D>($"%{nameof(PlayerLeftBoostLine)}");
         PlayerCenterBoostLine = GetNode<Line2D>($"%{nameof(PlayerCenterBoostLine)}");

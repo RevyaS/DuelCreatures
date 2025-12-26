@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://bevj84kr2566s"]
+
+[ext_resource type="Script" uid="uid://clvcoqgyh7eun" path="res://Board/BaseComponents/CardLineStatic.cs" id="1_5len5"]
+[ext_resource type="PackedScene" uid="uid://bqhy1u56ohnlg" path="res://Board/BaseComponents/CardLine.tscn" id="1_rwoar"]
+
+[node name="CardLineDynamic" instance=ExtResource("1_rwoar")]
+script = ExtResource("1_5len5")
+Separation = null

@@ -4,7 +4,7 @@ using ArC.CardGames.Predefined.Vanguard;
 using Godot;
 
 [Tool]
-public partial class HandComponent : CardLineDynamic, IEventBusUtilizer
+public partial class HandComponent : CardLineDynamic, ICardSpaceBindable<Hand>, IEventBusUtilizer
 {
     Hand Hand = null!;
     
@@ -39,7 +39,7 @@ public partial class HandComponent : CardLineDynamic, IEventBusUtilizer
         }
     }
 
-    public void BindHand(Hand hand)
+    public void Bind(Hand hand)
     {
         Hand = hand;
     }

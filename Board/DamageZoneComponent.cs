@@ -4,7 +4,7 @@ using ArC.CardGames.Predefined.Vanguard;
 using Godot;
 
 [Tool]
-public partial class DamageZoneComponent : CardLineStatic, IEventBusUtilizer
+public partial class DamageZoneComponent : CardLineStatic, ICardSpaceBindable<DamageZone>, IEventBusUtilizer
 {
     DamageZone DamageZone = null!;
     public void SetEventBus(VanguardEventBus eventBus)
@@ -41,7 +41,7 @@ public partial class DamageZoneComponent : CardLineStatic, IEventBusUtilizer
         }
     }
 
-    public void BindDamageZone(DamageZone damageZone)
+    public void Bind(DamageZone damageZone)
     {
         DamageZone = damageZone;
     }
