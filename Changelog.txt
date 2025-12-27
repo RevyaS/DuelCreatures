@@ -3,6 +3,7 @@ v.0003 Moar Cards
 - Created TriggerZone component
 - Created ICardSpaceBindable interface
 - Added New cards, Crimson Butterfly, Brigitte (Grade 3) and Knight of the Harp, Tristan (Grade 2)
+- Added New card, Solitary Knight Gancelot
 
 v.0002 Skills and Trigger selection
 - Updated for ArC v.0000004

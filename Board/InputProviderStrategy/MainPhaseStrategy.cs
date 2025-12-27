@@ -34,7 +34,7 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, CardInfo CardInfo, Game
         {
             selectedUnitCircleActivation = Board.GetPlayerUnitCircleComponent(card).UnitCircle;
             selectedSkillForActivation = card.Skills.FirstOf<VanguardActivationSkill>();
-            var selected = actions.FirstOf<ActivateSkill>();
+            var selected = actions.FirstOf<ActivateSkillFromUnitCircle>();
             completionSource.SetResult(selected);
         };
         CardInfo.ActivationPressed += activatedHandler;

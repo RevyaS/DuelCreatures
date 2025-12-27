@@ -56,6 +56,13 @@ public static class DuelMaidensCardsFactory
                 new ProvidePowerToInvoker(5000, EffectDuration.ATTACK)
             ])
         ]);
+        public static VanguardCard SolitaryKnightGancelot => new VanguardCard(3, "Solitary Knight, Gancelot", 9000, 1, 0, VanguardCardSkill.TWIN_DRIVE, VanguardTrigger.NONE, [
+            new VanguardActivationSkill(VanguardSkillCardLocation.HAND, new VanguardSkillCost(), [
+                new ReturnToDeck(),
+                new TutorSpecificCard("Blaster Blade"),
+                new ShuffleDeck()
+            ])
+        ]);
     }
 
     public static class OracleThinkTank

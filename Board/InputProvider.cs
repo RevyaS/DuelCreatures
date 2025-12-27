@@ -120,17 +120,17 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         return Task.CompletedTask;
     }
 
-    private void OnSkillExecuted(UnitCircle circle, VanguardSkill skill)
+    private void OnSkillExecuted(VanguardSkillInvocationSource invocationSource, VanguardSkill skill)
     {
-        if(PlayArea.OwnsUnitCircle(circle))
+        if(invocationSource is VanguardUnitCircleInvocationSource unitCircleSource && PlayArea.OwnsUnitCircle(unitCircleSource.UnitCircle))
         {
             PopProviderStrategy();
         }
     }
 
-    private void OnSkillExecution(UnitCircle circle, VanguardSkill skill)
+    private void OnSkillExecution(VanguardSkillInvocationSource invocationSource, VanguardSkill skill)
     {
-        if(PlayArea.OwnsUnitCircle(circle))
+        if(invocationSource is VanguardUnitCircleInvocationSource unitCircleSource && PlayArea.OwnsUnitCircle(unitCircleSource.UnitCircle))
         {
             PushProviderStrategy(new SkillExecutionStrategy(board, PlayArea, CardListComponent, SelectFromCardListComponent));
         }
