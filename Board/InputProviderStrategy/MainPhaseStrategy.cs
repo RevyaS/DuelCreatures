@@ -133,7 +133,7 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, CardInfo CardInfo, Game
 
     public Task<UnitCircle> SelectOwnUnitCircle()
     {
-        if(gameContext.GameState is ActivateSkillState && selectedUnitCircleActivation is not null)
+        if(gameContext.GameState is ActivateUnitCircleSkillState && selectedUnitCircleActivation is not null)
         {
             var result = selectedUnitCircleActivation;
             selectedUnitCircleActivation = null!;
@@ -144,7 +144,7 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, CardInfo CardInfo, Game
 
     public Task<VanguardActivationSkill> SelectSkillToActivate(List<VanguardActivationSkill> skills)
     {
-        if(gameContext.GameState is ActivateSkillState && selectedSkillForActivation is not null)
+        if(gameContext.GameState is ActivateUnitCircleSkillState && selectedSkillForActivation is not null)
         {
             var result = selectedSkillForActivation;
             selectedSkillForActivation = null!;
