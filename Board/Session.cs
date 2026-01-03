@@ -10,6 +10,21 @@ public partial class Session : Control
     InputProvider InputProviderComponent = null!;
     DuelCreaturesBoard Board => InputProviderComponent.Board;
 
+    DeckBuilder TrialDeck => DeckBuilder.Create()
+        .AddCards(RoyalPaladin.Flogal, 4)
+        .AddCards(RoyalPaladin.WeaponsDealerGovannon, 4)
+        .AddCards(RoyalPaladin.YggdrasilMaidenElaine, 4)
+        .AddCards(RoyalPaladin.BringerOfGoodLuckEpona, 4)
+        .AddCards(RoyalPaladin.KnightOfRoseMorgana, 4)
+        .AddCards(RoyalPaladin.Wingal, 2)
+        .AddCards(RoyalPaladin.LittleSageMarron, 4)
+        .AddCards(RoyalPaladin.CovenantKnightRandolf, 4)
+        .AddCards(RoyalPaladin.KnightOfTheHarpTristan, 3)
+        .AddCards(RoyalPaladin.BlasterBlade, 1)
+        .AddCards(RoyalPaladin.KnightOfSilenceGallatin, 4)
+        .AddCards(RoyalPaladin.SolitaryKnightGancelot, 2)
+        .AddCards(RoyalPaladin.CrimsonButterflyBrigitte, 4);
+
     public async override void _Ready()
     {
         var eventBus = new VanguardEventBus();
@@ -22,7 +37,7 @@ public partial class Session : Control
         var player1 = new VanguardPlayerProfile(
             DeckBuilder.Create()
                 .AddCards(RoyalPaladin.ArdentJewelKnightPolli, 4)
-                .AddCards(RoyalPaladin.FutureKnightLlew, 4)
+                .AddCards(RoyalPaladin.Flogal, 4)
                 .AddCards(RoyalPaladin.DevotingJewelKnightTabitha, 4)
                 .AddCards(RoyalPaladin.Wingal, 4)
                 .AddCards(RoyalPaladin.KnightOfRoseMorgana, 4)
@@ -66,6 +81,17 @@ public partial class Session : Control
     {
         session.StartGame();
         Board.ApplySession(session);
+
+        #region DEBUG
+        // session.Game.Board.Player1Area.Vanguard.Assign(RoyalPaladin.KnightOfTheHarpTristan);
+        // session.Game.Board.Player1Area.DamageZone.AddCardsOnTop([
+        //     RoyalPaladin.SailorGuardianMichiru,
+        //     RoyalPaladin.BlasterBlade,
+        // ]);
+        // session.Game.Board.Player1Area.Hand.AddCard(RoyalPaladin.BlasterBlade);
+        // session.Game.Board.Player1Area.Hand.AddCard(RoyalPaladin.Wingal);
+        // session.Game.Board.Player2Area.FrontLeft.Assign(RoyalPaladin.KnightOfSilenceGallatin);
+        #endregion
         
         while(!session.IsGameOver())
         {

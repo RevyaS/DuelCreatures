@@ -10,6 +10,7 @@ using ArC.Common.Extensions;
 public class MainPhaseStrategy(DuelCreaturesBoard Board, CardInfo CardInfo, GameContext gameContext) : IInputProviderStrategy, IRequestMainPhaseAction, ISelectCardFromHand, ISelectOwnRearguard, ISelectOwnUnitCircle, ISelectSkillToActivate
 {
     CardBase selectedCardForCall = null!;
+    CardBase selectedCardForHandSkillActivation = null!;
     RearGuard selectedRearguardForCall = null!;
     RearGuard selectedRearguardForSwap = null!;
     UnitCircle selectedUnitCircleActivation = null!;
@@ -32,10 +33,21 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, CardInfo CardInfo, Game
 
         Action<VanguardCard> activatedHandler = (card) =>
         {
-            selectedUnitCircleActivation = Board.GetPlayerUnitCircleComponent(card).UnitCircle;
-            selectedSkillForActivation = card.Skills.FirstOf<VanguardActivationSkill>();
-            var selected = actions.FirstOf<ActivateSkillFromUnitCircle>();
-            completionSource.SetResult(selected);
+            CardInfo.Hide();
+            if(Board.IsCardInPlayerUnitCircle(card))
+            {
+                selectedUnitCircleActivation = Board.GetPlayerUnitCircleComponent(card).UnitCircle;
+                selectedSkillForActivation = card.Skills.FirstOf<VanguardActivationSkill>();
+                var selected = actions.FirstOf<ActivateSkillFromUnitCircle>();
+                completionSource.SetResult(selected);
+            }
+            else
+            {
+                selectedCardForHandSkillActivation = card;
+                selectedSkillForActivation = card.Skills.FirstOf<VanguardActivationSkill>();
+                var selected = actions.FirstOf<ActivateSkillFromHand>();
+                completionSource.SetResult(selected);
+            }
         };
         CardInfo.ActivationPressed += activatedHandler;
 
@@ -104,16 +116,22 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, CardInfo CardInfo, Game
 
     public Task<CardBase> SelectCardFromHand()
     {
-        if(selectedCardForCall is not null)
+        if(gameContext.GameState is CallRearguardState)
         {
-            var result = selectedCardForCall;
+            var callResult = selectedCardForCall;
             selectedCardForCall = null!;
-            return Task.FromResult(result);
+            return Task.FromResult(callResult);
+        }
+        if(gameContext.GameState is ActivateHandSkillState)
+        {
+            var handResult = selectedCardForHandSkillActivation;
+            selectedCardForHandSkillActivation = null!;
+            return Task.FromResult(handResult);
         }
         throw new NotImplementedException();
     }
 
-    public Task<RearGuard> SelectOwnRearguard()
+    public Task<RearGuard> SelectOwnRearguard(UnitSelector unitSelector)
     {
         if(gameContext.GameState is CallRearguardState)
         {
@@ -144,7 +162,7 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, CardInfo CardInfo, Game
 
     public Task<VanguardActivationSkill> SelectSkillToActivate(List<VanguardActivationSkill> skills)
     {
-        if(gameContext.GameState is ActivateUnitCircleSkillState && selectedSkillForActivation is not null)
+        if((gameContext.GameState is ActivateUnitCircleSkillState || gameContext.GameState is ActivateHandSkillState) && selectedSkillForActivation is not null)
         {
             var result = selectedSkillForActivation;
             selectedSkillForActivation = null!;

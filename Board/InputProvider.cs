@@ -193,7 +193,15 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     private void OnHandCardPressed(Card card)
     {
-        ShowCardInfo(card);
+        bool enableActivateSkill = false;
+        if(GameContext.GameState is SelectMainPhaseActionState)
+        {
+            if(VanguardGameRules.HandCardCanActivateSkill(this, Board.PlayerHand.Hand, (VanguardCard)card.CurrentCard))
+            {
+                enableActivateSkill = true;
+            }
+        }
+        ShowCardInfo(card, enableActivateSkill);
     }
 
     private void OnUnitCircleCardPressed(Card card)
@@ -231,9 +239,9 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         return ((IRequestMainPhaseAction)strategy).RequestMainPhaseAction(actions);
     }
 
-    public Task<RearGuard> SelectOwnRearguard()
+    public Task<RearGuard> SelectOwnRearguard(UnitSelector unitSelector)
     {
-        return ((ISelectOwnRearguard)strategy).SelectOwnRearguard();
+        return ((ISelectOwnRearguard)strategy).SelectOwnRearguard(unitSelector);
     }
 
     public Task<UnitCircle> SelectOpponentCircle(UnitSelector selector)

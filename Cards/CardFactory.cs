@@ -10,8 +10,14 @@ public static class DuelMaidensCardsFactory
         public static VanguardCard StardustTrumpeteer => new VanguardCard(0, "Stardust Trumpeteer", 6000, 1, 10000, VanguardCardSkill.BOOST, VanguardTrigger.NONE, []);
         // public static VanguardCard Barcgal => new VanguardCard(0, "Barcgal", 4000, 1, 15000, VanguardCardSkill.BOOST, VanguardTrigger.NONE, []);
         public static VanguardCard FutureKnightLlew => new VanguardCard(0, "Future Knight, Llew", 4000, 1, 10000, VanguardCardSkill.BOOST, VanguardTrigger.CRITICAL, []);
+        public static VanguardCard BringerOfGoodLuckEpona => new VanguardCard(0, "Bringer of Good Luck, Epona", 5000, 1, 10000, VanguardCardSkill.BOOST, VanguardTrigger.CRITICAL, []);
+
         public static VanguardCard DevotingJewelKnightTabitha => new VanguardCard(0, "Devoting Jewel Knight, Tabitha", 4000, 1, 5000, VanguardCardSkill.BOOST, VanguardTrigger.DRAW, []);
+        public static VanguardCard WeaponsDealerGovannon => new VanguardCard(0, "Weapons Dealer, Govannon", 5000, 1, 5000, VanguardCardSkill.BOOST, VanguardTrigger.DRAW, []);
+
         public static VanguardCard ArdentJewelKnightPolli => new VanguardCard(0, "Ardent Jewel Knight, Polli", 5000, 1, 15000, VanguardCardSkill.BOOST, VanguardTrigger.HEAL, []);
+        public static VanguardCard YggdrasilMaidenElaine => new VanguardCard(0, "Yggdrasil Maiden, Elaine", 5000, 1, 10000, VanguardCardSkill.BOOST, VanguardTrigger.HEAL, []);
+        public static VanguardCard Flogal => new VanguardCard(0, "Flogal", 5000, 1, 10000, VanguardCardSkill.BOOST, VanguardTrigger.STAND, []);
 
         // G1
         // Lake Maiden Lien
@@ -42,6 +48,11 @@ public static class DuelMaidensCardsFactory
         public static VanguardCard KnightOfTheHarpTristan => new VanguardCard(2, "Knight of the Harp, Tristan", 8000, 1, 5000, VanguardCardSkill.INTERCEPT, VanguardTrigger.NONE, [
             new VanguardAutomaticSkill(VanguardSkillCardLocation.VANGUARD, new OnDriveCheckSpecificGradeTiming(3), new VanguardSkillCost(), [
                 new ProvidePowerToInvoker(5000, EffectDuration.ATTACK)
+            ])
+        ]);
+        public static VanguardCard CovenantKnightRandolf => new VanguardCard(2, "Covenant Knight, Randolf", 8000, 1, 5000, VanguardCardSkill.INTERCEPT, VanguardTrigger.NONE, [
+            new VanguardAutomaticSkill(VanguardSkillCardLocation.VANGUARD | VanguardSkillCardLocation.REARGUARD, new OnAttackTiming(), new VanguardSkillCost(), [
+                new VanguardCompositeSkillAction(new HandGreaterThanOpponent(), new ProvidePowerToInvoker(3000, EffectDuration.ATTACK))
             ])
         ]);
 

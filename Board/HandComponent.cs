@@ -6,7 +6,7 @@ using Godot;
 [Tool]
 public partial class HandComponent : CardLineDynamic, ICardSpaceBindable<Hand>, IEventBusUtilizer
 {
-    Hand Hand = null!;
+    public Hand Hand { get; private set; } = null!;
     
     public void SetEventBus(VanguardEventBus eventBus)
     {

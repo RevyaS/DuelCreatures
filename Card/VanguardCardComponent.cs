@@ -13,6 +13,7 @@ public partial class VanguardCardComponent : Card
     const string DrawTriggerTexturePath = "res://Assets/Triggers/Draw.png";
     const string CriticalTriggerTexturePath = "res://Assets/Triggers/Critical.png";
     const string HealTriggerTexturePath = "res://Assets/Triggers/Heal.png";
+    const string StandTriggerTexturePath = "res://Assets/Triggers/Stand.png";
 
     private VanguardTrigger Trigger { get; set; } = VanguardTrigger.NONE;
 
@@ -105,6 +106,7 @@ public partial class VanguardCardComponent : Card
                 VanguardTrigger.DRAW => DrawTriggerTexturePath,
                 VanguardTrigger.CRITICAL => CriticalTriggerTexturePath,
                 VanguardTrigger.HEAL => HealTriggerTexturePath,
+                VanguardTrigger.STAND => StandTriggerTexturePath,
                 _ => throw new NotImplementedException()
             };
             TriggerRect.Texture = ResourceLoader.Load<Texture2D>(texturePath);

@@ -227,19 +227,48 @@ public partial class DuelCreaturesBoard : Control
         {
             selection.Add(PlayerVanguard);
         }
-        if(selector.HasFlag(UnitSelector.REARGUARD))
+        if(selector.HasFlag(UnitSelector.FRONT_LEFT))
         {
-            if(selector.HasFlag(UnitSelector.FRONT))
-            {
-                selection.AddRange(PlayerFrontRowRearguards);
-            }
-            if(selector.HasFlag(UnitSelector.BACK))
-            {
-                selection.AddRange(PlayerBackRowRearguards);
-            }
+            selection.Add(PlayerFrontLeft);
+        }
+        if(selector.HasFlag(UnitSelector.BACK_LEFT))
+        {
+            selection.Add(PlayerBackLeft);
+        }
+        if(selector.HasFlag(UnitSelector.BACK_CENTER))
+        {
+            selection.Add(PlayerBackCenter);
+        }
+        if(selector.HasFlag(UnitSelector.FRONT_RIGHT))
+        {
+            selection.Add(PlayerFrontRight);
+        }
+        if(selector.HasFlag(UnitSelector.BACK_RIGHT))
+        {
+            selection.Add(PlayerBackRight);
         }
 
-        Func<UnitCircleComponent, bool> predicate = (uc) => selector.HasFlag(UnitSelector.EMPTY) ? true : !uc.UnitCircle.IsEmpty;
+        bool allowEmpty     = selector.HasFlag(UnitSelector.EMPTY);
+        bool allowNonEmpty  = selector.HasFlag(UnitSelector.NON_EMPTY);
+        bool allowResting   = selector.HasFlag(UnitSelector.RESTING);
+
+        Func<UnitCircleComponent, bool> predicate = uc =>
+        {
+            bool isEmpty = uc.UnitCircle.IsEmpty;
+            bool isStanding = uc.UnitCircle.IsStanding;
+
+            // Empty / Non-empty logic
+            bool emptyCheck =
+                (!allowEmpty && !allowNonEmpty) ||   // no restriction
+                (allowEmpty && isEmpty) ||
+                (allowNonEmpty && !isEmpty);
+
+            // Resting logic
+            bool restingCheck =
+                !allowResting || !isStanding;
+
+            return emptyCheck && restingCheck;
+        };
 
         selection.Where(predicate).ToList().ForEach((circle) => circle.Selectable = true);
     }

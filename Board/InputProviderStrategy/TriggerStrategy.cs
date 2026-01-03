@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using ArC.CardGames.Flow;
 using ArC.CardGames.Predefined.Vanguard;
 
-public class TriggerStrategy(DuelCreaturesBoard Board, VanguardPlayArea PlayArea, SelectFromCardList SelectFromCardList, GameContext GameContext) : BaseStrategy(Board), ISelectOwnUnitCircle, ISelectCardFromDamageZone
+public class TriggerStrategy(DuelCreaturesBoard Board, VanguardPlayArea PlayArea, SelectFromCardList SelectFromCardList, GameContext GameContext) : BaseStrategy(Board), ISelectOwnUnitCircle, ISelectCardFromDamageZone, ISelectOwnRearguard
 {
     public async Task<VanguardCard> SelectCardFromDamageZone()
     {
@@ -32,12 +32,30 @@ public class TriggerStrategy(DuelCreaturesBoard Board, VanguardPlayArea PlayArea
     {
         if(GameContext.GameState is TriggerPowerState)
         {
-            return GameBoard.DoFuncWithIndicatorAsync("Select Circle to Provide Power", () => SelectOwnUnitCircle(UnitSelector.ALL_CIRCLES));
+            return GameBoard.DoFuncWithIndicatorAsync("Select Circle to Provide Power", () => SelectOwnUnitCircle(UnitSelector.ALL_CIRCLES | UnitSelector.NON_EMPTY));
         }
         if(GameContext.GameState is TriggerCriticalState)
         {
-            return GameBoard.DoFuncWithIndicatorAsync("Select Circle to Provide Critical", () => SelectOwnUnitCircle(UnitSelector.ALL_CIRCLES));
+            return GameBoard.DoFuncWithIndicatorAsync("Select Circle to Provide Critical", () => SelectOwnUnitCircle(UnitSelector.ALL_CIRCLES | UnitSelector.NON_EMPTY));
         }
         throw new InvalidOperationException();
+    }
+
+    public async Task<RearGuard> SelectOwnRearguard(UnitSelector unitSelector)
+    {
+        GameBoard.EnableSelectOwnUnitCircle(unitSelector);
+        TaskCompletionSource<RearGuard> completionSource = new();
+        
+        Action<UnitCircleComponent> playerCircleSelectedHandler = (uc) =>
+        {
+            completionSource.SetResult((RearGuard)uc.UnitCircle);
+        };
+        GameBoard.PlayerCircleSelected += playerCircleSelectedHandler;
+
+        var result = await completionSource.Task;
+        GameBoard.DisableSelectOwnUnitCircle();
+        GameBoard.PlayerCircleSelected -= playerCircleSelectedHandler;
+
+        return result;
     }
 }

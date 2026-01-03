@@ -146,7 +146,7 @@ public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea P
         return result;
     }
 
-    public async Task<RearGuard> SelectOwnRearguard()
+    public async Task<RearGuard> SelectOwnRearguard(UnitSelector unitSelector)
     {
         GameBoard.EnableSelectOwnUnitCircle(UnitSelector.REARGUARD);
         TaskCompletionSource<RearGuard> completionSource = new();

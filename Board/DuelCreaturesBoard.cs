@@ -379,6 +379,11 @@ public partial class DuelCreaturesBoard : Control
         throw new InvalidOperationException();
     }
 
+    public bool IsCardInPlayerUnitCircle(VanguardCard card)
+    {
+        return PlayerCircles.Any(x => ReferenceEquals(x.CurrentCard?.CurrentCard, card));
+    }
+
     public UnitCircleComponent GetPlayerUnitCircleComponent(VanguardCard card)
     {
         return PlayerCircles.First(x => ReferenceEquals(x.CurrentCard?.CurrentCard, card));

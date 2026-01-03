@@ -26,7 +26,7 @@ public interface ISelectCardFromHand
 }
 public interface ISelectOwnRearguard
 {
-    Task<RearGuard> SelectOwnRearguard();
+    Task<RearGuard> SelectOwnRearguard(UnitSelector unitSelector);
 }
 
 public interface IRequestAttackPhaseAction
