@@ -37,14 +37,14 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, CardInfo CardInfo, Game
             if(Board.IsCardInPlayerUnitCircle(card))
             {
                 selectedUnitCircleActivation = Board.GetPlayerUnitCircleComponent(card).UnitCircle;
-                selectedSkillForActivation = card.Skills.FirstOf<VanguardActivationSkill>();
+                selectedSkillForActivation = card.Skills.FirstOf<VanguardActivationSkill>(x => x.Location.HasFlag(VanguardSkillCardLocation.VANGUARD) || x.Location.HasFlag(VanguardSkillCardLocation.REARGUARD));
                 var selected = actions.FirstOf<ActivateSkillFromUnitCircle>();
                 completionSource.SetResult(selected);
             }
             else
             {
                 selectedCardForHandSkillActivation = card;
-                selectedSkillForActivation = card.Skills.FirstOf<VanguardActivationSkill>();
+                selectedSkillForActivation = card.Skills.FirstOf<VanguardActivationSkill>(x => x.Location.HasFlag(VanguardSkillCardLocation.HAND));
                 var selected = actions.FirstOf<ActivateSkillFromHand>();
                 completionSource.SetResult(selected);
             }

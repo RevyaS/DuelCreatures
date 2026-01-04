@@ -16,6 +16,7 @@ public partial class Session : Control
         .AddCards(RoyalPaladin.YggdrasilMaidenElaine, 4)
         .AddCards(RoyalPaladin.BringerOfGoodLuckEpona, 4)
         .AddCards(RoyalPaladin.KnightOfRoseMorgana, 4)
+        .AddCards(RoyalPaladin.StarlightUnicorn, 4)
         .AddCards(RoyalPaladin.Wingal, 2)
         .AddCards(RoyalPaladin.LittleSageMarron, 4)
         .AddCards(RoyalPaladin.CovenantKnightRandolf, 4)
@@ -23,7 +24,24 @@ public partial class Session : Control
         .AddCards(RoyalPaladin.BlasterBlade, 1)
         .AddCards(RoyalPaladin.KnightOfSilenceGallatin, 4)
         .AddCards(RoyalPaladin.SolitaryKnightGancelot, 2)
+        .AddCards(RoyalPaladin.KnightOfConvictionBors, 1)
         .AddCards(RoyalPaladin.CrimsonButterflyBrigitte, 4);
+    
+    DeckBuilder TestDeck => DeckBuilder.Create()
+        .AddCards(RoyalPaladin.ArdentJewelKnightPolli, 4)
+        .AddCards(RoyalPaladin.BringerOfGoodLuckEpona, 4)
+        .AddCards(RoyalPaladin.Flogal, 4)
+        .AddCards(RoyalPaladin.DevotingJewelKnightTabitha, 4)
+        .AddCards(RoyalPaladin.StarlightUnicorn, 4)
+        .AddCards(RoyalPaladin.Wingal, 4)
+        .AddCards(RoyalPaladin.KnightOfRoseMorgana, 4)
+        .AddCards(RoyalPaladin.LittleSageMarron, 4)
+        .AddCards(RoyalPaladin.BlasterBlade, 4)
+        .AddCards(RoyalPaladin.KnightOfSilenceGallatin, 4)
+        .AddCards(RoyalPaladin.KnightOfTheHarpTristan, 4)
+        .AddCards(RoyalPaladin.KingOfKnightsAlfred, 4) 
+        .AddCards(RoyalPaladin.CrimsonButterflyBrigitte, 4)
+        .AddCards(RoyalPaladin.SolitaryKnightGancelot, 4);
 
     public async override void _Ready()
     {
@@ -35,36 +53,10 @@ public partial class Session : Control
         InputProviderComponent.SetEventBus(eventBus);
 
         var player1 = new VanguardPlayerProfile(
-            DeckBuilder.Create()
-                .AddCards(RoyalPaladin.ArdentJewelKnightPolli, 4)
-                .AddCards(RoyalPaladin.Flogal, 4)
-                .AddCards(RoyalPaladin.DevotingJewelKnightTabitha, 4)
-                .AddCards(RoyalPaladin.Wingal, 4)
-                .AddCards(RoyalPaladin.KnightOfRoseMorgana, 4)
-                .AddCards(RoyalPaladin.LittleSageMarron, 4)
-                .AddCards(RoyalPaladin.BlasterBlade, 4)
-                .AddCards(RoyalPaladin.KnightOfSilenceGallatin, 4)
-                .AddCards(RoyalPaladin.KnightOfTheHarpTristan, 4)
-                .AddCards(RoyalPaladin.KingOfKnightsAlfred, 4) 
-                .AddCards(RoyalPaladin.CrimsonButterflyBrigitte, 4)
-                .AddCards(RoyalPaladin.SolitaryKnightGancelot, 4), 
-                RoyalPaladin.StardustTrumpeteer);
+            TrialDeck, RoyalPaladin.StardustTrumpeteer);
 
         var player2 = new VanguardPlayerProfile(
-            DeckBuilder.Create()
-                .AddCards(RoyalPaladin.ArdentJewelKnightPolli, 4)
-                .AddCards(RoyalPaladin.FutureKnightLlew, 4)
-                .AddCards(RoyalPaladin.DevotingJewelKnightTabitha, 4)
-                .AddCards(RoyalPaladin.Wingal, 4)
-                .AddCards(RoyalPaladin.KnightOfRoseMorgana, 4)
-                .AddCards(RoyalPaladin.LittleSageMarron, 4)
-                .AddCards(RoyalPaladin.BlasterBlade, 4)
-                .AddCards(RoyalPaladin.KnightOfSilenceGallatin, 4)
-                .AddCards(RoyalPaladin.KnightOfTheHarpTristan, 4)
-                .AddCards(RoyalPaladin.KingOfKnightsAlfred, 4)
-                .AddCards(RoyalPaladin.CrimsonButterflyBrigitte, 4)
-                .AddCards(RoyalPaladin.SolitaryKnightGancelot, 4), 
-                RoyalPaladin.StardustTrumpeteer);
+            TrialDeck, RoyalPaladin.StardustTrumpeteer);
 
         var game = new VanguardGame(player1, player2, eventBus, effectService);
         var skillService = new VanguardSkillService(eventBus, gameContext);
@@ -84,6 +76,9 @@ public partial class Session : Control
 
         #region DEBUG
         // session.Game.Board.Player1Area.Vanguard.Assign(RoyalPaladin.KnightOfTheHarpTristan);
+        // session.Game.Board.Player1Area.Soul.AddCardsOnTop([
+        //     RoyalPaladin.BlasterBlade
+        // ]);
         // session.Game.Board.Player1Area.DamageZone.AddCardsOnTop([
         //     RoyalPaladin.SailorGuardianMichiru,
         //     RoyalPaladin.BlasterBlade,

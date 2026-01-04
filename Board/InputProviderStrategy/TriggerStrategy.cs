@@ -38,6 +38,11 @@ public class TriggerStrategy(DuelCreaturesBoard Board, VanguardPlayArea PlayArea
         {
             return GameBoard.DoFuncWithIndicatorAsync("Select Circle to Provide Critical", () => SelectUnitCircle(selector));
         }
+        if(GameContext.GameState is TriggerStandState)
+        {
+            return GameBoard.DoFuncWithIndicatorAsync("Select Circle to Stand", () => SelectUnitCircle(selector));
+        }
+
         throw new InvalidOperationException();
     }
 }
