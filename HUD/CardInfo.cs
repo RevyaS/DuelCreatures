@@ -4,10 +4,10 @@ using Godot;
 
 public partial class CardInfo : Control
 {
-    Label CardName = null!;
+    Label CardName = null!, Skill = null!;
     Button ActivateButton = null!;
     RichTextLabel Skills = null!;
-    LabelValueContainer Grade = null!, Power = null!, Critical = null!, Guard = null!;
+    LabelValueContainer Grade = null!, Power = null!, Critical = null!, Guard = null!, UnitType = null!;
     VanguardCard CurrentCard = null!;
 
     public bool ShowActivateButton { get; set; } = false;
@@ -21,6 +21,8 @@ public partial class CardInfo : Control
         Guard = GetNode<LabelValueContainer>($"%{nameof(Guard)}");
         Skills = GetNode<RichTextLabel>($"%{nameof(Skills)}");
         ActivateButton = GetNode<Button>($"%{nameof(ActivateButton)}");
+        UnitType = GetNode<LabelValueContainer>($"%{nameof(UnitType)}");
+        Skill = GetNode<Label>($"%{nameof(Skill)}");
         ActivateButton.Pressed += OnActivateButtonPressed;
     }
 
@@ -46,6 +48,24 @@ public partial class CardInfo : Control
         Power.Value = card.Power.ToString();
         Critical.Value = card.Critical.ToString();
         Guard.Value = card.Guard.ToString();
+
+        UnitType.Label = card.Trigger == VanguardTrigger.NONE ? "Normal Unit" : "Trigger Unit";
+        UnitType.Value = card.Trigger switch
+        {
+            VanguardTrigger.HEAL => "Heal",
+            VanguardTrigger.DRAW => "Draw",
+            VanguardTrigger.CRITICAL => "Critical",
+            VanguardTrigger.STAND => "Stand",
+            _ => string.Empty
+        };
+        Skill.Text = card.Skill switch
+        {
+            VanguardCardSkill.INTERCEPT => "Intercept",
+            VanguardCardSkill.BOOST => "Boost",
+            VanguardCardSkill.TWIN_DRIVE => "Twin Drive",
+            _ => string.Empty,
+        };
+
         if(card.Skills.Length == 0)
         {
             Skills.Text = "This card has no skills";
