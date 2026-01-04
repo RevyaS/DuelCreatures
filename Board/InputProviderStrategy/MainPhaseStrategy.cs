@@ -7,12 +7,12 @@ using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Predefined.Vanguard;
 using ArC.Common.Extensions;
 
-public class MainPhaseStrategy(DuelCreaturesBoard Board, CardInfo CardInfo, GameContext gameContext) : IInputProviderStrategy, IRequestMainPhaseAction, ISelectCardFromHand, ISelectOwnRearguard, ISelectOwnUnitCircle, ISelectSkillToActivate
+public class MainPhaseStrategy(DuelCreaturesBoard Board, CardInfo CardInfo, GameContext gameContext) : IInputProviderStrategy, IRequestMainPhaseAction, ISelectCardFromHand, ISelectOwnUnitCircle, ISelectSkillToActivate
 {
     CardBase selectedCardForCall = null!;
     CardBase selectedCardForHandSkillActivation = null!;
-    RearGuard selectedRearguardForCall = null!;
-    RearGuard selectedRearguardForSwap = null!;
+    UnitCircle selectedRearguardForCall = null!;
+    UnitCircle selectedRearguardForSwap = null!;
     UnitCircle selectedUnitCircleActivation = null!;
     VanguardActivationSkill selectedSkillForActivation = null!;
 
@@ -131,27 +131,22 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, CardInfo CardInfo, Game
         throw new NotImplementedException();
     }
 
-    public Task<RearGuard> SelectOwnRearguard(UnitSelector unitSelector)
+    public Task<UnitCircle> SelectOwnUnitCircle(UnitSelector unitSelector)
     {
-        if(gameContext.GameState is CallRearguardState)
+        if (gameContext.GameState is CallRearguardState)
         {
-            if(selectedRearguardForCall is null) throw new InvalidOperationException();
+            if (selectedRearguardForCall is null) throw new InvalidOperationException();
             var result = selectedRearguardForCall;
             selectedRearguardForCall = null!;
             return Task.FromResult(result);
         }
-        if(gameContext.GameState is SwapRearguardState && selectedRearguardForSwap is not null)
+        if (gameContext.GameState is SwapRearguardState && selectedRearguardForSwap is not null)
         {
             var result = selectedRearguardForSwap;
             selectedRearguardForSwap = null!;
             return Task.FromResult(result);
         }
-        throw new NotImplementedException();
-    }
-
-    public Task<UnitCircle> SelectOwnUnitCircle()
-    {
-        if(gameContext.GameState is ActivateUnitCircleSkillState && selectedUnitCircleActivation is not null)
+        if (gameContext.GameState is ActivateUnitCircleSkillState && selectedUnitCircleActivation is not null)
         {
             var result = selectedUnitCircleActivation;
             selectedUnitCircleActivation = null!;

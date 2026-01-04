@@ -5,7 +5,7 @@ using ArC.CardGames.Predefined.Vanguard;
 public class BaseStrategy(DuelCreaturesBoard Board) : IInputProviderStrategy
 {
     protected DuelCreaturesBoard GameBoard => Board;
-    protected async Task<UnitCircle> SelectOwnUnitCircle(UnitSelector selector)
+    protected async Task<UnitCircle> SelectUnitCircle(UnitSelector selector)
     {
         GameBoard.EnableSelectOwnUnitCircle(selector);
         TaskCompletionSource<UnitCircle> completionSource = new();

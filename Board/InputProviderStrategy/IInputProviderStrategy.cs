@@ -24,11 +24,6 @@ public interface ISelectCardFromHand
 {
     Task<CardBase> SelectCardFromHand();
 }
-public interface ISelectOwnRearguard
-{
-    Task<RearGuard> SelectOwnRearguard(UnitSelector unitSelector);
-}
-
 public interface IRequestAttackPhaseAction
 {
     Task<IAttackPhaseAction> RequestAttackPhaseAction(List<IAttackPhaseAction> actions);
@@ -36,7 +31,7 @@ public interface IRequestAttackPhaseAction
 
 public interface ISelectOwnUnitCircle
 {
-    Task<UnitCircle> SelectOwnUnitCircle();
+    Task<UnitCircle> SelectOwnUnitCircle(UnitSelector selector);
 }
 
 public interface ISelectOpponentCircle

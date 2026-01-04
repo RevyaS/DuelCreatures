@@ -239,19 +239,14 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         return ((IRequestMainPhaseAction)strategy).RequestMainPhaseAction(actions);
     }
 
-    public Task<RearGuard> SelectOwnRearguard(UnitSelector unitSelector)
-    {
-        return ((ISelectOwnRearguard)strategy).SelectOwnRearguard(unitSelector);
-    }
-
     public Task<UnitCircle> SelectOpponentCircle(UnitSelector selector)
     {
         return ((ISelectOpponentCircle)strategy).SelectOpponentCircle(selector);
     }
 
-    public Task<UnitCircle> SelectOwnUnitCircle()
+    public Task<UnitCircle> SelectOwnUnitCircle(UnitSelector selector)
     {
-        return ((ISelectOwnUnitCircle)strategy).SelectOwnUnitCircle();
+        return ((ISelectOwnUnitCircle)strategy).SelectOwnUnitCircle(selector);
     }
 
     public Task<VanguardActivationSkill> SelectSkillToActivate(List<VanguardActivationSkill> skills)

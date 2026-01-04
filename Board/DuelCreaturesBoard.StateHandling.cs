@@ -193,26 +193,9 @@ public partial class DuelCreaturesBoard : Control
 
     public void EnableSelectOppCircle(UnitSelector selector)
     {
-        List<UnitCircleComponent> selection = [];
-        if(selector.HasFlag(UnitSelector.VANGUARD))
-        {
-            selection.Add(OppVanguard);
-        }
-        if(selector.HasFlag(UnitSelector.REARGUARD))
-        {
-            if(selector.HasFlag(UnitSelector.FRONT))
-            {
-                selection.AddRange(OppFrontRowRearguards);
-            }
-            if(selector.HasFlag(UnitSelector.BACK))
-            {
-                selection.AddRange(OppBackRowRearguards);
-            }
-        }
-
-        Func<UnitCircleComponent, bool> predicate = (uc) => selector.HasFlag(UnitSelector.EMPTY) ? true : !uc.UnitCircle.IsEmpty;
-
-        selection.Where(predicate).ToList().ForEach((circle) => circle.Selectable = true);
+        var selectedCircles = _gameSession.Game.Board.Player2Area.GetUnitCirclesBySelector(selector);
+        selectedCircles.Select(circle => OpponentCircles.First(pc => ReferenceEquals(pc.UnitCircle, circle))).ToList()
+            .ForEach((circle) => circle.Selectable = true);
     }
 
     public void DisableSelectOppUnitCircle()
@@ -222,55 +205,9 @@ public partial class DuelCreaturesBoard : Control
 
     public void EnableSelectOwnUnitCircle(UnitSelector selector)
     {
-        List<UnitCircleComponent> selection = [];
-        if(selector.HasFlag(UnitSelector.VANGUARD))
-        {
-            selection.Add(PlayerVanguard);
-        }
-        if(selector.HasFlag(UnitSelector.FRONT_LEFT))
-        {
-            selection.Add(PlayerFrontLeft);
-        }
-        if(selector.HasFlag(UnitSelector.BACK_LEFT))
-        {
-            selection.Add(PlayerBackLeft);
-        }
-        if(selector.HasFlag(UnitSelector.BACK_CENTER))
-        {
-            selection.Add(PlayerBackCenter);
-        }
-        if(selector.HasFlag(UnitSelector.FRONT_RIGHT))
-        {
-            selection.Add(PlayerFrontRight);
-        }
-        if(selector.HasFlag(UnitSelector.BACK_RIGHT))
-        {
-            selection.Add(PlayerBackRight);
-        }
-
-        bool allowEmpty     = selector.HasFlag(UnitSelector.EMPTY);
-        bool allowNonEmpty  = selector.HasFlag(UnitSelector.NON_EMPTY);
-        bool allowResting   = selector.HasFlag(UnitSelector.RESTING);
-
-        Func<UnitCircleComponent, bool> predicate = uc =>
-        {
-            bool isEmpty = uc.UnitCircle.IsEmpty;
-            bool isStanding = uc.UnitCircle.IsStanding;
-
-            // Empty / Non-empty logic
-            bool emptyCheck =
-                (!allowEmpty && !allowNonEmpty) ||   // no restriction
-                (allowEmpty && isEmpty) ||
-                (allowNonEmpty && !isEmpty);
-
-            // Resting logic
-            bool restingCheck =
-                !allowResting || !isStanding;
-
-            return emptyCheck && restingCheck;
-        };
-
-        selection.Where(predicate).ToList().ForEach((circle) => circle.Selectable = true);
+        var selectedCircles = _gameSession.Game.Board.Player1Area.GetUnitCirclesBySelector(selector);
+        selectedCircles.Select(circle => PlayerCircles.First(pc => ReferenceEquals(pc.UnitCircle, circle))).ToList()
+            .ForEach((circle) => circle.Selectable = true);
     }
 
     public void DisableSelectOwnUnitCircle()
