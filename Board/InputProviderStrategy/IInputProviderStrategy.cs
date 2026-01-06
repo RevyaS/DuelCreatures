@@ -68,3 +68,8 @@ public interface ISelectCardFromDamageZone
 {
     Task<VanguardCard> SelectCardFromDamageZone();
 }
+
+public interface ISelectOwnUnitCircles
+{
+    Task<List<UnitCircle>> SelectOwnUnitCircles(UnitSelector selector);
+}

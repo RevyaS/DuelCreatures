@@ -254,16 +254,6 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         return ((ISelectSkillToActivate)strategy).SelectSkillToActivate(skills);
     }
 
-    public Task<UnitCircle> SelectCircleToProvideCritical()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<UnitCircle> SelectCircleToProvidePower()
-    {
-        throw new NotImplementedException();
-    }
-
     public Task<VanguardCard> SelectCardFromDamageZone()
     {
         return ((ISelectCardFromDamageZone)strategy).SelectCardFromDamageZone();
@@ -297,5 +287,10 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
     public Task<IAttackPhaseAction> RequestAttackPhaseAction(List<IAttackPhaseAction> actions)
     {
         return ((IRequestAttackPhaseAction)strategy).RequestAttackPhaseAction(actions);
+    }
+
+    public Task<List<UnitCircle>> SelectOwnUnitCircles(UnitSelector selector)
+    {
+        return ((ISelectOwnUnitCircles)strategy).SelectOwnUnitCircles(selector);
     }
 }
