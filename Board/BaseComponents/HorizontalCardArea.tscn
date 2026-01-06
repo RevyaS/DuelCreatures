@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://xfgt43rddlvv"]
 
-[ext_resource type="Script" uid="uid://dqu5xpqw41lu7" path="res://Board/HorizontalCardArea.cs" id="1_fk78o"]
+[ext_resource type="Script" uid="uid://dqu5xpqw41lu7" path="res://Board/BaseComponents/HorizontalCardArea.cs" id="1_fk78o"]
 [ext_resource type="Script" uid="uid://bqw5phtur46nx" path="res://Components/CardContainer.cs" id="1_gggsp"]
 [ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Card/Card.tscn" id="2_xi216"]
 

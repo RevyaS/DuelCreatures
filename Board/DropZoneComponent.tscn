@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dlahod6s4jx0i"]
 
-[ext_resource type="PackedScene" uid="uid://cow87og7qhndr" path="res://Board/CardVerticalStack.tscn" id="1_6re4o"]
+[ext_resource type="PackedScene" uid="uid://cow87og7qhndr" path="res://Board/BaseComponents/CardVerticalStack.tscn" id="1_6re4o"]
 [ext_resource type="Script" uid="uid://boyeuye2m3pby" path="res://Board/DropZoneComponent.cs" id="2_jnt8w"]
 
 [node name="CardVerticalStack" instance=ExtResource("1_6re4o")]

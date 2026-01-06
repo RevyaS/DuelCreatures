@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Vanguard;
 
-public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea PlayArea, CardList CardList, SelectFromCardList SelectFromCardList) : BaseStrategy(Board), ISelectOpponentCircle, IQueryActivateSkill, ISelectCardsFromDamageZone, ISelectCardsFromSoul, ISelectCardFromDeck, ISelectOwnRearguard, ISelectCardFromHand, ISelectCardsFromHand
+public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea PlayArea, CardList CardList, SelectFromCardList SelectFromCardList) : BaseStrategy(Board), ISelectOpponentCircle, IQueryActivateSkill, ISelectCardsFromDamageZone, ISelectCardsFromSoul, ISelectCardFromDeck, ISelectCardFromHand, ISelectCardsFromHand, ISelectOwnUnitCircle
 {
     // QueryActivateSkill
     public async Task<bool> QueryActivateSkill(VanguardCard Invoker, VanguardAutomaticSkill Skill)
@@ -146,24 +146,6 @@ public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea P
         return result;
     }
 
-    public async Task<RearGuard> SelectOwnRearguard()
-    {
-        GameBoard.EnableSelectOwnUnitCircle(UnitSelector.REARGUARD);
-        TaskCompletionSource<RearGuard> completionSource = new();
-        
-        Action<UnitCircleComponent> playerCircleSelectedHandler = (uc) =>
-        {
-            completionSource.SetResult((RearGuard)uc.UnitCircle);
-        };
-        GameBoard.PlayerCircleSelected += playerCircleSelectedHandler;
-
-        var result = await completionSource.Task;
-        GameBoard.DisableSelectOwnUnitCircle();
-        GameBoard.PlayerCircleSelected -= playerCircleSelectedHandler;
-
-        return result;
-    }
-
     public async Task<CardBase> SelectCardFromHand()
     {
         SelectFromCardList.Show("Hand", $"Discard", 1, 1, PlayArea.Hand.Cards.Cast<VanguardCard>().ToList());
@@ -204,5 +186,10 @@ public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea P
         SelectFromCardList.Deactivate();
         
         return result;
+    }
+
+    public Task<UnitCircle> SelectOwnUnitCircle(UnitSelector selector)
+    {
+        return SelectUnitCircle(selector);
     }
 }

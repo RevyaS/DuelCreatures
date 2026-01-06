@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://cow87og7qhndr"]
 
-[ext_resource type="Script" uid="uid://b1xmmaeakmxt2" path="res://Board/CardVerticalStack.cs" id="1_84xpp"]
+[ext_resource type="Script" uid="uid://b1xmmaeakmxt2" path="res://Board/BaseComponents/CardVerticalStack.cs" id="1_84xpp"]
 [ext_resource type="Script" uid="uid://bqw5phtur46nx" path="res://Components/CardContainer.cs" id="1_lyp1o"]
 [ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Card/Card.tscn" id="2_phta5"]
 [ext_resource type="Script" uid="uid://d2f15galko8gy" path="res://HUD/PressArea.cs" id="4_bpvqm"]

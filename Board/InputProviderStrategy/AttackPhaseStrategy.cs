@@ -129,7 +129,7 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
         return Task.FromResult(targetCircle.UnitCircle);
     }
 
-    public Task<UnitCircle> SelectOwnUnitCircle()
+    public Task<UnitCircle> SelectOwnUnitCircle(UnitSelector unitSelector)
     {
         if(GameContext.GameState is BoostedAttackState || GameContext.GameState is AttackState)
         {

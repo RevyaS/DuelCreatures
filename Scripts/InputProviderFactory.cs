@@ -43,7 +43,7 @@ public class InputProviderFactory : IPlayerInputProviderFactory
         } else
         {
             InputProviderComponent.Deactivate();
-            return new VanguardAIInputProvider(WeightsBias, Game.Board.Player2Area, Game.Board.Player1Area, SkillService, GameContext, Logger);
+            return new VanguardAIInputProvider(VanguardAITuningSettings.GameplayTuning, WeightsBias, Game.Board.Player2Area, Game.Board.Player1Area, SkillService, GameContext, Logger);
         }
     }
 }

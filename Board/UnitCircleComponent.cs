@@ -5,7 +5,7 @@ using Godot;
 using Orientation = ArC.CardGames.Components.Orientation;
 
 [Tool]
-public partial class UnitCircleComponent : Control, IEventBusUtilizer
+public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircle>, IEventBusUtilizer
 {
     CardRotationContainer cardRotationContainer = null!;
     DropArea dropArea = null!;
@@ -251,7 +251,7 @@ public partial class UnitCircleComponent : Control, IEventBusUtilizer
         return Task.CompletedTask;
     }
 
-    public void BindUnitCircle(UnitCircle unitCircle)
+    public void Bind(UnitCircle unitCircle)
     {
         UnitCircle = unitCircle;
     }

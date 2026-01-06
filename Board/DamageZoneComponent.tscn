@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cvy4hb158pate"]
 
-[ext_resource type="PackedScene" uid="uid://bevj84kr2566s" path="res://Board/CardLineStatic.tscn" id="1_j2ruf"]
+[ext_resource type="PackedScene" uid="uid://bevj84kr2566s" path="res://Board/BaseComponents/CardLineStatic.tscn" id="1_j2ruf"]
 [ext_resource type="Script" uid="uid://btpu0ur81hphw" path="res://Board/DamageZoneComponent.cs" id="2_tqeg2"]
 
 [node name="CardLineDynamic" instance=ExtResource("1_j2ruf")]

@@ -93,41 +93,44 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         eventBus.TriggerResolved += OnTriggerResolved;
     }
 
-    private async Task OnDriveChecked(VanguardPlayArea area, VanguardCard card)
+    private Task OnDriveChecked(VanguardPlayArea area, VanguardCard card)
     {
         if(ReferenceEquals(PlayArea, area))
         {
             PushProviderStrategy(new TriggerStrategy(board, PlayArea, SelectFromCardListComponent, GameContext));
         }
+        return Task.CompletedTask;
     }
 
-    private async Task OnDamageChecked(VanguardPlayArea area, VanguardCard card)
+    private Task OnDamageChecked(VanguardPlayArea area, VanguardCard card)
     {
         if(ReferenceEquals(PlayArea, area))
         {
             PushProviderStrategy(new TriggerStrategy(board, PlayArea, SelectFromCardListComponent, GameContext));
         }
+        return Task.CompletedTask;
     }
 
-    private async Task OnTriggerResolved()
+    private Task OnTriggerResolved()
     {
         if(strategy is TriggerStrategy)
         {
             PopProviderStrategy();
         }
+        return Task.CompletedTask;
     }
 
-    private void OnSkillExecuted(UnitCircle circle, VanguardSkill skill)
+    private void OnSkillExecuted(VanguardSkillInvocationSource invocationSource, VanguardSkill skill)
     {
-        if(PlayArea.OwnsUnitCircle(circle))
+        if(invocationSource is VanguardUnitCircleInvocationSource unitCircleSource && PlayArea.OwnsUnitCircle(unitCircleSource.UnitCircle))
         {
             PopProviderStrategy();
         }
     }
 
-    private void OnSkillExecution(UnitCircle circle, VanguardSkill skill)
+    private void OnSkillExecution(VanguardSkillInvocationSource invocationSource, VanguardSkill skill)
     {
-        if(PlayArea.OwnsUnitCircle(circle))
+        if(invocationSource is VanguardUnitCircleInvocationSource unitCircleSource && PlayArea.OwnsUnitCircle(unitCircleSource.UnitCircle))
         {
             PushProviderStrategy(new SkillExecutionStrategy(board, PlayArea, CardListComponent, SelectFromCardListComponent));
         }
@@ -190,7 +193,15 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     private void OnHandCardPressed(Card card)
     {
-        ShowCardInfo(card);
+        bool enableActivateSkill = false;
+        if(GameContext.GameState is SelectMainPhaseActionState)
+        {
+            if(VanguardGameRules.HandCardCanActivateSkill(this, Board.PlayerHand.Hand, (VanguardCard)card.CurrentCard))
+            {
+                enableActivateSkill = true;
+            }
+        }
+        ShowCardInfo(card, enableActivateSkill);
     }
 
     private void OnUnitCircleCardPressed(Card card)
@@ -228,34 +239,19 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         return ((IRequestMainPhaseAction)strategy).RequestMainPhaseAction(actions);
     }
 
-    public Task<RearGuard> SelectOwnRearguard()
-    {
-        return ((ISelectOwnRearguard)strategy).SelectOwnRearguard();
-    }
-
     public Task<UnitCircle> SelectOpponentCircle(UnitSelector selector)
     {
         return ((ISelectOpponentCircle)strategy).SelectOpponentCircle(selector);
     }
 
-    public Task<UnitCircle> SelectOwnUnitCircle()
+    public Task<UnitCircle> SelectOwnUnitCircle(UnitSelector selector)
     {
-        return ((ISelectOwnUnitCircle)strategy).SelectOwnUnitCircle();
+        return ((ISelectOwnUnitCircle)strategy).SelectOwnUnitCircle(selector);
     }
 
     public Task<VanguardActivationSkill> SelectSkillToActivate(List<VanguardActivationSkill> skills)
     {
         return ((ISelectSkillToActivate)strategy).SelectSkillToActivate(skills);
-    }
-
-    public Task<UnitCircle> SelectCircleToProvideCritical()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<UnitCircle> SelectCircleToProvidePower()
-    {
-        throw new NotImplementedException();
     }
 
     public Task<VanguardCard> SelectCardFromDamageZone()
@@ -291,5 +287,10 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
     public Task<IAttackPhaseAction> RequestAttackPhaseAction(List<IAttackPhaseAction> actions)
     {
         return ((IRequestAttackPhaseAction)strategy).RequestAttackPhaseAction(actions);
+    }
+
+    public Task<List<UnitCircle>> SelectOwnUnitCircles(UnitSelector selector)
+    {
+        return ((ISelectOwnUnitCircles)strategy).SelectOwnUnitCircles(selector);
     }
 }

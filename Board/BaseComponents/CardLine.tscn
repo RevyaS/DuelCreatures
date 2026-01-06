@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://bqhy1u56ohnlg"]
 
 [ext_resource type="Script" uid="uid://tymprrxn341" path="res://addons/rev_godot_core/Components/HBoxNodeContainer.cs" id="1_d5578"]
-[ext_resource type="Script" uid="uid://cwwbsfwll5kn6" path="res://Board/CardLine.cs" id="1_rfqe6"]
+[ext_resource type="Script" uid="uid://cwwbsfwll5kn6" path="res://Board/BaseComponents/CardLine.cs" id="1_rfqe6"]
 [ext_resource type="Script" uid="uid://bqw5phtur46nx" path="res://Components/CardContainer.cs" id="2_rfqe6"]
 [ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Card/Card.tscn" id="3_kue8l"]
 [ext_resource type="Script" uid="uid://dwrq2pnaqfw1s" path="res://HUD/DropArea.cs" id="5_kue8l"]

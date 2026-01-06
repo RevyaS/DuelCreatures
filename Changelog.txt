@@ -1,3 +1,21 @@
+v.0003 Moar Cards
+- Updated for ArC v.0000006
+- Created TriggerZone component
+- Created ICardSpaceBindable interface
+- Added New cards, Crimson Butterfly, Brigitte (Grade 3) and Knight of the Harp, Tristan (Grade 2)
+- Added New card, Solitary Knight Gancelot
+- Added New cards: 
+    Flogal,
+    BringerOfGoodLuckEpona,
+    WeaponsDealerGovannon,
+    YggdrasilMaidenElaine,
+    StarlightUnicorn,
+    CovenantKnightRandolf,
+    KnightOfConvictionBors
+- Implemented Stand Triggers
+- Implemented Hand Skills
+- Implemented Intercepting
+
 v.0002 Skills and Trigger selection
 - Updated for ArC v.0000004
 - Utilize VanguardAI from ArC, InputProviderFactory loads the AI data

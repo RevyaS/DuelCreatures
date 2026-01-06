@@ -3,11 +3,11 @@ using ArC.CardGames.Predefined.Vanguard;
 using Godot;
 
 [Tool]
-public partial class DeckComponent : CardVerticalStack, IEventBusUtilizer
+public partial class DeckComponent : CardVerticalStack, ICardSpaceBindable<Deck>, IEventBusUtilizer
 {
     Deck Deck = null!;
 
-    public void BindDeck(Deck deck)
+    public void Bind(Deck deck)
     {
         Deck = deck;
     }

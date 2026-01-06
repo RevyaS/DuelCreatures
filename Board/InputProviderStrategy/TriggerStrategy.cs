@@ -28,16 +28,21 @@ public class TriggerStrategy(DuelCreaturesBoard Board, VanguardPlayArea PlayArea
         return result;
     }
 
-    public Task<UnitCircle> SelectOwnUnitCircle()
+    public Task<UnitCircle> SelectOwnUnitCircle(UnitSelector selector)
     {
         if(GameContext.GameState is TriggerPowerState)
         {
-            return GameBoard.DoFuncWithIndicatorAsync("Select Circle to Provide Power", () => SelectOwnUnitCircle(UnitSelector.ALL_CIRCLES));
+            return GameBoard.DoFuncWithIndicatorAsync("Select Circle to Provide Power", () => SelectUnitCircle(selector));
         }
         if(GameContext.GameState is TriggerCriticalState)
         {
-            return GameBoard.DoFuncWithIndicatorAsync("Select Circle to Provide Critical", () => SelectOwnUnitCircle(UnitSelector.ALL_CIRCLES));
+            return GameBoard.DoFuncWithIndicatorAsync("Select Circle to Provide Critical", () => SelectUnitCircle(selector));
         }
+        if(GameContext.GameState is TriggerStandState)
+        {
+            return GameBoard.DoFuncWithIndicatorAsync("Select Circle to Stand", () => SelectUnitCircle(selector));
+        }
+
         throw new InvalidOperationException();
     }
 }
