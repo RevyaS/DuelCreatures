@@ -9,9 +9,12 @@ v.0003 Moar Cards
     BringerOfGoodLuckEpona,
     WeaponsDealerGovannon,
     YggdrasilMaidenElaine,
-    CovenantKnightRandolf
+    StarlightUnicorn,
+    CovenantKnightRandolf,
+    KnightOfConvictionBors
 - Implemented Stand Triggers
 - Implemented Hand Skills
+- Implemented Intercepting
 
 v.0002 Skills and Trigger selection
 - Updated for ArC v.0000004
