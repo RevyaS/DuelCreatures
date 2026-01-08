@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://cuqm30mdbu41k"]
+[gd_scene load_steps=21 format=3 uid="uid://cuqm30mdbu41k"]
 
 [ext_resource type="Script" uid="uid://d33oqm6uprjxl" path="res://Board/DuelCreaturesBoard.cs" id="1_s27tx"]
 [ext_resource type="PackedScene" uid="uid://dlahod6s4jx0i" path="res://Board/DropZoneComponent.tscn" id="2_a02pn"]
@@ -9,6 +9,24 @@
 [ext_resource type="PackedScene" uid="uid://d0hdjku8idjs" path="res://Board/DeckComponent.tscn" id="7_6kkbp"]
 [ext_resource type="PackedScene" uid="uid://c3xgtr5vl38o1" path="res://Board/TriggerZoneComponent.tscn" id="7_641ut"]
 [ext_resource type="PackedScene" uid="uid://bj6jrhfey56is" path="res://Board/Vfx/AttackIndicator.tscn" id="9_6kkbp"]
+
+[sub_resource type="Curve2D" id="Curve2D_tilg0"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 2, 182, 0, 0, 0, 0, 2, -25)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_jcetu"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 2, 182, 0, 0, 0, 0, 2, -25)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_xab0j"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 2, 182, 0, 0, 0, 0, 2, -25)
+}
+point_count = 2
 
 [sub_resource type="Curve2D" id="Curve2D_6kkbp"]
 _data = {
@@ -485,6 +503,8 @@ size_flags_vertical = 4
 unique_name_in_owner = true
 visible = false
 position = Vector2(96, 121)
+curve = SubResource("Curve2D_tilg0")
+Speed = 1.6
 TextureScale = 0.4
 
 [node name="Center" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles"]
@@ -510,6 +530,8 @@ Droppable = false
 unique_name_in_owner = true
 visible = false
 position = Vector2(96, 121)
+curve = SubResource("Curve2D_jcetu")
+Speed = 1.6
 TextureScale = 0.4
 
 [node name="Right" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles"]
@@ -530,6 +552,8 @@ Droppable = false
 unique_name_in_owner = true
 visible = false
 position = Vector2(96, 121)
+curve = SubResource("Curve2D_xab0j")
+Speed = 1.6
 TextureScale = 0.4
 
 [node name="Right" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer"]
@@ -634,6 +658,7 @@ offset_bottom = 40.0
 unique_name_in_owner = true
 visible = false
 curve = SubResource("Curve2D_6kkbp")
+Speed = 1.6
 TextureScale = 0.4
 
 [node name="PlayerLeftAttackCenterLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
@@ -641,6 +666,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2(96, 121)
 curve = SubResource("Curve2D_rkmjv")
+Speed = 1.6
 TextureScale = 0.4
 
 [node name="PlayerLeftAttackLeftLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
@@ -648,6 +674,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2(67, 118)
 curve = SubResource("Curve2D_i0c0l")
+Speed = 1.6
 TextureScale = 0.4
 
 [node name="PlayerCenterAttackRightLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
@@ -655,6 +682,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2(96, 121)
 curve = SubResource("Curve2D_y64o3")
+Speed = 1.6
 TextureScale = 0.4
 
 [node name="PlayerCenterAttackCenterLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
@@ -662,12 +690,14 @@ unique_name_in_owner = true
 visible = false
 position = Vector2(96, 121)
 curve = SubResource("Curve2D_641ut")
+Speed = 1.6
 TextureScale = 0.4
 
 [node name="PlayerCenterAttackLeftLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
 unique_name_in_owner = true
 visible = false
 position = Vector2(96, 121)
+Speed = 1.6
 TextureScale = 0.4
 
 [node name="PlayerRightAttackRightLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
@@ -675,6 +705,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2(96, 121)
 curve = SubResource("Curve2D_4phcx")
+Speed = 1.6
 TextureScale = 0.4
 
 [node name="PlayerRightAttackCenterLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
@@ -682,6 +713,7 @@ unique_name_in_owner = true
 visible = false
 position = Vector2(96, 121)
 curve = SubResource("Curve2D_qjlpy")
+Speed = 1.6
 TextureScale = 0.4
 
 [node name="PlayerRightAttackLeftLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
@@ -689,4 +721,5 @@ unique_name_in_owner = true
 visible = false
 position = Vector2(96, 121)
 curve = SubResource("Curve2D_wn2yo")
+Speed = 1.6
 TextureScale = 0.4
