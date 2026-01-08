@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://cuqm30mdbu41k"]
+[gd_scene load_steps=30 format=3 uid="uid://cuqm30mdbu41k"]
 
 [ext_resource type="Script" uid="uid://d33oqm6uprjxl" path="res://Board/DuelCreaturesBoard.cs" id="1_s27tx"]
 [ext_resource type="PackedScene" uid="uid://dlahod6s4jx0i" path="res://Board/DropZoneComponent.tscn" id="2_a02pn"]
@@ -36,7 +36,7 @@ point_count = 2
 
 [sub_resource type="Curve2D" id="Curve2D_rkmjv"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 260, 1443, 0, 0, 0, 0, 444, 473)
+"points": PackedVector2Array(0, 0, 0, 0, 231, 1440, 0, 0, 0, 0, 444, 473)
 }
 point_count = 2
 
@@ -73,6 +73,60 @@ point_count = 2
 [sub_resource type="Curve2D" id="Curve2D_wn2yo"]
 _data = {
 "points": PackedVector2Array(0, 0, 0, 0, 657, 1440, 0, 0, 0, 0, 657, 473)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_x01yn"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 657, 473, 0, 0, 0, 0, 657, 1440)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_y2dlb"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 657, 473, 0, 0, 0, 0, 444, 1440)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_fvkba"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 686, 476, 0, 0, 0, 0, 260, 1443)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_k5obr"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 444, 473, 0, 0, 0, 0, 657, 1440)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_opmtm"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 444, 473, 0, 0, 0, 0, 444, 1440)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_0vgfe"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 444, 473, 0, 0, 0, 0, 231, 1440)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_y4gjc"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 657, 1440, 0, 0, 0, 0, 231, 473)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_wofod"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 231, 473, 0, 0, 0, 0, 444, 1440)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_bjcxn"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 327, 594, 0, 0, 0, 0, 327, 1561)
 }
 point_count = 2
 
@@ -721,5 +775,76 @@ unique_name_in_owner = true
 visible = false
 position = Vector2(96, 121)
 curve = SubResource("Curve2D_wn2yo")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="OppLeftAttackRightLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(96, 121)
+curve = SubResource("Curve2D_x01yn")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="OppLeftAttackCenterLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(96, 121)
+curve = SubResource("Curve2D_y2dlb")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="OppLeftAttackLeftLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(67, 118)
+curve = SubResource("Curve2D_fvkba")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="OppCenterAttackRightLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(96, 121)
+curve = SubResource("Curve2D_k5obr")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="OppCenterAttackCenterLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(96, 121)
+curve = SubResource("Curve2D_opmtm")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="OppCenterAttackLeftLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(96, 121)
+curve = SubResource("Curve2D_0vgfe")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="OppRightAttackRightLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(96, 121)
+curve = SubResource("Curve2D_y4gjc")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="OppRightAttackCenterLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(96, 121)
+curve = SubResource("Curve2D_wofod")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="OppRightAttackLeftLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
+unique_name_in_owner = true
+visible = false
+curve = SubResource("Curve2D_bjcxn")
 Speed = 1.6
 TextureScale = 0.4
