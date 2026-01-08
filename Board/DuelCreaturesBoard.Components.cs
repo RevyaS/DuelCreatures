@@ -81,7 +81,7 @@ public partial class DuelCreaturesBoard : Control
         OppVanguard, ..OppFrontRowRearguards
     ];
 
-    Line2D PlayerLeftBoostLine = null!, PlayerCenterBoostLine = null!, PlayerRightBoostLine = null!,
+    AttackIndicator PlayerLeftBoostLine = null!, PlayerCenterBoostLine = null!, PlayerRightBoostLine = null!,
         PlayerLeftAttackRightLine = null!, PlayerLeftAttackCenterLine = null!, PlayerLeftAttackLeftLine = null!,
         PlayerCenterAttackRightLine = null!, PlayerCenterAttackCenterLine = null!, PlayerCenterAttackLeftLine = null!,
         PlayerRightAttackRightLine = null!, PlayerRightAttackCenterLine = null!, PlayerRightAttackLeftLine = null!;
@@ -133,18 +133,18 @@ public partial class DuelCreaturesBoard : Control
         PlayerTriggerZone = GetNode<TriggerZoneComponent>($"%{nameof(PlayerTriggerZone)}");
         OppTriggerZone = GetNode<TriggerZoneComponent>($"%{nameof(OppTriggerZone)}");
 
-        PlayerLeftBoostLine = GetNode<Line2D>($"%{nameof(PlayerLeftBoostLine)}");
-        PlayerCenterBoostLine = GetNode<Line2D>($"%{nameof(PlayerCenterBoostLine)}");
-        PlayerRightBoostLine = GetNode<Line2D>($"%{nameof(PlayerRightBoostLine)}");
+        PlayerLeftBoostLine = GetNode<AttackIndicator>($"%{nameof(PlayerLeftBoostLine)}");
+        PlayerCenterBoostLine = GetNode<AttackIndicator>($"%{nameof(PlayerCenterBoostLine)}");
+        PlayerRightBoostLine = GetNode<AttackIndicator>($"%{nameof(PlayerRightBoostLine)}");
 
-        PlayerLeftAttackRightLine = GetNode<Line2D>($"%{nameof(PlayerLeftAttackRightLine)}");
-        PlayerLeftAttackCenterLine = GetNode<Line2D>($"%{nameof(PlayerLeftAttackCenterLine)}");
-        PlayerLeftAttackLeftLine = GetNode<Line2D>($"%{nameof(PlayerLeftAttackLeftLine)}");
-        PlayerCenterAttackRightLine = GetNode<Line2D>($"%{nameof(PlayerCenterAttackRightLine)}");
-        PlayerCenterAttackCenterLine = GetNode<Line2D>($"%{nameof(PlayerCenterAttackCenterLine)}");
-        PlayerCenterAttackLeftLine = GetNode<Line2D>($"%{nameof(PlayerCenterAttackLeftLine)}");
-        PlayerRightAttackRightLine = GetNode<Line2D>($"%{nameof(PlayerRightAttackRightLine)}");
-        PlayerRightAttackCenterLine = GetNode<Line2D>($"%{nameof(PlayerRightAttackCenterLine)}");
-        PlayerRightAttackLeftLine = GetNode<Line2D>($"%{nameof(PlayerRightAttackLeftLine)}");
+        PlayerLeftAttackRightLine = GetNode<AttackIndicator>($"%{nameof(PlayerLeftAttackRightLine)}");
+        PlayerLeftAttackCenterLine = GetNode<AttackIndicator>($"%{nameof(PlayerLeftAttackCenterLine)}");
+        PlayerLeftAttackLeftLine = GetNode<AttackIndicator>($"%{nameof(PlayerLeftAttackLeftLine)}");
+        PlayerCenterAttackRightLine = GetNode<AttackIndicator>($"%{nameof(PlayerCenterAttackRightLine)}");
+        PlayerCenterAttackCenterLine = GetNode<AttackIndicator>($"%{nameof(PlayerCenterAttackCenterLine)}");
+        PlayerCenterAttackLeftLine = GetNode<AttackIndicator>($"%{nameof(PlayerCenterAttackLeftLine)}");
+        PlayerRightAttackRightLine = GetNode<AttackIndicator>($"%{nameof(PlayerRightAttackRightLine)}");
+        PlayerRightAttackCenterLine = GetNode<AttackIndicator>($"%{nameof(PlayerRightAttackCenterLine)}");
+        PlayerRightAttackLeftLine = GetNode<AttackIndicator>($"%{nameof(PlayerRightAttackLeftLine)}");
     }
 }

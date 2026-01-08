@@ -1,3 +1,6 @@
+v.0004 GUI Improvements
+- Created Attack Indicator
+
 v.0003 Moar Cards
 - Updated for ArC v.0000006
 - Created TriggerZone component

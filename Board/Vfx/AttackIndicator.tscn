@@ -1,0 +1,32 @@
+[gd_scene load_steps=6 format=3 uid="uid://bj6jrhfey56is"]
+
+[ext_resource type="Script" uid="uid://ocgdbox01txl" path="res://Board/Vfx/AttackIndicator.cs" id="1_2buhm"]
+[ext_resource type="Texture2D" uid="uid://bsja5donmofkj" path="res://Assets/Gameplay/battle_arrow02.png" id="1_pfdya"]
+[ext_resource type="Shader" uid="uid://d2q7rr6lt24g2" path="res://Board/Vfx/AttackIndicator.gdshader" id="2_somct"]
+
+[sub_resource type="Curve2D" id="Curve2D_pntsf"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -900)
+}
+point_count = 2
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_p36u6"]
+resource_local_to_scene = true
+shader = ExtResource("2_somct")
+shader_parameter/heightReductionTop = 0.0
+shader_parameter/heightReductionBottom = 0.0
+
+[node name="AttackIndicator" type="Path2D"]
+curve = SubResource("Curve2D_pntsf")
+script = ExtResource("1_2buhm")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="."]
+unique_name_in_owner = true
+rotation = -1.5707964
+
+[node name="Sprite2D" type="Sprite2D" parent="PathFollow2D"]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_p36u6")
+texture = ExtResource("1_pfdya")
+region_rect = Rect2(0, 0, 256, 500)
+region_filter_clip_enabled = true

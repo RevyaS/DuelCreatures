@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cuqm30mdbu41k"]
+[gd_scene load_steps=18 format=3 uid="uid://cuqm30mdbu41k"]
 
 [ext_resource type="Script" uid="uid://d33oqm6uprjxl" path="res://Board/DuelCreaturesBoard.cs" id="1_s27tx"]
 [ext_resource type="PackedScene" uid="uid://dlahod6s4jx0i" path="res://Board/DropZoneComponent.tscn" id="2_a02pn"]
@@ -8,6 +8,55 @@
 [ext_resource type="PackedScene" uid="uid://bevj84kr2566s" path="res://Board/BaseComponents/CardLineStatic.tscn" id="7_3hmgy"]
 [ext_resource type="PackedScene" uid="uid://d0hdjku8idjs" path="res://Board/DeckComponent.tscn" id="7_6kkbp"]
 [ext_resource type="PackedScene" uid="uid://c3xgtr5vl38o1" path="res://Board/TriggerZoneComponent.tscn" id="7_641ut"]
+[ext_resource type="PackedScene" uid="uid://bj6jrhfey56is" path="res://Board/Vfx/AttackIndicator.tscn" id="9_6kkbp"]
+
+[sub_resource type="Curve2D" id="Curve2D_6kkbp"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 327, 1561, 0, 0, 0, 0, 327, 594)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_rkmjv"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 260, 1443, 0, 0, 0, 0, 444, 473)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_i0c0l"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 260, 1443, 0, 0, 0, 0, 686, 476)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_y64o3"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 444, 1440, 0, 0, 0, 0, 231, 473)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_641ut"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 444, 1440, 0, 0, 0, 0, 444, 473)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_4phcx"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 657, 1440, 0, 0, 0, 0, 231, 473)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_qjlpy"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 657, 1440, 0, 0, 0, 0, 444, 473)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_wn2yo"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 657, 1440, 0, 0, 0, 0, 657, 473)
+}
+point_count = 2
 
 [node name="Board" type="Control"]
 layout_mode = 3
@@ -18,7 +67,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_s27tx")
 metadata/_edit_vertical_guides_ = [263.0, 193.0, 444.0, 637.0, 327.0, 753.0, 540.0]
-metadata/_edit_horizontal_guides_ = [1465.0, 691.0, 594.0, 1561.0]
+metadata/_edit_horizontal_guides_ = [1465.0, 691.0, 594.0, 1561.0, 1768.0]
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -432,19 +481,11 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="PlayerLeftBoostLine" type="Line2D" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone"]
+[node name="PlayerLeftBoostLine" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone" instance=ExtResource("9_6kkbp")]
 unique_name_in_owner = true
 visible = false
 position = Vector2(96, 121)
-points = PackedVector2Array(0, -25.060425, 0, 188)
-
-[node name="Heads" type="Line2D" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone/PlayerLeftBoostLine"]
-position = Vector2(0, -22)
-points = PackedVector2Array(0, 0, 28, 28)
-
-[node name="Heads2" type="Line2D" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone/PlayerLeftBoostLine"]
-position = Vector2(0, -22)
-points = PackedVector2Array(0, 0, -28, 26)
+TextureScale = 0.4
 
 [node name="Center" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles"]
 layout_mode = 2
@@ -465,19 +506,11 @@ unique_name_in_owner = true
 layout_mode = 2
 Droppable = false
 
-[node name="PlayerCenterBoostLine" type="Line2D" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center"]
+[node name="PlayerCenterBoostLine" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center" instance=ExtResource("9_6kkbp")]
 unique_name_in_owner = true
 visible = false
 position = Vector2(96, 121)
-points = PackedVector2Array(0, -25.060425, 0, 188)
-
-[node name="Heads" type="Line2D" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center/PlayerCenterBoostLine"]
-position = Vector2(0, -22)
-points = PackedVector2Array(0, 0, 28, 28)
-
-[node name="Heads2" type="Line2D" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center/PlayerCenterBoostLine"]
-position = Vector2(0, -22)
-points = PackedVector2Array(0, 0, -28, 26)
+TextureScale = 0.4
 
 [node name="Right" type="VBoxContainer" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles"]
 layout_mode = 2
@@ -493,19 +526,11 @@ unique_name_in_owner = true
 layout_mode = 2
 Droppable = false
 
-[node name="PlayerRightBoostLine" type="Line2D" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right"]
+[node name="PlayerRightBoostLine" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right" instance=ExtResource("9_6kkbp")]
 unique_name_in_owner = true
 visible = false
 position = Vector2(96, 121)
-points = PackedVector2Array(0, -25.060425, 0, 188)
-
-[node name="Heads" type="Line2D" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right/PlayerRightBoostLine"]
-position = Vector2(0, -22)
-points = PackedVector2Array(0, 0, 28, 28)
-
-[node name="Heads2" type="Line2D" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right/PlayerRightBoostLine"]
-position = Vector2(0, -22)
-points = PackedVector2Array(0, 0, -28, 26)
+TextureScale = 0.4
 
 [node name="Right" type="Control" parent="VBoxContainer/PlayerBoard/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(190, 0)
@@ -605,128 +630,63 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="PlayerLeftAttackRightLine" type="Line2D" parent="AttackLines"]
+[node name="PlayerLeftAttackRightLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
+unique_name_in_owner = true
+visible = false
+curve = SubResource("Curve2D_6kkbp")
+TextureScale = 0.4
+
+[node name="PlayerLeftAttackCenterLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
 unique_name_in_owner = true
 visible = false
 position = Vector2(96, 121)
-points = PackedVector2Array(231, 473, 231, 1440)
+curve = SubResource("Curve2D_rkmjv")
+TextureScale = 0.4
 
-[node name="Heads" type="Line2D" parent="AttackLines/PlayerLeftAttackRightLine"]
-position = Vector2(0, -22)
-points = PackedVector2Array(231, 498, 266, 545)
+[node name="PlayerLeftAttackLeftLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(67, 118)
+curve = SubResource("Curve2D_i0c0l")
+TextureScale = 0.4
 
-[node name="Heads2" type="Line2D" parent="AttackLines/PlayerLeftAttackRightLine"]
-position = Vector2(0, -22)
-points = PackedVector2Array(231, 498, 195, 545)
-
-[node name="PlayerLeftAttackCenterLine" type="Line2D" parent="AttackLines"]
+[node name="PlayerCenterAttackRightLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
 unique_name_in_owner = true
 visible = false
 position = Vector2(96, 121)
-points = PackedVector2Array(444, 473, 231, 1440)
+curve = SubResource("Curve2D_y64o3")
+TextureScale = 0.4
 
-[node name="Heads" type="Line2D" parent="AttackLines/PlayerLeftAttackCenterLine"]
-position = Vector2(0, -22)
-points = PackedVector2Array(444, 498, 463, 537)
-
-[node name="Heads2" type="Line2D" parent="AttackLines/PlayerLeftAttackCenterLine"]
-position = Vector2(0, -22)
-points = PackedVector2Array(444, 498, 407, 526)
-
-[node name="PlayerLeftAttackLeftLine" type="Line2D" parent="AttackLines"]
+[node name="PlayerCenterAttackCenterLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
 unique_name_in_owner = true
 visible = false
 position = Vector2(96, 121)
-points = PackedVector2Array(657, 473, 231, 1440)
+curve = SubResource("Curve2D_641ut")
+TextureScale = 0.4
 
-[node name="Heads" type="Line2D" parent="AttackLines/PlayerLeftAttackLeftLine"]
-position = Vector2(0, -22)
-points = PackedVector2Array(657, 499, 670, 528)
-
-[node name="Heads2" type="Line2D" parent="AttackLines/PlayerLeftAttackLeftLine"]
-position = Vector2(0, -22)
-points = PackedVector2Array(654, 498, 623, 507)
-
-[node name="PlayerCenterAttackRightLine" type="Line2D" parent="AttackLines"]
+[node name="PlayerCenterAttackLeftLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
 unique_name_in_owner = true
 visible = false
 position = Vector2(96, 121)
-points = PackedVector2Array(231, 473, 444, 1440)
+TextureScale = 0.4
 
-[node name="Heads" type="Line2D" parent="AttackLines/PlayerCenterAttackRightLine"]
-position = Vector2(0, -22)
-points = PackedVector2Array(233, 498, 261, 516)
-
-[node name="Heads2" type="Line2D" parent="AttackLines/PlayerCenterAttackRightLine"]
-position = Vector2(0, -22)
-points = PackedVector2Array(230, 499, 211, 524)
-
-[node name="PlayerCenterAttackCenterLine" type="Line2D" parent="AttackLines"]
+[node name="PlayerRightAttackRightLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
 unique_name_in_owner = true
 visible = false
 position = Vector2(96, 121)
-points = PackedVector2Array(444, 473, 444, 1440)
+curve = SubResource("Curve2D_4phcx")
+TextureScale = 0.4
 
-[node name="Heads" type="Line2D" parent="AttackLines/PlayerCenterAttackCenterLine"]
-position = Vector2(0, -22)
-points = PackedVector2Array(446, 499, 468, 516)
-
-[node name="Heads2" type="Line2D" parent="AttackLines/PlayerCenterAttackCenterLine"]
-position = Vector2(0, -22)
-points = PackedVector2Array(442, 499, 419, 516)
-
-[node name="PlayerCenterAttackLeftLine" type="Line2D" parent="AttackLines"]
+[node name="PlayerRightAttackCenterLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
 unique_name_in_owner = true
 visible = false
 position = Vector2(96, 121)
-points = PackedVector2Array(657, 473, 444, 1440)
+curve = SubResource("Curve2D_qjlpy")
+TextureScale = 0.4
 
-[node name="Heads" type="Line2D" parent="AttackLines/PlayerCenterAttackLeftLine"]
-position = Vector2(0, -22)
-points = PackedVector2Array(658, 500, 678, 523)
-
-[node name="Heads2" type="Line2D" parent="AttackLines/PlayerCenterAttackLeftLine"]
-position = Vector2(0, -22)
-points = PackedVector2Array(654, 499, 624, 510)
-
-[node name="PlayerRightAttackRightLine" type="Line2D" parent="AttackLines"]
+[node name="PlayerRightAttackLeftLine" parent="AttackLines" instance=ExtResource("9_6kkbp")]
 unique_name_in_owner = true
 visible = false
 position = Vector2(96, 121)
-points = PackedVector2Array(231, 473, 657, 1440)
-
-[node name="Heads" type="Line2D" parent="AttackLines/PlayerRightAttackRightLine"]
-position = Vector2(0, -22)
-points = PackedVector2Array(234, 498, 264, 505)
-
-[node name="Heads2" type="Line2D" parent="AttackLines/PlayerRightAttackRightLine"]
-position = Vector2(0, -22)
-points = PackedVector2Array(231, 500, 216, 521)
-
-[node name="PlayerRightAttackCenterLine" type="Line2D" parent="AttackLines"]
-unique_name_in_owner = true
-visible = false
-position = Vector2(96, 121)
-points = PackedVector2Array(444, 473, 657, 1440)
-
-[node name="Heads" type="Line2D" parent="AttackLines/PlayerRightAttackCenterLine"]
-position = Vector2(1, -23)
-points = PackedVector2Array(446, 500, 474, 516)
-
-[node name="Heads2" type="Line2D" parent="AttackLines/PlayerRightAttackCenterLine"]
-position = Vector2(-1, -22)
-points = PackedVector2Array(444, 500, 425, 522)
-
-[node name="PlayerRightAttackLeftLine" type="Line2D" parent="AttackLines"]
-unique_name_in_owner = true
-visible = false
-position = Vector2(96, 121)
-points = PackedVector2Array(657, 473, 657, 1440)
-
-[node name="Heads" type="Line2D" parent="AttackLines/PlayerRightAttackLeftLine"]
-position = Vector2(1, -23)
-points = PackedVector2Array(656, 500, 684, 520)
-
-[node name="Heads2" type="Line2D" parent="AttackLines/PlayerRightAttackLeftLine"]
-position = Vector2(-1, -22)
-points = PackedVector2Array(658, 499, 630, 518)
+curve = SubResource("Curve2D_wn2yo")
+TextureScale = 0.4
