@@ -12,6 +12,7 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
     DragArea dragArea = null!;
     HoverArea hoverArea = null!;
     Button SelectButton = null!;
+    TextureRect CircleTexture = null!, IconTexture = null!;
 
     public UnitCircle UnitCircle { get; private set; } = null!;
 
@@ -87,8 +88,47 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
         }
     }
 
+    private Texture2D _icon = null!; 
+    [Export]
+    public Texture2D Icon
+    {
+        get => _icon;
+        set
+        {
+            _icon = value;
+            Render();
+        }
+    }
+
+    private Texture2D _circleTexture = null!; 
+    [Export]
+    public Texture2D Circle
+    {
+        get => _circleTexture;
+        set
+        {
+            _circleTexture = value;
+            Render();
+        }
+    }
+
+    private Color _circleColor = Colors.White; 
+    [Export]
+    public Color CircleColor
+    {
+        get => _circleColor;
+        set
+        {
+            _circleColor = value;
+            Render();
+        }
+    }
+
     public override void _Ready()
     {
+        CircleTexture = GetNode<TextureRect>($"%{nameof(CircleTexture)}");
+        IconTexture = GetNode<TextureRect>($"%{nameof(IconTexture)}");
+
         cardRotationContainer = GetNode<CardRotationContainer>($"%{nameof(CardRotationContainer)}");
         cardRotationContainer.CardDragging += OnCardDragging;
         cardRotationContainer.CardDragCancelled += OnCardDragCancelled;
@@ -265,6 +305,9 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
         dragArea.Visible = ScreenDraggable;
         hoverArea.Visible = Hoverable;
         SelectButton.Visible = Selectable;
+        IconTexture.Texture = Icon;
+        CircleTexture.Modulate = CircleColor;
+        CircleTexture.Texture = Circle;
     }
 
     protected virtual void OnCardDropped(Card card)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://dm8sksf3b1gcw"]
+[gd_scene load_steps=8 format=3 uid="uid://dm8sksf3b1gcw"]
 
 [ext_resource type="Script" uid="uid://ccq70upyqje4r" path="res://Board/UnitCircleComponent.cs" id="1_c2ben"]
 [ext_resource type="Script" uid="uid://d0xdsvmtayatq" path="res://Components/CardRotationContainer.cs" id="2_o1h87"]
@@ -7,16 +7,30 @@
 [ext_resource type="Script" uid="uid://cjx77gr8u66sg" path="res://HUD/DragArea.cs" id="5_o1h87"]
 [ext_resource type="Script" uid="uid://bcw76jvvuy61w" path="res://HUD/HoverArea.cs" id="6_j7olg"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n51kq"]
+
 [node name="UnitCircleComponent" type="PanelContainer"]
 custom_minimum_size = Vector2(189, 189)
 offset_right = 4.0
 offset_bottom = 4.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_n51kq")
 script = ExtResource("1_c2ben")
-Droppable = true
 
 [node name="BG" type="ColorRect" parent="."]
+visible = false
 layout_mode = 2
 color = Color(0.6784314, 0.6784314, 0.6784314, 1)
+
+[node name="CircleTexture" type="TextureRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+expand_mode = 1
+
+[node name="IconTexture" type="TextureRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 3
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 custom_minimum_size = Vector2(189, 189)
@@ -34,11 +48,13 @@ script = ExtResource("2_o1h87")
 metadata/_custom_type_script = "uid://d0xdsvmtayatq"
 
 [node name="Card" parent="MarginContainer/CardRotationContainer" instance=ExtResource("3_j7olg")]
+visible = false
 layout_mode = 1
 scale = Vector2(0.45, 0.45)
 
 [node name="DropArea" type="Control" parent="."]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 script = ExtResource("4_5133l")
 metadata/_custom_type_script = "uid://dwrq2pnaqfw1s"
