@@ -213,6 +213,7 @@ public partial class DuelCreaturesBoard : Control
     {
         eventBus.PhaseChanged += OnPhaseChanged;
         eventBus.AttackEnded += OnAttackEnded;
+        eventBus.OnAttack += OnAttack;
         eventBus.CardAssignedToUnitCircle += OnCardAssignedToUnitCircle;
 
         PlayerHand.SetEventBus(eventBus);
@@ -242,6 +243,11 @@ public partial class DuelCreaturesBoard : Control
 
         PlayerTriggerZone.SetEventBus(eventBus);
         OppTriggerZone.SetEventBus(eventBus);
+    }
+
+    private async Task OnAttack(UnitCircle attacker, UnitCircle target)
+    {
+        ShowAttackLine(attacker, target);
     }
 
     private Task OnCardAssignedToUnitCircle(UnitCircle unitCircle)
@@ -392,6 +398,35 @@ public partial class DuelCreaturesBoard : Control
     public UnitCircleComponent GetPlayerUnitCircleComponent(UnitCircle circle)
     {
         return PlayerCircles.First(x => ReferenceEquals(x.UnitCircle, circle));
+    }
+    public UnitCircleComponent? GetPlayerUnitCircleComponentOrDefault(UnitCircle circle)
+    {
+        return PlayerCircles.FirstOrDefault(x => ReferenceEquals(x.UnitCircle, circle));
+    }
+
+    public UnitCircleComponent GetOppUnitCircleComponent(UnitCircle circle)
+    {
+        return OpponentCircles.First(x => ReferenceEquals(x.UnitCircle, circle));
+    }
+    public UnitCircleComponent? GetOppUnitCircleComponentOrDefault(UnitCircle circle)
+    {
+        return OpponentCircles.FirstOrDefault(x => ReferenceEquals(x.UnitCircle, circle));
+    }
+    public UnitCircleComponent GetUnitCircleComponent(UnitCircle circle)
+    {
+        var playerCircle = GetPlayerUnitCircleComponentOrDefault(circle);
+        if(playerCircle is not null)
+        {
+            return playerCircle;
+        }
+
+        var oppCircle = GetOppUnitCircleComponentOrDefault(circle);
+        if(oppCircle is not null)
+        {
+            return oppCircle;
+        }
+
+        throw new InvalidOperationException();
     }
 
     public bool IsBackRow(UnitCircleComponent unitCircle)

@@ -165,6 +165,11 @@ public partial class DuelCreaturesBoard : Control
         PlayerRightBoostLine.Hide();
     }
 
+    public void ShowAttackLine(UnitCircle attacker, UnitCircle target)
+    {
+        ShowAttackLine(GetUnitCircleComponent(attacker), GetUnitCircleComponent(target));
+    }
+
     public void ShowAttackLine(UnitCircleComponent attacker, UnitCircleComponent target)
     {
         if (ReferenceEquals(PlayerFrontLeft, attacker) && ReferenceEquals(OppFrontLeft, target)) PlayerLeftAttackLeftLine.Show();
@@ -176,6 +181,16 @@ public partial class DuelCreaturesBoard : Control
         if (ReferenceEquals(PlayerFrontRight, attacker) && ReferenceEquals(OppFrontLeft, target)) PlayerRightAttackLeftLine.Show();
         if (ReferenceEquals(PlayerFrontRight, attacker) && ReferenceEquals(OppVanguard, target)) PlayerRightAttackCenterLine.Show();
         if (ReferenceEquals(PlayerFrontRight, attacker) && ReferenceEquals(OppFrontRight, target)) PlayerRightAttackRightLine.Show();
+
+        if (ReferenceEquals(OppFrontLeft, attacker) && ReferenceEquals(PlayerFrontLeft, target)) OppLeftAttackLeftLine.Show();
+        if (ReferenceEquals(OppFrontLeft, attacker) && ReferenceEquals(PlayerVanguard, target)) OppLeftAttackCenterLine.Show();
+        if (ReferenceEquals(OppFrontLeft, attacker) && ReferenceEquals(PlayerFrontRight, target)) OppLeftAttackRightLine.Show();
+        if (ReferenceEquals(OppVanguard, attacker) && ReferenceEquals(PlayerFrontLeft, target)) OppCenterAttackLeftLine.Show();
+        if (ReferenceEquals(OppVanguard, attacker) && ReferenceEquals(PlayerVanguard, target)) OppCenterAttackCenterLine.Show();
+        if (ReferenceEquals(OppVanguard, attacker) && ReferenceEquals(PlayerFrontRight, target)) OppCenterAttackRightLine.Show();
+        if (ReferenceEquals(OppFrontRight, attacker) && ReferenceEquals(PlayerFrontLeft, target)) OppRightAttackLeftLine.Show();
+        if (ReferenceEquals(OppFrontRight, attacker) && ReferenceEquals(PlayerVanguard, target)) OppRightAttackCenterLine.Show();
+        if (ReferenceEquals(OppFrontRight, attacker) && ReferenceEquals(PlayerFrontRight, target)) OppRightAttackRightLine.Show();
     }
 
     public void HideAttackLines()
@@ -189,6 +204,16 @@ public partial class DuelCreaturesBoard : Control
         PlayerRightAttackLeftLine.Hide();
         PlayerRightAttackCenterLine.Hide();
         PlayerRightAttackRightLine.Hide();
+
+        OppLeftAttackLeftLine.Hide();
+        OppLeftAttackCenterLine.Hide();
+        OppLeftAttackRightLine.Hide();
+        OppCenterAttackLeftLine.Hide();
+        OppCenterAttackCenterLine.Hide();
+        OppCenterAttackRightLine.Hide();
+        OppRightAttackLeftLine.Hide();
+        OppRightAttackCenterLine.Hide();
+        OppRightAttackRightLine.Hide();
     }
 
     public void EnableSelectOppCircle(UnitSelector selector)

@@ -84,7 +84,10 @@ public partial class DuelCreaturesBoard : Control
     AttackIndicator PlayerLeftBoostLine = null!, PlayerCenterBoostLine = null!, PlayerRightBoostLine = null!,
         PlayerLeftAttackRightLine = null!, PlayerLeftAttackCenterLine = null!, PlayerLeftAttackLeftLine = null!,
         PlayerCenterAttackRightLine = null!, PlayerCenterAttackCenterLine = null!, PlayerCenterAttackLeftLine = null!,
-        PlayerRightAttackRightLine = null!, PlayerRightAttackCenterLine = null!, PlayerRightAttackLeftLine = null!;
+        PlayerRightAttackRightLine = null!, PlayerRightAttackCenterLine = null!, PlayerRightAttackLeftLine = null!,
+        OppLeftAttackRightLine = null!, OppLeftAttackCenterLine = null!, OppLeftAttackLeftLine = null!,
+        OppCenterAttackRightLine = null!, OppCenterAttackCenterLine = null!, OppCenterAttackLeftLine = null!,
+        OppRightAttackRightLine = null!, OppRightAttackCenterLine = null!, OppRightAttackLeftLine = null!;
 
     private void SetComponents()
     {
@@ -146,5 +149,15 @@ public partial class DuelCreaturesBoard : Control
         PlayerRightAttackRightLine = GetNode<AttackIndicator>($"%{nameof(PlayerRightAttackRightLine)}");
         PlayerRightAttackCenterLine = GetNode<AttackIndicator>($"%{nameof(PlayerRightAttackCenterLine)}");
         PlayerRightAttackLeftLine = GetNode<AttackIndicator>($"%{nameof(PlayerRightAttackLeftLine)}");
+
+        OppLeftAttackRightLine = GetNode<AttackIndicator>($"%{nameof(OppLeftAttackRightLine)}");
+        OppLeftAttackCenterLine = GetNode<AttackIndicator>($"%{nameof(OppLeftAttackCenterLine)}");
+        OppLeftAttackLeftLine = GetNode<AttackIndicator>($"%{nameof(OppLeftAttackLeftLine)}");
+        OppCenterAttackRightLine = GetNode<AttackIndicator>($"%{nameof(OppCenterAttackRightLine)}");
+        OppCenterAttackCenterLine = GetNode<AttackIndicator>($"%{nameof(OppCenterAttackCenterLine)}");
+        OppCenterAttackLeftLine = GetNode<AttackIndicator>($"%{nameof(OppCenterAttackLeftLine)}");
+        OppRightAttackRightLine = GetNode<AttackIndicator>($"%{nameof(OppRightAttackRightLine)}");
+        OppRightAttackCenterLine = GetNode<AttackIndicator>($"%{nameof(OppRightAttackCenterLine)}");
+        OppRightAttackLeftLine = GetNode<AttackIndicator>($"%{nameof(OppRightAttackLeftLine)}");
     }
 }
