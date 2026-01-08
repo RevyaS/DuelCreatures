@@ -140,7 +140,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
     {
         if(PlayArea.OwnsUnitCircle(circle))
         {
-            SetProviderStrategy(new GuardPhaseStrategy(board, board.GetPlayerUnitCircleComponent(circle)));
+            SetProviderStrategy(new GuardPhaseStrategy(board, board.GetPlayerUnitCircleComponent(circle), PlayArea, (GuardState)GameContext.GameState));
         }
         return Task.CompletedTask;
     }

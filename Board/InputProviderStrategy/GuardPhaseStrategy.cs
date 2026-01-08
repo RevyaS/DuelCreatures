@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Vanguard;
 
-public class GuardPhaseStrategy(DuelCreaturesBoard Board, UnitCircleComponent GuardedCircle) : IInputProviderStrategy, ISelectCardsFromHand, ISelectOwnUnitCircles
+public class GuardPhaseStrategy(DuelCreaturesBoard Board, UnitCircleComponent GuardedCircle, VanguardPlayArea PlayArea, GuardState GuardState) : IInputProviderStrategy, ISelectCardsFromHand, ISelectOwnUnitCircles
 {
     List<UnitCircle> intercepts = [];
     public async Task<List<CardBase>> SelectCardsFromHand(int minimum, int maximum)
@@ -16,7 +16,7 @@ public class GuardPhaseStrategy(DuelCreaturesBoard Board, UnitCircleComponent Gu
         Board.EnableGuardDropping();
 
         Board.PlayerHand.SetGuardMode(true);
-        Board.EnableSelectOwnUnitCircle(new(UnitCircleEnum.FRONT_REARGUARD, Skill: UnitSkillFilterEnum.INTERCEPT_ONLY));
+        Board.EnableSelectOwnUnitCircle(new(PlayArea.SelectCirclesExcept(UnitCircleEnum.FRONT_REARGUARD, GuardState.TargetCircle), Skill: UnitSkillFilterEnum.INTERCEPT_ONLY));
         intercepts = [];
 
         List<VanguardCard> selectedCards = [];
