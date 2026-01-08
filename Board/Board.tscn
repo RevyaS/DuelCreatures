@@ -766,7 +766,6 @@ expand_mode = 2
 
 [node name="GuardZone" parent="." instance=ExtResource("7_3hmgy")]
 unique_name_in_owner = true
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -782,6 +781,7 @@ grow_vertical = 2
 MaxCards = 6
 Separation = 0
 Alignment = 1
+ShowBackground = false
 
 [node name="PlayerHand" type="PanelContainer" parent="."]
 layout_mode = 1

@@ -9,6 +9,7 @@ public partial class CardLine : PanelContainer
     protected HBoxNodeContainer Container = null!;
     protected IChildManagerComponent ContainerNodeManager => Container;    
     protected DropArea DropArea = null!;
+    ColorRect BG = null!;
 
     public int CardCount => Container.GetChildCount<CardContainer>();
 
@@ -81,11 +82,23 @@ public partial class CardLine : PanelContainer
         } 
     }
 
+    private bool _showBackground = true;
+    [Export]
+    public bool ShowBackground  { 
+        get => _showBackground; 
+        set
+        {
+            _showBackground = value;
+            Render();
+        } 
+    }
+
     public override void _Ready()
     {
         Container = GetNode<HBoxNodeContainer>($"%{nameof(Container)}");
         DropArea = GetNode<DropArea>($"%{nameof(DropArea)}");
         DropArea.CardDropped += OnCardDropped;
+        BG = GetNode<ColorRect>($"%{nameof(BG)}");
 
         OnComponentsSet();
         Render();
@@ -117,6 +130,7 @@ public partial class CardLine : PanelContainer
         Container.AddThemeConstantOverride("separation", _separation);
         Container.Alignment = Alignment;
         DropArea.Visible = Droppable;
+        BG.Visible = ShowBackground;
 
         ContainerNodeManager.ApplyToChildren<CardContainer>(container =>
         {

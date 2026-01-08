@@ -18,7 +18,6 @@ public partial class CardLineStatic : CardLine
             Render();
         } 
     }
-
     protected override void OnComponentsSet()
     {
         EvaluateContainers(true);

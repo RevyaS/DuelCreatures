@@ -14,6 +14,7 @@ size_flags_vertical = 4
 script = ExtResource("1_rfqe6")
 
 [node name="BG" type="ColorRect" parent="."]
+unique_name_in_owner = true
 layout_mode = 2
 color = Color(0.6789437, 0.6789437, 0.6789437, 1)
 
@@ -147,6 +148,7 @@ scale = Vector2(0.45, 0.45)
 
 [node name="DropArea" type="Control" parent="."]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 script = ExtResource("5_kue8l")
 metadata/_custom_type_script = "uid://dwrq2pnaqfw1s"
