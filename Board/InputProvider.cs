@@ -47,7 +47,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
         CardInfoComponent = GetNode<CardInfo>($"%{nameof(CardInfoComponent)}");
 
-        board.PlayerDropZone.SetCardList(CardListComponent);
+        board.PlayerArea.DropZone.SetCardList(CardListComponent);
         board.OppDropZone.SetCardList(CardListComponent);
 
         Board.PlayerSoulPressed += OnPlayerSoulPressed;

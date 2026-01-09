@@ -21,7 +21,7 @@ public class GuardPhaseStrategy(DuelCreaturesBoard Board, UnitCircleComponent Gu
 
         List<VanguardCard> selectedCards = [];
         List<VanguardCard> selectedInterceptCards = [];
-        int basePower = Board.PlayerVanguard.UnitCircle.GetOverallPower();
+        int basePower = Board.PlayerArea.Vanguard.UnitCircle.GetOverallPower();
 
         bool returningCard = false;
         bool interceptCard = false;

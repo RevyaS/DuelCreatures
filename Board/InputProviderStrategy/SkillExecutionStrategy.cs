@@ -66,7 +66,7 @@ public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea P
         GameBoard.ShowLeftButton(TextConstants.Confirm);
         GameBoard.DisableLeftButton();
         List<VanguardCard> cards = new();
-        List<Card> options = GameBoard.PlayerDamageZone.GetFaceUpCards().ToList();
+        List<Card> options = GameBoard.PlayerArea.DamageZone.GetFaceUpCards().ToList();
 
         TaskCompletionSource completionSource = new();
 
@@ -88,14 +88,14 @@ public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea P
                 GameBoard.EnableLeftButton(cards.Count == amount);
             }
         };
-        GameBoard.PlayerDamageZone.CardLongPressed += cardLongPressedHandler;
+        GameBoard.PlayerArea.DamageZone.CardLongPressed += cardLongPressedHandler;
 
         Action leftButtonHandler = completionSource.SetResult;
         GameBoard.LeftButtonPressed += leftButtonHandler;
 
         await completionSource.Task;
 
-        GameBoard.PlayerDamageZone.CardLongPressed -= cardLongPressedHandler;
+        GameBoard.PlayerArea.DamageZone.CardLongPressed -= cardLongPressedHandler;
         GameBoard.LeftButtonPressed -= leftButtonHandler;
         GameBoard.EnableLeftButton();
         GameBoard.HideLeftButton();

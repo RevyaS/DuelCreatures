@@ -23,7 +23,7 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, CardInfo CardInfo, Game
     {
         TaskCompletionSource<IMainPhaseAction> completionSource = new();
         Board.EnablePlayerRearguardDragging();
-        Board.DisablePlayerRearguardDragging([Board.PlayerBackCenter]);
+        Board.PlayerArea.DisableRearguardDragging([Board.PlayerArea.BackCenter]);
         Board.EnablePlayerHandDragging();
         Board.ShowLeftButton(TextConstants.EndPhase);
         CardInfo.ShowActivateButton = true;

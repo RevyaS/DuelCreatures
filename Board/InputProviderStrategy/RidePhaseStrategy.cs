@@ -18,7 +18,7 @@ public class RidePhaseStrategy(DuelCreaturesBoard Board) : IInputProviderStrateg
         {
             TaskCompletionSource<Card?> completionSource = new();
             Action<Card> selectionHandler = completionSource.SetResult;
-            Board.PlayerVanguard.CardDropped += selectionHandler; 
+            Board.PlayerArea.Vanguard.CardDropped += selectionHandler; 
             Action endPhaseHandler = () =>
             {
                 completionSource.SetResult(null);
@@ -40,7 +40,7 @@ public class RidePhaseStrategy(DuelCreaturesBoard Board) : IInputProviderStrateg
 
             var result = await completionSource.Task;
 
-            Board.PlayerVanguard.CardDropped -= selectionHandler; 
+            Board.PlayerArea.Vanguard.CardDropped -= selectionHandler; 
             Board.LeftButtonPressed -= endPhaseHandler; 
             Board.PlayerHand.CardDragging -= handCardDraggingHandler;
             Board.PlayerHand.CardDragCancelled -= handCardDraggingCancelHandler;

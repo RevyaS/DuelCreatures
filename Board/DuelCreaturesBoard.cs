@@ -28,7 +28,7 @@ public partial class DuelCreaturesBoard : Control
         LeftButton.Pressed += OnLeftButtonPressed;
         SetComponents();
 
-        PlayerCircles.ForEach((circle) =>
+        PlayerArea.Circles.ForEach((circle) =>
         {
             circle.CardDropped += (card) => OnPlayerRearguardCardDropped(circle, card);
             circle.ScreenDragging += OnPlayerCircleScreenDragged;
@@ -45,7 +45,7 @@ public partial class DuelCreaturesBoard : Control
             circle.Deselected += OnOppUnitCircleDeselected;
         });
 
-        PlayerFrontRowCircles.ForEach((circle) =>
+        PlayerArea.FrontRowCircles.ForEach((circle) =>
         {
             circle.Hovering += OnPlayerCircleHovering;
             circle.HoverReleased += OnPlayerCircleHoverReleased;
@@ -57,16 +57,16 @@ public partial class DuelCreaturesBoard : Control
             circle.HoverReleased += OnOppCircleHoverReleased;
         });
 
-        PlayerRearguards.ForEach((rearguard) =>
+        PlayerArea.Rearguards.ForEach((rearguard) =>
         {
             rearguard.RearguardCardDragging += OnPlayerRearGuardDragged;
             rearguard.RearguardCardDragCancelled += OnPlayerRearGuardCardDragCancelled;
         });
 
-        PlayerVanguard.LongPressed += OnPlayerVanguardLongPressed;
+        PlayerArea.Vanguard.LongPressed += OnPlayerVanguardLongPressed;
         PlayerHand.CardPressed += OnHandCardPressed;
 
-        PlayerDamageZone.CardPressed += OnDamageZoneCardPressed;
+        PlayerArea.DamageZone.CardPressed += OnDamageZoneCardPressed;
         OppDamageZone.CardPressed += OnDamageZoneCardPressed;
     }
 
@@ -180,16 +180,12 @@ public partial class DuelCreaturesBoard : Control
         SetupEventBus(gameSession.EventBus);
 
         var game = gameSession.Game;
+
+        PlayerArea.Bind(game.Board.Player1Area);
+
         PlayerHand.Bind(game.Board.Player1Area.Hand);
         OppHand.Bind(game.Board.Player2Area.Hand);
-        PlayerVanguard.Bind(game.Board.Player1Area.Vanguard);
-        PlayerFrontLeft.Bind(game.Board.Player1Area.FrontLeft);
-        PlayerBackLeft.Bind(game.Board.Player1Area.BackLeft);
-        PlayerBackCenter.Bind(game.Board.Player1Area.BackCenter);
-        PlayerFrontRight.Bind(game.Board.Player1Area.FrontRight);
-        PlayerBackRight.Bind(game.Board.Player1Area.BackRight);
-
-        PlayerDeck.Bind(game.Board.Player1Area.Deck);
+     
         OppDeck.Bind(game.Board.Player2Area.Deck);
 
         OppVanguard.Bind(game.Board.Player2Area.Vanguard);
@@ -199,13 +195,10 @@ public partial class DuelCreaturesBoard : Control
         OppFrontRight.Bind(game.Board.Player2Area.FrontRight);
         OppBackRight.Bind(game.Board.Player2Area.BackRight);
 
-        PlayerDamageZone.Bind(game.Board.Player1Area.DamageZone);
         OppDamageZone.Bind(game.Board.Player2Area.DamageZone);
 
-        PlayerDropZone.Bind(game.Board.Player1Area.DropZone);
         OppDropZone.Bind(game.Board.Player2Area.DropZone);
 
-        PlayerTriggerZone.Bind(game.Board.Player1Area.TriggerZone);
         OppTriggerZone.Bind(game.Board.Player2Area.TriggerZone);
     }
 
@@ -216,16 +209,10 @@ public partial class DuelCreaturesBoard : Control
         eventBus.OnAttack += OnAttack;
         eventBus.CardAssignedToUnitCircle += OnCardAssignedToUnitCircle;
 
+        PlayerArea.SetEventBus(eventBus);
         PlayerHand.SetEventBus(eventBus);
         OppHand.SetEventBus(eventBus);
-        PlayerVanguard.SetEventBus(eventBus);
-        PlayerFrontLeft.SetEventBus(eventBus);
-        PlayerBackLeft.SetEventBus(eventBus);
-        PlayerBackCenter.SetEventBus(eventBus);
-        PlayerFrontRight.SetEventBus(eventBus);
-        PlayerBackRight.SetEventBus(eventBus);
 
-        PlayerDeck.SetEventBus(eventBus);
         OppDeck.SetEventBus(eventBus);
 
         OppVanguard.SetEventBus(eventBus);
@@ -235,13 +222,10 @@ public partial class DuelCreaturesBoard : Control
         OppFrontRight.SetEventBus(eventBus);
         OppBackRight.SetEventBus(eventBus);
 
-        PlayerDamageZone.SetEventBus(eventBus);
         OppDamageZone.SetEventBus(eventBus);
 
-        PlayerDropZone.SetEventBus(eventBus);
         OppDropZone.SetEventBus(eventBus);
 
-        PlayerTriggerZone.SetEventBus(eventBus);
         OppTriggerZone.SetEventBus(eventBus);
     }
 
@@ -258,7 +242,7 @@ public partial class DuelCreaturesBoard : Control
 
     private void RecalculateStats()
     {
-        PlayerCircles.ForEach(circle => circle.UpdateStats());
+        PlayerArea.RecalculateStats();
     }
 
     private Task OnAttackEnded()
@@ -276,7 +260,7 @@ public partial class DuelCreaturesBoard : Control
         {
             case MulliganPhase:
                 OppPhaseIndicator.Text = mulliganPhase;
-                PlayerPhaseIndicator.Text = mulliganPhase;
+                PlayerArea.SetIndicatorText(mulliganPhase);
                 break;
             case RidePhase:
                 SetPhaseIndicatorToCurrentPlayer(ridePhase);
@@ -314,7 +298,7 @@ public partial class DuelCreaturesBoard : Control
     private void RenderPhaseIndicators()
     {
         OppPhaseIndicator.Text = oppPhaseIndicatorStack.Count == 0 ? string.Empty : oppPhaseIndicatorStack.Peek();
-        PlayerPhaseIndicator.Text = playerPhaseIndicatorStack.Count == 0 ? string.Empty : playerPhaseIndicatorStack.Peek();
+        PlayerArea.SetIndicatorText(playerPhaseIndicatorStack.Count == 0 ? string.Empty : playerPhaseIndicatorStack.Peek());
     }
 
     public async Task<T> DoFuncWithIndicatorAsync<T>(string indicator, Func<Task<T>> action)
@@ -339,6 +323,8 @@ public partial class DuelCreaturesBoard : Control
 
     public void Reset()
     {
+        PlayerArea.Reset();
+
         // Disable Extra fields
         foreach(var extrafield in AllExtraFields)
         {
@@ -360,48 +346,40 @@ public partial class DuelCreaturesBoard : Control
             hand.ClearCards();
         }
 
-        PlayerDropZone.ClearCard();
         OppDropZone.ClearCard();
 
         GuardZone.ClearCards();
 
         // Set Vanguards
-        PlayerVanguard.SetCard((VanguardCard)player1.Vanguard);
+        PlayerArea.Vanguard.SetCard((VanguardCard)player1.Vanguard);
         OppVanguard.SetCard((VanguardCard)player2.Vanguard);
 
-        PlayerTriggerZone.ClearCard();
         OppTriggerZone.ClearCard();
     }
 
 
     public UnitCircleComponent GetPlayerOppositeCircle(UnitCircleComponent circle)
     {
-        if(ReferenceEquals(PlayerFrontLeft, circle)) return PlayerBackLeft;
-        if(ReferenceEquals(PlayerBackLeft, circle)) return PlayerFrontLeft;
-        if(ReferenceEquals(PlayerFrontRight, circle)) return PlayerBackRight;
-        if(ReferenceEquals(PlayerBackRight, circle)) return PlayerFrontRight;
-        if(ReferenceEquals(PlayerVanguard, circle)) return PlayerBackCenter;
-        if(ReferenceEquals(PlayerBackCenter, circle)) return PlayerVanguard;
-        throw new InvalidOperationException();
+        return PlayerArea.GetOppositeCircle(circle);
     }
 
     public bool IsCardInPlayerUnitCircle(VanguardCard card)
     {
-        return PlayerCircles.Any(x => ReferenceEquals(x.CurrentCard?.CurrentCard, card));
+        return PlayerArea.IsCardInUnitCircle(card);
     }
 
     public UnitCircleComponent GetPlayerUnitCircleComponent(VanguardCard card)
     {
-        return PlayerCircles.First(x => ReferenceEquals(x.CurrentCard?.CurrentCard, card));
+        return PlayerArea.GetUnitCircleComponent(card);
     }
 
     public UnitCircleComponent GetPlayerUnitCircleComponent(UnitCircle circle)
     {
-        return PlayerCircles.First(x => ReferenceEquals(x.UnitCircle, circle));
+        return PlayerArea.GetUnitCircleComponent(circle);
     }
     public UnitCircleComponent? GetPlayerUnitCircleComponentOrDefault(UnitCircle circle)
     {
-        return PlayerCircles.FirstOrDefault(x => ReferenceEquals(x.UnitCircle, circle));
+        return PlayerArea.GetUnitCircleComponentOrDefault(circle);
     }
 
     public UnitCircleComponent GetOppUnitCircleComponent(UnitCircle circle)
@@ -431,12 +409,12 @@ public partial class DuelCreaturesBoard : Control
 
     public bool IsBackRow(UnitCircleComponent unitCircle)
     {
-        return PlayerBackRowRearguards.Contains(unitCircle, ReferenceEqualityComparer.Instance);
+        return PlayerArea.IsBackRow(unitCircle);
     }
 
     public bool IsFrontRow(UnitCircleComponent unitCircle)
     {
-        return PlayerFrontRowCircles.Contains(unitCircle, ReferenceEqualityComparer.Instance);
+        return PlayerArea.IsFrontRow(unitCircle);
     }
 
     public event Action<Card>? HandCardPressed;

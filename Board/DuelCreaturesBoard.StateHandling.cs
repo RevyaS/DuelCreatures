@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using ArC.CardGames.Predefined.Vanguard;
@@ -33,16 +32,16 @@ public partial class DuelCreaturesBoard : Control
 
     public void EnablePlayerVanguardDropping()
     {
-        PlayerVanguard.Droppable = true;
+        PlayerArea.Vanguard.Droppable = true;
     }
     public void DisablePlayerVanguardDropping()
     {
-        PlayerVanguard.Droppable = false;
+        PlayerArea.Vanguard.Droppable = false;
     }
 
     public void EnablePlayerRearguardDropping()
     {
-        EnablePlayerRearguardDropping(PlayerRearguards);
+        EnablePlayerRearguardDropping(PlayerArea.Rearguards);
     }
 
     public void EnablePlayerRearguardDropping(List<UnitCircleComponent> rearguards)
@@ -52,29 +51,16 @@ public partial class DuelCreaturesBoard : Control
 
     public void DisablePlayerRearguardDropping()
     {
-        PlayerFrontLeft.Droppable = false;
-        PlayerBackLeft.Droppable = false;
-        PlayerBackCenter.Droppable = false;
-        PlayerFrontRight.Droppable = false;
-        PlayerBackRight.Droppable = false;
+        PlayerArea.DisableRearguardDropping();
     }
 
     public void EnablePlayerRearguardDragging()
     {
-        PlayerFrontLeft.Draggable = true;
-        PlayerBackLeft.Draggable = true;
-        PlayerBackCenter.Draggable = true;
-        PlayerFrontRight.Draggable = true;
-        PlayerBackRight.Draggable = true;
+        PlayerArea.EnableRearguardDropping();
     }
     public void DisablePlayerRearguardDragging()
     {
-        DisablePlayerRearguardDragging(PlayerRearguards);
-    }
-
-    public void DisablePlayerRearguardDragging(List<UnitCircleComponent> unitCircleComponents)
-    {
-        unitCircleComponents.ForEach(rg => rg.Draggable = false);
+        PlayerArea.DisableRearguardDragging(PlayerArea.Rearguards);
     }
 
     public void EnablePlayerHandDragging()
@@ -115,31 +101,21 @@ public partial class DuelCreaturesBoard : Control
 
     public void EnablePlayerUnitCircleScreenDragging()
     {
-        PlayerVanguard.ScreenDraggable = true;
-        PlayerFrontLeft.ScreenDraggable = true;
-        PlayerBackLeft.ScreenDraggable = true;
-        PlayerBackCenter.ScreenDraggable = true;
-        PlayerFrontRight.ScreenDraggable = true;
-        PlayerBackRight.ScreenDraggable = true;
+        PlayerArea.EnableUnitCircleScreenDragging();
     }
     public void DisablePlayerUnitCircleScreenDragging()
     {
-        PlayerVanguard.ScreenDraggable = false;
-        PlayerFrontLeft.ScreenDraggable = false;
-        PlayerBackLeft.ScreenDraggable = false;
-        PlayerBackCenter.ScreenDraggable = false;
-        PlayerFrontRight.ScreenDraggable = false;
-        PlayerBackRight.ScreenDraggable = false;
+        PlayerArea.DisableUnitCircleScreenDragging();
     }
 
     public void EnablePlayerFrontRowUnitCircleHovering()
     {
-        PlayerFrontRowCircles.ForEach((circle) => circle.Hoverable = true);
+        PlayerArea.EnableFrontRowUnitCircleHovering();
     }
 
     public void DisablePlayerFrontRowUnitCircleHovering()
     {
-        PlayerFrontRowCircles.ForEach((circle) => circle.ScreenDraggable = false);
+        PlayerArea.DisableFrontRowUnitCircleHovering();
     }
 
     public void EnableOppFrontRowUnitCircleHovering()
@@ -153,16 +129,12 @@ public partial class DuelCreaturesBoard : Control
     }
     public void ShowBoostLine(UnitCircleComponent unitCircleComponent)
     {
-        if (ReferenceEquals(PlayerFrontLeft, unitCircleComponent)) PlayerLeftBoostLine.Show();
-        if (ReferenceEquals(PlayerVanguard, unitCircleComponent)) PlayerCenterBoostLine.Show();
-        if (ReferenceEquals(PlayerFrontRight, unitCircleComponent)) PlayerRightBoostLine.Show();
+        PlayerArea.ShowBoostLine(unitCircleComponent);
     }
 
     public void HideBoostLines()
     {
-        PlayerLeftBoostLine.Hide();
-        PlayerCenterBoostLine.Hide();
-        PlayerRightBoostLine.Hide();
+        PlayerArea.HideBoostLines();
     }
 
     public void ShowAttackLine(UnitCircle attacker, UnitCircle target)
@@ -172,25 +144,25 @@ public partial class DuelCreaturesBoard : Control
 
     public void ShowAttackLine(UnitCircleComponent attacker, UnitCircleComponent target)
     {
-        if (ReferenceEquals(PlayerFrontLeft, attacker) && ReferenceEquals(OppFrontLeft, target)) PlayerLeftAttackLeftLine.Show();
-        if (ReferenceEquals(PlayerFrontLeft, attacker) && ReferenceEquals(OppVanguard, target)) PlayerLeftAttackCenterLine.Show();
-        if (ReferenceEquals(PlayerFrontLeft, attacker) && ReferenceEquals(OppFrontRight, target)) PlayerLeftAttackRightLine.Show();
-        if (ReferenceEquals(PlayerVanguard, attacker) && ReferenceEquals(OppFrontLeft, target)) PlayerCenterAttackLeftLine.Show();
-        if (ReferenceEquals(PlayerVanguard, attacker) && ReferenceEquals(OppVanguard, target)) PlayerCenterAttackCenterLine.Show();
-        if (ReferenceEquals(PlayerVanguard, attacker) && ReferenceEquals(OppFrontRight, target)) PlayerCenterAttackRightLine.Show();
-        if (ReferenceEquals(PlayerFrontRight, attacker) && ReferenceEquals(OppFrontLeft, target)) PlayerRightAttackLeftLine.Show();
-        if (ReferenceEquals(PlayerFrontRight, attacker) && ReferenceEquals(OppVanguard, target)) PlayerRightAttackCenterLine.Show();
-        if (ReferenceEquals(PlayerFrontRight, attacker) && ReferenceEquals(OppFrontRight, target)) PlayerRightAttackRightLine.Show();
+        if (ReferenceEquals(PlayerArea.FrontLeft, attacker) && ReferenceEquals(OppFrontLeft, target)) PlayerLeftAttackLeftLine.Show();
+        if (ReferenceEquals(PlayerArea.FrontLeft, attacker) && ReferenceEquals(OppVanguard, target)) PlayerLeftAttackCenterLine.Show();
+        if (ReferenceEquals(PlayerArea.FrontLeft, attacker) && ReferenceEquals(OppFrontRight, target)) PlayerLeftAttackRightLine.Show();
+        if (ReferenceEquals(PlayerArea.Vanguard, attacker) && ReferenceEquals(OppFrontLeft, target)) PlayerCenterAttackLeftLine.Show();
+        if (ReferenceEquals(PlayerArea.Vanguard, attacker) && ReferenceEquals(OppVanguard, target)) PlayerCenterAttackCenterLine.Show();
+        if (ReferenceEquals(PlayerArea.Vanguard, attacker) && ReferenceEquals(OppFrontRight, target)) PlayerCenterAttackRightLine.Show();
+        if (ReferenceEquals(PlayerArea.FrontRight, attacker) && ReferenceEquals(OppFrontLeft, target)) PlayerRightAttackLeftLine.Show();
+        if (ReferenceEquals(PlayerArea.FrontRight, attacker) && ReferenceEquals(OppVanguard, target)) PlayerRightAttackCenterLine.Show();
+        if (ReferenceEquals(PlayerArea.FrontRight, attacker) && ReferenceEquals(OppFrontRight, target)) PlayerRightAttackRightLine.Show();
 
-        if (ReferenceEquals(OppFrontLeft, attacker) && ReferenceEquals(PlayerFrontLeft, target)) OppLeftAttackLeftLine.Show();
-        if (ReferenceEquals(OppFrontLeft, attacker) && ReferenceEquals(PlayerVanguard, target)) OppLeftAttackCenterLine.Show();
-        if (ReferenceEquals(OppFrontLeft, attacker) && ReferenceEquals(PlayerFrontRight, target)) OppLeftAttackRightLine.Show();
-        if (ReferenceEquals(OppVanguard, attacker) && ReferenceEquals(PlayerFrontLeft, target)) OppCenterAttackLeftLine.Show();
-        if (ReferenceEquals(OppVanguard, attacker) && ReferenceEquals(PlayerVanguard, target)) OppCenterAttackCenterLine.Show();
-        if (ReferenceEquals(OppVanguard, attacker) && ReferenceEquals(PlayerFrontRight, target)) OppCenterAttackRightLine.Show();
-        if (ReferenceEquals(OppFrontRight, attacker) && ReferenceEquals(PlayerFrontLeft, target)) OppRightAttackLeftLine.Show();
-        if (ReferenceEquals(OppFrontRight, attacker) && ReferenceEquals(PlayerVanguard, target)) OppRightAttackCenterLine.Show();
-        if (ReferenceEquals(OppFrontRight, attacker) && ReferenceEquals(PlayerFrontRight, target)) OppRightAttackRightLine.Show();
+        if (ReferenceEquals(OppFrontLeft, attacker) && ReferenceEquals(PlayerArea.FrontLeft, target)) OppLeftAttackLeftLine.Show();
+        if (ReferenceEquals(OppFrontLeft, attacker) && ReferenceEquals(PlayerArea.Vanguard, target)) OppLeftAttackCenterLine.Show();
+        if (ReferenceEquals(OppFrontLeft, attacker) && ReferenceEquals(PlayerArea.FrontRight, target)) OppLeftAttackRightLine.Show();
+        if (ReferenceEquals(OppVanguard, attacker) && ReferenceEquals(PlayerArea.FrontLeft, target)) OppCenterAttackLeftLine.Show();
+        if (ReferenceEquals(OppVanguard, attacker) && ReferenceEquals(PlayerArea.Vanguard, target)) OppCenterAttackCenterLine.Show();
+        if (ReferenceEquals(OppVanguard, attacker) && ReferenceEquals(PlayerArea.FrontRight, target)) OppCenterAttackRightLine.Show();
+        if (ReferenceEquals(OppFrontRight, attacker) && ReferenceEquals(PlayerArea.FrontLeft, target)) OppRightAttackLeftLine.Show();
+        if (ReferenceEquals(OppFrontRight, attacker) && ReferenceEquals(PlayerArea.Vanguard, target)) OppRightAttackCenterLine.Show();
+        if (ReferenceEquals(OppFrontRight, attacker) && ReferenceEquals(PlayerArea.FrontRight, target)) OppRightAttackRightLine.Show();
     }
 
     public void HideAttackLines()
@@ -230,16 +202,11 @@ public partial class DuelCreaturesBoard : Control
 
     public void EnableSelectOwnUnitCircle(UnitSelector selector)
     {
-        var selectedCircles = _gameSession.Game.Board.Player1Area.GetUnitCirclesBySelector(selector);
-        selectedCircles.Select(circle => PlayerCircles.First(pc => ReferenceEquals(pc.UnitCircle, circle))).ToList()
-            .ForEach((circle) => circle.Selectable = true);
+        PlayerArea.EnableSelectUnitCircle(selector);
     }
 
     public void DisableSelectOwnUnitCircle()
     {
-        PlayerCircles.ForEach((circle) => { 
-            circle.ResetSelection();
-            circle.Selectable = false;
-        });
+        PlayerArea.DisableSelectUnitCircle();
     }
 }
