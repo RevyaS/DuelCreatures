@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using ArC.CardGames.Predefined.Vanguard;
 using Godot;
 
+[Tool]
 public partial class TriggerZoneComponent : HorizontalCardArea, ICardSpaceBindable<TriggerZone>, IEventBusUtilizer
 {
     [Export]

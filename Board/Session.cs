@@ -75,9 +75,9 @@ public partial class Session : Control
         Board.ApplySession(session);
 
         #region DEBUG
-        // session.Game.Board.Player1Area.Vanguard.Assign(RoyalPaladin.KnightOfTheHarpTristan);
-        // session.Game.Board.Player1Area.FrontLeft.Assign(RoyalPaladin.KnightOfTheHarpTristan);
-        // session.Game.Board.Player1Area.FrontRight.Assign(RoyalPaladin.KnightOfTheHarpTristan);
+        // session.Game.Board.Player1Area.Vanguard.Assign(RoyalPaladin.KnightOfRoseMorgana);
+        // session.Game.Board.Player1Area.FrontLeft.Assign(RoyalPaladin.KnightOfRoseMorgana);
+        // session.Game.Board.Player1Area.FrontRight.Assign(RoyalPaladin.KnightOfRoseMorgana);
         // session.Game.Board.Player2Area.Vanguard.Assign(RoyalPaladin.KnightOfTheHarpTristan);
         // session.Game.Board.Player2Area.FrontLeft.Assign(RoyalPaladin.KnightOfTheHarpTristan);
         // session.Game.Board.Player2Area.FrontRight.Assign(RoyalPaladin.KnightOfTheHarpTristan);

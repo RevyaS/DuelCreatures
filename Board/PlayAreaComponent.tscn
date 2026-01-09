@@ -56,9 +56,24 @@ theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 40
 theme_override_constants/margin_right = 20
 
-[node name="PhaseIndicator" type="Label" parent="MarginContainer2"]
-unique_name_in_owner = true
+[node name="Control" type="Control" parent="MarginContainer2"]
 layout_mode = 2
+
+[node name="PhaseIndicator" type="Label" parent="MarginContainer2/Control"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -520.0
+offset_top = -22.5
+offset_right = 520.0
+offset_bottom = 22.5
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(520, 22.5)
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 32
 text = "No Phase"
@@ -287,9 +302,25 @@ layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 20
 
-[node name="Deck" parent="MarginContainer/HBoxContainer/Right/VBoxContainer/Control/Verticals" instance=ExtResource("9_q3sux")]
-unique_name_in_owner = true
+[node name="Control" type="Control" parent="MarginContainer/HBoxContainer/Right/VBoxContainer/Control/Verticals"]
+custom_minimum_size = Vector2(139, 193)
 layout_mode = 2
+
+[node name="Deck" parent="MarginContainer/HBoxContainer/Right/VBoxContainer/Control/Verticals/Control" instance=ExtResource("9_q3sux")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -69.5
+offset_top = -96.5
+offset_right = 69.5
+offset_bottom = 96.5
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(69.5, 96.5)
 ShowCount = true
 
 [node name="DropZone" parent="MarginContainer/HBoxContainer/Right/VBoxContainer/Control/Verticals" instance=ExtResource("10_pmg6b")]

@@ -4,6 +4,7 @@ using System.Linq;
 using ArC.CardGames.Predefined.Vanguard;
 using Godot;
 
+[Tool]
 public partial class PlayAreaComponent : Control, IPlayAreaBindable, IEventBusUtilizer
 {
     Label PhaseIndicator = null!;
@@ -47,6 +48,27 @@ public partial class PlayAreaComponent : Control, IPlayAreaBindable, IEventBusUt
 
     VanguardPlayArea PlayArea = null!;
 
+    private bool _flippedAppearance = false;
+    [Export]
+    public bool FlippedAppearance
+    {
+        get => _flippedAppearance;
+        set
+        {
+            _flippedAppearance = value;
+            Render();
+        }
+    }
+
+    private void Render()
+    {
+        if(!IsInsideTree()) return;
+        Circles.ForEach(x => x.FlippedAppearance = FlippedAppearance);
+        AllExtraFields.ForEach(x => x.FlippedAppearance = FlippedAppearance);
+        PhaseIndicator.RotationDegrees = FlippedAppearance ? 180 : 0;
+        Deck.RotationDegrees = FlippedAppearance ? 180 : 0;
+    }
+
     public override void _Ready()
     {
         PhaseIndicator = GetNode<Label>($"%{nameof(PhaseIndicator)}");
@@ -72,6 +94,8 @@ public partial class PlayAreaComponent : Control, IPlayAreaBindable, IEventBusUt
         LeftBoostLine = GetNode<AttackIndicator>($"%{nameof(LeftBoostLine)}");
         CenterBoostLine = GetNode<AttackIndicator>($"%{nameof(CenterBoostLine)}");
         RightBoostLine = GetNode<AttackIndicator>($"%{nameof(RightBoostLine)}");
+
+        Render();
     }
 
     public void Reset()

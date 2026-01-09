@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Vanguard;
+using Godot;
 
 public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea PlayArea, CardList CardList, SelectFromCardList SelectFromCardList) : BaseStrategy(Board), ISelectOpponentCircle, IQueryActivateSkill, ISelectCardsFromDamageZone, ISelectCardsFromSoul, ISelectCardFromDeck, ISelectCardFromHand, ISelectCardsFromHand, ISelectOwnUnitCircle
 {
@@ -27,8 +28,10 @@ public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea P
         };
         CardList.OnClosed += onClosedHandler;
 
+        GD.Print("Waiting for skill activation input...");
         var result = await completionSource.Task;
 
+        GD.Print("Skill activation input received: ", result);
         CardList.CardDroppedOutside -= cardDroppedHandler;
         CardList.OnClosed -= onClosedHandler;
         CardList.BaseDroppable = false;

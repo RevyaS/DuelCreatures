@@ -124,6 +124,18 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
         }
     }
 
+    private bool _flippedAppearance = false;
+    [Export]
+    public bool FlippedAppearance
+    {
+        get => _flippedAppearance;
+        set
+        {
+            _flippedAppearance = value;
+            Render();
+        }
+    }
+
     public override void _Ready()
     {
         CircleTexture = GetNode<TextureRect>($"%{nameof(CircleTexture)}");
@@ -308,6 +320,8 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
         IconTexture.Texture = Icon;
         CircleTexture.Modulate = CircleColor;
         CircleTexture.Texture = Circle;
+        IconTexture.FlipV = FlippedAppearance;
+        IconTexture.FlipH = FlippedAppearance;
     }
 
     protected virtual void OnCardDropped(Card card)

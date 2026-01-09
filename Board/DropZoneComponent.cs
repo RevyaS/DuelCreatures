@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Vanguard;
+using Godot;
 
+[Tool]
 public partial class DropZoneComponent: CardVerticalStack, ICardSpaceBindable<DropZone>, IEventBusUtilizer, ISetupCardList
 {
     DropZone DropZone = null!;

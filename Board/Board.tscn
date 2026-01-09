@@ -1,18 +1,9 @@
-[gd_scene load_steps=34 format=3 uid="uid://cuqm30mdbu41k"]
+[gd_scene load_steps=25 format=3 uid="uid://cuqm30mdbu41k"]
 
 [ext_resource type="Script" uid="uid://d33oqm6uprjxl" path="res://Board/DuelCreaturesBoard.cs" id="1_s27tx"]
-[ext_resource type="PackedScene" uid="uid://dlahod6s4jx0i" path="res://Board/DropZoneComponent.tscn" id="2_a02pn"]
-[ext_resource type="PackedScene" uid="uid://dm8sksf3b1gcw" path="res://Board/UnitCircleComponent.tscn" id="3_iu5jy"]
-[ext_resource type="PackedScene" uid="uid://cvy4hb158pate" path="res://Board/DamageZoneComponent.tscn" id="4_iu5jy"]
 [ext_resource type="PackedScene" uid="uid://b7fl8cs62jr2v" path="res://Board/Hand.tscn" id="5_iu5jy"]
 [ext_resource type="PackedScene" uid="uid://bevj84kr2566s" path="res://Board/BaseComponents/CardLineStatic.tscn" id="7_3hmgy"]
-[ext_resource type="PackedScene" uid="uid://d0hdjku8idjs" path="res://Board/DeckComponent.tscn" id="7_6kkbp"]
-[ext_resource type="PackedScene" uid="uid://c3xgtr5vl38o1" path="res://Board/TriggerZoneComponent.tscn" id="7_641ut"]
-[ext_resource type="Texture2D" uid="uid://73eh8fb8nl0h" path="res://Assets/Board/fight_field@rgcircle_icon.png" id="7_i0c0l"]
-[ext_resource type="Texture2D" uid="uid://bmabqsdncxul4" path="res://Assets/Board/fight_field@rgcircle_base.png" id="8_rkmjv"]
 [ext_resource type="PackedScene" uid="uid://bj6jrhfey56is" path="res://Board/Vfx/AttackIndicator.tscn" id="9_6kkbp"]
-[ext_resource type="Texture2D" uid="uid://mgordbbihbn4" path="res://Assets/Board/fight_field@vgcircle_icon.png" id="10_y64o3"]
-[ext_resource type="Texture2D" uid="uid://d1xm5kqnlel0l" path="res://Assets/Board/fight_field@vgcircle_base.png" id="11_4phcx"]
 [ext_resource type="PackedScene" uid="uid://db3qwryrhb1rq" path="res://Board/PlayAreaComponent.tscn" id="11_wn2yo"]
 [ext_resource type="Texture2D" uid="uid://o1c8663jut1n" path="res://Assets/Board/fight_field@guardiancircle_base.png" id="13_4phcx"]
 [ext_resource type="Texture2D" uid="uid://dtsomuwryke03" path="res://Assets/Board/icon_GC.png" id="14_qjlpy"]
@@ -143,178 +134,11 @@ theme_override_constants/separation = 0
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="OppBoard" type="Control" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 860)
+[node name="Control" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(1080, 860)
 layout_mode = 2
 
-[node name="BG" type="ColorRect" parent="VBoxContainer/OppBoard"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.17641911, 0.17641908, 0.17641908, 1)
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/OppBoard"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 200
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/OppBoard/MarginContainer"]
-layout_mode = 2
-
-[node name="Left" type="Control" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(190, 0)
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -96.5
-offset_top = -282.5
-offset_right = 96.5
-offset_bottom = 282.5
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 20
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/VBoxContainer"]
-layout_mode = 2
-
-[node name="Control" type="VBoxContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/VBoxContainer/MarginContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_constants/separation = 20
-
-[node name="OppDropZone" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/VBoxContainer/MarginContainer/Control" instance=ExtResource("2_a02pn")]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="OppDeck" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/VBoxContainer/MarginContainer/Control" instance=ExtResource("7_6kkbp")]
-unique_name_in_owner = true
-layout_mode = 2
-ShowCount = true
-
-[node name="OppTriggerZone" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Left/VBoxContainer" instance=ExtResource("7_641ut")]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(193, 139)
-layout_mode = 2
-RemoveCardDelayTime = 0.4
-
-[node name="Center" type="Control" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center"]
-layout_mode = 1
-anchors_preset = 14
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_top = -224.0
-offset_bottom = 224.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 33
-theme_override_constants/margin_top = 19
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer"]
-layout_mode = 2
-
-[node name="Circles" type="HBoxContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 20
-
-[node name="LeftZone" type="VBoxContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles"]
-layout_mode = 2
-theme_override_constants/separation = 20
-
-[node name="OppBackRight" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone" instance=ExtResource("3_iu5jy")]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 0)
-layout_mode = 2
-Icon = ExtResource("7_i0c0l")
-Circle = ExtResource("8_rkmjv")
-CircleColor = Color(1, 0.9826667, 0.48000002, 1)
-
-[node name="OppFrontRight" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone" instance=ExtResource("3_iu5jy")]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 0)
-layout_mode = 2
-Icon = ExtResource("7_i0c0l")
-Circle = ExtResource("8_rkmjv")
-CircleColor = Color(1, 0.9826667, 0.48000002, 1)
-
-[node name="Control" type="Control" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/LeftZone/OppFrontRight"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
-[node name="Center" type="VBoxContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles"]
-layout_mode = 2
-theme_override_constants/separation = 20
-
-[node name="OppBackCenter" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center" instance=ExtResource("3_iu5jy")]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 0)
-layout_mode = 2
-Icon = ExtResource("7_i0c0l")
-Circle = ExtResource("8_rkmjv")
-CircleColor = Color(1, 0.9826667, 0.48000002, 1)
-
-[node name="OppVanguard" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center" instance=ExtResource("3_iu5jy")]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 0)
-layout_mode = 2
-Icon = ExtResource("10_y64o3")
-Circle = ExtResource("11_4phcx")
-CircleColor = Color(1, 0.33999997, 0.33999997, 1)
-
-[node name="Control" type="Control" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Center/OppVanguard"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
-[node name="Right" type="VBoxContainer" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles"]
-layout_mode = 2
-theme_override_constants/separation = 20
-
-[node name="OppBackLeft" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right" instance=ExtResource("3_iu5jy")]
-unique_name_in_owner = true
-layout_mode = 2
-Icon = ExtResource("7_i0c0l")
-Circle = ExtResource("8_rkmjv")
-CircleColor = Color(1, 0.9826667, 0.48000002, 1)
-
-[node name="OppFrontLeft" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right" instance=ExtResource("3_iu5jy")]
-unique_name_in_owner = true
-layout_mode = 2
-Icon = ExtResource("7_i0c0l")
-Circle = ExtResource("8_rkmjv")
-CircleColor = Color(1, 0.9826667, 0.48000002, 1)
-
-[node name="Control" type="Control" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Center/MarginContainer/VBoxContainer/Circles/Right/OppFrontLeft"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
-[node name="Right" type="Control" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(220, 0)
-layout_mode = 2
-
-[node name="OppDamageZone" parent="VBoxContainer/OppBoard/MarginContainer/HBoxContainer/Right" instance=ExtResource("4_iu5jy")]
+[node name="OppArea" parent="VBoxContainer/Control" instance=ExtResource("11_wn2yo")]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
@@ -322,74 +146,15 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -282.0
-offset_top = -96.5
-offset_right = 282.0
-offset_bottom = 96.5
+offset_left = -540.0
+offset_top = -430.0
+offset_right = 540.0
+offset_bottom = 430.0
 grow_horizontal = 2
 grow_vertical = 2
-rotation = -1.5707964
-pivot_offset = Vector2(282, 96.5)
-MaxCards = 6
-Separation = -50
-
-[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/OppBoard"]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -213.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 40
-
-[node name="ExtraCircles" type="HBoxContainer" parent="VBoxContainer/OppBoard/MarginContainer2"]
-layout_mode = 2
-
-[node name="Left" type="HBoxContainer" parent="VBoxContainer/OppBoard/MarginContainer2/ExtraCircles"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 10
-
-[node name="OppExtraRight1" parent="VBoxContainer/OppBoard/MarginContainer2/ExtraCircles/Left" instance=ExtResource("3_iu5jy")]
-unique_name_in_owner = true
-layout_mode = 2
-Icon = ExtResource("7_i0c0l")
-Circle = ExtResource("8_rkmjv")
-
-[node name="OppExtraRight2" parent="VBoxContainer/OppBoard/MarginContainer2/ExtraCircles/Left" instance=ExtResource("3_iu5jy")]
-unique_name_in_owner = true
-layout_mode = 2
-Icon = ExtResource("7_i0c0l")
-Circle = ExtResource("8_rkmjv")
-
-[node name="Right" type="HBoxContainer" parent="VBoxContainer/OppBoard/MarginContainer2/ExtraCircles"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="OppExtraLeft2" parent="VBoxContainer/OppBoard/MarginContainer2/ExtraCircles/Right" instance=ExtResource("3_iu5jy")]
-unique_name_in_owner = true
-layout_mode = 2
-Icon = ExtResource("7_i0c0l")
-Circle = ExtResource("8_rkmjv")
-
-[node name="OppExtraLeft1" parent="VBoxContainer/OppBoard/MarginContainer2/ExtraCircles/Right" instance=ExtResource("3_iu5jy")]
-unique_name_in_owner = true
-layout_mode = 2
-Icon = ExtResource("7_i0c0l")
-Circle = ExtResource("8_rkmjv")
-
-[node name="OppPhaseIndicator" type="Label" parent="VBoxContainer/OppBoard/MarginContainer2"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 32
-text = "No Phase"
-horizontal_alignment = 1
+rotation = 3.1415927
+pivot_offset = Vector2(540, 430)
+FlippedAppearance = true
 
 [node name="CenterArea" type="Control" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 120)

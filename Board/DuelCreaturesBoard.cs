@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using ArC.CardGames;
 using ArC.CardGames.Predefined.Common;
@@ -38,7 +37,7 @@ public partial class DuelCreaturesBoard : Control
             circle.Deselected += OnPlayerCircleDeselected;
         });
 
-        OpponentCircles.ForEach((circle) =>
+        OppArea.Circles.ForEach((circle) =>
         {
             circle.CardPressed += OnUnitCircleCardPressed;
             circle.Selected += OnOppUnitCircleSelected;
@@ -51,7 +50,7 @@ public partial class DuelCreaturesBoard : Control
             circle.HoverReleased += OnPlayerCircleHoverReleased;
         });
 
-        OppFrontRowCircles.ForEach((circle) =>
+        OppArea.FrontRowCircles.ForEach((circle) =>
         {
             circle.Hovering += OnOppCircleHovering;
             circle.HoverReleased += OnOppCircleHoverReleased;
@@ -67,7 +66,7 @@ public partial class DuelCreaturesBoard : Control
         PlayerHand.CardPressed += OnHandCardPressed;
 
         PlayerArea.DamageZone.CardPressed += OnDamageZoneCardPressed;
-        OppDamageZone.CardPressed += OnDamageZoneCardPressed;
+        OppArea.DamageZone.CardPressed += OnDamageZoneCardPressed;
     }
 
     private void OnPlayerCircleDeselected(UnitCircleComponent component)
@@ -182,24 +181,10 @@ public partial class DuelCreaturesBoard : Control
         var game = gameSession.Game;
 
         PlayerArea.Bind(game.Board.Player1Area);
+        OppArea.Bind(game.Board.Player2Area);
 
         PlayerHand.Bind(game.Board.Player1Area.Hand);
         OppHand.Bind(game.Board.Player2Area.Hand);
-     
-        OppDeck.Bind(game.Board.Player2Area.Deck);
-
-        OppVanguard.Bind(game.Board.Player2Area.Vanguard);
-        OppFrontLeft.Bind(game.Board.Player2Area.FrontLeft);
-        OppBackLeft.Bind(game.Board.Player2Area.BackLeft);
-        OppBackCenter.Bind(game.Board.Player2Area.BackCenter);
-        OppFrontRight.Bind(game.Board.Player2Area.FrontRight);
-        OppBackRight.Bind(game.Board.Player2Area.BackRight);
-
-        OppDamageZone.Bind(game.Board.Player2Area.DamageZone);
-
-        OppDropZone.Bind(game.Board.Player2Area.DropZone);
-
-        OppTriggerZone.Bind(game.Board.Player2Area.TriggerZone);
     }
 
     private void SetupEventBus(VanguardEventBus eventBus)
@@ -210,23 +195,10 @@ public partial class DuelCreaturesBoard : Control
         eventBus.CardAssignedToUnitCircle += OnCardAssignedToUnitCircle;
 
         PlayerArea.SetEventBus(eventBus);
+        OppArea.SetEventBus(eventBus);
+
         PlayerHand.SetEventBus(eventBus);
         OppHand.SetEventBus(eventBus);
-
-        OppDeck.SetEventBus(eventBus);
-
-        OppVanguard.SetEventBus(eventBus);
-        OppFrontLeft.SetEventBus(eventBus);
-        OppBackLeft.SetEventBus(eventBus);
-        OppBackCenter.SetEventBus(eventBus);
-        OppFrontRight.SetEventBus(eventBus);
-        OppBackRight.SetEventBus(eventBus);
-
-        OppDamageZone.SetEventBus(eventBus);
-
-        OppDropZone.SetEventBus(eventBus);
-
-        OppTriggerZone.SetEventBus(eventBus);
     }
 
     private async Task OnAttack(UnitCircle attacker, UnitCircle target)
@@ -259,7 +231,7 @@ public partial class DuelCreaturesBoard : Control
         switch(phase)
         {
             case MulliganPhase:
-                OppPhaseIndicator.Text = mulliganPhase;
+                OppArea.SetIndicatorText(mulliganPhase);
                 PlayerArea.SetIndicatorText(mulliganPhase);
                 break;
             case RidePhase:
@@ -297,7 +269,7 @@ public partial class DuelCreaturesBoard : Control
 
     private void RenderPhaseIndicators()
     {
-        OppPhaseIndicator.Text = oppPhaseIndicatorStack.Count == 0 ? string.Empty : oppPhaseIndicatorStack.Peek();
+        OppArea.SetIndicatorText(oppPhaseIndicatorStack.Count == 0 ? string.Empty : oppPhaseIndicatorStack.Peek());
         PlayerArea.SetIndicatorText(playerPhaseIndicatorStack.Count == 0 ? string.Empty : playerPhaseIndicatorStack.Peek());
     }
 
@@ -324,37 +296,18 @@ public partial class DuelCreaturesBoard : Control
     public void Reset()
     {
         PlayerArea.Reset();
-
-        // Disable Extra fields
-        foreach(var extrafield in AllExtraFields)
-        {
-            extrafield.Hide();
-        }
-
-        foreach(var field in AllFields)
-        {
-            field.ClearCard();
-        }
-
-        foreach(var damageZone in AllDamageZones)
-        {
-            damageZone.ClearCards();
-        }
+        OppArea.Reset();
 
         foreach(var hand in AllHands)
         {
             hand.ClearCards();
         }
 
-        OppDropZone.ClearCard();
-
         GuardZone.ClearCards();
 
         // Set Vanguards
         PlayerArea.Vanguard.SetCard((VanguardCard)player1.Vanguard);
-        OppVanguard.SetCard((VanguardCard)player2.Vanguard);
-
-        OppTriggerZone.ClearCard();
+        OppArea.Vanguard.SetCard((VanguardCard)player2.Vanguard);
     }
 
 
@@ -382,13 +335,9 @@ public partial class DuelCreaturesBoard : Control
         return PlayerArea.GetUnitCircleComponentOrDefault(circle);
     }
 
-    public UnitCircleComponent GetOppUnitCircleComponent(UnitCircle circle)
-    {
-        return OpponentCircles.First(x => ReferenceEquals(x.UnitCircle, circle));
-    }
     public UnitCircleComponent? GetOppUnitCircleComponentOrDefault(UnitCircle circle)
     {
-        return OpponentCircles.FirstOrDefault(x => ReferenceEquals(x.UnitCircle, circle));
+        return OppArea.GetUnitCircleComponentOrDefault(circle);
     }
     public UnitCircleComponent GetUnitCircleComponent(UnitCircle circle)
     {

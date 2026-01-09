@@ -120,6 +120,7 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
         GameBoard.PlayerCircleScreenDragReleased -= dragReleaseHandler;
         GameBoard.OppCircleHoverReleased -= oppHoverReleaseHandler;
 
+        GD.Print("Attack phase action selected: ", result.GetType().Name);
         return result;
     }
 
