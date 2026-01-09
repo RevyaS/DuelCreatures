@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://cuqm30mdbu41k"]
+[gd_scene load_steps=36 format=3 uid="uid://cuqm30mdbu41k"]
 
 [ext_resource type="Script" uid="uid://d33oqm6uprjxl" path="res://Board/DuelCreaturesBoard.cs" id="1_s27tx"]
 [ext_resource type="PackedScene" uid="uid://dlahod6s4jx0i" path="res://Board/DropZoneComponent.tscn" id="2_a02pn"]
@@ -14,6 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://mgordbbihbn4" path="res://Assets/Board/fight_field@vgcircle_icon.png" id="10_y64o3"]
 [ext_resource type="Texture2D" uid="uid://d1xm5kqnlel0l" path="res://Assets/Board/fight_field@vgcircle_base.png" id="11_4phcx"]
 [ext_resource type="Texture2D" uid="uid://o1c8663jut1n" path="res://Assets/Board/fight_field@guardiancircle_base.png" id="13_4phcx"]
+[ext_resource type="Texture2D" uid="uid://dtsomuwryke03" path="res://Assets/Board/icon_GC.png" id="14_qjlpy"]
 
 [sub_resource type="Curve2D" id="Curve2D_tilg0"]
 _data = {
@@ -746,6 +747,21 @@ size_flags_vertical = 3
 texture = ExtResource("13_4phcx")
 expand_mode = 2
 
+[node name="Icon" type="TextureRect" parent="Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 32.0
+offset_bottom = 32.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("14_qjlpy")
+
 [node name="GuardCircle2" type="TextureRect" parent="Control"]
 custom_minimum_size = Vector2(700, 150)
 layout_mode = 1
@@ -778,8 +794,7 @@ offset_right = 279.5
 offset_bottom = 96.5
 grow_horizontal = 2
 grow_vertical = 2
-MaxCards = 6
-Separation = 0
+CardScale = 0.4
 Alignment = 1
 ShowBackground = false
 
