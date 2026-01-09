@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://871mkmeodd5s"]
+
+[ext_resource type="Script" uid="uid://f3mab4h2j1q7" path="res://Components/BackgroundRect.cs" id="1_nk26q"]
+
+[node name="Back" type="MarginContainer"]
+script = ExtResource("1_nk26q")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 1
+color = Color(0.073364116, 0.3143422, 0.5716949, 1)
+
+[node name="TextureRect" type="TextureRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+expand_mode = 1

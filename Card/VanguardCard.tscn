@@ -1,13 +1,24 @@
-[gd_scene load_steps=5 format=3 uid="uid://b4ogsmqyb7phr"]
+[gd_scene load_steps=6 format=3 uid="uid://b4ogsmqyb7phr"]
 
 [ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Card/Card.tscn" id="1_uvjtr"]
 [ext_resource type="Script" uid="uid://bo34fh6nunsrb" path="res://Card/VanguardCardComponent.cs" id="2_kdthh"]
 [ext_resource type="Texture2D" uid="uid://pa8cxhggayht" path="res://Assets/Triggers/Draw.png" id="3_kdthh"]
+[ext_resource type="Texture2D" uid="uid://dogdadwk36p54" path="res://Assets/CardSleeves/sl610100001.png" id="3_ts3wb"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kdthh"]
 
 [node name="Card" instance=ExtResource("1_uvjtr")]
 script = ExtResource("2_kdthh")
+
+[node name="MarginContainer" parent="Border" index="0"]
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="Back" parent="Border/MarginContainer" index="0"]
+Texture = ExtResource("3_ts3wb")
+TextureMode = true
 
 [node name="TriggerPanel" type="PanelContainer" parent="Border" index="4"]
 unique_name_in_owner = true

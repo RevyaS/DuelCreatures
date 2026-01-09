@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://b3rw6rjka7eon"]
+[gd_scene load_steps=3 format=3 uid="uid://b3rw6rjka7eon"]
 
 [ext_resource type="Script" uid="uid://d3joytsthq224" path="res://Card/Card.cs" id="1_gasdx"]
+[ext_resource type="PackedScene" uid="uid://871mkmeodd5s" path="res://Components/BackgroundRect.tscn" id="2_6ma3f"]
 
 [node name="Card" type="Control"]
 custom_minimum_size = Vector2(300, 420)
@@ -41,11 +42,9 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="Back" type="ColorRect" parent="Border/MarginContainer"]
+[node name="Back" parent="Border/MarginContainer" instance=ExtResource("2_6ma3f")]
 unique_name_in_owner = true
 layout_mode = 2
-mouse_filter = 1
-color = Color(0.073364116, 0.3143422, 0.5716949, 1)
 
 [node name="Front" type="TextureRect" parent="Border/MarginContainer"]
 unique_name_in_owner = true
