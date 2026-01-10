@@ -3,6 +3,7 @@ v.0004 GUI Improvements
 - Added Opp Attack Indicators
 - Shows where Opp is attacking
 - Used UnitCircle textures and Guard Zone texture
+- Fixed hand width overflow (sort of, may need improvements later)
 
 v.0003 Moar Cards
 - Updated for ArC v.0000006
