@@ -21,6 +21,7 @@ public class RidePhaseStrategy(DuelCreaturesBoard Board) : IInputProviderStrateg
             Board.PlayerArea.Vanguard.CardDropped += selectionHandler; 
             Action endPhaseHandler = () =>
             {
+                Board.PlayPhaseChangeSfx();
                 completionSource.SetResult(null);
             };
             Board.LeftButtonPressed += endPhaseHandler;

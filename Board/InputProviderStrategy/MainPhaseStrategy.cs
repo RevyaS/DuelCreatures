@@ -53,6 +53,7 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, CardInfo CardInfo, Game
 
         Action endPhaseHandler = () => {
             var selected = actions.FirstOf<EndMainPhase>();
+            Board.PlayPhaseChangeSfx();
             completionSource.SetResult(selected);
         };
         Board.LeftButtonPressed +=  endPhaseHandler;

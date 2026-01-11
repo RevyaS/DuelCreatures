@@ -20,4 +20,9 @@ public partial class DuelCreaturesBoard : Control
         SfxPlayer.Stream = ResourceLoader.Load<AudioStream>("res://Assets/Sfx/target.ogg");
         SfxPlayer.Play();
     }
+    public void PlayPhaseChangeSfx()
+    {
+        SfxPlayer.Stream = ResourceLoader.Load<AudioStream>("res://Assets/Sfx/phase_change.ogg");
+        SfxPlayer.Play();
+    }
 }

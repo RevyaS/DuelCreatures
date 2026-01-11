@@ -27,6 +27,7 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
         
         Action endPhaseHandler = () =>
         {
+            Board.PlayPhaseChangeSfx();
             completionSource.SetResult(actions.FirstOf<EndAttackPhase>());
         };
 

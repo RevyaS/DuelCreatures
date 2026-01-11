@@ -8,6 +8,7 @@ v.0004 GUI Improvements
 - Added Target Indicator when selecting which unit to attack 
 - Target indicators will only apply for valid targets
 - PlayArea can now load Sleeves (Deck and Damage Zone)
+- Added phase change Sfx
 
 v.0003 Moar Cards
 - Updated for ArC v.0000006
