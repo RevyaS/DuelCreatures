@@ -12,6 +12,7 @@ public partial class CardContainer : Control
     public Card? CurrentCard => currentCard;
     public bool HasCard => currentCard is not null && currentCard.CurrentCard is not null;
     protected bool UpdateSizeOnCardPlacedment = true;
+    private SleeveInfo sleeveInfo = null!;
 
     private float _cardScale = SizeConstants.CardScaleFactor;
     [Export(PropertyHint.Range, "0.0, 1.0")]
@@ -52,6 +53,7 @@ public partial class CardContainer : Control
 
     public void SetSleeveInfo(SleeveInfo sleeveInfo)
     {
+        this.sleeveInfo = sleeveInfo;
         if(currentCard is not null)
         {
             currentCard.SleeveInfo = sleeveInfo;
@@ -94,6 +96,7 @@ public partial class CardContainer : Control
         card.CardDragCancelled += OnCardDragCancelled;
         card.CardPressed += OnCardPressed;
         card.CardLongPressed += OnCardLongPressed;
+        card.SleeveInfo = sleeveInfo;
         AddChild(card);
     }
 
@@ -112,6 +115,7 @@ public partial class CardContainer : Control
         if(CurrentCard is null) return;
 
         CurrentCard.Scale = new Vector2(CardScale, CardScale);
+        CurrentCard.SleeveInfo = sleeveInfo;
 
         if(UpdateSizeOnCardPlacedment)
         {

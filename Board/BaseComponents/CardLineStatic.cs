@@ -58,7 +58,8 @@ public partial class CardLineStatic : CardLine
             for (int i = 0; i < missingContainers; i++)
             {
                 // Create missing container
-                Container.AddChild(new CardContainer());
+                var newContainer = new CardContainer();
+                Container.AddChild(newContainer);
             }
         } 
         else if(MaxCards < currentCards)

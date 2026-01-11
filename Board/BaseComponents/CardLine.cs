@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DuelCreatures.Data;
 using Godot;
 
 [Tool]
@@ -93,6 +94,18 @@ public partial class CardLine : PanelContainer
         } 
     }
 
+    private SleeveInfo _sleeveInfo = null!;
+    [Export]
+    public SleeveInfo SleeveInfo
+    {
+        get => _sleeveInfo;
+        set
+        {
+            _sleeveInfo = value;
+            Render();
+        }
+    }
+
     public override void _Ready()
     {
         Container = GetNode<HBoxNodeContainer>($"%{nameof(Container)}");
@@ -136,6 +149,7 @@ public partial class CardLine : PanelContainer
         {
             container.CardScale = CardScale;
             container.Draggable = Draggable;
+            container.SetSleeveInfo(SleeveInfo);
         });
 
         if(_shrinks)

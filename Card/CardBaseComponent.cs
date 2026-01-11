@@ -71,7 +71,7 @@ public abstract partial class CardBaseComponent : Control
 
     protected void Render()
     {
-        if(!IsInsideTree()) return;
+        if(!IsNodeReady()) return;
         RenderCore();
     }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ArC.CardGames.Predefined.Vanguard;
+using DuelCreatures.Data;
 using Godot;
 
 [Tool]
@@ -60,6 +61,18 @@ public partial class PlayAreaComponent : Control, IPlayAreaBindable, IEventBusUt
         }
     }
 
+    private SleeveInfo _sleeveInfo = null!;
+    [Export]
+    public SleeveInfo SleeveInfo
+    {
+        get => _sleeveInfo;
+        set
+        {
+            _sleeveInfo = value;
+            Render();
+        }
+    }
+
     private void Render()
     {
         if(!IsInsideTree()) return;
@@ -67,6 +80,8 @@ public partial class PlayAreaComponent : Control, IPlayAreaBindable, IEventBusUt
         AllExtraFields.ForEach(x => x.FlippedAppearance = FlippedAppearance);
         PhaseIndicator.RotationDegrees = FlippedAppearance ? 180 : 0;
         Deck.RotationDegrees = FlippedAppearance ? 180 : 0;
+        Deck.SleeveInfo = SleeveInfo;
+        DamageZone.SleeveInfo = SleeveInfo;
     }
 
     public override void _Ready()

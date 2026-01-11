@@ -75,6 +75,8 @@ public partial class Session : Control
         Board.ApplySession(session);
 
         #region DEBUG
+        // session.Game.Board.Player1Area.Vanguard.Assign(RoyalPaladin.LittleSageMarron);
+
         // session.Game.Board.Player1Area.Vanguard.Assign(RoyalPaladin.KnightOfRoseMorgana);
         // session.Game.Board.Player1Area.FrontLeft.Assign(RoyalPaladin.KnightOfRoseMorgana);
         // session.Game.Board.Player1Area.FrontRight.Assign(RoyalPaladin.KnightOfRoseMorgana);
