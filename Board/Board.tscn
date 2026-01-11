@@ -443,3 +443,6 @@ visible = false
 curve = SubResource("Curve2D_bjcxn")
 Speed = 1.6
 TextureScale = 0.4
+
+[node name="SfxPlayer" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true

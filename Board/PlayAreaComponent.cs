@@ -46,7 +46,7 @@ public partial class PlayAreaComponent : Control, IPlayAreaBindable, IEventBusUt
         ..Rearguards, Vanguard
     ];
 
-    VanguardPlayArea PlayArea = null!;
+    public VanguardPlayArea PlayArea { get; private set; }= null!;
 
     private bool _flippedAppearance = false;
     [Export]
@@ -181,6 +181,17 @@ public partial class PlayAreaComponent : Control, IPlayAreaBindable, IEventBusUt
         return Circles.Any(x => ReferenceEquals(x.CurrentCard?.CurrentCard, card));
     }
 
+    internal string GetUnitCircleComponentName(UnitCircleComponent unitCircleComponent)
+    {
+        if(ReferenceEquals(FrontLeft, unitCircleComponent)) return nameof(FrontLeft);
+        if(ReferenceEquals(BackLeft, unitCircleComponent)) return nameof(BackLeft);
+        if(ReferenceEquals(FrontRight, unitCircleComponent)) return nameof(FrontRight);
+        if(ReferenceEquals(BackRight, unitCircleComponent)) return nameof(BackRight);
+        if(ReferenceEquals(Vanguard, unitCircleComponent)) return nameof(Vanguard);
+        if(ReferenceEquals(BackCenter, unitCircleComponent)) return nameof(BackCenter);
+        throw new InvalidOperationException();
+    }
+
     public UnitCircleComponent GetUnitCircleComponent(VanguardCard card)
     {
         return Circles.First(x => ReferenceEquals(x.CurrentCard?.CurrentCard, card));
@@ -268,6 +279,11 @@ public partial class PlayAreaComponent : Control, IPlayAreaBindable, IEventBusUt
             circle.ResetSelection();
             circle.Selectable = false;
         });
+    }
+
+    public void HideTargetIndicators()
+    {
+        Circles.ForEach(x => x.HideTargetIndicators());
     }
 
     public void PrintRearguardCardDraggableStates()

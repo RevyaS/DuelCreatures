@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://dm8sksf3b1gcw"]
+[gd_scene load_steps=9 format=3 uid="uid://dm8sksf3b1gcw"]
 
 [ext_resource type="Script" uid="uid://ccq70upyqje4r" path="res://Board/UnitCircleComponent.cs" id="1_c2ben"]
+[ext_resource type="Texture2D" uid="uid://5xkkafu44j3" path="res://Assets/Board/UnitCircle/fight@card_effect_arrow.png" id="2_5133l"]
 [ext_resource type="Script" uid="uid://d0xdsvmtayatq" path="res://Components/CardRotationContainer.cs" id="2_o1h87"]
 [ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Card/Card.tscn" id="3_j7olg"]
 [ext_resource type="Script" uid="uid://dwrq2pnaqfw1s" path="res://HUD/DropArea.cs" id="4_5133l"]
@@ -93,3 +94,51 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 36
 text = "Select"
+
+[node name="TargetIndicators" type="Control" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+mouse_filter = 2
+
+[node name="TopIndicator" type="TextureRect" parent="TargetIndicators"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -29.0
+offset_top = -41.0
+offset_right = 29.0
+grow_horizontal = 2
+texture = ExtResource("2_5133l")
+
+[node name="LeftIndicator" type="TextureRect" parent="TargetIndicators"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -19.5
+offset_right = 8.0
+offset_bottom = 21.5
+grow_vertical = 2
+rotation = -1.5707964
+pivot_offset = Vector2(29, 20.5)
+texture = ExtResource("2_5133l")
+
+[node name="RightIndicator" type="TextureRect" parent="TargetIndicators"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -8.0
+offset_top = -20.5
+offset_right = 50.0
+offset_bottom = 20.5
+grow_horizontal = 0
+grow_vertical = 2
+rotation = 1.5707964
+pivot_offset = Vector2(29, 20.5)
+texture = ExtResource("2_5133l")

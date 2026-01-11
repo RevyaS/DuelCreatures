@@ -17,7 +17,6 @@ public partial class HoverArea : Control
 
     private void OnHover()
     {
-        GD.Print($"Hovering: true");
         Hovered = true;
         Hovering?.Invoke();
     }

@@ -4,6 +4,8 @@ using Godot;
 
 public partial class DuelCreaturesBoard : Control
 {
+    AudioStreamPlayer SfxPlayer = null!;
+
     public PlayAreaComponent PlayerArea { get; private set; } = null!;
     public PlayAreaComponent OppArea { get; private set; } = null!;
 
@@ -11,7 +13,6 @@ public partial class DuelCreaturesBoard : Control
 
     public HandComponent PlayerHand { get; private set; } = null!;
     HandComponent OppHand = null!;
-
 
     List<HandComponent> AllHands => [ 
         PlayerHand, OppHand
@@ -26,6 +27,8 @@ public partial class DuelCreaturesBoard : Control
 
     private void SetComponents()
     {
+        SfxPlayer = GetNode<AudioStreamPlayer>($"%{nameof(SfxPlayer)}");
+
         PlayerArea = GetNode<PlayAreaComponent>($"%{nameof(PlayerArea)}");
         OppArea = GetNode<PlayAreaComponent>($"%{nameof(OppArea)}");
 
@@ -33,7 +36,6 @@ public partial class DuelCreaturesBoard : Control
 
         PlayerHand = GetNode<HandComponent>($"%{nameof(PlayerHand)}");
         OppHand = GetNode<HandComponent>($"%{nameof(OppHand)}");
-
 
         PlayerLeftAttackRightLine = GetNode<AttackIndicator>($"%{nameof(PlayerLeftAttackRightLine)}");
         PlayerLeftAttackCenterLine = GetNode<AttackIndicator>($"%{nameof(PlayerLeftAttackCenterLine)}");

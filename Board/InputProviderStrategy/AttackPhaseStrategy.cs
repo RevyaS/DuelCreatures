@@ -34,7 +34,7 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
         {
             if(ReferenceEquals(unitCircleComponent, targetCircle))
             {
-                GD.Print("Release targetCircle");
+                GD.Print("Release targetCircle ", GameBoard.OppArea.GetUnitCircleComponentName(unitCircleComponent));
                 // Release
                 targetCircle = null;
                 GameBoard.HideAttackLines();
@@ -43,6 +43,7 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
 
         Action<UnitCircleComponent> dragReleaseHandler = (unitCircleComponent) =>
         {
+            GameBoard.OppArea.HideTargetIndicators();
             if(targetCircle is not null)
             {
                 if (boostingCircle is not null)
@@ -69,9 +70,17 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
 
         Action<UnitCircleComponent> oppFrontRowHoverHandler = (unitCircleComponent) =>
         {
-            if(attackingCircle is not null)
+            if(attackingCircle is not null && VanguardGameRules.TargetCircleCanBeTargetted(GameBoard.OppArea.PlayArea, unitCircleComponent.UnitCircle))
             {
                 targetCircle = unitCircleComponent;
+
+                if(!targetCircle.HasTargetIndicator)
+                {
+                    GameBoard.OppArea.HideTargetIndicators();
+                    targetCircle.ShowTargetIndicators();
+                    GameBoard.PlayTargetSfx();
+                }
+
                 GameBoard.HideAttackLines();
                 GameBoard.ShowAttackLine(attackingCircle, targetCircle);
             }

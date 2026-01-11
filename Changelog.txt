@@ -4,6 +4,9 @@ v.0004 GUI Improvements
 - Shows where Opp is attacking
 - Used UnitCircle textures and Guard Zone texture
 - Fixed hand width overflow (sort of, may need improvements later)
+- Ride and Call Sfx
+- Added Target Indicator when selecting which unit to attack 
+- Target indicators will only apply for valid targets
 
 v.0003 Moar Cards
 - Updated for ArC v.0000006

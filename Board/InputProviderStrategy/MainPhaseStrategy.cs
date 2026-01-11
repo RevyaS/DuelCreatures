@@ -79,7 +79,7 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, CardInfo CardInfo, Game
                 completionSource.SetResult(actions.FirstOf<CallRearguard>());
             }
         };
-        Board.CardDroppedToPlayerRearguard +=  onCardPlacedToRGHandler;
+        Board.CardDroppedToPlayerRearguard += onCardPlacedToRGHandler;
 
         // Catalyst for rearguard calling
         Action<CardBaseComponent> onHandCardDragging = (card) =>
@@ -110,6 +110,11 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, CardInfo CardInfo, Game
         Board.DisablePlayerRearguardDropping();
         Board.DisablePlayerHandDragging();
         CardInfo.ShowActivateButton = false;
+
+        if(result is CallRearguard)
+        {
+            Board.PlayCallSfx();
+        }
 
         return result;
     }

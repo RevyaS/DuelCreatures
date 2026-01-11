@@ -13,12 +13,14 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
     HoverArea hoverArea = null!;
     Button SelectButton = null!;
     TextureRect CircleTexture = null!, IconTexture = null!;
+    Control TargetIndicators = null!;
 
     public UnitCircle UnitCircle { get; private set; } = null!;
 
     private bool isSelected = false;
     public bool IsSelected => isSelected;
     public Card? CurrentCard => cardRotationContainer.CurrentCard;
+    public bool HasTargetIndicator => TargetIndicators.Visible;
 
     private ComponentInputState inputState = ComponentInputState.None;
     [Export]
@@ -140,6 +142,8 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
     {
         CircleTexture = GetNode<TextureRect>($"%{nameof(CircleTexture)}");
         IconTexture = GetNode<TextureRect>($"%{nameof(IconTexture)}");
+
+        TargetIndicators = GetNode<Control>($"%{nameof(TargetIndicators)}");
 
         cardRotationContainer = GetNode<CardRotationContainer>($"%{nameof(CardRotationContainer)}");
         cardRotationContainer.CardDragging += OnCardDragging;
@@ -355,6 +359,16 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
     {
         isSelected = false;
         RenderSelectButton();
+    }
+
+    public void ShowTargetIndicators()
+    {
+        TargetIndicators.Show();
+    }
+
+    public void HideTargetIndicators()
+    {
+        TargetIndicators.Hide();
     }
 
     public event Action<Card>? CardDropped;

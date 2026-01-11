@@ -59,6 +59,7 @@ public class RidePhaseStrategy(DuelCreaturesBoard Board) : IInputProviderStrateg
                 GD.PushError(exception.Message);
             } else
             {
+                Board.PlayRideSfx();
                 break;
             }
         }
