@@ -5,6 +5,7 @@ public partial class BackgroundRect : MarginContainer
 {
     ColorRect ColorRect = null!;
     TextureRect TextureRect = null!;
+    MarginContainer MarginContainer = null!;
 
     private Color _color = Colors.White;
     [Export]
@@ -42,7 +43,45 @@ public partial class BackgroundRect : MarginContainer
         }
     }
 
+    [Export]
+    public int MarginLeft
+    {
+        get => MarginContainer.GetThemeConstant("margin_left");
+        set
+        {
+            MarginContainer.AddThemeConstantOverride("margin_left", value);
+        }
+    }
 
+    [Export]
+    public int MarginRight
+    {
+        get => MarginContainer.GetThemeConstant("margin_right");
+        set
+        {
+            MarginContainer.AddThemeConstantOverride("margin_right", value);
+        }
+    }
+
+    [Export]
+    public int MarginTop
+    {
+        get => MarginContainer.GetThemeConstant("margin_top");
+        set
+        {
+            MarginContainer.AddThemeConstantOverride("margin_top", value);
+        }
+    }
+
+    [Export]
+    public int MarginBottom
+    {
+        get => MarginContainer.GetThemeConstant("margin_bottom");
+        set
+        {
+            MarginContainer.AddThemeConstantOverride("margin_bottom", value);
+        }
+    }
 
     private void Render()
     {
@@ -57,5 +96,6 @@ public partial class BackgroundRect : MarginContainer
     {
         ColorRect = GetNode<ColorRect>($"%{nameof(ColorRect)}");
         TextureRect = GetNode<TextureRect>($"%{nameof(TextureRect)}");
+        MarginContainer = GetNode<MarginContainer>($"%{nameof(MarginContainer)}");
     }
 }

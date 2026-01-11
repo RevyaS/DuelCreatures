@@ -1,4 +1,5 @@
 using ArC.CardGames.Predefined.Vanguard;
+using DuelCreatures.Data;
 using Godot;
 
 public partial class CardVerticalStack : PanelContainer
@@ -30,6 +31,18 @@ public partial class CardVerticalStack : PanelContainer
         }
     }
 
+    private SleeveInfo _sleeveInfo = null!;
+    [Export]
+    public SleeveInfo SleeveInfo
+    {
+        get => _sleeveInfo;
+        set
+        {
+            _sleeveInfo = value;
+            Render();
+        }
+    }
+
     protected virtual void BeforeRender() {}
 
     protected void Render()
@@ -38,6 +51,8 @@ public partial class CardVerticalStack : PanelContainer
         BeforeRender();
         CardCount.Visible = ShowCount;
         CardCount.Text = CountValue.ToString();
+
+        cardContainer.SetSleeveInfo(SleeveInfo);
     }
 
     public override void _Ready()

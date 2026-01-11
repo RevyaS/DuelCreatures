@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ColorSleeveInfo" load_steps=2 format=3 uid="uid://vog4qb6mhfq8"]
+
+[ext_resource type="Script" uid="uid://kykm6g4hsp1b" path="res://Data/ColorSleeveInfo.cs" id="1_hx4nd"]
+
+[resource]
+script = ExtResource("1_hx4nd")
+Color = Color(0.07450981, 0.3137255, 0.57254905, 1)
+MarginLeft = 10
+MarginRight = 10
+MarginTop = 10
+MarginBottom = 10
+metadata/_custom_type_script = "uid://kykm6g4hsp1b"

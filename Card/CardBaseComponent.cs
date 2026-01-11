@@ -1,4 +1,5 @@
 using System;
+using DuelCreatures.Data;
 using Godot;
 
 [Tool]
@@ -8,6 +9,7 @@ public abstract partial class CardBaseComponent : Control
     TextureRect Front = null!;
     private bool _pressed = false;
     private double _pressTimeElapsed = 0;
+    BackgroundRect Back = null!;
 
     private bool _currentlyDragged = false;
     public bool CurrentlyDragged { 
@@ -45,12 +47,25 @@ public abstract partial class CardBaseComponent : Control
         }
     }
 
+    private SleeveInfo _sleeveInfo = null!;
+    [Export]
+    public SleeveInfo SleeveInfo
+    {
+        get => _sleeveInfo;
+        set
+        {
+            _sleeveInfo = value;
+            Render();
+        }
+    }
+
     public Vector2 EffectiveSize => CustomMinimumSize * Scale;
 
     public override void _Ready()
     {
         CustomMinimumSize = SizeConstants.CardDefaultSize;
         Front = GetNode<TextureRect>($"%{nameof(Front)}");
+        Back = GetNode<BackgroundRect>($"%{nameof(Back)}");
         Render();
     }
 
@@ -64,6 +79,8 @@ public abstract partial class CardBaseComponent : Control
     {
         Front.Visible = _isFront;
         Front.Texture = texture;
+
+        SetSleeveInfo(_sleeveInfo);
     }
 
     public override Variant _GetDragData(Vector2 atPosition)
@@ -134,6 +151,27 @@ public abstract partial class CardBaseComponent : Control
 
     protected virtual void OnPressed()
     {
+    }
+
+    public void SetSleeveInfo(SleeveInfo sleeveInfo)
+    {
+        if(sleeveInfo is null) return;
+
+        Back.MarginBottom = sleeveInfo.MarginBottom;
+        Back.MarginTop = sleeveInfo.MarginTop;
+        Back.MarginLeft = sleeveInfo.MarginLeft;
+        Back.MarginRight = sleeveInfo.MarginRight;
+        switch(sleeveInfo)
+        {
+            case ColorSleeveInfo colorSleeveInfo:
+                Back.Color = colorSleeveInfo.Color;
+                Back.TextureMode = false;
+                break;
+            case TextureSleeveInfo textureSleeveInfo:
+                Back.Texture = textureSleeveInfo.Texture;
+                Back.TextureMode = true;
+                break;
+        }
     }
 
     public abstract CardBaseComponent CreateClone();

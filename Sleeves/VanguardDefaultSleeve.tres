@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="TextureSleeveInfo" load_steps=3 format=3 uid="uid://cprca6flaorhc"]
+
+[ext_resource type="Texture2D" uid="uid://dogdadwk36p54" path="res://Assets/CardSleeves/sl610100001.png" id="1_aufpr"]
+[ext_resource type="Script" uid="uid://dher6tmfm3ur1" path="res://Data/TextureSleeveInfo.cs" id="1_omk26"]
+
+[resource]
+script = ExtResource("1_omk26")
+Texture = ExtResource("1_aufpr")
+metadata/_custom_type_script = "uid://dher6tmfm3ur1"

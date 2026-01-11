@@ -1,4 +1,5 @@
 using System;
+using DuelCreatures.Data;
 using Godot;
 using Orientation = ArC.CardGames.Components.Orientation;
 
@@ -47,6 +48,14 @@ public partial class CardContainer : Control
         }
 
         Render();
+    }
+
+    public void SetSleeveInfo(SleeveInfo sleeveInfo)
+    {
+        if(currentCard is not null)
+        {
+            currentCard.SleeveInfo = sleeveInfo;
+        }
     }
 
     public void FaceUp()

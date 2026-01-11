@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://db3qwryrhb1rq"]
+[gd_scene load_steps=16 format=3 uid="uid://db3qwryrhb1rq"]
 
 [ext_resource type="PackedScene" uid="uid://dm8sksf3b1gcw" path="res://Board/UnitCircleComponent.tscn" id="1_4bmb4"]
 [ext_resource type="Script" uid="uid://caskrex35q0kw" path="res://Board/PlayAreaComponent.cs" id="1_d1wbq"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://c3xgtr5vl38o1" path="res://Board/TriggerZoneComponent.tscn" id="8_k3s5b"]
 [ext_resource type="PackedScene" uid="uid://d0hdjku8idjs" path="res://Board/DeckComponent.tscn" id="9_q3sux"]
 [ext_resource type="PackedScene" uid="uid://dlahod6s4jx0i" path="res://Board/DropZoneComponent.tscn" id="10_pmg6b"]
+[ext_resource type="Resource" uid="uid://cprca6flaorhc" path="res://Sleeves/VanguardDefaultSleeve.tres" id="11_45uic"]
 
 [sub_resource type="Curve2D" id="Curve2D_tilg0"]
 _data = {
@@ -322,6 +323,7 @@ grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(69.5, 96.5)
 ShowCount = true
+SleeveInfo = ExtResource("11_45uic")
 
 [node name="DropZone" parent="MarginContainer/HBoxContainer/Right/VBoxContainer/Control/Verticals" instance=ExtResource("10_pmg6b")]
 unique_name_in_owner = true
