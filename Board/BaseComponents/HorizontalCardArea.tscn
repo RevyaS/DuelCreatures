@@ -23,6 +23,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(189, 135.00002)
 layout_mode = 2
 script = ExtResource("1_gggsp")
+ContainerRotation = 90.0
 metadata/_custom_type_script = "uid://bqw5phtur46nx"
 
 [node name="Card" parent="MarginContainer/Container" instance=ExtResource("2_xi216")]

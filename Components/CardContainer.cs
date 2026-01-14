@@ -9,10 +9,12 @@ using Orientation = ArC.CardGames.Components.Orientation;
 public partial class CardContainer : Control
 {
     Card? currentCard = null;
-    public Card? CurrentCard => currentCard;
-    public bool HasCard => currentCard is not null && currentCard.CurrentCard is not null;
     protected bool UpdateSizeOnCardPlacedment = true;
     private SleeveInfo sleeveInfo = null!;
+
+    public Card? CurrentCard => currentCard;
+    public bool HasCard => currentCard is not null && currentCard.CurrentCard is not null;
+    float FlipRotation => FlippedAppearance ? Mathf.Pi : 0;
 
     private float _cardScale = SizeConstants.CardScaleFactor;
     [Export(PropertyHint.Range, "0.0, 1.0")]
@@ -35,6 +37,30 @@ public partial class CardContainer : Control
             {
                 CurrentCard.Draggable = value;
             }
+        }
+    }
+
+    private bool _flippedAppearance = false;
+    [Export]
+    public bool FlippedAppearance
+    {
+        get => _flippedAppearance;
+        set
+        {
+            _flippedAppearance = value;
+            Render();
+        }
+    }
+
+    private float _containerRotationRad = 0;
+    [Export(PropertyHint.Range, "0, 359")]
+    public float ContainerRotation
+    {
+        get => _containerRotationRad;
+        set
+        {
+            _containerRotationRad = Mathf.DegToRad(value);
+            Render();
         }
     }
 
@@ -96,7 +122,7 @@ public partial class CardContainer : Control
         card.CardDragCancelled += OnCardDragCancelled;
         card.CardPressed += OnCardPressed;
         card.CardLongPressed += OnCardLongPressed;
-        card.SleeveInfo = sleeveInfo;
+        card.Rotation = CalculateCardRotation(Orientation.VERTICAL);
         AddChild(card);
     }
 
@@ -160,6 +186,18 @@ public partial class CardContainer : Control
         }
     }
 
+    private float CalculateCardRotation(Orientation orientation)
+    {
+        float orientationRotation = orientation switch
+        {
+            Orientation.VERTICAL => 0,
+            Orientation.HORIZONTAL => Mathf.Pi /2,
+            _ => throw new InvalidOperationException()
+        };
+
+        return ContainerRotation + FlipRotation + orientationRotation;
+    }
+
     private void OnChildEnteredTree(Node node)
     {
         if(node is Card card)
@@ -187,21 +225,12 @@ public partial class CardContainer : Control
 
         var result = new Vector2(newWidth, newHeight);
         return result;
-
     }
 
     public void ChangeOrientation(Orientation orientation)
     {
         if(CurrentCard is null) return;
-        switch(orientation)
-        {
-            case Orientation.HORIZONTAL:
-                CurrentCard.Rotation = Mathf.DegToRad(90);
-                break;
-            case Orientation.VERTICAL:
-                CurrentCard.Rotation = Mathf.DegToRad(0);
-                break;
-        }
+        CurrentCard.Rotation = CalculateCardRotation(orientation);
     }
 
     public Action<CardBaseComponent>? CardDragging;

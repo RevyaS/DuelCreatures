@@ -293,6 +293,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(193, 139)
 layout_mode = 2
 RemoveCardDelayTime = 0.4
+FlippedAppearance = true
 
 [node name="Control" type="MarginContainer" parent="MarginContainer/HBoxContainer/Right/VBoxContainer"]
 layout_mode = 2

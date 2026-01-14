@@ -316,6 +316,7 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
     {
         if(!IsInsideTree()) return;
         dropArea.Visible = Droppable;
+        cardRotationContainer.FlippedAppearance = FlippedAppearance;
         cardRotationContainer.Draggable = Draggable;
         cardRotationContainer.CardScale = CardScale;
         dragArea.Visible = ScreenDraggable;
