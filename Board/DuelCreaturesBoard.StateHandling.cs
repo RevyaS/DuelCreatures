@@ -55,7 +55,7 @@ public partial class DuelCreaturesBoard : Control
 
     public void EnablePlayerRearguardDragging()
     {
-        PlayerArea.EnableRearguardDropping();
+        PlayerArea.EnableRearguardDragging();
     }
     public void DisablePlayerRearguardDragging()
     {

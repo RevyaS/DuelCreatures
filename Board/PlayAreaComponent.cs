@@ -244,6 +244,11 @@ public partial class PlayAreaComponent : Control, IPlayAreaBindable, IEventBusUt
         });
     }
 
+    public void EnableRearguardDragging()
+    {
+        Rearguards.ForEach(rg => rg.Draggable = true);
+    }
+
     public void DisableRearguardDragging(List<UnitCircleComponent> unitCircleComponents)
     {
         unitCircleComponents.ForEach(rg => rg.Draggable = false);
