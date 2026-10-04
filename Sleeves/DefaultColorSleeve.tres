@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ColorSleeveInfo" load_steps=2 format=3 uid="uid://vog4qb6mhfq8"]
 
-[ext_resource type="Script" uid="uid://kykm6g4hsp1b" path="res://Data/ColorSleeveInfo.cs" id="1_hx4nd"]
+[ext_resource type="Script" uid="uid://kykm6g4hsp1b" path="res://Data/Resources/ColorSleeveInfo.cs" id="1_hx4nd"]
 
 [resource]
 script = ExtResource("1_hx4nd")
