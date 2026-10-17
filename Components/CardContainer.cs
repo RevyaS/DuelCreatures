@@ -52,14 +52,16 @@ public partial class CardContainer : Control
         }
     }
 
-    private float _containerRotationRad = 0;
+    // Stored in degrees so the getter matches what the setter receives;
+    // otherwise every save/load cycle converts the value again
+    private float _containerRotationDeg = 0;
     [Export(PropertyHint.Range, "0, 359")]
     public float ContainerRotation
     {
-        get => _containerRotationRad;
+        get => _containerRotationDeg;
         set
         {
-            _containerRotationRad = Mathf.DegToRad(value);
+            _containerRotationDeg = value;
             Render();
         }
     }
@@ -169,20 +171,32 @@ public partial class CardContainer : Control
     {
         if(currentCard is not null)
         {
-            RemoveChild(currentCard);
+            var card = currentCard;
+            RemoveChild(card);
+            ClearCardState(card);
         }
     }
 
     private void OnChildExitedTree(Node node)
     {
-        if(node is Card card)
+        // ChildExitingTree also fires when this container itself leaves the tree
+        // (scene tab switch, reparent, close). Only drop the card when it is
+        // really going away; explicit removals go through RemoveCard.
+        if(node is Card card && card.IsQueuedForDeletion())
         {
-            currentCard = null;
-            card.Scale = Vector2.One;
-            if(UpdateSizeOnCardPlacedment)
-            {
-                CustomMinimumSize = Vector2.Zero;
-            }
+            ClearCardState(card);
+        }
+    }
+
+    private void ClearCardState(Card card)
+    {
+        if(!ReferenceEquals(currentCard, card)) return;
+
+        currentCard = null;
+        card.Scale = Vector2.One;
+        if(UpdateSizeOnCardPlacedment)
+        {
+            CustomMinimumSize = Vector2.Zero;
         }
     }
 
@@ -195,16 +209,16 @@ public partial class CardContainer : Control
             _ => throw new InvalidOperationException()
         };
 
-        return ContainerRotation + FlipRotation + orientationRotation;
+        return Mathf.DegToRad(ContainerRotation) + FlipRotation + orientationRotation;
     }
 
     private void OnChildEnteredTree(Node node)
     {
         if(node is Card card)
         {
-            if(currentCard is not null)
+            if(currentCard is not null && !ReferenceEquals(currentCard, card))
             {
-                RemoveChild(currentCard);
+                RemoveCard();
             } 
 
             currentCard = card;

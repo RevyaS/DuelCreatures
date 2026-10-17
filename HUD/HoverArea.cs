@@ -23,6 +23,8 @@ public partial class HoverArea : Control
 
     public override void _Process(double delta)
     {
+        if(Engine.IsEditorHint()) return;
+
         // Detect hover exit (no more input events inside control)
         Vector2 pointer = GetLocalMousePosition();
         bool inside = GetRect().HasPoint(pointer);

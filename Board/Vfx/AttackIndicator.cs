@@ -50,6 +50,8 @@ public partial class AttackIndicator : Path2D
 
     public override void _Process(double delta)
     {
+        if(Engine.IsEditorHint()) return;
+
         if(!Active)
         {
             //Reset

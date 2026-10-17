@@ -43,49 +43,61 @@ public partial class BackgroundRect : MarginContainer
         }
     }
 
+    private int _marginLeft = 0;
     [Export]
     public int MarginLeft
     {
-        get => MarginContainer.GetThemeConstant("margin_left");
+        get => _marginLeft;
         set
         {
-            MarginContainer.AddThemeConstantOverride("margin_left", value);
+            _marginLeft = value;
+            Render();
         }
     }
 
+    private int _marginRight = 0;
     [Export]
     public int MarginRight
     {
-        get => MarginContainer.GetThemeConstant("margin_right");
+        get => _marginRight;
         set
         {
-            MarginContainer.AddThemeConstantOverride("margin_right", value);
+            _marginRight = value;
+            Render();
         }
     }
 
+    private int _marginTop = 0;
     [Export]
     public int MarginTop
     {
-        get => MarginContainer.GetThemeConstant("margin_top");
+        get => _marginTop;
         set
         {
-            MarginContainer.AddThemeConstantOverride("margin_top", value);
+            _marginTop = value;
+            Render();
         }
     }
 
+    private int _marginBottom = 0;
     [Export]
     public int MarginBottom
     {
-        get => MarginContainer.GetThemeConstant("margin_bottom");
+        get => _marginBottom;
         set
         {
-            MarginContainer.AddThemeConstantOverride("margin_bottom", value);
+            _marginBottom = value;
+            Render();
         }
     }
 
     private void Render()
     {
-        if(!IsInsideTree()) return;
+        if(!IsNodeReady()) return;
+        MarginContainer.AddThemeConstantOverride("margin_left", _marginLeft);
+        MarginContainer.AddThemeConstantOverride("margin_right", _marginRight);
+        MarginContainer.AddThemeConstantOverride("margin_top", _marginTop);
+        MarginContainer.AddThemeConstantOverride("margin_bottom", _marginBottom);
         ColorRect.Modulate = Color;
         TextureRect.Texture = Texture;
         ColorRect.Visible = !TextureMode;
@@ -97,5 +109,6 @@ public partial class BackgroundRect : MarginContainer
         ColorRect = GetNode<ColorRect>($"%{nameof(ColorRect)}");
         TextureRect = GetNode<TextureRect>($"%{nameof(TextureRect)}");
         MarginContainer = GetNode<MarginContainer>($"%{nameof(MarginContainer)}");
+        Render();
     }
 }

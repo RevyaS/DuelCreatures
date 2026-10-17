@@ -6,9 +6,11 @@ using Godot;
 public abstract partial class CardBaseComponent : Control
 {
     private double LONG_PRESS_TRESHOLD = 0.5;
+    private float PRESS_MOVE_TOLERANCE = 10;
     TextureRect Front = null!;
     private bool _pressed = false;
     private double _pressTimeElapsed = 0;
+    private Vector2 _pressPosition = Vector2.Zero;
     BackgroundRect Back = null!;
 
     private bool _currentlyDragged = false;
@@ -87,6 +89,9 @@ public abstract partial class CardBaseComponent : Control
     {
         if(!Draggable) return base._GetDragData(atPosition);
 
+        // The release goes to the drop target, so the press would otherwise
+        // stay armed and fire a long press mid-drag
+        CancelPress();
         SetDragPreview(CreateClone());
         CurrentlyDragged = true;
         CardDragging?.Invoke(this);
@@ -95,6 +100,11 @@ public abstract partial class CardBaseComponent : Control
 
     public override void _Notification(int what)
     {
+        if(what == NotificationExitTree)
+        {
+            CancelPress();
+        }
+
         if(what == NotificationDragEnd && CurrentlyDragged)
         {
             if(!IsDragSuccessful())
@@ -110,20 +120,31 @@ public abstract partial class CardBaseComponent : Control
         // Mouse click or touch
         if (e is InputEventMouseButton mb && mb.ButtonIndex == MouseButton.Left)
         {
-            if(mb.Pressed && !_pressed)
+            if(mb.Pressed)
             {
+                if(_pressed) return;
+
                 _pressed = true;
                 _pressTimeElapsed = 0;
+                _pressPosition = mb.Position;
             }
             else 
             {
-                HandleRelease();
+                HandleRelease(mb.Position);
             }
+        }
+        else if (e is InputEventMouseMotion mm && _pressed
+            && mm.Position.DistanceTo(_pressPosition) > PRESS_MOVE_TOLERANCE)
+        {
+            // Moved too far to be a press or long press (likely a drag)
+            CancelPress();
         }
     }
 
     public override void _Process(double delta)
     {
+        if (Engine.IsEditorHint()) return;
+
         if (_pressed)
         {
             _pressTimeElapsed += delta;
@@ -141,12 +162,22 @@ public abstract partial class CardBaseComponent : Control
         
     }
 
-    private void HandleRelease()
+    private void HandleRelease(Vector2 releasePosition)
     {
         if(!_pressed) return;
 
         _pressed = false;
+
+        // Releasing outside the card cancels the press
+        if(!new Rect2(Vector2.Zero, Size).HasPoint(releasePosition)) return;
+
         OnPressed();
+    }
+
+    private void CancelPress()
+    {
+        _pressed = false;
+        _pressTimeElapsed = 0;
     }
 
     protected virtual void OnPressed()

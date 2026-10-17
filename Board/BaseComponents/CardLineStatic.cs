@@ -40,7 +40,6 @@ public partial class CardLineStatic : CardLine
         }
 
         lastIndex = 0;
-        GD.Print("Last Index: ", lastIndex);
         ContainerNodeManager.ApplyToChildren<CardContainer>((child) =>
         {
             if(child.HasChild<Card>())
@@ -51,7 +50,20 @@ public partial class CardLineStatic : CardLine
 
         var currentCards = Container.GetChildCount<CardContainer>();
 
-        GD.Print($"MaxCards: {MaxCards}, CurrentCards: {currentCards}");
+        if(initiation && MaxCards < currentCards)
+        {
+            // Adopt the containers authored in the scene instead of tearing them down
+            _maxCards = currentCards;
+            return;
+        }
+
+        // Adding/removing nodes in the edited scene bypasses the editor's
+        // ownership and undo tracking, so only do it at runtime
+        if(Engine.IsEditorHint())
+        {
+            return;
+        }
+
         if(MaxCards > currentCards)
         {
             int missingContainers = MaxCards - currentCards;
@@ -61,22 +73,16 @@ public partial class CardLineStatic : CardLine
                 var newContainer = new CardContainer();
                 Container.AddChild(newContainer);
             }
-        } 
+        }
         else if(MaxCards < currentCards)
         {
             int extraContainers = currentCards - MaxCards;
-            GD.Print($"Removing {extraContainers}");
             for (int i = 0; i < extraContainers; i++)
             {
                 // Remove extra container
-                var lastIndex = Container.GetChildCount() - 1;
-                GD.Print($"Removed Last Index {lastIndex}");
-                var lastContainer = Container.GetChild(lastIndex);
+                var lastContainer = Container.GetChild(Container.GetChildCount() - 1);
                 Container.RemoveChild(lastContainer);
-            }
-            if(initiation)
-            {
-                MaxCards = currentCards;
+                lastContainer.QueueFree();
             }
         }
     }
