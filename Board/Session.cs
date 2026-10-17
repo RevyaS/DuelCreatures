@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using ArC.CardGames.Flow;
 using ArC.CardGames.Predefined.Vanguard;
 using ArC.CardGames.Setup;
+using ArC.VanguardAI.IO;
 using Godot;
 using static ArC.CardGames.Predefined.Vanguard.Cards.DuelMaidensCardsFactory;
 
@@ -58,13 +59,19 @@ public partial class Session : Control
         var player2 = new VanguardPlayerProfile(
             TrialDeck, RoyalPaladin.StardustTrumpeteer);
 
-        var game = new VanguardGame(player1, player2, eventBus, effectService);
+        var dataQuery = new VanguardGameDataQuery();
+        var game = new VanguardGame(player1, player2, dataQuery, eventBus, effectService);
         var skillService = new VanguardSkillService(eventBus, gameContext);
         var logger = new GodotLogger();
         logger.Enabled = true;
-        var inputProviderFactory = new InputProviderFactory(game, InputProviderComponent, gameContext, skillService, logger);
+
+        VanguardAIGameStateEncoder gameStateEncoder = new(dataQuery);
+        VanguardAIDecisionContextEncoder decisionContextEncoder = new(dataQuery);
+        VanguardAIOptionEncoder optionEncoder = new(dataQuery);
+        var inputProviderFactory = new InputProviderFactory(game, dataQuery, gameStateEncoder, decisionContextEncoder, optionEncoder, InputProviderComponent, gameContext, skillService, logger);
         
         var session = new VanguardGameSession(game, inputProviderFactory, eventBus, effectService, skillService, gameContext, logger);
+        dataQuery.Init(session);
 
         await StartGame(session);
     }
