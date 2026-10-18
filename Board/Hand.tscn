@@ -7,3 +7,4 @@
 custom_minimum_size = Vector2(1080, 0)
 script = ExtResource("1_8uxgw")
 Alignment = 1
+ShowBackground = false
