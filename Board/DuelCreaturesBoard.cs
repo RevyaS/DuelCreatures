@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ArC.CardGames;
 using ArC.CardGames.Predefined.Common;
@@ -12,6 +13,7 @@ public partial class DuelCreaturesBoard : Control
 
     VanguardGameSession _gameSession = null!;
     PresentationContext presentation = null!;
+    PresentationContext playerPresentation = null!;
     VanguardPlayerProfile player1 => _gameSession.Game.Player1;
     VanguardPlayerProfile player2 => _gameSession.Game.Player2;
     Stack<string> playerPhaseIndicatorStack = new();
@@ -180,6 +182,11 @@ public partial class DuelCreaturesBoard : Control
     {
         _gameSession = gameSession;
         presentation = new(presenter, Sfx, BoardSide.Both);
+        playerPresentation = presentation with { Side = BoardSide.Player };
+
+        // Guards stay on the guard zone until the battle ends, even though the game
+        // already put them in the drop zone
+        presenter.AddHolder(GuardZone);
 
         Reset();
 
@@ -202,8 +209,10 @@ public partial class DuelCreaturesBoard : Control
         eventBus.OnAttack += OnAttack;
         eventBus.CardAssignedToUnitCircle += OnCardAssignedToUnitCircle;
 
-        var playerPresentation = presentation with { Side = BoardSide.Player };
         var oppPresentation = presentation with { Side = BoardSide.Opponent };
+
+        PlayerHand.DrawSource = PlayerArea.DeckLocation;
+        OppHand.DrawSource = OppArea.DeckLocation;
 
         PlayerArea.SetEventBus(eventBus, playerPresentation);
         OppArea.SetEventBus(eventBus, oppPresentation);
@@ -231,6 +240,15 @@ public partial class DuelCreaturesBoard : Control
 
     private Task OnAttackEnded()
     {
+        // Guards and interceptors go to the drop zone now that the battle is over
+        var dropZone = PlayerArea.DropZone;
+        var dropTop = dropZone.TopCardOfGame(includeHeld: true);
+        foreach(var guard in GuardZone.GetNonEmptyCards().Select(node => node.CurrentCard).ToList())
+        {
+            playerPresentation.PresentArrival(guard, CardMove.GuardToDropZone, dropZone, GuardZone,
+                () => dropZone.ShowTopCard(dropTop));
+        }
+
         presentation.Present(() =>
         {
             GuardZone.ClearCards();

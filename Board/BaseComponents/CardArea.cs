@@ -1,8 +1,9 @@
+using ArC.CardGames.Components;
 using Godot;
 
 // Holds a single upright card. Turn it with a QuarterTurnContainer
 // when it needs to lie sideways (e.g. the trigger zone)
-public partial class CardArea : PanelContainer
+public partial class CardArea : PanelContainer, ICardLocation
 {
     CardContainer Container = null!;
 
@@ -30,6 +31,17 @@ public partial class CardArea : PanelContainer
         {
             Container.FlippedAppearance = FlippedAppearance;
         }
+    }
+
+    public Card? FindCardNode(CardBase card)
+    {
+        var shown = Container.CurrentCard;
+        return shown is not null && ReferenceEquals(shown.CurrentCard, card) ? shown : null;
+    }
+
+    public Transform2D GetCardTransform(CardBase? card)
+    {
+        return Container.GetCardGlobalTransform();
     }
 
     public void ClearCard()

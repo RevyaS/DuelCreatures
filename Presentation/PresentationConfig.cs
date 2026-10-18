@@ -23,17 +23,17 @@ public static class PresentationConfig
         [CardMove.TriggerToHand]     = new(0.35f, Easing.EaseInOut),
         [CardMove.ToDropZone]        = new(0.30f, Easing.EaseIn, Stagger: 0.05f),
         [CardMove.GuardToDropZone]   = new(0.30f, Easing.EaseIn, Stagger: 0.05f),
-        [CardMove.ToSoul]            = new(0.30f, Easing.EaseIn),
+        [CardMove.ToUnitCircle]      = new(0.30f, Easing.EaseOut),
     };
 
-    // @keyframes flip
+    // @keyframes flip (the face swaps at the frame where ScaleX is 0)
     public static readonly Keyframes Flip = new(new(0.25f, Easing.EaseInOut),
         new(0.0f),
         new(0.5f, ScaleX: 0f),
         new(1.0f));
 
     // @keyframes shuffle
-    public static readonly Keyframes Shuffle = new(new(0.5f, Easing.EaseInOut),
+    public static readonly Keyframes Shuffle = new(new(0.5f, Easing.EaseInOut, Stagger: 0.06f),
         new(0.0f),
         new(0.33f, Offset: new(-30, -20), RotationDeg: -8),
         new(0.66f, Offset: new(30, -20), RotationDeg: 8),

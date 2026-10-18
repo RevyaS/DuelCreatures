@@ -260,6 +260,13 @@ public partial class CardContainer : Control
         return result;
     }
 
+    // Global transform of the card in this slot, or of where one would sit
+    public Transform2D GetCardGlobalTransform()
+    {
+        if(CurrentCard is not null) return CurrentCard.GetGlobalTransform();
+        return CardPlacement.Centered(this, CardScale, CalculateCardRotation(orientation));
+    }
+
     public void ChangeOrientation(Orientation orientation)
     {
         this.orientation = orientation;

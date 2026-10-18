@@ -1,11 +1,12 @@
 using System;
 using System.Threading.Tasks;
+using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Vanguard;
 using Godot;
 using Orientation = ArC.CardGames.Components.Orientation;
 
 [Tool]
-public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircle>, IEventBusUtilizer
+public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircle>, IEventBusUtilizer, ICardLocation
 {
     CardRotationContainer cardRotationContainer = null!;
     DropArea dropArea = null!;
@@ -17,6 +18,20 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
 
     public UnitCircle UnitCircle { get; private set; } = null!;
     PresentationContext? presentation = null;
+
+    // Where units called straight from the deck come from (superior call)
+    public ICardLocation? DeckLocation { get; set; }
+
+    public Card? FindCardNode(CardBase card)
+    {
+        var shown = cardRotationContainer.CurrentCard;
+        return shown is not null && ReferenceEquals(shown.CurrentCard, card) ? shown : null;
+    }
+
+    public Transform2D GetCardTransform(CardBase? card)
+    {
+        return cardRotationContainer.GetCardGlobalTransform();
+    }
 
     private bool isSelected = false;
     public bool IsSelected => isSelected;
@@ -154,6 +169,7 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
 
         dropArea = GetNode<DropArea>($"%{nameof(DropArea)}");
         dropArea.CardDropped += OnCardDropped;
+        dropArea.DragHoverChanged += OnDropAreaDragHoverChanged;
 
         dragArea = GetNode<DragArea>($"%{nameof(DragArea)}");
         dragArea.Dragging += OnDragging;
@@ -167,6 +183,23 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
         SelectButton.Pressed += OnSelectButtonPressed;
 
         Render();
+    }
+
+    bool showingDropIndicator = false;
+
+    // Point at the circle a dragged card would be placed on
+    private void OnDropAreaDragHoverChanged(bool hovered)
+    {
+        if(hovered && Droppable)
+        {
+            showingDropIndicator = true;
+            ShowTargetIndicators();
+        }
+        else if(!hovered && showingDropIndicator)
+        {
+            showingDropIndicator = false;
+            HideTargetIndicators();
+        }
     }
 
     private void OnSelectButtonPressed()
@@ -262,7 +295,7 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
         {
             if(circle.Card is null)
             {
-                presentation.Present(() => cardRotationContainer.RemoveCardAndFree());
+                presentation.Present(RemoveShownCard);
             }
         }
         return Task.CompletedTask;
@@ -307,19 +340,36 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
         {
             var card = circle.Card;
             var orientation = circle.Orientation;
-            presentation.Present(() =>
+            if(card is null)
             {
-                if(card is null)
+                presentation.Present(RemoveShownCard);
+                return Task.CompletedTask;
+            }
+
+            presentation.PresentArrival(card, CardMove.ToUnitCircle, this, DeckLocation, () =>
+            {
+                // The unit being replaced (ride, overcall) leaves from here
+                var replaced = cardRotationContainer.CurrentCard?.CurrentCard;
+                if(replaced is not null && !ReferenceEquals(replaced, card))
                 {
-                    cardRotationContainer.RemoveCardAndFree();
-                    return;
+                    presentation.Leaving(replaced, this);
                 }
 
                 SetCard(card, orientation);
-                presentation?.PlaySfx(circle is RearGuard ? SfxCue.Call : SfxCue.Ride);
+                presentation.PlaySfx(circle is RearGuard ? SfxCue.Call : SfxCue.Ride);
             });
         }
         return Task.CompletedTask;
+    }
+
+    private void RemoveShownCard()
+    {
+        var shown = cardRotationContainer.CurrentCard?.CurrentCard;
+        if(shown is not null)
+        {
+            presentation.Leaving(shown, this);
+        }
+        cardRotationContainer.RemoveCardAndFree();
     }
 
     public void Bind(UnitCircle unitCircle)

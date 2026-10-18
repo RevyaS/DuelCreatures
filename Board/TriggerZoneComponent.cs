@@ -9,6 +9,9 @@ public partial class TriggerZoneComponent : CardArea, ICardSpaceBindable<Trigger
     TriggerZone TriggerZone = null!;
     PresentationContext? presentation = null;
 
+    // Where checked cards come from
+    public ICardLocation? DeckLocation { get; set; }
+
     public void Bind(TriggerZone triggerZone)
     {
         TriggerZone = triggerZone;
@@ -34,6 +37,10 @@ public partial class TriggerZoneComponent : CardArea, ICardSpaceBindable<Trigger
                 {
                     await ToSignal(GetTree().CreateTimer(PresentationConfig.CheckRevealHold), SceneTreeTimer.SignalName.Timeout);
                 }
+                if(removedCard is not null)
+                {
+                    presentation.Leaving(removedCard, this);
+                }
                 ShowCard(null);
             });
         }
@@ -54,7 +61,14 @@ public partial class TriggerZoneComponent : CardArea, ICardSpaceBindable<Trigger
         if(ReferenceEquals(zone, TriggerZone))
         {
             var card = (VanguardCard?)zone.Card;
-            presentation.Present(() => ShowCard(card));
+            if(card is null)
+            {
+                presentation.Present(() => ShowCard(null));
+            }
+            else
+            {
+                presentation.PresentArrival(card, CardMove.DeckToTriggerZone, this, DeckLocation, () => ShowCard(card), faceUp: true);
+            }
         }
         return Task.CompletedTask;
     }

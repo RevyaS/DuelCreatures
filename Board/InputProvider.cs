@@ -43,6 +43,12 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
     public override void _Ready()
     {
         board = GetNode<DuelCreaturesBoard>($"%{nameof(DuelCreaturesBoard)}");
+
+        // Card flights draw above the board and below the HUD
+        var flights = new CardFlightLayer { Name = "CardFlights" };
+        AddChild(flights);
+        MoveChild(flights, board.GetIndex() + 1);
+        Presenter.Flights = flights;
         SelectCardsComponent = GetNode<SelectCardsComponent>($"%{nameof(SelectCardsComponent)}");
         SelectFromCardListComponent = GetNode<SelectFromCardList>($"%{nameof(SelectFromCardListComponent)}");
         CardListComponent = GetNode<CardList>($"%{nameof(CardListComponent)}");

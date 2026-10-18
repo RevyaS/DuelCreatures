@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ArC.CardGames.Components;
 using DuelCreatures.Data;
 using Godot;
 
 [Tool]
-public partial class CardLine : PanelContainer
+public partial class CardLine : PanelContainer, ICardLocation
 {
     protected HBoxNodeContainer Container = null!;
     protected IChildManagerComponent ContainerNodeManager => Container;    
@@ -278,6 +279,24 @@ public partial class CardLine : PanelContainer
     private void OnCardPressed(Card card)
     {
         CardPressed?.Invoke(card);
+    }
+
+    public Card? FindCardNode(CardBase card)
+    {
+        return GetNonEmptyCards().FirstOrDefault(node => ReferenceEquals(node.CurrentCard, card));
+    }
+
+    public Transform2D GetCardTransform(CardBase? card)
+    {
+        var node = card is null ? null : FindCardNode(card);
+        return node?.GetGlobalTransform() ?? GetNextSlotTransform();
+    }
+
+    // Where the next card added to this line would sit
+    protected virtual Transform2D GetNextSlotTransform()
+    {
+        var last = Container.GetChildren<CardContainer>().LastOrDefault();
+        return last?.GetCardGlobalTransform() ?? CardPlacement.Centered(Container, CardScale);
     }
 
     public Card? FindCard(Func<Card, bool> predicate)

@@ -132,6 +132,15 @@ public partial class CardLineStatic : CardLine
         lastIndex--;
     }
 
+    protected override Transform2D GetNextSlotTransform()
+    {
+        if(lastIndex < Container.GetChildCount<CardContainer>())
+        {
+            return Container.GetChild<CardContainer>(lastIndex).GetCardGlobalTransform();
+        }
+        return base.GetNextSlotTransform();
+    }
+
     public void AddCard(Card card)
     {
         if(lastIndex == MaxCards) throw new InvalidOperationException("Already reached MAX amount of cards");

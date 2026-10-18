@@ -159,8 +159,14 @@ public partial class PlayAreaComponent : Control, IPlayAreaBindable, IEventBusUt
         TriggerZone.Bind(playArea.TriggerZone);
     }
 
+    // Cards with no known previous location come from here (draws, checks, superior calls)
+    public ICardLocation DeckLocation => Deck;
+
     public void SetEventBus(VanguardEventBus eventBus, PresentationContext presentation)
     {
+        TriggerZone.DeckLocation = Deck;
+        Circles.ForEach(circle => circle.DeckLocation = Deck);
+
         Vanguard.SetEventBus(eventBus, presentation);
         FrontLeft.SetEventBus(eventBus, presentation);
         BackLeft.SetEventBus(eventBus, presentation);

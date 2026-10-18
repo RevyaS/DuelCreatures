@@ -21,7 +21,7 @@ public enum CardMove
     TriggerToHand,
     ToDropZone,
     GuardToDropZone,
-    ToSoul,
+    ToUnitCircle,
 }
 
 // CSS-like timing functions

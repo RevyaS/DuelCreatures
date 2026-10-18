@@ -9,6 +9,9 @@ public partial class HandComponent : CardLineDynamic, ICardSpaceBindable<Hand>, 
     public Hand Hand { get; private set; } = null!;
     PresentationContext? presentation = null;
 
+    // Where drawn cards come from
+    public ICardLocation? DrawSource { get; set; }
+
     public void SetEventBus(VanguardEventBus eventBus, PresentationContext presentation)
     {
         this.presentation = presentation;
@@ -20,7 +23,11 @@ public partial class HandComponent : CardLineDynamic, ICardSpaceBindable<Hand>, 
     {
         if(ReferenceEquals(Hand, hand))
         {
-            presentation.Present(() => RemoveCard(card));
+            presentation.Present(() =>
+            {
+                presentation.Leaving(card, this);
+                RemoveCard(card);
+            });
         }
     }
 
@@ -28,7 +35,10 @@ public partial class HandComponent : CardLineDynamic, ICardSpaceBindable<Hand>, 
     {
         if(ReferenceEquals(Hand, hand))
         {
-            presentation.Present(() => AddCard(SceneFactory.CreateVanguardCard((VanguardCard)newCard)));
+            presentation.PresentArrival(newCard,
+                source => source is null || ReferenceEquals(source, DrawSource) ? CardMove.DeckToHand : CardMove.TriggerToHand,
+                this, DrawSource,
+                () => AddCard(SceneFactory.CreateVanguardCard((VanguardCard)newCard)));
         }
     }
 

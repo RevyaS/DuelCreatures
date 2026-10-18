@@ -1,8 +1,9 @@
+using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Vanguard;
 using DuelCreatures.Data;
 using Godot;
 
-public partial class CardVerticalStack : PanelContainer
+public partial class CardVerticalStack : PanelContainer, ICardLocation
 {
     CardContainer cardContainer = null!;
     PressArea PressArea = null!;
@@ -62,6 +63,17 @@ public partial class CardVerticalStack : PanelContainer
         PressArea = GetNode<PressArea>($"%{nameof(PressArea)}");
         PressArea.Pressed += OnPressed;
         Render();
+    }
+
+    public Card? FindCardNode(CardBase card)
+    {
+        var shown = cardContainer.CurrentCard;
+        return shown is not null && ReferenceEquals(shown.CurrentCard, card) ? shown : null;
+    }
+
+    public Transform2D GetCardTransform(CardBase? card)
+    {
+        return cardContainer.GetCardGlobalTransform();
     }
 
     protected virtual void OnPressed()

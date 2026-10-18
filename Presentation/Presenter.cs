@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using ArC.CardGames.Components;
 using Godot;
 
 public record PresentationStep(BoardSide Side, Func<Task> Play);
@@ -11,10 +13,36 @@ public record PresentationStep(BoardSide Side, Func<Task> Play);
 public class Presenter
 {
     readonly Queue<PresentationStep> steps = new();
+    readonly List<Task> inFlight = [];
+    readonly List<ICardLocation> holders = [];
     bool running = false;
     TaskCompletionSource? idle = null;
 
     public bool IsIdle => !running;
+
+    // Where each card was last shown, for card flights
+    public CardSightings Sightings { get; } = new();
+
+    // Where card flights are drawn; without one, moves just apply their end state
+    public CardFlightLayer? Flights { get; set; }
+
+    // Animations that outlive their step (staggered moves); the queue isn't idle until they end
+    public void Track(Task animation)
+    {
+        inFlight.Add(animation);
+    }
+
+    // A location that keeps showing cards the game has already moved on
+    // (e.g. the guard zone until the battle ends); those moves wait for it
+    public void AddHolder(ICardLocation location)
+    {
+        holders.Add(location);
+    }
+
+    public bool IsHeld(CardBase card)
+    {
+        return holders.Any(holder => holder.FindCardNode(card) is not null);
+    }
 
     public void Enqueue(BoardSide side, Func<Task> play)
     {
@@ -49,11 +77,27 @@ public class Presenter
     private async Task RunAsync()
     {
         running = true;
-        while(steps.TryDequeue(out var step))
+        while(true)
         {
+            while(steps.TryDequeue(out var step))
+            {
+                try
+                {
+                    await step.Play();
+                }
+                catch(Exception e)
+                {
+                    GD.PushError(e.ToString());
+                }
+            }
+
+            if(inFlight.Count == 0) break;
+
+            var animations = inFlight.ToArray();
+            inFlight.Clear();
             try
             {
-                await step.Play();
+                await Task.WhenAll(animations);
             }
             catch(Exception e)
             {

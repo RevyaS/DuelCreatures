@@ -16,13 +16,40 @@ public partial class DamageZoneComponent : CardLineStatic, ICardSpaceBindable<Da
         eventBus.CardAddedToDamageZone += OnCardAddedToDamageZone;
         eventBus.CardsAddedToDamageZone += OnCardsAddedToDamageZone;
         eventBus.CardTakenFromDamageZone += OnCardTakenFromDamageZone;
+        eventBus.CardFaceChanged += OnCardFaceChanged;
+    }
+
+    private void OnCardFaceChanged(ICardSpace space, CardBase card, bool faceUp)
+    {
+        if(!ReferenceEquals(space, DamageZone) || presentation is null) return;
+
+        var side = presentation.Side;
+        var flights = presentation.Presenter.Flights;
+        presentation.Present(async () =>
+        {
+            var node = FindCardNode(card);
+            if(node is null || node.IsFront == faceUp) return;
+
+            if(flights is not null && Presenter.Animates(side))
+            {
+                await flights.Flip(node, faceUp);
+            }
+            else
+            {
+                node.IsFront = faceUp;
+            }
+        });
     }
 
     private void OnCardTakenFromDamageZone(DamageZone zone, CardBase card)
     {
         if(ReferenceEquals(zone, DamageZone))
         {
-            presentation.Present(() => RemoveCard(card));
+            presentation.Present(() =>
+            {
+                presentation.Leaving(card, this);
+                RemoveCard(card);
+            });
         }
     }
 
@@ -30,14 +57,10 @@ public partial class DamageZoneComponent : CardLineStatic, ICardSpaceBindable<Da
     {
         if(ReferenceEquals(zone, DamageZone))
         {
-            var cards = list.ToList();
-            presentation.Present(() =>
+            foreach(var card in list.ToList())
             {
-                foreach(var card in cards)
-                {
-                    AddCard(SceneFactory.CreateVanguardCard((VanguardCard)card));
-                }
-            });
+                PresentArrival(card);
+            }
         }
     }
 
@@ -45,8 +68,14 @@ public partial class DamageZoneComponent : CardLineStatic, ICardSpaceBindable<Da
     {
         if(ReferenceEquals(zone, DamageZone))
         {
-            presentation.Present(() => AddCard(SceneFactory.CreateVanguardCard((VanguardCard)card)));
+            PresentArrival(card);
         }
+    }
+
+    private void PresentArrival(CardBase card)
+    {
+        presentation.PresentArrival(card, CardMove.TriggerToDamage, this, null,
+            () => AddCard(SceneFactory.CreateVanguardCard((VanguardCard)card)));
     }
 
     public void Bind(DamageZone damageZone)

@@ -30,7 +30,7 @@ public partial class DropZoneComponent: CardVerticalStack, ICardSpaceBindable<Dr
     {
         if(ReferenceEquals(DropZone, zone))
         {
-            PresentTopCard();
+            PresentArrivals(list);
         }
     }
 
@@ -43,18 +43,32 @@ public partial class DropZoneComponent: CardVerticalStack, ICardSpaceBindable<Dr
     {
         if(ReferenceEquals(DropZone, zone))
         {
-            PresentTopCard();
+            PresentArrivals([card]);
         }
     }
 
-    private void PresentTopCard()
+    private void PresentArrivals(List<CardBase> cards)
     {
-        var top = (VanguardCard?)DropZone.Cards.LastOrDefault();
-        presentation.Present(() =>
+        // Cards another location still shows (the guard zone until the battle ends)
+        // arrive later, when that location lets them go
+        var top = TopCardOfGame(includeHeld: false);
+        foreach(var card in cards.Where(card => !IsHeld(card)))
         {
-            topCard = top;
-            Render();
-        });
+            presentation.PresentArrival(card, CardMove.ToDropZone, this, null, () => ShowTopCard(top));
+        }
+    }
+
+    private bool IsHeld(CardBase card) => presentation?.Presenter.IsHeld(card) ?? false;
+
+    public VanguardCard? TopCardOfGame(bool includeHeld)
+    {
+        return (VanguardCard?)DropZone.Cards.LastOrDefault(card => includeHeld || !IsHeld(card));
+    }
+
+    public void ShowTopCard(VanguardCard? card)
+    {
+        topCard = card;
+        Render();
     }
 
     protected override void BeforeRender()
