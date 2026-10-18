@@ -349,6 +349,13 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
         Card cardComponent = SceneFactory.CreateVanguardCard(card);
         cardRotationContainer.AddCard(cardComponent);
         cardRotationContainer.FaceUp();
+
+        // The circle (not the card) is what's standing or resting, and it keeps that
+        // across card changes, e.g. an intercepting unit returning from the guard zone
+        if(UnitCircle is not null)
+        {
+            cardRotationContainer.ChangeOrientation(UnitCircle.Orientation);
+        }
     }
 
     public void UpdatePower(int newPower)
