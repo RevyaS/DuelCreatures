@@ -10,6 +10,9 @@ public partial class VanguardCardComponent : Card
     TextureRect TriggerRect = null!;
     public override VanguardCard CurrentCard => (VanguardCard)base.CurrentCard;
 
+    // The power/critical panel, e.g. to pulse it when they change
+    public Control StatsPanel => PowerPanel;
+
     const string DrawTriggerTexturePath = "res://Assets/Triggers/Draw.png";
     const string CriticalTriggerTexturePath = "res://Assets/Triggers/Critical.png";
     const string HealTriggerTexturePath = "res://Assets/Triggers/Heal.png";

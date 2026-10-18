@@ -25,7 +25,14 @@ public static class CardMotion
             place();
             return;
         }
-        context.Present(() => Arrive(context, card, pickMove, destination, fallbackSource, place, faceUp));
+        context.Present(() => ArriveAsync(context, card, pickMove, destination, fallbackSource, place, faceUp));
+    }
+
+    // For use inside a step that's already playing (no extra queueing)
+    public static Task ArriveAsync(this PresentationContext context, CardBase card, CardMove move,
+        ICardLocation destination, ICardLocation? fallbackSource, Action place, bool? faceUp = null)
+    {
+        return ArriveAsync(context, card, _ => move, destination, fallbackSource, place, faceUp);
     }
 
     // Call inside a removal step, right before a location removes its node for `card`
@@ -34,7 +41,7 @@ public static class CardMotion
         context?.Presenter.Sightings.Leaving(card, location);
     }
 
-    private static async Task Arrive(PresentationContext context, CardBase card, Func<ICardLocation?, CardMove> pickMove,
+    private static async Task ArriveAsync(PresentationContext context, CardBase card, Func<ICardLocation?, CardMove> pickMove,
         ICardLocation destination, ICardLocation? fallbackSource, Action place, bool? faceUp)
     {
         var presenter = context.Presenter;

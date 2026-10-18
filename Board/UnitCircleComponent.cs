@@ -315,14 +315,39 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
 
         var power = UnitCircle.GetOverallPower();
         var critical = UnitCircle.GetOverallCritical();
-        presentation.Present(() =>
+        presentation.Present(() => ShowStats(power, critical));
+    }
+
+    private async Task ShowStats(int power, int critical)
+    {
+        if(cardRotationContainer.CurrentCard is not VanguardCardComponent card || card.CurrentCard is null) return;
+
+        var oldPower = card.Power;
+        var oldCritical = card.Critical;
+        if(power > oldPower) presentation.PlaySfx(SfxCue.PowerUp);
+        if(critical > oldCritical) presentation.PlaySfx(SfxCue.CriticalUp);
+
+        var flights = presentation?.Presenter.Flights;
+        var changed = oldPower != power || oldCritical != critical;
+        if(flights is not null && presentation is not null && changed && Presenter.Animates(presentation.Side))
         {
-            if(cardRotationContainer.HasCard)
-            {
-                cardRotationContainer.UpdatePower(power);
-                cardRotationContainer.UpdateCrit(critical);
-            }
-        });
+            var panel = card.StatsPanel;
+            panel.PivotOffset = panel.Size / 2;
+            await Task.WhenAll(
+                flights.PlayKeyframes(panel, PresentationConfig.StatChangePulse),
+                flights.Animate(PresentationConfig.StatChange, weight =>
+                {
+                    if(!IsInstanceValid(card)) return;
+                    card.Power = Mathf.RoundToInt(Mathf.Lerp(oldPower, power, weight));
+                    card.Critical = Mathf.RoundToInt(Mathf.Lerp(oldCritical, critical, weight));
+                }));
+        }
+
+        if(IsInstanceValid(card))
+        {
+            card.Power = power;
+            card.Critical = critical;
+        }
     }
 
     private Task OnUnitCircleOrientationChanged(UnitCircle circle, Orientation orientation)

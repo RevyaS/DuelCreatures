@@ -13,6 +13,11 @@ public static class PresentationConfig
     public static BoardSide CheckReveal = BoardSide.Both;
     public static float CheckRevealHold = 0.4f;
 
+    // How long guards stay readable in the guard zone before the battle goes on
+    // (your own are placed by you, so by default only the opponent's hold)
+    public static BoardSide GuardReveal = BoardSide.Opponent;
+    public static float GuardRevealHold = 0.8f;
+
     // transition: ...
     public static readonly Dictionary<CardMove, Transition> Moves = new()
     {
@@ -23,6 +28,7 @@ public static class PresentationConfig
         [CardMove.TriggerToHand]     = new(0.35f, Easing.EaseInOut),
         [CardMove.ToDropZone]        = new(0.30f, Easing.EaseIn, Stagger: 0.05f),
         [CardMove.GuardToDropZone]   = new(0.30f, Easing.EaseIn, Stagger: 0.05f),
+        [CardMove.ToGuardZone]       = new(0.30f, Easing.EaseOut, Stagger: 0.06f),
         [CardMove.ToUnitCircle]      = new(0.30f, Easing.EaseOut),
     };
 
@@ -39,6 +45,15 @@ public static class PresentationConfig
         new(0.66f, Offset: new(30, -20), RotationDeg: 8),
         new(1.0f));
 
+    // Power/critical changes on a unit: the numbers count to the new value...
+    public static readonly Transition StatChange = new(0.30f, Easing.EaseOut);
+
+    // ...while the stat panel pulses (@keyframes pulse)
+    public static readonly Keyframes StatChangePulse = new(new(0.30f, Easing.EaseOut),
+        new(0.0f),
+        new(0.4f, Scale: 1.25f),
+        new(1.0f));
+
     // Sfx cue -> stream
     public static readonly Dictionary<SfxCue, string> SfxStreams = new()
     {
@@ -46,6 +61,9 @@ public static class PresentationConfig
         [SfxCue.Call] = "res://Assets/Sfx/call.ogg",
         [SfxCue.Target] = "res://Assets/Sfx/target.ogg",
         [SfxCue.PhaseChange] = "res://Assets/Sfx/phase_change.ogg",
+        // Cues without a stream are silent; map these when there are sounds for them
+        // [SfxCue.PowerUp] = "res://Assets/Sfx/power_up.ogg",
+        // [SfxCue.CriticalUp] = "res://Assets/Sfx/critical_up.ogg",
     };
 
     // Simultaneous sounds before the oldest one gets cut off

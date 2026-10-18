@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ArC.CardGames;
+using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Predefined.Vanguard;
 using Godot;
@@ -14,6 +15,14 @@ public partial class DuelCreaturesBoard : Control
     VanguardGameSession _gameSession = null!;
     PresentationContext presentation = null!;
     PresentationContext playerPresentation = null!;
+    PresentationContext oppPresentation = null!;
+
+    // Whose guards the guard zone is showing for the current battle
+    BoardSide guardingSide = BoardSide.None;
+    // The opponent's guards: ArC puts them in the drop zone before announcing them
+    // (OnGuarded), so everything reaching the drop zone in between is held back
+    bool collectingOppGuards = false;
+    readonly List<CardBase> oppGuards = [];
     VanguardPlayerProfile player1 => _gameSession.Game.Player1;
     VanguardPlayerProfile player2 => _gameSession.Game.Player2;
     Stack<string> playerPhaseIndicatorStack = new();
@@ -29,6 +38,10 @@ public partial class DuelCreaturesBoard : Control
         LeftButton = GetNode<Button>($"%{nameof(LeftButton)}");
         LeftButton.Pressed += OnLeftButtonPressed;
         SetComponents();
+
+        // Hands live outside the play areas, so they take their side's sleeve from there
+        PlayerHand.SleeveInfo = PlayerArea.SleeveInfo;
+        OppHand.SleeveInfo = OppArea.SleeveInfo;
 
         PlayerArea.Circles.ForEach((circle) =>
         {
@@ -183,10 +196,12 @@ public partial class DuelCreaturesBoard : Control
         _gameSession = gameSession;
         presentation = new(presenter, Sfx, BoardSide.Both);
         playerPresentation = presentation with { Side = BoardSide.Player };
+        oppPresentation = presentation with { Side = BoardSide.Opponent };
 
         // Guards stay on the guard zone until the battle ends, even though the game
         // already put them in the drop zone
         presenter.AddHolder(GuardZone);
+        presenter.AddHolder(_ => collectingOppGuards);
 
         Reset();
 
@@ -206,10 +221,13 @@ public partial class DuelCreaturesBoard : Control
     {
         eventBus.PhaseChanged += OnPhaseChanged;
         eventBus.AttackEnded += OnAttackEnded;
+        eventBus.OnGuardRequested += OnGuardRequested;
+        eventBus.OnGuarded += OnGuarded;
+        eventBus.CardAddedToDropZone += OnCardAddedToDropZone;
+        eventBus.CardsAddedToDropZone += OnCardsAddedToDropZone;
         eventBus.OnAttack += OnAttack;
         eventBus.CardAssignedToUnitCircle += OnCardAssignedToUnitCircle;
 
-        var oppPresentation = presentation with { Side = BoardSide.Opponent };
 
         PlayerHand.DrawSource = PlayerArea.DeckLocation;
         OppHand.DrawSource = OppArea.DeckLocation;
@@ -238,19 +256,73 @@ public partial class DuelCreaturesBoard : Control
         PlayerArea.RecalculateStats();
     }
 
+    private Task OnGuardRequested(UnitCircle circle)
+    {
+        var defender = OppArea.GetUnitCircleComponentOrDefault(circle) is not null ? BoardSide.Opponent : BoardSide.Player;
+        guardingSide = defender;
+        if(defender == BoardSide.Opponent)
+        {
+            collectingOppGuards = true;
+            oppGuards.Clear();
+        }
+        return Task.CompletedTask;
+    }
+
+    private void OnCardAddedToDropZone(DropZone zone, CardBase card)
+    {
+        if(collectingOppGuards) oppGuards.Add(card);
+    }
+
+    private void OnCardsAddedToDropZone(DropZone zone, List<CardBase> cards)
+    {
+        if(collectingOppGuards) oppGuards.AddRange(cards);
+    }
+
+    private void OnGuarded(List<CardBase> guardCards, Hand hand)
+    {
+        if(!collectingOppGuards) return;
+        collectingOppGuards = false;
+
+        // Guards from the hand and intercepting units fly to the guard zone, then stay readable
+        foreach(var guard in oppGuards.ToList())
+        {
+            oppPresentation.PresentArrival(guard, CardMove.ToGuardZone, GuardZone, null, () =>
+            {
+                if(!GuardZone.IsFull)
+                {
+                    GuardZone.AddCard(SceneFactory.CreateVanguardCard((VanguardCard)guard));
+                }
+            });
+        }
+        oppGuards.Clear();
+
+        oppPresentation.Present(async () =>
+        {
+            if(PresentationConfig.GuardReveal.Includes(BoardSide.Opponent) && PresentationConfig.GuardRevealHold > 0)
+            {
+                await ToSignal(GetTree().CreateTimer(PresentationConfig.GuardRevealHold), SceneTreeTimer.SignalName.Timeout);
+            }
+        });
+    }
+
     private Task OnAttackEnded()
     {
-        // Guards and interceptors go to the drop zone now that the battle is over
-        var dropZone = PlayerArea.DropZone;
+        // Guards and interceptors go to their owner's drop zone now that the battle is over
+        var side = guardingSide;
+        guardingSide = BoardSide.None;
+        var context = side == BoardSide.Opponent ? oppPresentation : playerPresentation;
+        var dropZone = side == BoardSide.Opponent ? OppArea.DropZone : PlayerArea.DropZone;
         var dropTop = dropZone.TopCardOfGame(includeHeld: true);
-        foreach(var guard in GuardZone.GetNonEmptyCards().Select(node => node.CurrentCard).ToList())
-        {
-            playerPresentation.PresentArrival(guard, CardMove.GuardToDropZone, dropZone, GuardZone,
-                () => dropZone.ShowTopCard(dropTop));
-        }
 
-        presentation.Present(() =>
+        presentation.Present(async () =>
         {
+            // Read the guard zone when this plays: the opponent's guards are placed by earlier steps
+            foreach(var guard in GuardZone.GetNonEmptyCards().Select(node => node.CurrentCard).ToList())
+            {
+                await context.ArriveAsync(guard, CardMove.GuardToDropZone, dropZone, GuardZone,
+                    () => dropZone.ShowTopCard(dropTop));
+            }
+
             GuardZone.ClearCards();
             HideAttackLines();
             HideBoostLines();

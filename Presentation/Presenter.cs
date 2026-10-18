@@ -14,7 +14,7 @@ public class Presenter
 {
     readonly Queue<PresentationStep> steps = new();
     readonly List<Task> inFlight = [];
-    readonly List<ICardLocation> holders = [];
+    readonly List<Func<CardBase, bool>> holders = [];
     bool running = false;
     TaskCompletionSource? idle = null;
 
@@ -36,12 +36,19 @@ public class Presenter
     // (e.g. the guard zone until the battle ends); those moves wait for it
     public void AddHolder(ICardLocation location)
     {
-        holders.Add(location);
+        holders.Add(card => location.FindCardNode(card) is not null);
+    }
+
+    // Same, for cards that aren't shown anywhere yet but will be (e.g. guards the game
+    // already sent to the drop zone before saying they were guards)
+    public void AddHolder(Func<CardBase, bool> holds)
+    {
+        holders.Add(holds);
     }
 
     public bool IsHeld(CardBase card)
     {
-        return holders.Any(holder => holder.FindCardNode(card) is not null);
+        return holders.Any(holds => holds(card));
     }
 
     public void Enqueue(BoardSide side, Func<Task> play)

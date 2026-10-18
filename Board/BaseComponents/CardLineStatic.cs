@@ -132,6 +132,8 @@ public partial class CardLineStatic : CardLine
         lastIndex--;
     }
 
+    public bool IsFull => lastIndex >= MaxCards;
+
     protected override Transform2D GetNextSlotTransform()
     {
         if(lastIndex < Container.GetChildCount<CardContainer>())

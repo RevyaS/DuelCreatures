@@ -103,7 +103,7 @@ public partial class CardFlightLayer : Control
                 .SetTrans(timing.Ease.ToTransitionType()).SetEase(timing.Ease.ToEaseType());
             tween.Parallel().TweenProperty(target, "rotation", baseRotation + Mathf.DegToRad(frame.RotationDeg), segment)
                 .SetTrans(timing.Ease.ToTransitionType()).SetEase(timing.Ease.ToEaseType());
-            tween.Parallel().TweenProperty(target, "scale", new Vector2(baseScale.X * frame.ScaleX, baseScale.Y), segment)
+            tween.Parallel().TweenProperty(target, "scale", new Vector2(baseScale.X * frame.Scale * frame.ScaleX, baseScale.Y * frame.Scale), segment)
                 .SetTrans(timing.Ease.ToTransitionType()).SetEase(timing.Ease.ToEaseType());
 
             if(onFrame is not null)
@@ -112,6 +112,21 @@ public partial class CardFlightLayer : Control
                 tween.TweenCallback(Callable.From(() => onFrame(frameIndex)));
             }
         }
+
+        await ToSignal(tween, Tween.SignalName.Finished);
+    }
+
+    // Runs `apply` with a weight going 0 -> 1 over the transition (e.g. counting a number up)
+    public async Task Animate(Transition transition, Action<float> apply)
+    {
+        var tween = CreateTween();
+        if(transition.Delay > 0)
+        {
+            tween.TweenInterval(transition.Delay);
+        }
+        tween.TweenMethod(Callable.From(apply), 0f, 1f, Duration(transition.Duration))
+            .SetTrans(transition.Ease.ToTransitionType())
+            .SetEase(transition.Ease.ToEaseType());
 
         await ToSignal(tween, Tween.SignalName.Finished);
     }

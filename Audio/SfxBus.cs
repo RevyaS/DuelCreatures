@@ -6,6 +6,8 @@ public enum SfxCue
     Call,
     Target,
     PhaseChange,
+    PowerUp,
+    CriticalUp,
 }
 
 // Everything that wants a sound raises it here; SfxPlayer decides whether it plays

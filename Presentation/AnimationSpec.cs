@@ -21,6 +21,7 @@ public enum CardMove
     TriggerToHand,
     ToDropZone,
     GuardToDropZone,
+    ToGuardZone,
     ToUnitCircle,
 }
 
@@ -39,8 +40,8 @@ public enum Easing
 public record Transition(float Duration, Easing Ease = Easing.EaseOut, float Delay = 0, float Stagger = 0);
 
 // Like one step of `@keyframes`: At goes from 0 (0%) to 1 (100%),
-// the rest is relative to the card's resting transform
-public record Keyframe(float At, Vector2 Offset = default, float RotationDeg = 0, float ScaleX = 1);
+// the rest is relative to the target's resting transform (Scale is uniform, ScaleX horizontal only)
+public record Keyframe(float At, Vector2 Offset = default, float RotationDeg = 0, float ScaleX = 1, float Scale = 1);
 
 // Like `@keyframes name { ... }` plus the animation's timing
 public record Keyframes(Transition Timing, params Keyframe[] Frames);
