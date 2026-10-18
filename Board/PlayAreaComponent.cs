@@ -9,6 +9,7 @@ using Godot;
 public partial class PlayAreaComponent : Control, IPlayAreaBindable, IEventBusUtilizer
 {
     Label PhaseIndicator = null!;
+    QuarterTurnContainer PhaseIndicatorTurn = null!, DeckTurn = null!;
     public UnitCircleComponent Vanguard { get; private set; } = null!;
     public UnitCircleComponent BackCenter { get; private set; } = null!;
     public UnitCircleComponent FrontLeft { get; private set; } = null!;
@@ -78,8 +79,9 @@ public partial class PlayAreaComponent : Control, IPlayAreaBindable, IEventBusUt
         if(!IsInsideTree()) return;
         Circles.ForEach(x => x.FlippedAppearance = FlippedAppearance);
         AllExtraFields.ForEach(x => x.FlippedAppearance = FlippedAppearance);
-        PhaseIndicator.RotationDegrees = FlippedAppearance ? 180 : 0;
-        Deck.RotationDegrees = FlippedAppearance ? 180 : 0;
+        var turns = FlippedAppearance ? QuarterTurnContainer.QuarterTurn.Deg180 : QuarterTurnContainer.QuarterTurn.Deg0;
+        PhaseIndicatorTurn.Turns = turns;
+        DeckTurn.Turns = turns;
         Deck.SleeveInfo = SleeveInfo;
         DamageZone.SleeveInfo = SleeveInfo;
     }
@@ -87,6 +89,8 @@ public partial class PlayAreaComponent : Control, IPlayAreaBindable, IEventBusUt
     public override void _Ready()
     {
         PhaseIndicator = GetNode<Label>($"%{nameof(PhaseIndicator)}");
+        PhaseIndicatorTurn = GetNode<QuarterTurnContainer>($"%{nameof(PhaseIndicatorTurn)}");
+        DeckTurn = GetNode<QuarterTurnContainer>($"%{nameof(DeckTurn)}");
         Deck = GetNode<DeckComponent>($"%{nameof(Deck)}");
 
         ExtraLeft1 = GetNode<UnitCircleComponent>($"%{nameof(ExtraLeft1)}");

@@ -3,7 +3,7 @@ using ArC.CardGames.Predefined.Vanguard;
 using Godot;
 
 [Tool]
-public partial class TriggerZoneComponent : HorizontalCardArea, ICardSpaceBindable<TriggerZone>, IEventBusUtilizer
+public partial class TriggerZoneComponent : CardArea, ICardSpaceBindable<TriggerZone>, IEventBusUtilizer
 {
     [Export]
     public float RemoveCardDelayTime { get; set; } = 0;   

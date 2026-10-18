@@ -1,6 +1,8 @@
 using Godot;
 
-public partial class HorizontalCardArea : PanelContainer
+// Holds a single upright card. Turn it with a QuarterTurnContainer
+// when it needs to lie sideways (e.g. the trigger zone)
+public partial class CardArea : PanelContainer
 {
     CardContainer Container = null!;
 
