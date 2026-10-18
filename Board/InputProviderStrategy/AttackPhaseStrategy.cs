@@ -130,6 +130,12 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
         GameBoard.PlayerCircleScreenDragReleased -= dragReleaseHandler;
         GameBoard.OppCircleHoverReleased -= oppHoverReleaseHandler;
 
+        // The hover/drag areas sit on top of the cards and block their input
+        // (e.g. long pressing the opponent's Vanguard), so don't leave them on
+        GameBoard.DisablePlayerUnitCircleScreenDragging();
+        GameBoard.DisablePlayerFrontRowUnitCircleHovering();
+        GameBoard.DisableOppFrontRowUnitCircleHovering();
+
         GD.Print("Attack phase action selected: ", result.GetType().Name);
         return result;
     }
