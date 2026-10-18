@@ -21,7 +21,7 @@ public class RidePhaseStrategy(DuelCreaturesBoard Board) : IInputProviderStrateg
             Board.PlayerArea.Vanguard.CardDropped += selectionHandler; 
             Action endPhaseHandler = () =>
             {
-                Board.PlayPhaseChangeSfx();
+                Board.Sfx.Play(SfxCue.PhaseChange, BoardSide.Player);
                 completionSource.SetResult(null);
             };
             Board.LeftButtonPressed += endPhaseHandler;
@@ -60,7 +60,6 @@ public class RidePhaseStrategy(DuelCreaturesBoard Board) : IInputProviderStrateg
                 GD.PushError(exception.Message);
             } else
             {
-                Board.PlayRideSfx();
                 break;
             }
         }

@@ -4,7 +4,8 @@ using Godot;
 
 public partial class DuelCreaturesBoard : Control
 {
-    AudioStreamPlayer SfxPlayer = null!;
+    // Everything that wants a sound raises it here (see PresentationConfig for which sides play)
+    public SfxBus Sfx { get; } = new();
 
     public PlayAreaComponent PlayerArea { get; private set; } = null!;
     public PlayAreaComponent OppArea { get; private set; } = null!;
@@ -27,7 +28,9 @@ public partial class DuelCreaturesBoard : Control
 
     private void SetComponents()
     {
-        SfxPlayer = GetNode<AudioStreamPlayer>($"%{nameof(SfxPlayer)}");
+        var sfxPlayer = new SfxPlayer();
+        AddChild(sfxPlayer);
+        sfxPlayer.Listen(Sfx);
 
         PlayerArea = GetNode<PlayAreaComponent>($"%{nameof(PlayerArea)}");
         OppArea = GetNode<PlayAreaComponent>($"%{nameof(OppArea)}");

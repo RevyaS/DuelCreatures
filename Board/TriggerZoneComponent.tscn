@@ -5,4 +5,3 @@
 
 [node name="Panel" instance=ExtResource("1_wnbwo")]
 script = ExtResource("2_u60w1")
-RemoveCardDelayTime = 0.0

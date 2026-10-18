@@ -79,7 +79,7 @@ public partial class Session : Control
     private async Task StartGame(VanguardGameSession session)
     {
         session.StartGame();
-        Board.ApplySession(session);
+        Board.ApplySession(session, InputProviderComponent.Presenter);
 
         #region DEBUG
         // session.Game.Board.Player1Area.Vanguard.Assign(RoyalPaladin.LittleSageMarron);
@@ -107,6 +107,7 @@ public partial class Session : Control
         {
             GD.Print($"Applying session {session.CurrentPhase}");
             await session.ExecutePhase();
+            await InputProviderComponent.Presenter.WhenIdle();
         }
 
         if(session.Winner() == session.Game.Player1)

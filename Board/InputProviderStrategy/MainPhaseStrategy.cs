@@ -53,7 +53,7 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, CardInfo CardInfo, Game
 
         Action endPhaseHandler = () => {
             var selected = actions.FirstOf<EndMainPhase>();
-            Board.PlayPhaseChangeSfx();
+            Board.Sfx.Play(SfxCue.PhaseChange, BoardSide.Player);
             completionSource.SetResult(selected);
         };
         Board.LeftButtonPressed +=  endPhaseHandler;
@@ -111,11 +111,6 @@ public class MainPhaseStrategy(DuelCreaturesBoard Board, CardInfo CardInfo, Game
         Board.DisablePlayerRearguardDropping();
         Board.DisablePlayerHandDragging();
         CardInfo.ShowActivateButton = false;
-
-        if(result is CallRearguard)
-        {
-            Board.PlayCallSfx();
-        }
 
         return result;
     }

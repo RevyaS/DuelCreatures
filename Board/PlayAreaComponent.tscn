@@ -265,7 +265,6 @@ Turns = 3
 unique_name_in_owner = true
 custom_minimum_size = Vector2(139, 193)
 layout_mode = 2
-RemoveCardDelayTime = 0.4
 
 [node name="Control" type="MarginContainer" parent="Sections/MarginContainer/HBoxContainer/Right"]
 layout_mode = 2

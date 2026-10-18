@@ -6,19 +6,22 @@ using Godot;
 public partial class DeckComponent : CardVerticalStack, ICardSpaceBindable<Deck>, IEventBusUtilizer
 {
     Deck Deck = null!;
+    PresentationContext? presentation = null;
 
     public void Bind(Deck deck)
     {
         Deck = deck;
     }
 
-    public void SetEventBus(VanguardEventBus eventBus)
+    public void SetEventBus(VanguardEventBus eventBus, PresentationContext presentation)
     {
+        this.presentation = presentation;
         eventBus.AfterDeckDrawn += OnDeckDrawn;
     }
 
     private void OnDeckDrawn()
     {
-        CountValue = Deck.Cards.Count;
+        var count = Deck.Cards.Count;
+        presentation.Present(() => CountValue = count);
     }
 }

@@ -7,9 +7,11 @@ using Godot;
 public partial class HandComponent : CardLineDynamic, ICardSpaceBindable<Hand>, IEventBusUtilizer
 {
     public Hand Hand { get; private set; } = null!;
+    PresentationContext? presentation = null;
 
-    public void SetEventBus(VanguardEventBus eventBus)
+    public void SetEventBus(VanguardEventBus eventBus, PresentationContext presentation)
     {
+        this.presentation = presentation;
         eventBus.CardAddedToHand += OnCardAddedToHand;
         eventBus.CardTakenFromHand += OnCardTakenFromHand;
     }
@@ -18,7 +20,7 @@ public partial class HandComponent : CardLineDynamic, ICardSpaceBindable<Hand>, 
     {
         if(ReferenceEquals(Hand, hand))
         {
-            RemoveCard(card);
+            presentation.Present(() => RemoveCard(card));
         }
     }
 
@@ -26,7 +28,7 @@ public partial class HandComponent : CardLineDynamic, ICardSpaceBindable<Hand>, 
     {
         if(ReferenceEquals(Hand, hand))
         {
-            AddCard(SceneFactory.CreateVanguardCard((VanguardCard)newCard));
+            presentation.Present(() => AddCard(SceneFactory.CreateVanguardCard((VanguardCard)newCard)));
         }
     }
 

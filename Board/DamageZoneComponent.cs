@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Vanguard;
 using Godot;
@@ -7,8 +8,11 @@ using Godot;
 public partial class DamageZoneComponent : CardLineStatic, ICardSpaceBindable<DamageZone>, IEventBusUtilizer
 {
     DamageZone DamageZone = null!;
-    public void SetEventBus(VanguardEventBus eventBus)
+    PresentationContext? presentation = null;
+
+    public void SetEventBus(VanguardEventBus eventBus, PresentationContext presentation)
     {
+        this.presentation = presentation;
         eventBus.CardAddedToDamageZone += OnCardAddedToDamageZone;
         eventBus.CardsAddedToDamageZone += OnCardsAddedToDamageZone;
         eventBus.CardTakenFromDamageZone += OnCardTakenFromDamageZone;
@@ -18,7 +22,7 @@ public partial class DamageZoneComponent : CardLineStatic, ICardSpaceBindable<Da
     {
         if(ReferenceEquals(zone, DamageZone))
         {
-            RemoveCard(card);
+            presentation.Present(() => RemoveCard(card));
         }
     }
 
@@ -26,10 +30,14 @@ public partial class DamageZoneComponent : CardLineStatic, ICardSpaceBindable<Da
     {
         if(ReferenceEquals(zone, DamageZone))
         {
-            foreach(var card in list)
+            var cards = list.ToList();
+            presentation.Present(() =>
             {
-                AddCard(SceneFactory.CreateVanguardCard((VanguardCard)card));
-            }
+                foreach(var card in cards)
+                {
+                    AddCard(SceneFactory.CreateVanguardCard((VanguardCard)card));
+                }
+            });
         }
     }
 
@@ -37,7 +45,7 @@ public partial class DamageZoneComponent : CardLineStatic, ICardSpaceBindable<Da
     {
         if(ReferenceEquals(zone, DamageZone))
         {
-            AddCard(SceneFactory.CreateVanguardCard((VanguardCard)card));
+            presentation.Present(() => AddCard(SceneFactory.CreateVanguardCard((VanguardCard)card)));
         }
     }
 

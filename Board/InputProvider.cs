@@ -22,6 +22,9 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     public VanguardSkillService SkillService { get; private set; } = null!;
 
+    // Board animations play from this queue; prompts wait until it's done
+    public Presenter Presenter { get; } = new();
+
     VanguardCard CurrentVanguard => PlayArea.Vanguard.Card!;
     PlayAreaBase IPlayerInputProvider.PlayArea => PlayArea;
     GameContext GameContext = null!;
@@ -230,73 +233,80 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         CardInfoComponent.Show((VanguardCard)card.CurrentCard, canActivate);
     }
 
+    // Don't prompt the player before the board has caught up with the game
+    private async Task<T> WhenPresented<T>(Func<Task<T>> request)
+    {
+        await Presenter.WhenIdle();
+        return await request();
+    }
+
     public Task<List<CardBase>> SelectCardsFromHandRange(int minimum, int maximum)
     {
-        return ((ISelectCardsFromHand)strategy).SelectCardsFromHand(minimum, maximum);
+        return WhenPresented(() => ((ISelectCardsFromHand)strategy).SelectCardsFromHand(minimum, maximum));
     }
 
     public Task<CardBase?> SelectCardFromHandOrNot()
     {
-        return ((ISelectCardFromHandOrNot)strategy).SelectCardFromHandOrNot(CurrentVanguard);
+        return WhenPresented(() => ((ISelectCardFromHandOrNot)strategy).SelectCardFromHandOrNot(CurrentVanguard));
     }
 
     public Task<IMainPhaseAction> RequestMainPhaseAction(List<IMainPhaseAction> actions)
     {
-        return ((IRequestMainPhaseAction)strategy).RequestMainPhaseAction(actions);
+        return WhenPresented(() => ((IRequestMainPhaseAction)strategy).RequestMainPhaseAction(actions));
     }
 
     public Task<UnitCircle> SelectOpponentCircle(UnitSelector selector)
     {
-        return ((ISelectOpponentCircle)strategy).SelectOpponentCircle(selector);
+        return WhenPresented(() => ((ISelectOpponentCircle)strategy).SelectOpponentCircle(selector));
     }
 
     public Task<UnitCircle> SelectOwnUnitCircle(UnitSelector selector)
     {
-        return ((ISelectOwnUnitCircle)strategy).SelectOwnUnitCircle(selector);
+        return WhenPresented(() => ((ISelectOwnUnitCircle)strategy).SelectOwnUnitCircle(selector));
     }
 
     public Task<VanguardActivationSkill> SelectSkillToActivate(List<VanguardActivationSkill> skills)
     {
-        return ((ISelectSkillToActivate)strategy).SelectSkillToActivate(skills);
+        return WhenPresented(() => ((ISelectSkillToActivate)strategy).SelectSkillToActivate(skills));
     }
 
     public Task<VanguardCard> SelectCardFromDamageZone()
     {
-        return ((ISelectCardFromDamageZone)strategy).SelectCardFromDamageZone();
+        return WhenPresented(() => ((ISelectCardFromDamageZone)strategy).SelectCardFromDamageZone());
     }
 
     public Task<VanguardCard> SelectCardFromDeck(int minGrade, int maxGrade)
     {
-        return ((ISelectCardFromDeck)strategy).SelectCardFromDeck(minGrade, maxGrade);
+        return WhenPresented(() => ((ISelectCardFromDeck)strategy).SelectCardFromDeck(minGrade, maxGrade));
     }
 
     public Task<List<VanguardCard>> SelectCardsFromDamageZone(int amount)
     {
-        return ((ISelectCardsFromDamageZone)strategy).SelectCardsFromDamageZone(amount);
+        return WhenPresented(() => ((ISelectCardsFromDamageZone)strategy).SelectCardsFromDamageZone(amount));
     }
 
     public Task<List<VanguardCard>> SelectCardsFromSoul(int amount)
     {
-        return ((ISelectCardsFromSoul)strategy).SelectCardsFromSoul(amount);
+        return WhenPresented(() => ((ISelectCardsFromSoul)strategy).SelectCardsFromSoul(amount));
     }
 
     public Task<bool> QueryActivateSkill(VanguardCard Invoker, VanguardAutomaticSkill Skill)
     {
-        return ((IQueryActivateSkill)strategy).QueryActivateSkill(Invoker, Skill);
+        return WhenPresented(() => ((IQueryActivateSkill)strategy).QueryActivateSkill(Invoker, Skill));
     }
 
     public Task<CardBase> SelectCardFromHand()
     {
-        return ((ISelectCardFromHand)strategy).SelectCardFromHand();
+        return WhenPresented(() => ((ISelectCardFromHand)strategy).SelectCardFromHand());
     }
 
     public Task<IAttackPhaseAction> RequestAttackPhaseAction(List<IAttackPhaseAction> actions)
     {
-        return ((IRequestAttackPhaseAction)strategy).RequestAttackPhaseAction(actions);
+        return WhenPresented(() => ((IRequestAttackPhaseAction)strategy).RequestAttackPhaseAction(actions));
     }
 
     public Task<List<UnitCircle>> SelectOwnUnitCircles(UnitSelector selector)
     {
-        return ((ISelectOwnUnitCircles)strategy).SelectOwnUnitCircles(selector);
+        return WhenPresented(() => ((ISelectOwnUnitCircles)strategy).SelectOwnUnitCircles(selector));
     }
 }

@@ -16,6 +16,7 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
     Control TargetIndicators = null!;
 
     public UnitCircle UnitCircle { get; private set; } = null!;
+    PresentationContext? presentation = null;
 
     private bool isSelected = false;
     public bool IsSelected => isSelected;
@@ -237,8 +238,9 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
         RearguardCardDragging?.Invoke(this, component);
     }
 
-    public void SetEventBus(VanguardEventBus eventBus)
+    public void SetEventBus(VanguardEventBus eventBus, PresentationContext presentation)
     {
+        this.presentation = presentation;
         eventBus.CardAssignedToUnitCircle += OnCardAssignedToUnitCircle;
         eventBus.CardRemovedFromUnitCircle += OnCardRemovedFromUnitCircle;
         eventBus.UnitCircleOrientationChanged += OnUnitCircleOrientationChanged;
@@ -260,7 +262,7 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
         {
             if(circle.Card is null)
             {
-                cardRotationContainer.RemoveCardAndFree();
+                presentation.Present(() => cardRotationContainer.RemoveCardAndFree());
             }
         }
         return Task.CompletedTask;
@@ -276,18 +278,25 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
 
     public void UpdateStats()
     {
-        if(cardRotationContainer.HasCard && !UnitCircle.IsEmpty)
+        if(UnitCircle is null || UnitCircle.IsEmpty) return;
+
+        var power = UnitCircle.GetOverallPower();
+        var critical = UnitCircle.GetOverallCritical();
+        presentation.Present(() =>
         {
-            cardRotationContainer.UpdatePower(UnitCircle.GetOverallPower());
-            cardRotationContainer.UpdateCrit(UnitCircle.GetOverallCritical());
-        }
+            if(cardRotationContainer.HasCard)
+            {
+                cardRotationContainer.UpdatePower(power);
+                cardRotationContainer.UpdateCrit(critical);
+            }
+        });
     }
 
     private Task OnUnitCircleOrientationChanged(UnitCircle circle, Orientation orientation)
     {
         if(ReferenceEquals(circle, UnitCircle))
         {
-            cardRotationContainer.ChangeOrientation(orientation);
+            presentation.Present(() => cardRotationContainer.ChangeOrientation(orientation));
         }
         return Task.CompletedTask;
     }
@@ -296,13 +305,19 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
     {
         if(ReferenceEquals(circle, UnitCircle))
         {
-            if(circle.Card is null)
+            var card = circle.Card;
+            var orientation = circle.Orientation;
+            presentation.Present(() =>
             {
-                cardRotationContainer.RemoveCardAndFree();
-            } else
-            {
-                SetCard(circle.Card!);
-            }
+                if(card is null)
+                {
+                    cardRotationContainer.RemoveCardAndFree();
+                    return;
+                }
+
+                SetCard(card, orientation);
+                presentation?.PlaySfx(circle is RearGuard ? SfxCue.Call : SfxCue.Ride);
+            });
         }
         return Task.CompletedTask;
     }
@@ -344,7 +359,7 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
         cardRotationContainer.FaceUp();
     }
 
-    public void SetCard(VanguardCard card)
+    public void SetCard(VanguardCard card, Orientation? orientation = null)
     {
         Card cardComponent = SceneFactory.CreateVanguardCard(card);
         cardRotationContainer.AddCard(cardComponent);
@@ -352,9 +367,10 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
 
         // The circle (not the card) is what's standing or resting, and it keeps that
         // across card changes, e.g. an intercepting unit returning from the guard zone
-        if(UnitCircle is not null)
+        var circleOrientation = orientation ?? UnitCircle?.Orientation;
+        if(circleOrientation is not null)
         {
-            cardRotationContainer.ChangeOrientation(UnitCircle.Orientation);
+            cardRotationContainer.ChangeOrientation(circleOrientation.Value);
         }
     }
 

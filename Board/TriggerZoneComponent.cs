@@ -1,40 +1,51 @@
 using System.Threading.Tasks;
+using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Vanguard;
 using Godot;
 
 [Tool]
 public partial class TriggerZoneComponent : CardArea, ICardSpaceBindable<TriggerZone>, IEventBusUtilizer
 {
-    [Export]
-    public float RemoveCardDelayTime { get; set; } = 0;   
-
     TriggerZone TriggerZone = null!;
+    PresentationContext? presentation = null;
+
     public void Bind(TriggerZone triggerZone)
     {
         TriggerZone = triggerZone;
     }
 
-    public void SetEventBus(VanguardEventBus eventBus)
+    public void SetEventBus(VanguardEventBus eventBus, PresentationContext presentation)
     {
+        this.presentation = presentation;
         eventBus.CardAddedToTriggerZone += OnCardAddedToTriggerZone;
         eventBus.CardRemovedFromTriggerZone += OnCardRemovedFromTriggerZone;
     }
 
-    private async Task OnCardRemovedFromTriggerZone(TriggerZone zone)
+    private Task OnCardRemovedFromTriggerZone(TriggerZone zone, CardBase? removedCard)
     {
-        if(ReferenceEquals(zone, TriggerZone))
+        if(ReferenceEquals(zone, TriggerZone) && presentation is not null)
         {
-            await ToSignal(GetTree().CreateTimer(RemoveCardDelayTime), "timeout");
-            Render();
+            // Keep the checked card visible for a moment (drive/damage check reveal).
+            // It's held in the presentation queue, so it also delays the next prompt.
+            var side = presentation.Side;
+            presentation.Present(async () =>
+            {
+                if(PresentationConfig.CheckReveal.Includes(side) && PresentationConfig.CheckRevealHold > 0)
+                {
+                    await ToSignal(GetTree().CreateTimer(PresentationConfig.CheckRevealHold), SceneTreeTimer.SignalName.Timeout);
+                }
+                ShowCard(null);
+            });
         }
+        return Task.CompletedTask;
     }
 
-    private void Render()
+    private void ShowCard(VanguardCard? card)
     {
-        if(TriggerZone.IsEmpty) {
+        if(card is null) {
             ClearCard();
         } else {
-            AddCard(SceneFactory.CreateVanguardCard((VanguardCard)TriggerZone.Card!));
+            AddCard(SceneFactory.CreateVanguardCard(card));
         }
     }
 
@@ -42,7 +53,8 @@ public partial class TriggerZoneComponent : CardArea, ICardSpaceBindable<Trigger
     {
         if(ReferenceEquals(zone, TriggerZone))
         {
-            Render();
+            var card = (VanguardCard?)zone.Card;
+            presentation.Present(() => ShowCard(card));
         }
         return Task.CompletedTask;
     }

@@ -27,7 +27,7 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
         
         Action endPhaseHandler = () =>
         {
-            Board.PlayPhaseChangeSfx();
+            Board.Sfx.Play(SfxCue.PhaseChange, BoardSide.Player);
             completionSource.SetResult(actions.FirstOf<EndAttackPhase>());
         };
 
@@ -79,7 +79,7 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
                 {
                     GameBoard.OppArea.HideTargetIndicators();
                     targetCircle.ShowTargetIndicators();
-                    GameBoard.PlayTargetSfx();
+                    GameBoard.Sfx.Play(SfxCue.Target, BoardSide.Player);
                 }
 
                 GameBoard.HideAttackLines();

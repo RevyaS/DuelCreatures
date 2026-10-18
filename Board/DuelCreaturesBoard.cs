@@ -11,6 +11,7 @@ public partial class DuelCreaturesBoard : Control
     Button LeftButton = null!;
 
     VanguardGameSession _gameSession = null!;
+    PresentationContext presentation = null!;
     VanguardPlayerProfile player1 => _gameSession.Game.Player1;
     VanguardPlayerProfile player2 => _gameSession.Game.Player2;
     Stack<string> playerPhaseIndicatorStack = new();
@@ -175,9 +176,10 @@ public partial class DuelCreaturesBoard : Control
         HandCardPressed?.Invoke(card);
     }
 
-    public void ApplySession(VanguardGameSession gameSession)
+    public void ApplySession(VanguardGameSession gameSession, Presenter presenter)
     {
         _gameSession = gameSession;
+        presentation = new(presenter, Sfx, BoardSide.Both);
 
         Reset();
 
@@ -200,16 +202,20 @@ public partial class DuelCreaturesBoard : Control
         eventBus.OnAttack += OnAttack;
         eventBus.CardAssignedToUnitCircle += OnCardAssignedToUnitCircle;
 
-        PlayerArea.SetEventBus(eventBus);
-        OppArea.SetEventBus(eventBus);
+        var playerPresentation = presentation with { Side = BoardSide.Player };
+        var oppPresentation = presentation with { Side = BoardSide.Opponent };
 
-        PlayerHand.SetEventBus(eventBus);
-        OppHand.SetEventBus(eventBus);
+        PlayerArea.SetEventBus(eventBus, playerPresentation);
+        OppArea.SetEventBus(eventBus, oppPresentation);
+
+        PlayerHand.SetEventBus(eventBus, playerPresentation);
+        OppHand.SetEventBus(eventBus, oppPresentation);
     }
 
-    private async Task OnAttack(UnitCircle attacker, UnitCircle target)
+    private Task OnAttack(UnitCircle attacker, UnitCircle target)
     {
-        ShowAttackLine(attacker, target);
+        presentation.Present(() => ShowAttackLine(attacker, target));
+        return Task.CompletedTask;
     }
 
     private Task OnCardAssignedToUnitCircle(UnitCircle unitCircle)
@@ -225,14 +231,24 @@ public partial class DuelCreaturesBoard : Control
 
     private Task OnAttackEnded()
     {
-        GuardZone.ClearCards();
-        HideAttackLines();
-        HideBoostLines();
+        presentation.Present(() =>
+        {
+            GuardZone.ClearCards();
+            HideAttackLines();
+            HideBoostLines();
+        });
         RecalculateStats();
         return Task.CompletedTask;
     }
 
     private void OnPhaseChanged(IPhase phase)
+    {
+        // Snapshot who's playing now; the step may play after the turn has moved on
+        var currentPlayerIsPlayer1 = _gameSession.CurrentPlayerIsPlayer1;
+        presentation.Present(() => ShowPhase(phase, currentPlayerIsPlayer1));
+    }
+
+    private void ShowPhase(IPhase phase, bool currentPlayerIsPlayer1)
     {
         switch(phase)
         {
@@ -241,18 +257,18 @@ public partial class DuelCreaturesBoard : Control
                 PlayerArea.SetIndicatorText(mulliganPhase);
                 break;
             case RidePhase:
-                SetPhaseIndicatorToCurrentPlayer(ridePhase);
+                SetPhaseIndicatorToCurrentPlayer(ridePhase, currentPlayerIsPlayer1);
                 break;
             case MainPhase:
-                SetPhaseIndicatorToCurrentPlayer(mainPhase);
+                SetPhaseIndicatorToCurrentPlayer(mainPhase, currentPlayerIsPlayer1);
                 break;
             case AttackPhase:
-                SetPhaseIndicatorToCurrentPlayer(attackPhase);
+                SetPhaseIndicatorToCurrentPlayer(attackPhase, currentPlayerIsPlayer1);
                 break;
         };
     }
 
-    private void SetPhaseIndicatorToCurrentPlayer(string message)
+    private void SetPhaseIndicatorToCurrentPlayer(string message, bool currentPlayerIsPlayer1)
     {
         if(oppPhaseIndicatorStack.Count > 0)
         {
@@ -262,7 +278,7 @@ public partial class DuelCreaturesBoard : Control
         {
             playerPhaseIndicatorStack.Pop();
         }
-        if (_gameSession.CurrentPlayerIsPlayer1)
+        if (currentPlayerIsPlayer1)
         {
             playerPhaseIndicatorStack.Push(message);
         }

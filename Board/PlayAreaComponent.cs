@@ -159,19 +159,19 @@ public partial class PlayAreaComponent : Control, IPlayAreaBindable, IEventBusUt
         TriggerZone.Bind(playArea.TriggerZone);
     }
 
-    public void SetEventBus(VanguardEventBus eventBus)
+    public void SetEventBus(VanguardEventBus eventBus, PresentationContext presentation)
     {
-        Vanguard.SetEventBus(eventBus);
-        FrontLeft.SetEventBus(eventBus);
-        BackLeft.SetEventBus(eventBus);
-        BackCenter.SetEventBus(eventBus);
-        FrontRight.SetEventBus(eventBus);
-        BackRight.SetEventBus(eventBus);
+        Vanguard.SetEventBus(eventBus, presentation);
+        FrontLeft.SetEventBus(eventBus, presentation);
+        BackLeft.SetEventBus(eventBus, presentation);
+        BackCenter.SetEventBus(eventBus, presentation);
+        FrontRight.SetEventBus(eventBus, presentation);
+        BackRight.SetEventBus(eventBus, presentation);
 
-        Deck.SetEventBus(eventBus);
-        DamageZone.SetEventBus(eventBus);
-        DropZone.SetEventBus(eventBus);
-        TriggerZone.SetEventBus(eventBus);
+        Deck.SetEventBus(eventBus, presentation);
+        DamageZone.SetEventBus(eventBus, presentation);
+        DropZone.SetEventBus(eventBus, presentation);
+        TriggerZone.SetEventBus(eventBus, presentation);
     }
 
     public void RecalculateStats()
