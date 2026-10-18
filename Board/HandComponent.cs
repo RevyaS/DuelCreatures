@@ -8,8 +8,6 @@ public partial class HandComponent : CardLineDynamic, ICardSpaceBindable<Hand>, 
 {
     public Hand Hand { get; private set; } = null!;
 
-    const int HandLimit = 8;
-    
     public void SetEventBus(VanguardEventBus eventBus)
     {
         eventBus.CardAddedToHand += OnCardAddedToHand;
@@ -21,8 +19,6 @@ public partial class HandComponent : CardLineDynamic, ICardSpaceBindable<Hand>, 
         if(ReferenceEquals(Hand, hand))
         {
             RemoveCard(card);
-
-            UpdateSeparation();
         }
     }
 
@@ -31,22 +27,6 @@ public partial class HandComponent : CardLineDynamic, ICardSpaceBindable<Hand>, 
         if(ReferenceEquals(Hand, hand))
         {
             AddCard(SceneFactory.CreateVanguardCard((VanguardCard)newCard));
-
-            UpdateSeparation();
-        }
-    }
-
-    private void UpdateSeparation()
-    {
-        if (CardCount > HandLimit)
-        {
-            var separation = (HandLimit - CardCount) * 20;
-            GD.Print("New Separation: ", separation);
-            Separation = separation;
-        }
-        else
-        {
-            Separation = 0;
         }
     }
 

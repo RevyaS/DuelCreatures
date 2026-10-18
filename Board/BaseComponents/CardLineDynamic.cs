@@ -17,6 +17,47 @@ public partial class CardLineDynamic : CardLine
         } 
     }
 
+    public override void _Notification(int what)
+    {
+        if(what == NotificationResized)
+        {
+            Render();
+        }
+    }
+
+    // Overlaps cards when they don't fit, so the first card sits at the left edge
+    // and the last card at the right edge of this line's width
+    protected override int CalculateSeparation()
+    {
+        var baseSeparation = base.CalculateSeparation();
+
+        var containers = Container.GetChildren<CardContainer>().ToList();
+        if(containers.Count < 2) return baseSeparation;
+
+        var availableWidth = GetAvailableCardWidth();
+        if(availableWidth <= 0) return baseSeparation;
+
+        var cardWidths = containers.Select(container => container.GetCombinedMinimumSize().X).ToList();
+        var totalCardWidth = cardWidths.Sum();
+        var gaps = containers.Count - 1;
+
+        if(totalCardWidth + baseSeparation * gaps <= availableWidth) return baseSeparation;
+
+        // Spread the overlap evenly across every gap
+        var separation = Mathf.FloorToInt((availableWidth - totalCardWidth) / gaps);
+
+        // Keep at least a sliver of each card visible
+        var minSeparation = 1 - Mathf.FloorToInt(cardWidths.Min());
+        return Mathf.Max(separation, minSeparation);
+    }
+
+    private float GetAvailableCardWidth()
+    {
+        // Panel and margin padding around the card row
+        var padding = GetCombinedMinimumSize().X - Container.GetCombinedMinimumSize().X;
+        return Size.X - padding;
+    }
+
     public override void AddCard(Card card)
     {
         CardContainer cardContainer = new();
@@ -24,6 +65,7 @@ public partial class CardLineDynamic : CardLine
         cardContainer.AddChild(card);
         card.IsFront = !_hideCards;
         base.AddCard(card);
+        Render();
     }
 
 
@@ -37,6 +79,8 @@ public partial class CardLineDynamic : CardLine
                 RemoveCardContainer(child);
             }
         });
+
+        Render();
     }
 
     public void RemoveCard(CardBase card)
@@ -49,6 +93,8 @@ public partial class CardLineDynamic : CardLine
                 RemoveCardContainer(child);
             }
         });
+
+        Render();
     }
 
     private void RemoveCardContainer(CardContainer card)

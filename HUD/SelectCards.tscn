@@ -49,7 +49,9 @@ mouse_filter = 2
 
 [node name="SelectedCards" parent="MarginContainer/VBoxContainer/Drop/CenterContainer" instance=ExtResource("3_g0jyd")]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(900, 0)
 layout_mode = 2
+Alignment = 1
 
 [node name="DropArea" type="Control" parent="MarginContainer/VBoxContainer/Drop"]
 unique_name_in_owner = true

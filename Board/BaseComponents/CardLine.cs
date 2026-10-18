@@ -133,14 +133,12 @@ public partial class CardLine : PanelContainer
 
     protected void Render()
     {
-        if(!IsInsideTree()) return;
+        if(!IsInsideTree() || !IsNodeReady()) return;
         RenderCore();
     }
 
     protected virtual void RenderCore()
     {
-        Container.RemoveThemeConstantOverride("separation");
-        Container.AddThemeConstantOverride("separation", _separation);
         Container.Alignment = Alignment;
         DropArea.Visible = Droppable;
         BG.Visible = ShowBackground;
@@ -152,10 +150,19 @@ public partial class CardLine : PanelContainer
             container.SetSleeveInfo(SleeveInfo);
         });
 
+        // After the containers are updated, since separation can depend on their sizes
+        Container.RemoveThemeConstantOverride("separation");
+        Container.AddThemeConstantOverride("separation", CalculateSeparation());
+
         if(_shrinks)
         {
             ResetSize();
         }
+    }
+
+    protected virtual int CalculateSeparation()
+    {
+        return _separation;
     }
 
     private void SetState(ComponentInputState newState, bool value)
