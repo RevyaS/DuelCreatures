@@ -29,15 +29,14 @@ public partial class CardContainer : Control
         }
     }
 
+    private bool _draggable = false;
     public bool Draggable
     {
-        get => CurrentCard?.Draggable ?? false;
+        get => _draggable;
         set
         {
-            if(CurrentCard is not null)
-            {
-                CurrentCard.Draggable = value;
-            }
+            _draggable = value;
+            Render();
         }
     }
 
@@ -72,12 +71,10 @@ public partial class CardContainer : Control
         ChildEnteredTree += OnChildEnteredTree;
         ChildExitingTree += OnChildExitedTree;
 
-        if(GetChildCount() > 0)
+        if(GetChildCount() > 0 && GetChild(0) is Card card)
         {
-            currentCard = GetChild<Card>(0);
+            AdoptCard(card);
         }
-
-        Render();
     }
 
     public void SetSleeveInfo(SleeveInfo sleeveInfo)
@@ -120,13 +117,9 @@ public partial class CardContainer : Control
         {
             RemoveCardAndFree();
         }
-        card.Draggable = Draggable;
-        card.CardDragging += OnCardDragging;
-        card.CardDragCancelled += OnCardDragCancelled;
-        card.CardPressed += OnCardPressed;
-        card.CardLongPressed += OnCardLongPressed;
         orientation = Orientation.VERTICAL;
-        card.Rotation = CalculateCardRotation(orientation);
+
+        // Setup happens in OnChildEnteredTree, the same as for cards added directly as children
         AddChild(card);
     }
 
@@ -140,14 +133,15 @@ public partial class CardContainer : Control
         CardPressed?.Invoke(card);
     }
 
+    // The one place the container's properties are applied to its card,
+    // used both when a card arrives and when a property changes
     private void Render()
     {
         if(CurrentCard is null) return;
 
         CurrentCard.Scale = new Vector2(CardScale, CardScale);
         CurrentCard.SleeveInfo = sleeveInfo;
-        // Applied on every render so FlippedAppearance/ContainerRotation also reach
-        // cards that were added directly as children
+        CurrentCard.Draggable = _draggable;
         CurrentCard.Rotation = CalculateCardRotation(orientation);
 
         if(UpdateSizeOnCardPlacedment)
@@ -198,6 +192,10 @@ public partial class CardContainer : Control
         if(!ReferenceEquals(currentCard, card)) return;
 
         currentCard = null;
+        card.CardDragging -= OnCardDragging;
+        card.CardDragCancelled -= OnCardDragCancelled;
+        card.CardPressed -= OnCardPressed;
+        card.CardLongPressed -= OnCardLongPressed;
         card.Scale = Vector2.One;
         if(UpdateSizeOnCardPlacedment)
         {
@@ -219,16 +217,32 @@ public partial class CardContainer : Control
 
     private void OnChildEnteredTree(Node node)
     {
-        if(node is Card card)
-        {
-            if(currentCard is not null && !ReferenceEquals(currentCard, card))
-            {
-                RemoveCard();
-            } 
+        if(node is not Card card) return;
 
-            currentCard = card;
+        // Re-entering the tree with the same card (e.g. scene tab switch) keeps it as is
+        if(ReferenceEquals(currentCard, card))
+        {
             Render();
+            return;
         }
+
+        if(currentCard is not null)
+        {
+            RemoveCard();
+        }
+
+        AdoptCard(card);
+    }
+
+    private void AdoptCard(Card card)
+    {
+        currentCard = card;
+        card.CardDragging += OnCardDragging;
+        card.CardDragCancelled += OnCardDragCancelled;
+        card.CardPressed += OnCardPressed;
+        card.CardLongPressed += OnCardLongPressed;
+        Render();
+        CardAdded?.Invoke(card);
     }
 
     protected virtual Vector2 UpdateSizeFromCard(Card card)
@@ -256,4 +270,5 @@ public partial class CardContainer : Control
     public Action<CardBaseComponent>? CardDragCancelled;
     public event Action<Card>? CardPressed;
     public event Action<Card>? CardLongPressed;
+    public event Action<Card>? CardAdded;
 }

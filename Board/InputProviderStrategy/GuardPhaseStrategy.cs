@@ -15,6 +15,12 @@ public class GuardPhaseStrategy(DuelCreaturesBoard Board, UnitCircleComponent Gu
         Board.EnablePlayerHandDragging();
         Board.EnableGuardDropping();
 
+        // Guards can be dragged back to the hand, intercepting units can't
+        // (they're returned through their circle's Deselect button)
+        HashSet<CardBase> interceptingCards = [];
+        Board.GuardZone.CanDragCard = card => !interceptingCards.Contains(card.CurrentCard);
+        Board.EnableGuardDragging();
+
         Board.PlayerHand.SetGuardMode(true);
         Board.EnableSelectOwnUnitCircle(new(PlayArea.SelectCirclesExcept(UnitCircleEnum.FRONT_REARGUARD, GuardState.TargetCircle), Skill: UnitSkillFilterEnum.INTERCEPT_ONLY));
         intercepts = [];
@@ -33,6 +39,7 @@ public class GuardPhaseStrategy(DuelCreaturesBoard Board, UnitCircleComponent Gu
             Action<UnitCircleComponent> playerCircleSelectedHandler = (uc) =>
             {
                 Card currentCard = SceneFactory.CreateVanguardCard((VanguardCard)uc.CurrentCard!.CurrentCard);
+                interceptingCards.Add(currentCard.CurrentCard);
                 intercepts.Add(uc.UnitCircle);
                 uc.ClearCard();
                 Board.GuardZone.AddCard(currentCard);
@@ -45,6 +52,7 @@ public class GuardPhaseStrategy(DuelCreaturesBoard Board, UnitCircleComponent Gu
             Action<UnitCircleComponent> playerCircleDeselectedHandler = (uc) =>
             {
                 intercepts.Remove(uc.UnitCircle);
+                interceptingCards.Remove(uc.UnitCircle.Card!);
                 Board.GuardZone.RemoveCard(uc.UnitCircle.Card!);
                 uc.SetCard(uc.UnitCircle.Card!);
                 returningCard = true;
@@ -129,6 +137,8 @@ public class GuardPhaseStrategy(DuelCreaturesBoard Board, UnitCircleComponent Gu
             result.CurrentlyDragged = false;
         }
 
+        Board.DisableGuardDragging();
+        Board.GuardZone.CanDragCard = null;
         Board.DisableSelectOwnUnitCircle();
         Board.HideLeftButton();
         Board.DisablePlayerHandDragging();

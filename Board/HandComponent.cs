@@ -44,12 +44,20 @@ public partial class HandComponent : CardLineDynamic, ICardSpaceBindable<Hand>, 
         Hand = hand;
     }
 
+    private bool guardMode = false;
+
     public void SetGuardMode(bool value)
     {
-        ContainerNodeManager.ApplyToChildren<CardContainer>(child =>
+        guardMode = value;
+        Render();
+    }
+
+    protected override void ConfigureCard(Card card)
+    {
+        base.ConfigureCard(card);
+        if(card is VanguardCardComponent vanguardCard)
         {
-            var containedCard = child.GetChild<VanguardCardComponent>(0);
-            containedCard.GuardMode = value;
-        });
+            vanguardCard.GuardMode = guardMode;
+        }
     }
 }

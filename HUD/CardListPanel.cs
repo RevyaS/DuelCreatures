@@ -48,11 +48,14 @@ public partial class CardListPanel : PanelContainer
 
     private void Render()
     {
-        CardContainerManager.ApplyToChildren<CardContainer>(container =>
-        {
-            container.Draggable = CardsDraggable;
-        });
+        CardContainerManager.ApplyToChildren<CardContainer>(ConfigureContainer);
         DropArea.Visible = Droppable;
+    }
+
+    // Used for new and existing containers alike
+    private void ConfigureContainer(CardContainer container)
+    {
+        container.Draggable = CardsDraggable;
     }
 
     public void RemoveCard(Card card)
@@ -60,6 +63,7 @@ public partial class CardListPanel : PanelContainer
         var targetContainer = CardContainerList.FirstChild<CardContainer>(x => ReferenceEquals(x.CurrentCard, card));
         targetContainer.RemoveCard();
         CardContainerList.RemoveChild(targetContainer);
+        targetContainer.QueueFree();
     }
 
     public void Setup(string title, List<VanguardCard> cardsToShow)
@@ -76,6 +80,7 @@ public partial class CardListPanel : PanelContainer
     public void AddCard(Card card)
     {
         CardContainer container = new();
+        ConfigureContainer(container);
         container.AddCard(card);
         container.CardPressed += OnCardPressed;
         container.CardDragging += OnCardDragging;

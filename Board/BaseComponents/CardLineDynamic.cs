@@ -58,13 +58,16 @@ public partial class CardLineDynamic : CardLine
         return Size.X - padding;
     }
 
-    public override void AddCard(Card card)
+    protected override void ConfigureCard(Card card)
+    {
+        card.IsFront = !_hideCards;
+    }
+
+    public void AddCard(Card card)
     {
         CardContainer cardContainer = new();
         Container.AddChild(cardContainer);
-        cardContainer.AddChild(card);
-        card.IsFront = !_hideCards;
-        base.AddCard(card);
+        cardContainer.AddCard(card);
         Render();
     }
 
@@ -73,8 +76,7 @@ public partial class CardLineDynamic : CardLine
     {
         ContainerNodeManager.ApplyToChildren<CardContainer>((child) =>
         {
-            var containedCard = child.GetChild<Card>(0);
-            if(ReferenceEquals(containedCard, card))
+            if(ReferenceEquals(child.CurrentCard, card))
             {
                 RemoveCardContainer(child);
             }
@@ -87,8 +89,7 @@ public partial class CardLineDynamic : CardLine
     {
         ContainerNodeManager.ApplyToChildren<CardContainer>((child) =>
         {
-            var containedCard = child.GetChild<Card>(0);
-            if(ReferenceEquals(containedCard.CurrentCard, card))
+            if(ReferenceEquals(child.CurrentCard?.CurrentCard, card))
             {
                 RemoveCardContainer(child);
             }
@@ -97,13 +98,12 @@ public partial class CardLineDynamic : CardLine
         Render();
     }
 
-    private void RemoveCardContainer(CardContainer card)
+    // Detaches the card (still alive, so it can be moved elsewhere) and frees its slot
+    private void RemoveCardContainer(CardContainer container)
     {
-        var containedCard = card.GetChild<Card>(0);
-        Container.RemoveChild(card);
-        UnsubscribeCardEvents(containedCard);
-        card.RemoveChild(containedCard);
-        card.QueueFree();
+        container.RemoveCard();
+        Container.RemoveChild(container);
+        container.QueueFree();
     }
 
     public void ClearCards()

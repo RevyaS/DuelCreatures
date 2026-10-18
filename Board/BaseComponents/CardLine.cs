@@ -107,6 +107,18 @@ public partial class CardLine : PanelContainer
         }
     }
 
+    private Predicate<Card>? _canDragCard = null;
+    // Optional per-card veto on top of Draggable (e.g. intercepting units in the guard zone)
+    public Predicate<Card>? CanDragCard
+    {
+        get => _canDragCard;
+        set
+        {
+            _canDragCard = value;
+            Render();
+        }
+    }
+
     private SleeveInfo _sleeveInfo = null!;
     [Export]
     public SleeveInfo SleeveInfo
@@ -122,6 +134,10 @@ public partial class CardLine : PanelContainer
     public override void _Ready()
     {
         Container = GetNode<HBoxNodeContainer>($"%{nameof(Container)}");
+        Container.ChildEnteredTree += OnContainerChildEntered;
+        Container.ChildExitingTree += OnContainerChildExiting;
+        ContainerNodeManager.ApplyToChildren<CardContainer>(SubscribeContainer);
+
         DropArea = GetNode<DropArea>($"%{nameof(DropArea)}");
         DropArea.CardDropped += OnCardDropped;
         BG = GetNode<ColorRect>($"%{nameof(BG)}");
@@ -138,6 +154,64 @@ public partial class CardLine : PanelContainer
     private void OnCardDragging(CardBaseComponent component)
     {
         CardDragging?.Invoke(component);
+    }
+
+    // The line only talks to its containers; the containers (re)wire whichever
+    // card they currently hold, so cards can move between slots freely
+    private void OnContainerChildEntered(Node node)
+    {
+        if(node is CardContainer container)
+        {
+            SubscribeContainer(container);
+            ConfigureContainer(container);
+        }
+    }
+
+    private void OnContainerChildExiting(Node node)
+    {
+        if(node is CardContainer container)
+        {
+            container.CardAdded -= ApplyCardState;
+            container.CardDragging -= OnCardDragging;
+            container.CardDragCancelled -= OnCardDragCancelled;
+            container.CardPressed -= OnCardPressed;
+            container.CardLongPressed -= OnCardLongPressed;
+        }
+    }
+
+    private void SubscribeContainer(CardContainer container)
+    {
+        container.CardAdded += ApplyCardState;
+        container.CardDragging += OnCardDragging;
+        container.CardDragCancelled += OnCardDragCancelled;
+        container.CardPressed += OnCardPressed;
+        container.CardLongPressed += OnCardLongPressed;
+    }
+
+    // Applies the line's properties to a slot; the slot passes them on to its card
+    private void ConfigureContainer(CardContainer container)
+    {
+        container.CardScale = CardScale;
+        container.Draggable = Draggable;
+        container.FlippedAppearance = FlippedAppearance;
+        container.SetSleeveInfo(SleeveInfo);
+    }
+
+    // Runs after the slot has applied its properties, both when a card arrives
+    // and on every render
+    private void ApplyCardState(Card card)
+    {
+        ConfigureCard(card);
+        if(_canDragCard is not null && !_canDragCard(card))
+        {
+            card.Draggable = false;
+        }
+    }
+
+    // Line-wide card state that isn't a slot property. Runs when a card arrives
+    // and on every render; don't put one-off "on add" rules here
+    protected virtual void ConfigureCard(Card card)
+    {
     }
 
     protected virtual void OnComponentsSet()
@@ -158,10 +232,11 @@ public partial class CardLine : PanelContainer
 
         ContainerNodeManager.ApplyToChildren<CardContainer>(container =>
         {
-            container.CardScale = CardScale;
-            container.Draggable = Draggable;
-            container.FlippedAppearance = FlippedAppearance;
-            container.SetSleeveInfo(SleeveInfo);
+            ConfigureContainer(container);
+            if(container.CurrentCard is not null)
+            {
+                ApplyCardState(container.CurrentCard);
+            }
         });
 
         // After the containers are updated, since separation can depend on their sizes
@@ -190,14 +265,6 @@ public partial class CardLine : PanelContainer
         }
     }
 
-    public virtual void AddCard(Card card)
-    {
-        card.CardDragging += OnCardDragging;
-        card.CardDragCancelled += OnCardDragCancelled;
-        card.CardPressed += OnCardPressed;
-        card.CardLongPressed += OnCardLongPressed;
-    }
-
     private void OnCardLongPressed(Card card)
     {
         CardLongPressed?.Invoke(card);
@@ -211,11 +278,6 @@ public partial class CardLine : PanelContainer
     private void OnCardPressed(Card card)
     {
         CardPressed?.Invoke(card);
-    }
-
-    public void UnsubscribeCardEvents(Card card)
-    {
-        card.CardDragging -= OnCardDragging;
     }
 
     public Card? FindCard(Func<Card, bool> predicate)

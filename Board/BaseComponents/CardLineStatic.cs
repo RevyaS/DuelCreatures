@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using ArC.CardGames.Components;
 using Godot;
 
@@ -102,55 +103,43 @@ public partial class CardLineStatic : CardLine
     }
     public void RemoveCard(Card card, bool freeCard = true)
     {
-        int removeIndex = -1;
-
-        // Find the index
-        for (int i = 0; i < Container.GetChildCount(); i++)
-        {
-            var currentContainer = Container.GetChild<CardContainer>(i);
-            if (currentContainer.HasCard &&
-                ReferenceEquals(currentContainer.CurrentCard, card))
-            {
-                removeIndex = i;
-                break;
-            }
-        }
+        var containers = Container.GetChildren<CardContainer>().ToList();
+        int removeIndex = containers.FindIndex(container =>
+            container.HasCard && ReferenceEquals(container.CurrentCard, card));
 
         if (removeIndex == -1)
             return;
 
-        // 2️⃣ Shift cards left
-        for (int i = removeIndex; i < Container.GetChildCount() - 1; i++)
+        if(freeCard)
         {
-            var currentContainer = Container.GetChild<CardContainer>(i);
-            var nextContainer = Container.GetChild<CardContainer>(i + 1);
-            if(nextContainer.HasCard)
-            {
-                var nextCard = nextContainer.CurrentCard;
-                nextContainer.RemoveCard();
-                currentContainer.AddCard(nextCard!);
-            } else
-            {
-                if(freeCard)
-                {
-                    currentContainer.RemoveCardAndFree();
-                } else
-                {
-                    currentContainer.RemoveCard();
-                }
-            }
+            containers[removeIndex].RemoveCardAndFree();
+        } else
+        {
+            containers[removeIndex].RemoveCard();
+        }
+
+        // Shift the following cards left to close the gap
+        for (int i = removeIndex; i < containers.Count - 1; i++)
+        {
+            var nextContainer = containers[i + 1];
+            if(!nextContainer.HasCard) break;
+
+            var nextCard = nextContainer.CurrentCard!;
+            nextContainer.RemoveCard();
+            containers[i].AddCard(nextCard);
         }
 
         lastIndex--;
     }
 
-    public override void AddCard(Card card)
+    public void AddCard(Card card)
     {
         if(lastIndex == MaxCards) throw new InvalidOperationException("Already reached MAX amount of cards");
 
         var container = Container.GetChild<CardContainer>(lastIndex++);
-        container.AddChild(card);
+        container.AddCard(card);
+
+        // New cards arrive face up; afterwards the game owns the face (e.g. counter blast)
         card.IsFront = true;
-        base.AddCard(card);
     }
 }
