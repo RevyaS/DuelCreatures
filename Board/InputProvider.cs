@@ -51,6 +51,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         board.OppArea.DropZone.SetCardList(CardListComponent);
 
         Board.PlayerSoulPressed += OnPlayerSoulPressed;
+        Board.OppSoulPressed += OnOppSoulPressed;
         Board.HandCardPressed += OnHandCardPressed;
         Board.UnitCircleCardPressed += OnUnitCircleCardPressed;
         Board.PlayerUnitCircleCardPressed += OnPlayerUnitCircleCardPressed;
@@ -66,6 +67,11 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
     private void OnPlayerSoulPressed()
     {
         CardListComponent.Show("Soul", PlayArea.Soul.Cards.Cast<VanguardCard>().ToList());
+    }
+
+    private void OnOppSoulPressed()
+    {
+        CardListComponent.Show("Opponent's Soul", OpponentPlayArea.Soul.Cards.Cast<VanguardCard>().ToList());
     }
 
     public void Activate(VanguardPlayArea playArea, VanguardPlayArea oppPlayArea, VanguardSkillService vanguardSkillService, GameContext gameContext)

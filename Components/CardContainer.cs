@@ -11,6 +11,7 @@ public partial class CardContainer : Control
     Card? currentCard = null;
     protected bool UpdateSizeOnCardPlacedment = true;
     private SleeveInfo sleeveInfo = null!;
+    private Orientation orientation = Orientation.VERTICAL;
 
     public Card? CurrentCard => currentCard;
     public bool HasCard => currentCard is not null && currentCard.CurrentCard is not null;
@@ -124,7 +125,8 @@ public partial class CardContainer : Control
         card.CardDragCancelled += OnCardDragCancelled;
         card.CardPressed += OnCardPressed;
         card.CardLongPressed += OnCardLongPressed;
-        card.Rotation = CalculateCardRotation(Orientation.VERTICAL);
+        orientation = Orientation.VERTICAL;
+        card.Rotation = CalculateCardRotation(orientation);
         AddChild(card);
     }
 
@@ -144,6 +146,9 @@ public partial class CardContainer : Control
 
         CurrentCard.Scale = new Vector2(CardScale, CardScale);
         CurrentCard.SleeveInfo = sleeveInfo;
+        // Applied on every render so FlippedAppearance/ContainerRotation also reach
+        // cards that were added directly as children
+        CurrentCard.Rotation = CalculateCardRotation(orientation);
 
         if(UpdateSizeOnCardPlacedment)
         {
@@ -243,8 +248,8 @@ public partial class CardContainer : Control
 
     public void ChangeOrientation(Orientation orientation)
     {
-        if(CurrentCard is null) return;
-        CurrentCard.Rotation = CalculateCardRotation(orientation);
+        this.orientation = orientation;
+        Render();
     }
 
     public Action<CardBaseComponent>? CardDragging;

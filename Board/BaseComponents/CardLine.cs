@@ -94,6 +94,19 @@ public partial class CardLine : PanelContainer
         } 
     }
 
+    private bool _flippedAppearance = false;
+    // Rotates every card 180 degrees
+    [Export]
+    public bool FlippedAppearance
+    {
+        get => _flippedAppearance;
+        set
+        {
+            _flippedAppearance = value;
+            Render();
+        }
+    }
+
     private SleeveInfo _sleeveInfo = null!;
     [Export]
     public SleeveInfo SleeveInfo
@@ -147,6 +160,7 @@ public partial class CardLine : PanelContainer
         {
             container.CardScale = CardScale;
             container.Draggable = Draggable;
+            container.FlippedAppearance = FlippedAppearance;
             container.SetSleeveInfo(SleeveInfo);
         });
 

@@ -63,6 +63,7 @@ public partial class DuelCreaturesBoard : Control
         });
 
         PlayerArea.Vanguard.LongPressed += OnPlayerVanguardLongPressed;
+        OppArea.Vanguard.LongPressed += OnOppVanguardLongPressed;
         PlayerHand.CardPressed += OnHandCardPressed;
 
         PlayerArea.DamageZone.CardPressed += OnDamageZoneCardPressed;
@@ -97,6 +98,11 @@ public partial class DuelCreaturesBoard : Control
     private void OnPlayerVanguardLongPressed(UnitCircleComponent _)
     {
         PlayerSoulPressed?.Invoke();
+    }
+
+    private void OnOppVanguardLongPressed(UnitCircleComponent _)
+    {
+        OppSoulPressed?.Invoke();
     }
 
     private void OnDamageZoneCardPressed(Card card)
@@ -386,4 +392,5 @@ public partial class DuelCreaturesBoard : Control
     public event Action<UnitCircleComponent>? PlayerCircleSelected;
     public event Action<UnitCircleComponent>? PlayerCircleDeselected;
     public event Action? PlayerSoulPressed;
+    public event Action? OppSoulPressed;
 }

@@ -149,6 +149,7 @@ grow_vertical = 2
 rotation = 1.5707964
 pivot_offset = Vector2(282, 96.5)
 MaxCards = 6
+FlippedAppearance = true
 Separation = -50
 
 [node name="Center" type="Control" parent="MarginContainer/HBoxContainer"]
