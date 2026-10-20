@@ -16,6 +16,7 @@ public partial class SelectFromCardList : VBoxContainer
         SelectCardsComponent.CardSelected += OnCardSelected;
         SelectCardsComponent.CardDragging += OnSelectedCardDragging;
         SelectCardsComponent.ConfirmedCards += OnConfirmedCards;
+        SelectCardsComponent.CardReturned += OnCardReturned;
         CardListPanel.CardDragging += OnCardDragging;
         CardListPanel.CardDropped += OnCardDropped;
     }
@@ -44,6 +45,16 @@ public partial class SelectFromCardList : VBoxContainer
     private void OnCardDropped(Card card)
     {
         SelectCardsComponent.RemoveCard(card);
+        CardListPanel.AddCard(card);
+        card.CurrentlyDragged = false;
+        CardListPanel.Droppable = false;
+    }
+
+    // A selected card dragged out and dropped anywhere that doesn't take it (e.g. just
+    // outside the choices panel): the selection already let go of it, so it goes back
+    // to the choices instead of vanishing
+    private void OnCardReturned(Card card)
+    {
         CardListPanel.AddCard(card);
         card.CurrentlyDragged = false;
         CardListPanel.Droppable = false;

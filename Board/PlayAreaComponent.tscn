@@ -285,7 +285,13 @@ unique_name_in_owner = true
 layout_mode = 2
 ShowCount = true
 
-[node name="DropZone" parent="Sections/MarginContainer/HBoxContainer/Right/Control/Verticals" instance=ExtResource("10_pmg6b")]
+[node name="DropZoneTurn" type="Container" parent="Sections/MarginContainer/HBoxContainer/Right/Control/Verticals"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("11_qtcnt")
+
+[node name="DropZone" parent="Sections/MarginContainer/HBoxContainer/Right/Control/Verticals/DropZoneTurn" instance=ExtResource("10_pmg6b")]
 unique_name_in_owner = true
 layout_mode = 2
 

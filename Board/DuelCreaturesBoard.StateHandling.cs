@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using ArC.CardGames.Predefined.Vanguard;
 using Godot;
 
@@ -117,14 +118,30 @@ public partial class DuelCreaturesBoard : Control
         PlayerArea.DisableFrontRowUnitCircleHovering();
     }
 
-    public void EnableOppFrontRowUnitCircleHovering()
+    // Lets the player aim at the opponent circles `attacker` may attack, as ArC's rules
+    // say (the front row, plus the back row of its column for e.g. Tejas)
+    public void EnableOppTargetHovering(UnitCircleComponent attacker)
     {
-        OppArea.EnableFrontRowUnitCircleHovering();
+        OppArea.DisableUnitCircleHovering();
+        OppArea.EnableUnitCircleHovering(GetAttackTargets(attacker));
     }
 
-    public void DisableOppFrontRowUnitCircleHovering()
+    public void DisableOppTargetHovering()
     {
-        OppArea.DisableFrontRowUnitCircleHovering();
+        OppArea.DisableUnitCircleHovering();
+    }
+
+    public bool CanAttackTarget(UnitCircleComponent attacker, UnitCircleComponent target)
+    {
+        return VanguardGameRules.TargetCircleCanBeTargetted(PlayerArea.PlayArea, attacker.UnitCircle, OppArea.PlayArea, target.UnitCircle);
+    }
+
+    private IEnumerable<UnitCircleComponent> GetAttackTargets(UnitCircleComponent attacker)
+    {
+        var targetable = VanguardGameRules.GetTargetableCircles(PlayerArea.PlayArea, attacker.UnitCircle, OppArea.PlayArea);
+        return OppArea.PlayArea.GetUnitCirclesBySelector(new(targetable, UnitOccupancyFilterEnum.OCCUPIED_ONLY))
+            .Select(OppArea.GetUnitCircleComponentOrDefault)
+            .OfType<UnitCircleComponent>();
     }
     public void ShowBoostLine(UnitCircleComponent unitCircleComponent)
     {

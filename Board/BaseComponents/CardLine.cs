@@ -120,6 +120,18 @@ public partial class CardLine : PanelContainer, ICardLocation
         }
     }
 
+    private Func<Card, Color?>? _outlineCard = null;
+    // Optional per-card border color (e.g. green for intercepting units in the guard zone)
+    public Func<Card, Color?>? OutlineCard
+    {
+        get => _outlineCard;
+        set
+        {
+            _outlineCard = value;
+            Render();
+        }
+    }
+
     private SleeveInfo _sleeveInfo = null!;
     [Export]
     public SleeveInfo SleeveInfo
@@ -207,6 +219,7 @@ public partial class CardLine : PanelContainer, ICardLocation
         {
             card.Draggable = false;
         }
+        card.Outline = _outlineCard?.Invoke(card);
     }
 
     // Line-wide card state that isn't a slot property. Runs when a card arrives

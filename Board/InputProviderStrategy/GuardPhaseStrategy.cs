@@ -19,6 +19,7 @@ public class GuardPhaseStrategy(DuelCreaturesBoard Board, UnitCircleComponent Gu
         // (they're returned through their circle's Deselect button)
         HashSet<CardBase> interceptingCards = [];
         Board.GuardZone.CanDragCard = card => !interceptingCards.Contains(card.CurrentCard);
+        Board.GuardZone.OutlineCard = card => interceptingCards.Contains(card.CurrentCard) ? PresentationConfig.InterceptOutline : null;
         Board.EnableGuardDragging();
 
         Board.PlayerHand.SetGuardMode(true);
@@ -139,6 +140,7 @@ public class GuardPhaseStrategy(DuelCreaturesBoard Board, UnitCircleComponent Gu
 
         Board.DisableGuardDragging();
         Board.GuardZone.CanDragCard = null;
+        Board.GuardZone.OutlineCard = null;
         Board.DisableSelectOwnUnitCircle();
         Board.HideLeftButton();
         Board.DisablePlayerHandDragging();

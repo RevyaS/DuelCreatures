@@ -13,6 +13,7 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
     DragArea dragArea = null!;
     HoverArea hoverArea = null!;
     Button SelectButton = null!;
+    QuarterTurnContainer ButtonContainer = null!;
     TextureRect CircleTexture = null!, IconTexture = null!;
     Control TargetIndicators = null!;
 
@@ -180,6 +181,7 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
         hoverArea.HoverReleased += OnHoverReleased;
 
         SelectButton = GetNode<Button>($"%{nameof(SelectButton)}");
+        ButtonContainer = GetNode<QuarterTurnContainer>($"%{nameof(ButtonContainer)}");
         SelectButton.Pressed += OnSelectButtonPressed;
 
         Render();
@@ -417,6 +419,8 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
         CircleTexture.Texture = Circle;
         IconTexture.FlipV = FlippedAppearance;
         IconTexture.FlipH = FlippedAppearance;
+        // Keep the button readable on the flipped (opponent's) side
+        ButtonContainer.Turns = FlippedAppearance ? QuarterTurnContainer.QuarterTurn.Deg180 : QuarterTurnContainer.QuarterTurn.Deg0;
     }
 
     protected virtual void OnCardDropped(Card card)

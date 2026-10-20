@@ -66,7 +66,8 @@ public partial class DuelCreaturesBoard : Control
             circle.HoverReleased += OnPlayerCircleHoverReleased;
         });
 
-        OppArea.FrontRowCircles.ForEach((circle) =>
+        // Every opponent circle: some attackers may target the back row (e.g. Tejas)
+        OppArea.Circles.ForEach((circle) =>
         {
             circle.Hovering += OnOppCircleHovering;
             circle.HoverReleased += OnOppCircleHoverReleased;

@@ -63,7 +63,7 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
                 attackingCircle = null;
                 targetCircle = null;
                 GameBoard.EnablePlayerUnitCircleScreenDragging();
-                GameBoard.DisableOppFrontRowUnitCircleHovering();
+                GameBoard.DisableOppTargetHovering();
                 GameBoard.HideBoostLines();
                 GameBoard.HideAttackLines();
             }
@@ -71,7 +71,7 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
 
         Action<UnitCircleComponent> oppFrontRowHoverHandler = (unitCircleComponent) =>
         {
-            if(attackingCircle is not null && VanguardGameRules.TargetCircleCanBeTargetted(GameBoard.OppArea.PlayArea, unitCircleComponent.UnitCircle))
+            if(attackingCircle is not null && GameBoard.CanAttackTarget(attackingCircle, unitCircleComponent))
             {
                 targetCircle = unitCircleComponent;
 
@@ -94,7 +94,7 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
                 attackingCircle = unitCircleComponent;
                 GameBoard.ShowBoostLine(unitCircleComponent);
                 GameBoard.DisablePlayerFrontRowUnitCircleHovering();
-                GameBoard.EnableOppFrontRowUnitCircleHovering();
+                GameBoard.EnableOppTargetHovering(attackingCircle);
             }
         };
 
@@ -111,7 +111,7 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
                 GD.Print("Front row dragging");
                 attackingCircle = unitCircleComponent;
                 GameBoard.DisablePlayerUnitCircleScreenDragging();
-                GameBoard.EnableOppFrontRowUnitCircleHovering();
+                GameBoard.EnableOppTargetHovering(attackingCircle);
             }
         };
 
@@ -134,7 +134,7 @@ public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameConte
         // (e.g. long pressing the opponent's Vanguard), so don't leave them on
         GameBoard.DisablePlayerUnitCircleScreenDragging();
         GameBoard.DisablePlayerFrontRowUnitCircleHovering();
-        GameBoard.DisableOppFrontRowUnitCircleHovering();
+        GameBoard.DisableOppTargetHovering();
 
         GD.Print("Attack phase action selected: ", result.GetType().Name);
         return result;

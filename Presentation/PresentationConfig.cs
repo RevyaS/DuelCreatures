@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Godot;
 
 // One stop shop for presentation: who gets animations/Sfx, and every timing.
 // Reads like CSS: Transition ~ `transition: <duration> <timing-function> <delay>`,
@@ -65,6 +66,9 @@ public static class PresentationConfig
         // [SfxCue.PowerUp] = "res://Assets/Sfx/power_up.ogg",
         // [SfxCue.CriticalUp] = "res://Assets/Sfx/critical_up.ogg",
     };
+
+    // Border of intercepting units in the guard zone (they go back through Deselect, not to the hand)
+    public static Color InterceptOutline = new(0.25f, 0.85f, 0.35f);
 
     // Simultaneous sounds before the oldest one gets cut off
     public static int SfxVoices = 4;

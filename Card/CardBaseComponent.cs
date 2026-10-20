@@ -61,6 +61,21 @@ public abstract partial class CardBaseComponent : Control
         }
     }
 
+    ColorRect Border = null!;
+    Color defaultBorderColor = Colors.Black;
+
+    private Color? _outline = null;
+    // Colors the card's border (e.g. to mark intercepting units); null for the normal border
+    public Color? Outline
+    {
+        get => _outline;
+        set
+        {
+            _outline = value;
+            Render();
+        }
+    }
+
     public Vector2 EffectiveSize => CustomMinimumSize * Scale;
 
     public override void _Ready()
@@ -68,6 +83,8 @@ public abstract partial class CardBaseComponent : Control
         CustomMinimumSize = SizeConstants.CardDefaultSize;
         Front = GetNode<TextureRect>($"%{nameof(Front)}");
         Back = GetNode<BackgroundRect>($"%{nameof(Back)}");
+        Border = GetNode<ColorRect>($"%{nameof(Border)}");
+        defaultBorderColor = Border.Color;
         Render();
     }
 
@@ -81,6 +98,7 @@ public abstract partial class CardBaseComponent : Control
     {
         Front.Visible = _isFront;
         Front.Texture = texture;
+        Border.Color = _outline ?? defaultBorderColor;
 
         SetSleeveInfo(_sleeveInfo);
     }

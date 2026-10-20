@@ -9,7 +9,7 @@ using Godot;
 public partial class PlayAreaComponent : Control, IPlayAreaBindable, IEventBusUtilizer
 {
     Label PhaseIndicator = null!;
-    QuarterTurnContainer PhaseIndicatorTurn = null!, DeckTurn = null!;
+    QuarterTurnContainer PhaseIndicatorTurn = null!, DeckTurn = null!, DropZoneTurn = null!;
     public UnitCircleComponent Vanguard { get; private set; } = null!;
     public UnitCircleComponent BackCenter { get; private set; } = null!;
     public UnitCircleComponent FrontLeft { get; private set; } = null!;
@@ -82,6 +82,7 @@ public partial class PlayAreaComponent : Control, IPlayAreaBindable, IEventBusUt
         var turns = FlippedAppearance ? QuarterTurnContainer.QuarterTurn.Deg180 : QuarterTurnContainer.QuarterTurn.Deg0;
         PhaseIndicatorTurn.Turns = turns;
         DeckTurn.Turns = turns;
+        DropZoneTurn.Turns = turns;
         Deck.SleeveInfo = SleeveInfo;
         DamageZone.SleeveInfo = SleeveInfo;
     }
@@ -91,6 +92,7 @@ public partial class PlayAreaComponent : Control, IPlayAreaBindable, IEventBusUt
         PhaseIndicator = GetNode<Label>($"%{nameof(PhaseIndicator)}");
         PhaseIndicatorTurn = GetNode<QuarterTurnContainer>($"%{nameof(PhaseIndicatorTurn)}");
         DeckTurn = GetNode<QuarterTurnContainer>($"%{nameof(DeckTurn)}");
+        DropZoneTurn = GetNode<QuarterTurnContainer>($"%{nameof(DropZoneTurn)}");
         Deck = GetNode<DeckComponent>($"%{nameof(Deck)}");
 
         ExtraLeft1 = GetNode<UnitCircleComponent>($"%{nameof(ExtraLeft1)}");
@@ -271,6 +273,19 @@ public partial class PlayAreaComponent : Control, IPlayAreaBindable, IEventBusUt
     public void DisableUnitCircleScreenDragging()
     {
         Circles.ForEach(x => x.ScreenDraggable = false);
+    }
+
+    public void EnableUnitCircleHovering(IEnumerable<UnitCircleComponent> circles)
+    {
+        foreach(var circle in circles)
+        {
+            circle.Hoverable = true;
+        }
+    }
+
+    public void DisableUnitCircleHovering()
+    {
+        Circles.ForEach((circle) => circle.Hoverable = false);
     }
 
     public void EnableFrontRowUnitCircleHovering()
