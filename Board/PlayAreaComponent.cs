@@ -20,7 +20,7 @@ public partial class PlayAreaComponent : Control, IPlayAreaBindable, IEventBusUt
     UnitCircleComponent ExtraLeft1 = null!, ExtraLeft2 = null!, ExtraRight1 = null!, ExtraRight2 = null!;
 
     public DamageZoneComponent DamageZone { get; private set; } = null!; 
-    TriggerZoneComponent TriggerZone = null!;
+    public TriggerZoneComponent TriggerZone { get; private set; } = null!;
     DeckComponent Deck = null!;
     public DropZoneComponent DropZone { get; private set; } = null!;
     AttackIndicator LeftBoostLine = null!, CenterBoostLine = null!, RightBoostLine = null!;

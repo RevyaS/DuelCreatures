@@ -40,6 +40,7 @@ public partial class SelectCardsComponent : PanelContainer
 
         SelectedCards = GetNode<CardLineDynamic>($"%{nameof(SelectedCards)}");
         SelectedCards.CardDragging += OnCardDragging;
+        SelectedCards.CardPressed += card => CardPressed?.Invoke(card);
         
         Confirm = GetNode<Button>($"%{nameof(Confirm)}");
 
@@ -107,6 +108,7 @@ public partial class SelectCardsComponent : PanelContainer
     }
 
     public event Action<Card>? CardReturned;
+    public event Action<Card>? CardPressed;
     public event Action<Card>? CardSelected;
     public event Action<CardBaseComponent>? CardDragging;
     public event Action<List<Card>>? ConfirmedCards;

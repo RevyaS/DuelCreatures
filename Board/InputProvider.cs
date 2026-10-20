@@ -65,6 +65,9 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         Board.UnitCircleCardPressed += OnUnitCircleCardPressed;
         Board.PlayerUnitCircleCardPressed += OnPlayerUnitCircleCardPressed;
         Board.DamageZoneCardPressed += OnDamageZoneCardPressed;
+        Board.PublicCardPressed += OnPublicCardPressed;
+        SelectCardsComponent.CardPressed += OnPublicCardPressed;
+        SelectFromCardListComponent.CardPressed += OnPublicCardPressed;
     }
 
     private void OnPlayerUnitCircleCardPressed(UnitCircleComponent unitCircle, Card card)
@@ -234,8 +237,15 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         ShowCardInfo(card);
     }
 
+    private void OnPublicCardPressed(Card card)
+    {
+        ShowCardInfo(card);
+    }
+
     private void ShowCardInfo(Card card, bool canActivate = false)
     {
+        // Above every other HUD panel, e.g. the card selection it was opened from
+        CardInfoComponent.MoveToFront();
         CardInfoComponent.Show((VanguardCard)card.CurrentCard, canActivate);
     }
 

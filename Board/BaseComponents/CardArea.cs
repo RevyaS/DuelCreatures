@@ -1,3 +1,4 @@
+using System;
 using ArC.CardGames.Components;
 using Godot;
 
@@ -22,6 +23,7 @@ public partial class CardArea : PanelContainer, ICardLocation
     public override void _Ready()
     {
         Container = GetNode<CardContainer>($"%{nameof(Container)}");
+        Container.CardPressed += card => CardPressed?.Invoke(card);
         Render();
     }
 
@@ -53,4 +55,6 @@ public partial class CardArea : PanelContainer, ICardLocation
     {
         Container.AddCard(card);
     }
+
+    public event Action<Card>? CardPressed;
 }

@@ -85,6 +85,11 @@ public partial class DuelCreaturesBoard : Control
 
         PlayerArea.DamageZone.CardPressed += OnDamageZoneCardPressed;
         OppArea.DamageZone.CardPressed += OnDamageZoneCardPressed;
+
+        // Public information both players can inspect
+        PlayerArea.TriggerZone.CardPressed += OnPublicCardPressed;
+        OppArea.TriggerZone.CardPressed += OnPublicCardPressed;
+        GuardZone.CardPressed += OnPublicCardPressed;
     }
 
     private void OnPlayerCircleDeselected(UnitCircleComponent component)
@@ -120,6 +125,11 @@ public partial class DuelCreaturesBoard : Control
     private void OnOppVanguardLongPressed(UnitCircleComponent _)
     {
         OppSoulPressed?.Invoke();
+    }
+
+    private void OnPublicCardPressed(Card card)
+    {
+        PublicCardPressed?.Invoke(card);
     }
 
     private void OnDamageZoneCardPressed(Card card)
@@ -483,6 +493,7 @@ public partial class DuelCreaturesBoard : Control
     public event Action<UnitCircleComponent, Card>? PlayerUnitCircleCardPressed;
     public event Action<Card>? UnitCircleCardPressed;
     public event Action<Card>? DamageZoneCardPressed;
+    public event Action<Card>? PublicCardPressed;
     public event Action<Card>? PlayerVanguardCardDropped;
     public event Action? LeftButtonPressed;
     public event Action<UnitCircleComponent, Card>? CardDroppedToPlayerRearguard;

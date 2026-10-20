@@ -19,6 +19,8 @@ public partial class SelectFromCardList : VBoxContainer
         SelectCardsComponent.CardReturned += OnCardReturned;
         CardListPanel.CardDragging += OnCardDragging;
         CardListPanel.CardDropped += OnCardDropped;
+        SelectCardsComponent.CardPressed += card => CardPressed?.Invoke(card);
+        CardListPanel.CardPressed += card => CardPressed?.Invoke(card);
     }
 
     private void OnConfirmedCards(List<Card> list)
@@ -78,4 +80,5 @@ public partial class SelectFromCardList : VBoxContainer
 
 
     public event Action<List<Card>>? ConfirmedCards;
+    public event Action<Card>? CardPressed;
 }
