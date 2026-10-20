@@ -6,7 +6,7 @@ using ArC.CardGames.Predefined.Vanguard.Bots;
 using ArC.CardGames.Setup;
 using ArC.VanguardAI.IO;
 using Godot;
-using static ArC.CardGames.Predefined.Vanguard.Cards.DuelMaidensCardsFactory;
+using static ArC.CardGames.Predefined.Vanguard.Cards.VanguardCardsFactory;
 
 public enum OpponentType
 {
@@ -14,31 +14,21 @@ public enum OpponentType
     AI
 }
 
+public enum PlayerDeck
+{
+    ROYAL_PALADIN_TRIAL_DECK,
+    KAGERO_TRIAL_DECK
+}
+
 public partial class Session : Control
 {
     OpponentType Opponent = OpponentType.RULE_BOT_ROYAL_PALADIN_TRIAL_DECK;
+    PlayerDeck PlayerDeck = PlayerDeck.KAGERO_TRIAL_DECK;
     VanguardBotDifficulty Difficulty = VanguardBotDifficulty.MASTER;
 
     InputProvider InputProviderComponent = null!;
     DuelCreaturesBoard Board => InputProviderComponent.Board;
 
-    DeckBuilder TrialDeck => DeckBuilder.Create()
-        .AddCards(RoyalPaladin.Flogal, 4)
-        .AddCards(RoyalPaladin.WeaponsDealerGovannon, 4)
-        .AddCards(RoyalPaladin.YggdrasilMaidenElaine, 4)
-        .AddCards(RoyalPaladin.BringerOfGoodLuckEpona, 4)
-        .AddCards(RoyalPaladin.KnightOfRoseMorgana, 4)
-        .AddCards(RoyalPaladin.StarlightUnicorn, 4)
-        .AddCards(RoyalPaladin.Wingal, 2)
-        .AddCards(RoyalPaladin.LittleSageMarron, 4)
-        .AddCards(RoyalPaladin.CovenantKnightRandolf, 4)
-        .AddCards(RoyalPaladin.KnightOfTheHarpTristan, 3)
-        .AddCards(RoyalPaladin.BlasterBlade, 1)
-        .AddCards(RoyalPaladin.KnightOfSilenceGallatin, 4)
-        .AddCards(RoyalPaladin.SolitaryKnightGancelot, 2)
-        .AddCards(RoyalPaladin.KnightOfConvictionBors, 1)
-        .AddCards(RoyalPaladin.CrimsonButterflyBrigitte, 4);
-    
     DeckBuilder TestDeck => DeckBuilder.Create()
         .AddCards(RoyalPaladin.ArdentJewelKnightPolli, 4)
         .AddCards(RoyalPaladin.BringerOfGoodLuckEpona, 4)
@@ -64,13 +54,19 @@ public partial class Session : Control
         InputProviderComponent = GetNode<InputProvider>($"%{nameof(InputProviderComponent)}");
         InputProviderComponent.SetEventBus(eventBus);
 
-        var player1 = new VanguardPlayerProfile(
-            TrialDeck, RoyalPaladin.StardustTrumpeteer);
+        var aiDeck = DeckFactory.RoyalPaladinTrialDeck;
+
+        var player1 = PlayerDeck switch
+        {
+            PlayerDeck.ROYAL_PALADIN_TRIAL_DECK => new VanguardPlayerProfile(DeckFactory.RoyalPaladinTrialDeck, RoyalPaladin.StardustTrumpeteer),
+            PlayerDeck.KAGERO_TRIAL_DECK => new VanguardPlayerProfile(DeckFactory.KageroTrialDeck, Kagero.LizardRunnerUndeux),
+            _ => throw new NotSupportedException("Invalid Deck")
+        };
 
         VanguardPlayerProfile player2 = Opponent switch
         {
             OpponentType.RULE_BOT_ROYAL_PALADIN_TRIAL_DECK => new(RoyalPaladinTrialDeckBot.Deck, RoyalPaladinTrialDeckBot.StartingVanguard),
-            OpponentType.AI => new(TrialDeck, RoyalPaladin.StardustTrumpeteer),
+            OpponentType.AI => new(aiDeck, RoyalPaladin.StardustTrumpeteer),
             _ => throw new NotSupportedException("Invalid Opponent")
         };
 
@@ -109,7 +105,7 @@ public partial class Session : Control
         // session.Game.Board.Player1Area.FrontLeft.Assign(RoyalPaladin.KnightOfRoseMorgana);
         // session.Game.Board.Player1Area.FrontRight.Assign(RoyalPaladin.KnightOfRoseMorgana);
         // session.Game.Board.Player2Area.Vanguard.Assign(RoyalPaladin.KnightOfTheHarpTristan);
-        // session.Game.Board.Player2Area.FrontLeft.Assign(RoyalPaladin.KnightOfTheHarpTristan);
+        // session.Game.Board.Player2Area.BackLeft.Assign(RoyalPaladin.LittleSageMarron);
         // session.Game.Board.Player2Area.FrontRight.Assign(RoyalPaladin.KnightOfTheHarpTristan);
 
         // session.Game.Board.Player1Area.Soul.AddCardsOnTop([
@@ -119,7 +115,7 @@ public partial class Session : Control
         //     RoyalPaladin.SailorGuardianMichiru,
         //     RoyalPaladin.BlasterBlade,
         // ]);
-        // session.Game.Board.Player1Area.Hand.AddCard(RoyalPaladin.BlasterBlade);
+        // session.Game.Board.Player1Area.Hand.AddCard(Kagero.WyvernStrikeTejas);
         // session.Game.Board.Player1Area.Hand.AddCard(RoyalPaladin.Wingal);
         // session.Game.Board.Player2Area.FrontLeft.Assign(RoyalPaladin.KnightOfSilenceGallatin);
         #endregion
