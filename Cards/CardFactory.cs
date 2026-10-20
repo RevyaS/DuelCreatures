@@ -47,7 +47,7 @@ public static class DuelMaidensCardsFactory
         public static VanguardCard BlasterBlade => new VanguardCard(2, "Blaster Blade", 9000, 1, 5000, VanguardCardSkill.NONE, VanguardTrigger.NONE, [
             new VanguardAutomaticSkill(VanguardSkillCardLocation.VANGUARD | VanguardSkillCardLocation.REARGUARD,
                 new OnPlaceTiming(), new VanguardSkillCost { CounterBlast = 2 }, [
-                new RetireFrontRow()
+                new RetireOpponentFrontRowRearGuard()
             ])
         ]);
         public static VanguardCard KnightOfTheHarpTristan => new VanguardCard(2, "Knight of the Harp, Tristan", 8000, 1, 5000, VanguardCardSkill.INTERCEPT, VanguardTrigger.NONE, [

@@ -1,13 +1,24 @@
+using System;
 using System.Threading.Tasks;
 using ArC.CardGames.Flow;
 using ArC.CardGames.Predefined.Vanguard;
+using ArC.CardGames.Predefined.Vanguard.Bots;
 using ArC.CardGames.Setup;
 using ArC.VanguardAI.IO;
 using Godot;
 using static ArC.CardGames.Predefined.Vanguard.Cards.DuelMaidensCardsFactory;
 
+public enum OpponentType
+{
+    RULE_BOT_ROYAL_PALADIN_TRIAL_DECK,
+    AI
+}
+
 public partial class Session : Control
 {
+    OpponentType Opponent = OpponentType.RULE_BOT_ROYAL_PALADIN_TRIAL_DECK;
+    VanguardBotDifficulty Difficulty = VanguardBotDifficulty.MASTER;
+
     InputProvider InputProviderComponent = null!;
     DuelCreaturesBoard Board => InputProviderComponent.Board;
 
@@ -56,8 +67,12 @@ public partial class Session : Control
         var player1 = new VanguardPlayerProfile(
             TrialDeck, RoyalPaladin.StardustTrumpeteer);
 
-        var player2 = new VanguardPlayerProfile(
-            TrialDeck, RoyalPaladin.StardustTrumpeteer);
+        VanguardPlayerProfile player2 = Opponent switch
+        {
+            OpponentType.RULE_BOT_ROYAL_PALADIN_TRIAL_DECK => new(RoyalPaladinTrialDeckBot.Deck, RoyalPaladinTrialDeckBot.StartingVanguard),
+            OpponentType.AI => new(TrialDeck, RoyalPaladin.StardustTrumpeteer),
+            _ => throw new NotSupportedException("Invalid Opponent")
+        };
 
         var dataQuery = new VanguardGameDataQuery();
         var game = new VanguardGame(player1, player2, dataQuery, eventBus, effectService);
@@ -68,7 +83,13 @@ public partial class Session : Control
         VanguardAIGameStateEncoder gameStateEncoder = new(dataQuery);
         VanguardAIDecisionContextEncoder decisionContextEncoder = new(dataQuery);
         VanguardAIOptionEncoder optionEncoder = new(dataQuery);
-        var inputProviderFactory = new InputProviderFactory(game, dataQuery, gameStateEncoder, decisionContextEncoder, optionEncoder, InputProviderComponent, gameContext, skillService, logger);
+
+        IPlayerInputProviderFactory inputProviderFactory = Opponent switch
+        {
+            OpponentType.RULE_BOT_ROYAL_PALADIN_TRIAL_DECK => new RuleBotInputProviderFactory(game, RuleBotDeck.ROYAL_PALADIN_TRIAL, VanguardBotDifficulty.MASTER, dataQuery, InputProviderComponent, gameContext, skillService),
+            OpponentType.AI => new InputProviderFactory(game, dataQuery, gameStateEncoder, decisionContextEncoder, optionEncoder, InputProviderComponent, gameContext, skillService, logger),
+            _ => throw new NotSupportedException("Invalid Opponent")
+        };
         
         var session = new VanguardGameSession(game, inputProviderFactory, eventBus, effectService, skillService, gameContext, logger);
         dataQuery.Init(session);
