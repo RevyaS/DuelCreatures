@@ -6,7 +6,8 @@ using ArC.CardGames.Setup;
 
 public enum RuleBotDeck
 {
-    ROYAL_PALADIN_TRIAL
+    ROYAL_PALADIN_TRIAL,
+    KAGERO_TRIAL
 }
 
 public class RuleBotInputProviderFactory : IPlayerInputProviderFactory
@@ -44,6 +45,8 @@ public class RuleBotInputProviderFactory : IPlayerInputProviderFactory
             {
                 case RuleBotDeck.ROYAL_PALADIN_TRIAL:
                     return new RoyalPaladinTrialDeckBot(Game.Player2, DataQuery, SkillService, GameContext, BotDifficulty);
+                case RuleBotDeck.KAGERO_TRIAL:
+                    return new KageroTrialDeckBot(Game.Player2, DataQuery, SkillService, GameContext, BotDifficulty);
                 default:
                     throw new NotSupportedException("Rule Bot is not supported");
             }
