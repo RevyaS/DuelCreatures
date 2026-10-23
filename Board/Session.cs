@@ -80,7 +80,7 @@ public partial class Session : Control
 
         var dataQuery = new VanguardGameDataQuery();
         var game = new VanguardGame(player1, player2, dataQuery, eventBus, effectService);
-        var skillService = new VanguardSkillService(eventBus, gameContext);
+        var skillService = new VanguardSkillService(eventBus, gameContext, dataQuery);
         var logger = new GodotLogger();
         logger.Enabled = true;
 

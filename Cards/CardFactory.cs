@@ -30,7 +30,7 @@ public static class DuelMaidensCardsFactory
                     ])
         ]);
         public static VanguardCard Wingal => new VanguardCard(1, "Wingal", 6000, 1, 5000, VanguardCardSkill.BOOST, VanguardTrigger.NONE, [
-            new VanguardAutomaticSkill(VanguardSkillCardLocation.VANGUARD | VanguardSkillCardLocation.REARGUARD, new OnBoostTiming(BlasterBlade.Name),
+            new VanguardAutomaticSkill(VanguardSkillCardLocation.VANGUARD | VanguardSkillCardLocation.REARGUARD, new OnBoostSpecificCardTiming(BlasterBlade.Name),
             new VanguardSkillCost(), [
                 new ProvidePowerToInvoker(4000, EffectDuration.ATTACK)
             ])
@@ -74,7 +74,7 @@ public static class DuelMaidensCardsFactory
         ]);
         public static VanguardCard SolitaryKnightGancelot => new VanguardCard(3, "Solitary Knight, Gancelot", 9000, 1, 0, VanguardCardSkill.TWIN_DRIVE, VanguardTrigger.NONE, [
             new VanguardActivationSkill(VanguardSkillCardLocation.HAND, new VanguardSkillCost(), [
-                new ReturnToDeck(),
+                new ReturnInvokerToDeck(),
                 new TutorSpecificCard("Blaster Blade"),
                 new ShuffleDeck()
             ]),

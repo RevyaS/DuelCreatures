@@ -346,13 +346,14 @@ public partial class DuelCreaturesBoard : Control
         return Task.CompletedTask;
     }
 
-    private void OnPhaseChanged(IPhase phase)
+    private Task OnPhaseChanged(IPhase phase)
     {
         // Snapshot who's playing now; the step may play after the turn has moved on
         var currentPlayerIsPlayer1 = _gameSession.CurrentPlayerIsPlayer1;
         presentation.Present(() => ShowPhase(phase, currentPlayerIsPlayer1));
         // "During your turn" continuous effects change with the turn
         RecalculateStats();
+        return Task.CompletedTask;
     }
 
     private void ShowPhase(IPhase phase, bool currentPlayerIsPlayer1)

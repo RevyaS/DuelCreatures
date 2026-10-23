@@ -163,24 +163,24 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         return Task.CompletedTask;
     }
 
-    private void OnPhaseChanged(IPhase phase)
+    private Task OnPhaseChanged(IPhase phase)
     {
-        if(phase is not IManualPhase) return;
+        if(phase is not IManualPhase) return Task.CompletedTask;
 
         switch(phase)
         {
             case MulliganPhase:
                 SetProviderStrategy(new MulliganPhaseStrategy(board, SelectCardsComponent));
-                return;
+                return Task.CompletedTask;
             case RidePhase:
                 SetProviderStrategy(new RidePhaseStrategy(board));
-                return;
+                return Task.CompletedTask;
             case MainPhase:
                 SetProviderStrategy(new MainPhaseStrategy(board, CardInfoComponent, GameContext));
-                return;
+                return Task.CompletedTask;
             case VanguardAttackPhase:
                 SetProviderStrategy(new AttackPhaseStrategy(board, GameContext));
-                return;
+                return Task.CompletedTask;
         }
         throw new NotSupportedException($"{phase.GetType().Name} is not supported yet");
     }
