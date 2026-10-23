@@ -150,7 +150,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
     {
         if(invocationSource is VanguardUnitCircleInvocationSource unitCircleSource && PlayArea.OwnsUnitCircle(unitCircleSource.UnitCircle))
         {
-            PushProviderStrategy(new SkillExecutionStrategy(board, PlayArea, CardListComponent, SelectFromCardListComponent));
+            PushProviderStrategy(new SkillExecutionStrategy(board, PlayArea, CardListComponent, SelectFromCardListComponent, invocationSource.Card.Name));
         }
     }
 

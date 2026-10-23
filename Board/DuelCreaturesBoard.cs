@@ -19,10 +19,9 @@ public partial class DuelCreaturesBoard : Control
 
     // Whose guards the guard zone is showing for the current battle
     BoardSide guardingSide = BoardSide.None;
-    // The opponent's guards: ArC puts them in the drop zone before announcing them
-    // (OnGuarded), so everything reaching the drop zone in between is held back
-    bool collectingOppGuards = false;
-    readonly List<CardBase> oppGuards = [];
+    // Cards on ArC's guardian circle this battle. ArC sends them to the drop zone right
+    // before AttackEnded; the board flies them there itself once the battle ends.
+    readonly HashSet<CardBase> guardians = new(ReferenceEqualityComparer.Instance);
     VanguardPlayerProfile player1 => _gameSession.Game.Player1;
     VanguardPlayerProfile player2 => _gameSession.Game.Player2;
     Stack<string> playerPhaseIndicatorStack = new();
@@ -211,8 +210,7 @@ public partial class DuelCreaturesBoard : Control
 
         // Guards stay on the guard zone until the battle ends, even though the game
         // already put them in the drop zone
-        presenter.AddHolder(GuardZone);
-        presenter.AddHolder(_ => collectingOppGuards);
+        presenter.AddHolder(card => guardians.Contains(card));
 
         Reset();
 
@@ -234,8 +232,8 @@ public partial class DuelCreaturesBoard : Control
         eventBus.AttackEnded += OnAttackEnded;
         eventBus.OnGuardRequested += OnGuardRequested;
         eventBus.OnGuarded += OnGuarded;
-        eventBus.CardAddedToDropZone += OnCardAddedToDropZone;
-        eventBus.CardsAddedToDropZone += OnCardsAddedToDropZone;
+        eventBus.CardAddedToHand += OnHandChanged;
+        eventBus.CardTakenFromHand += OnHandChanged;
         eventBus.OnAttack += OnAttack;
         eventBus.CardAssignedToUnitCircle += OnCardAssignedToUnitCircle;
 
@@ -262,56 +260,60 @@ public partial class DuelCreaturesBoard : Control
         return Task.CompletedTask;
     }
 
+    // Both sides: continuous effects (e.g. "+4000 while your hand has 4+ cards") change
+    // without an effect event, so stats are refreshed whenever something they depend on does
     private void RecalculateStats()
     {
         PlayerArea.RecalculateStats();
+        OppArea.RecalculateStats();
+    }
+
+    private void OnHandChanged(CardBase card, Hand hand)
+    {
+        RecalculateStats();
     }
 
     private Task OnGuardRequested(UnitCircle circle)
     {
-        var defender = OppArea.GetUnitCircleComponentOrDefault(circle) is not null ? BoardSide.Opponent : BoardSide.Player;
-        guardingSide = defender;
-        if(defender == BoardSide.Opponent)
-        {
-            collectingOppGuards = true;
-            oppGuards.Clear();
-        }
+        guardingSide = OppArea.GetUnitCircleComponentOrDefault(circle) is not null ? BoardSide.Opponent : BoardSide.Player;
         return Task.CompletedTask;
     }
 
-    private void OnCardAddedToDropZone(DropZone zone, CardBase card)
-    {
-        if(collectingOppGuards) oppGuards.Add(card);
-    }
-
-    private void OnCardsAddedToDropZone(DropZone zone, List<CardBase> cards)
-    {
-        if(collectingOppGuards) oppGuards.AddRange(cards);
-    }
-
+    // ArC's guardian circle now holds the hand guards and the interceptors. (Not read from
+    // OnInterceptorPlacedOnGuardianCircle: ArC awaits only that event's last subscriber,
+    // which must stay its own skill binder so "when placed on (GC)" skills resolve.)
     private void OnGuarded(List<CardBase> guardCards, Hand hand)
     {
-        if(!collectingOppGuards) return;
-        collectingOppGuards = false;
+        // `hand` is the defender's; read the defender's guardian circle
+        var defender = ReferenceEquals(hand, OppHand.Hand) ? OppArea.PlayArea : PlayerArea.PlayArea;
+        var onGuardianCircle = defender.GuardZone.Cards.ToList();
+        guardians.UnionWith(onGuardianCircle);
 
-        // Guards from the hand and intercepting units fly to the guard zone, then stay readable
-        foreach(var guard in oppGuards.ToList())
+        // The player's own guards were already placed by the guard step's UI
+        if(!ReferenceEquals(hand, OppHand.Hand)) return;
+
+        // The opponent's guards and interceptors fly in, then stay readable
+        foreach(var guardian in onGuardianCircle)
         {
-            oppPresentation.PresentArrival(guard, CardMove.ToGuardZone, GuardZone, null, () =>
-            {
-                if(!GuardZone.IsFull)
-                {
-                    GuardZone.AddCard(SceneFactory.CreateVanguardCard((VanguardCard)guard));
-                }
-            });
+            PresentOppGuardian(guardian);
         }
-        oppGuards.Clear();
 
         oppPresentation.Present(async () =>
         {
             if(PresentationConfig.GuardReveal.Includes(BoardSide.Opponent) && PresentationConfig.GuardRevealHold > 0)
             {
                 await ToSignal(GetTree().CreateTimer(PresentationConfig.GuardRevealHold), SceneTreeTimer.SignalName.Timeout);
+            }
+        });
+    }
+
+    private void PresentOppGuardian(CardBase guardian)
+    {
+        oppPresentation.PresentArrival(guardian, CardMove.ToGuardZone, GuardZone, null, () =>
+        {
+            if(!GuardZone.IsFull)
+            {
+                GuardZone.AddCard(SceneFactory.CreateVanguardCard((VanguardCard)guardian));
             }
         });
     }
@@ -324,6 +326,8 @@ public partial class DuelCreaturesBoard : Control
         var context = side == BoardSide.Opponent ? oppPresentation : playerPresentation;
         var dropZone = side == BoardSide.Opponent ? OppArea.DropZone : PlayerArea.DropZone;
         var dropTop = dropZone.TopCardOfGame(includeHeld: true);
+        // ArC already moved them to the drop zone (held back until now)
+        guardians.Clear();
 
         presentation.Present(async () =>
         {
@@ -347,6 +351,8 @@ public partial class DuelCreaturesBoard : Control
         // Snapshot who's playing now; the step may play after the turn has moved on
         var currentPlayerIsPlayer1 = _gameSession.CurrentPlayerIsPlayer1;
         presentation.Present(() => ShowPhase(phase, currentPlayerIsPlayer1));
+        // "During your turn" continuous effects change with the turn
+        RecalculateStats();
     }
 
     private void ShowPhase(IPhase phase, bool currentPlayerIsPlayer1)

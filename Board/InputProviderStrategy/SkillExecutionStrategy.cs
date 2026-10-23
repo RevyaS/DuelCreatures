@@ -6,7 +6,7 @@ using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Vanguard;
 using Godot;
 
-public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea PlayArea, CardList CardList, SelectFromCardList SelectFromCardList) : BaseStrategy(Board), ISelectOpponentCircle, IQueryActivateSkill, ISelectCardsFromDamageZone, ISelectCardsFromSoul, ISelectCardFromDeck, ISelectCardFromHand, ISelectCardsFromHand, ISelectOwnUnitCircle
+public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea PlayArea, CardList CardList, SelectFromCardList SelectFromCardList, string SkillSource = "") : BaseStrategy(Board), ISelectOpponentCircle, IQueryActivateSkill, ISelectCardsFromDamageZone, ISelectCardsFromSoul, ISelectCardFromDeck, ISelectCardFromHand, ISelectCardsFromHand, ISelectOwnUnitCircle
 {
     // QueryActivateSkill
     public async Task<bool> QueryActivateSkill(VanguardCard Invoker, VanguardAutomaticSkill Skill)
@@ -151,7 +151,7 @@ public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea P
 
     public async Task<CardBase> SelectCardFromHand()
     {
-        SelectFromCardList.Show("Hand", $"Discard", 1, 1, PlayArea.Hand.Cards.Cast<VanguardCard>().ToList());
+        SelectFromCardList.Show("Hand", HandSelectionTitle(1, 1), 1, 1, PlayArea.Hand.Cards.Cast<VanguardCard>().ToList());
 
         TaskCompletionSource<CardBase> completionSource = new();
 
@@ -172,7 +172,7 @@ public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea P
 
     public async Task<List<CardBase>> SelectCardsFromHand(int minimum, int maximum)
     {
-        SelectFromCardList.Show("Hand", $"Discard", minimum, maximum, PlayArea.Hand.Cards.Cast<VanguardCard>().ToList());
+        SelectFromCardList.Show("Hand", HandSelectionTitle(minimum, maximum), minimum, maximum, PlayArea.Hand.Cards.Cast<VanguardCard>().ToList());
 
         TaskCompletionSource<List<CardBase>> completionSource = new();
 
@@ -194,5 +194,13 @@ public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea P
     public Task<UnitCircle> SelectOwnUnitCircle(UnitSelector selector)
     {
         return SelectUnitCircle(selector);
+    }
+
+    // Skills pick hand cards for different things (discard, return to deck, ...), so
+    // name the skill instead of guessing what happens to them
+    private string HandSelectionTitle(int minimum, int maximum)
+    {
+        var amount = minimum == maximum ? $"{maximum}" : $"{minimum}-{maximum}";
+        return string.IsNullOrEmpty(SkillSource) ? $"Select {amount}" : $"{SkillSource}: select {amount}";
     }
 }

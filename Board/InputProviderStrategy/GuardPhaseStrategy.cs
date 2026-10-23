@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Vanguard;
+using ArC.CardGames.Predefined.Vanguard.Evaluations;
 
 public class GuardPhaseStrategy(DuelCreaturesBoard Board, UnitCircleComponent GuardedCircle, VanguardPlayArea PlayArea, GuardState GuardState) : IInputProviderStrategy, ISelectCardsFromHand, ISelectOwnUnitCircles
 {
@@ -28,7 +29,8 @@ public class GuardPhaseStrategy(DuelCreaturesBoard Board, UnitCircleComponent Gu
 
         List<VanguardCard> selectedCards = [];
         List<VanguardCard> selectedInterceptCards = [];
-        int basePower = Board.PlayerArea.Vanguard.UnitCircle.GetOverallPower();
+        // The unit being guarded, which isn't always the vanguard
+        int basePower = GuardedCircle.UnitCircle.GetOverallPower();
 
         bool returningCard = false;
         bool interceptCard = false;
@@ -134,7 +136,9 @@ public class GuardPhaseStrategy(DuelCreaturesBoard Board, UnitCircleComponent Gu
                     selectedCards.Remove((VanguardCard)result.CurrentCard);
                 }
             }
-            GuardedCircle.UpdatePower(basePower + selectedCards.Sum(x => x.Guard) + selectedInterceptCards.Sum(x => x.Guard));
+            // Interceptors can have "when placed on (GC)" shield (e.g. Security Guardian), so ask ArC
+            GuardedCircle.UpdatePower(basePower + selectedCards.Sum(x => x.Guard)
+                + selectedInterceptCards.Sum(x => VanguardSkillJudge.ExpectedGuardianShield(x, intercepting: true)));
             result.CurrentlyDragged = false;
         }
 
