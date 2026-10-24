@@ -31,6 +31,7 @@ public static class PresentationConfig
         [CardMove.GuardToDropZone]   = new(0.30f, Easing.EaseIn, Stagger: 0.05f),
         [CardMove.ToGuardZone]       = new(0.30f, Easing.EaseOut, Stagger: 0.06f),
         [CardMove.ToUnitCircle]      = new(0.30f, Easing.EaseOut),
+        [CardMove.ToSoul]            = new(0.30f, Easing.EaseIn, Stagger: 0.06f),
     };
 
     // @keyframes flip (the face swaps at the frame where ScaleX is 0)
@@ -69,6 +70,9 @@ public static class PresentationConfig
 
     // Border of intercepting units in the guard zone (they go back through Deselect, not to the hand)
     public static Color InterceptOutline = new(0.25f, 0.85f, 0.35f);
+
+    // Card info: skills a unit got from effects, shown under its printed ones
+    public static Color GrantedSkillColor = new(0.55f, 0.8f, 1f);
 
     // Simultaneous sounds before the oldest one gets cut off
     public static int SfxVoices = 4;

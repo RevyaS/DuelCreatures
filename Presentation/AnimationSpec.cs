@@ -23,6 +23,7 @@ public enum CardMove
     GuardToDropZone,
     ToGuardZone,
     ToUnitCircle,
+    ToSoul,
 }
 
 // CSS-like timing functions

@@ -73,7 +73,14 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
     private void OnPlayerUnitCircleCardPressed(UnitCircleComponent unitCircle, Card card)
     {
         var enableActivateButton = VanguardGameRules.UnitCircleCanActivateSkill(this, unitCircle.UnitCircle);
-        ShowCardInfo(card, enableActivateButton);
+        ShowCardInfo(card, enableActivateButton, GrantedSkills(unitCircle));
+    }
+
+    // Skills a unit got from effects (e.g. "this unit gets '[AUTO] ...' until end of turn")
+    private VanguardSkill[] GrantedSkills(UnitCircleComponent? unitCircle)
+    {
+        if(unitCircle?.UnitCircle is not { } circle) return [];
+        return PlayArea.EffectService.GetGrantedSkills(circle).Cast<VanguardSkill>().ToArray();
     }
 
     private void OnPlayerSoulPressed()
@@ -103,7 +110,6 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
     public void SetEventBus(VanguardEventBus eventBus)
     {
         eventBus.PhaseChanged += OnPhaseChanged;
-        eventBus.OnGuardRequested += OnGuardRequested;
         eventBus.SkillExecution += OnSkillExecution;
         eventBus.SkillExecuted += OnSkillExecuted;
         eventBus.OnDamageChecked += OnDamageChecked;
@@ -140,7 +146,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     private void OnSkillExecuted(VanguardSkillInvocationSource invocationSource, VanguardSkill skill)
     {
-        if(invocationSource is VanguardUnitCircleInvocationSource unitCircleSource && PlayArea.OwnsUnitCircle(unitCircleSource.UnitCircle))
+        if(IsOwnSkill(invocationSource))
         {
             PopProviderStrategy();
         }
@@ -148,19 +154,36 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     private void OnSkillExecution(VanguardSkillInvocationSource invocationSource, VanguardSkill skill)
     {
-        if(invocationSource is VanguardUnitCircleInvocationSource unitCircleSource && PlayArea.OwnsUnitCircle(unitCircleSource.UnitCircle))
+        if(IsOwnSkill(invocationSource))
         {
             PushProviderStrategy(new SkillExecutionStrategy(board, PlayArea, CardListComponent, SelectFromCardListComponent, invocationSource.Card.Name));
         }
     }
 
-    private Task OnGuardRequested(UnitCircle circle)
+    // Skills can come from a circle, the hand, the soul or the (shared) guardian circle
+    private bool IsOwnSkill(VanguardSkillInvocationSource source) => source switch
     {
-        if(PlayArea.OwnsUnitCircle(circle))
-        {
-            SetProviderStrategy(new GuardPhaseStrategy(board, board.GetPlayerUnitCircleComponent(circle), PlayArea, (GuardState)GameContext.GameState));
-        }
-        return Task.CompletedTask;
+        VanguardUnitCircleInvocationSource unitCircle => PlayArea.OwnsUnitCircle(unitCircle.UnitCircle),
+        VanguardHandInvocationSource hand => ReferenceEquals(hand.Hand, PlayArea.Hand),
+        VanguardSoulInvocationSource soul => ReferenceEquals(soul.Soul, PlayArea.Soul),
+        // Both players share one guardian circle: its skills are the defender's
+        VanguardGuardianCircleInvocationSource => CurrentGuard() is { } guard && PlayArea.OwnsUnitCircle(guard.TargetCircle),
+        _ => false,
+    };
+
+    private GuardState? CurrentGuard() => GameContext.States.OfType<GuardState>().FirstOrDefault();
+
+    GuardState? guardStrategyFor = null;
+
+    // ArC guards inside a GuardState (no event): when it asks this player for guards or
+    // interceptors, switch to the guard step's UI, once per battle
+    private void EnsureGuardStrategy()
+    {
+        var guard = CurrentGuard();
+        if(guard is null || !PlayArea.OwnsUnitCircle(guard.TargetCircle) || ReferenceEquals(guard, guardStrategyFor)) return;
+
+        guardStrategyFor = guard;
+        SetProviderStrategy(new GuardPhaseStrategy(board, board.GetPlayerUnitCircleComponent(guard.TargetCircle), PlayArea, guard));
     }
 
     private Task OnPhaseChanged(IPhase phase)
@@ -224,7 +247,8 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     private void OnUnitCircleCardPressed(Card card)
     {
-        ShowCardInfo(card);
+        var circle = Board.OppArea.Circles.FirstOrDefault(circle => ReferenceEquals(circle.CurrentCard, card));
+        ShowCardInfo(card, grantedSkills: GrantedSkills(circle));
     }
 
     private void OnCardListCardPressed(Card card)
@@ -242,11 +266,11 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         ShowCardInfo(card);
     }
 
-    private void ShowCardInfo(Card card, bool canActivate = false)
+    private void ShowCardInfo(Card card, bool canActivate = false, VanguardSkill[]? grantedSkills = null)
     {
         // Above every other HUD panel, e.g. the card selection it was opened from
         CardInfoComponent.MoveToFront();
-        CardInfoComponent.Show((VanguardCard)card.CurrentCard, canActivate);
+        CardInfoComponent.Show((VanguardCard)card.CurrentCard, canActivate, grantedSkills);
     }
 
     // Don't prompt the player before the board has caught up with the game
@@ -258,7 +282,11 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     public Task<List<CardBase>> SelectCardsFromHandRange(int minimum, int maximum)
     {
-        return WhenPresented(() => ((ISelectCardsFromHand)strategy).SelectCardsFromHand(minimum, maximum));
+        return WhenPresented(() =>
+        {
+            EnsureGuardStrategy();
+            return ((ISelectCardsFromHand)strategy).SelectCardsFromHand(minimum, maximum);
+        });
     }
 
     public Task<CardBase?> SelectCardFromHandOrNot()
@@ -321,8 +349,101 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         return WhenPresented(() => ((IRequestAttackPhaseAction)strategy).RequestAttackPhaseAction(actions));
     }
 
+    public Task<PendingSkill> SelectSkillToInvoke(IReadOnlyList<PendingSkill> skills)
+    {
+        return WhenPresented(() => PromptSkillOrder(skills));
+    }
+
+    // Several of this player's skills triggered at once: drag the one to resolve first out of
+    // the list (the rest are offered again after it, as it may change what they can do)
+    private async Task<PendingSkill> PromptSkillOrder(IReadOnlyList<PendingSkill> skills)
+    {
+        if(skills.Count == 1) return skills[0];
+
+        CardListComponent.Show("Select the skill to resolve first", skills.Select(skill => skill.Source.Card).ToList());
+        CardListComponent.CanClose = false;
+        CardListComponent.BaseDroppable = true;
+        CardListComponent.CardsDraggable = true;
+
+        TaskCompletionSource<PendingSkill> completionSource = new();
+        Action<Card> cardDroppedHandler = (card) =>
+        {
+            var chosen = skills.FirstOrDefault(skill => ReferenceEquals(skill.Source.Card, card.CurrentCard)) ?? skills[0];
+            completionSource.TrySetResult(chosen);
+        };
+        CardListComponent.CardDroppedOutside += cardDroppedHandler;
+
+        var result = await completionSource.Task;
+
+        CardListComponent.CardDroppedOutside -= cardDroppedHandler;
+        CardListComponent.BaseDroppable = false;
+        CardListComponent.CardsDraggable = false;
+        CardListComponent.CanClose = true;
+        CardListComponent.Hide();
+        return result;
+    }
+
+    public Task<List<UnitCircle>> SelectOwnUnitCirclesRange(UnitSelector selector, int minimum, int maximum)
+    {
+        return WhenPresented(() => PromptOwnUnitCircles(selector, minimum, maximum));
+    }
+
+    // Select buttons on the matching circles, then Confirm once enough are selected
+    private async Task<List<UnitCircle>> PromptOwnUnitCircles(UnitSelector selector, int minimum, int maximum)
+    {
+        List<UnitCircle> selected = [];
+        board.PushPlayerPhaseIndicatorText(minimum == maximum ? $"Select {maximum} unit(s)" : $"Select {minimum}-{maximum} units");
+        board.EnableSelectOwnUnitCircle(selector);
+        board.ShowLeftButton(TextConstants.Confirm);
+        board.EnableLeftButton(minimum == 0);
+
+        TaskCompletionSource completionSource = new();
+        Action<UnitCircleComponent> selectedHandler = (circle) =>
+        {
+            if(selected.Count >= maximum)
+            {
+                circle.ResetSelection();
+                return;
+            }
+            selected.Add(circle.UnitCircle);
+            board.EnableLeftButton(selected.Count >= minimum);
+        };
+        Action<UnitCircleComponent> deselectedHandler = (circle) =>
+        {
+            selected.Remove(circle.UnitCircle);
+            board.EnableLeftButton(selected.Count >= minimum);
+        };
+        Action confirmHandler = () => completionSource.TrySetResult();
+        board.PlayerCircleSelected += selectedHandler;
+        board.PlayerCircleDeselected += deselectedHandler;
+        board.LeftButtonPressed += confirmHandler;
+
+        await completionSource.Task;
+
+        board.PlayerCircleSelected -= selectedHandler;
+        board.PlayerCircleDeselected -= deselectedHandler;
+        board.LeftButtonPressed -= confirmHandler;
+        board.DisableSelectOwnUnitCircle();
+        board.EnableLeftButton();
+        board.HideLeftButton();
+        board.PopPlayerPhaseIndicatorText();
+        return selected;
+    }
+
+    public Task<List<VanguardCard>> SelectCardsToCounterCharge(int amount)
+    {
+        return WhenPresented(() => strategy is ISelectCardsToCounterCharge counterCharge
+            ? counterCharge.SelectCardsToCounterCharge(amount)
+            // Outside a skill's own prompt: ArC's default, the earliest damage first
+            : Task.FromResult(PlayArea.DamageZone.Cards.Where(card => !card.IsFaceUp).Take(amount).Cast<VanguardCard>().ToList()));
+    }
+
     public Task<List<UnitCircle>> SelectOwnUnitCircles(UnitSelector selector)
     {
-        return WhenPresented(() => ((ISelectOwnUnitCircles)strategy).SelectOwnUnitCircles(selector));
+        return WhenPresented(() =>
+        {
+            EnsureGuardStrategy();
+            return ((ISelectOwnUnitCircles)strategy).SelectOwnUnitCircles(selector);
+        });
     }
 }

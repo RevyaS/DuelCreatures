@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Vanguard;
 using DuelCreatures.Data;
 using Godot;
@@ -164,8 +165,12 @@ public partial class PlayAreaComponent : Control, IPlayAreaBindable, IEventBusUt
     // Cards with no known previous location come from here (draws, checks, superior calls)
     public ICardLocation DeckLocation => Deck;
 
+    PresentationContext? presentation = null;
+
     public void SetEventBus(VanguardEventBus eventBus, PresentationContext presentation)
     {
+        this.presentation = presentation;
+        eventBus.CardAddedToSoul += OnCardAddedToSoul;
         TriggerZone.DeckLocation = Deck;
         Circles.ForEach(circle => circle.DeckLocation = Deck);
 
@@ -180,6 +185,14 @@ public partial class PlayAreaComponent : Control, IPlayAreaBindable, IEventBusUt
         DamageZone.SetEventBus(eventBus, presentation);
         DropZone.SetEventBus(eventBus, presentation);
         TriggerZone.SetEventBus(eventBus, presentation);
+    }
+
+    // Soul Charge: from the deck to under the vanguard. A ridden vanguard going to the soul
+    // stays where it is, so it doesn't fly (CardMotion skips moves within one location).
+    private void OnCardAddedToSoul(Soul soul, CardBase card)
+    {
+        if(!ReferenceEquals(soul, PlayArea.Soul)) return;
+        presentation.PresentArrival(card, CardMove.ToSoul, Vanguard, Deck, () => { }, faceUp: true);
     }
 
     public void RecalculateStats()

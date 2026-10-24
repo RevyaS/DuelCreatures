@@ -88,7 +88,7 @@ public partial class Session : Control
         VanguardAIDecisionContextEncoder decisionContextEncoder = new(dataQuery);
         VanguardAIOptionEncoder optionEncoder = new(dataQuery);
 
-        IPlayerInputProviderFactory inputProviderFactory;
+        IPlayerInputProviderFactory<IVanguardPlayerInputProvider> inputProviderFactory;
         if(Opponent == OpponentType.AI)
         {
             inputProviderFactory = new InputProviderFactory(game, dataQuery, gameStateEncoder, decisionContextEncoder, optionEncoder, InputProviderComponent, gameContext, skillService, logger);

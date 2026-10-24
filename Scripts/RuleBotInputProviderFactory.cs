@@ -10,8 +10,11 @@ public enum RuleBotDeck
     KAGERO_TRIAL
 }
 
-public class RuleBotInputProviderFactory : IPlayerInputProviderFactory
+// One provider per player for the whole game: the bots keep their plans between requests
+public class RuleBotInputProviderFactory : TwoPlayerInputProviderFactory<VanguardPlayerProfile, IVanguardPlayerInputProvider>
 {
+    IVanguardPlayerInputProvider? player1 = null, player2 = null;
+
     VanguardGame Game;
     InputProvider InputProviderComponent;
     GameContext GameContext;
@@ -23,6 +26,7 @@ public class RuleBotInputProviderFactory : IPlayerInputProviderFactory
 
     public RuleBotInputProviderFactory(VanguardGame game, RuleBotDeck ruleBot, VanguardBotDifficulty botDifficulty, VanguardGameDataQuery dataQuery,
         InputProvider inputProviderComponent, GameContext gameContext, VanguardSkillService skillService)
+        : base(game.Player1, game.Player2)
     {
         Game = game;
         InputProviderComponent = inputProviderComponent;
@@ -32,24 +36,24 @@ public class RuleBotInputProviderFactory : IPlayerInputProviderFactory
         RuleBot = ruleBot;
         BotDifficulty = botDifficulty;
     }
-    public IPlayerInputProvider GetInputProvider(PlayerProfile playerProfile)
+    // Created on first use: the game's board only exists once the game has started
+    protected override IVanguardPlayerInputProvider GetPlayer1InputProvider()
     {
-        if(ReferenceEquals(Game.Player1, playerProfile))
+        if(player1 is null)
         {
             InputProviderComponent.Activate(Game.Board.Player1Area, Game.Board.Player2Area, SkillService, GameContext);
-            return InputProviderComponent;
-        } else
-        {
-            InputProviderComponent.Deactivate();
-            switch (RuleBot)
-            {
-                case RuleBotDeck.ROYAL_PALADIN_TRIAL:
-                    return new RoyalPaladinTrialDeckBot(Game.Player2, DataQuery, SkillService, GameContext, BotDifficulty);
-                case RuleBotDeck.KAGERO_TRIAL:
-                    return new KageroTrialDeckBot(Game.Player2, DataQuery, SkillService, GameContext, BotDifficulty);
-                default:
-                    throw new NotSupportedException("Rule Bot is not supported");
-            }
+            player1 = InputProviderComponent;
         }
+        return player1;
+    }
+
+    protected override IVanguardPlayerInputProvider GetPlayer2InputProvider()
+    {
+        return player2 ??= RuleBot switch
+        {
+            RuleBotDeck.ROYAL_PALADIN_TRIAL => new RoyalPaladinTrialDeckBot(Game.Player2, DataQuery, SkillService, GameContext, BotDifficulty),
+            RuleBotDeck.KAGERO_TRIAL => new KageroTrialDeckBot(Game.Player2, DataQuery, SkillService, GameContext, BotDifficulty),
+            _ => throw new NotSupportedException("Rule Bot is not supported"),
+        };
     }
 }

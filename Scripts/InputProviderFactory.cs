@@ -7,8 +7,12 @@ using ArC.VanguardAI.IO;
 using ArC.VanguardAI.Models;
 using Godot;
 
-public class InputProviderFactory : IPlayerInputProviderFactory
+// One provider per player for the whole game: ArC asks for them constantly (every event
+// with a reacting skill), and building a new one each time would drop the AI's state
+public class InputProviderFactory : TwoPlayerInputProviderFactory<VanguardPlayerProfile, IVanguardPlayerInputProvider>
 {
+    IVanguardPlayerInputProvider? player1 = null, player2 = null;
+
     VanguardGame Game;
     InputProvider InputProviderComponent;
     GameContext GameContext;
@@ -24,6 +28,7 @@ public class InputProviderFactory : IPlayerInputProviderFactory
     public InputProviderFactory(VanguardGame game, VanguardGameDataQuery dataQuery,
         VanguardAIGameStateEncoder gameStateEncoder, VanguardAIDecisionContextEncoder decisionContextEncoder, VanguardAIOptionEncoder optionEncoder,
         InputProvider inputProviderComponent, GameContext gameContext, VanguardSkillService skillService, IVanguardLogger logger)
+        : base(game.Player1, game.Player2)
     {
         Game = game;
         InputProviderComponent = inputProviderComponent;
@@ -44,18 +49,21 @@ public class InputProviderFactory : IPlayerInputProviderFactory
 
         Model = new(buffer);
     }
-    public IPlayerInputProvider GetInputProvider(PlayerProfile playerProfile)
+    // Created on first use: the game's board only exists once the game has started
+    protected override IVanguardPlayerInputProvider GetPlayer1InputProvider()
     {
-        if(ReferenceEquals(Game.Player1, playerProfile))
+        if(player1 is null)
         {
             InputProviderComponent.Activate(Game.Board.Player1Area, Game.Board.Player2Area, SkillService, GameContext);
-            return InputProviderComponent;
-        } else
-        {
-            InputProviderComponent.Deactivate();
-            return new VanguardAIInputProvider(VanguardAITuningSettings.GameplayTuning, 
-                GameStateEncoder, DecisionContextEncoder, OptionEncoder, Model,
-                Game.Player2, DataQuery, SkillService, GameContext, Logger);
+            player1 = InputProviderComponent;
         }
+        return player1;
+    }
+
+    protected override IVanguardPlayerInputProvider GetPlayer2InputProvider()
+    {
+        return player2 ??= new VanguardAIInputProvider(VanguardAITuningSettings.GameplayTuning,
+            GameStateEncoder, DecisionContextEncoder, OptionEncoder, Model,
+            Game.Player2, DataQuery, SkillService, GameContext, Logger);
     }
 }

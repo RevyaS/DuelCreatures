@@ -6,7 +6,7 @@ using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Vanguard;
 using Godot;
 
-public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea PlayArea, CardList CardList, SelectFromCardList SelectFromCardList, string SkillSource = "") : BaseStrategy(Board), ISelectOpponentCircle, IQueryActivateSkill, ISelectCardsFromDamageZone, ISelectCardsFromSoul, ISelectCardFromDeck, ISelectCardFromHand, ISelectCardsFromHand, ISelectOwnUnitCircle
+public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea PlayArea, CardList CardList, SelectFromCardList SelectFromCardList, string SkillSource = "") : BaseStrategy(Board), ISelectOpponentCircle, IQueryActivateSkill, ISelectCardsFromDamageZone, ISelectCardsToCounterCharge, ISelectCardsFromSoul, ISelectCardFromDeck, ISelectCardFromHand, ISelectCardsFromHand, ISelectOwnUnitCircle
 {
     // QueryActivateSkill
     public async Task<bool> QueryActivateSkill(VanguardCard Invoker, VanguardAutomaticSkill Skill)
@@ -86,6 +86,49 @@ public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea P
                 else
                 {
                     card.IsFront = true;
+                    cards.Remove((VanguardCard)card.CurrentCard);
+                }
+                GameBoard.EnableLeftButton(cards.Count == amount);
+            }
+        };
+        GameBoard.PlayerArea.DamageZone.CardLongPressed += cardLongPressedHandler;
+
+        Action leftButtonHandler = completionSource.SetResult;
+        GameBoard.LeftButtonPressed += leftButtonHandler;
+
+        await completionSource.Task;
+
+        GameBoard.PlayerArea.DamageZone.CardLongPressed -= cardLongPressedHandler;
+        GameBoard.LeftButtonPressed -= leftButtonHandler;
+        GameBoard.EnableLeftButton();
+        GameBoard.HideLeftButton();
+        GameBoard.PopPlayerPhaseIndicatorText();
+        return cards;
+    }
+
+    // CounterCharge: long press face-down damage to turn it face up
+    public async Task<List<VanguardCard>> SelectCardsToCounterCharge(int amount)
+    {
+        GameBoard.PushPlayerPhaseIndicatorText($"Counter Charge ({amount})");
+        GameBoard.ShowLeftButton(TextConstants.Confirm);
+        GameBoard.DisableLeftButton();
+        List<VanguardCard> cards = new();
+        List<Card> options = GameBoard.PlayerArea.DamageZone.GetNonEmptyCards().Where(card => !card.IsFront).ToList();
+
+        TaskCompletionSource completionSource = new();
+
+        Action<Card> cardLongPressedHandler = (card) =>
+        {
+            if(options.Contains(card, ReferenceEqualityComparer.Instance))
+            {
+                if(!card.IsFront && cards.Count != amount)
+                {
+                    card.IsFront = true;
+                    cards.Add((VanguardCard)card.CurrentCard);
+                }
+                else if(card.IsFront)
+                {
+                    card.IsFront = false;
                     cards.Remove((VanguardCard)card.CurrentCard);
                 }
                 GameBoard.EnableLeftButton(cards.Count == amount);

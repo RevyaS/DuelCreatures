@@ -132,6 +132,24 @@ public partial class CardLine : PanelContainer, ICardLocation
         }
     }
 
+    private Action<Card>? _decorateCard = null;
+    // Optional extra per-card setup, applied with the rest (e.g. shield values in the guard zone)
+    public Action<Card>? DecorateCard
+    {
+        get => _decorateCard;
+        set
+        {
+            _decorateCard = value;
+            Render();
+        }
+    }
+
+    // Re-applies the line's card setup, e.g. after what DecorateCard reads changed
+    public void Refresh()
+    {
+        Render();
+    }
+
     private SleeveInfo _sleeveInfo = null!;
     [Export]
     public SleeveInfo SleeveInfo
@@ -220,6 +238,7 @@ public partial class CardLine : PanelContainer, ICardLocation
             card.Draggable = false;
         }
         card.Outline = _outlineCard?.Invoke(card);
+        _decorateCard?.Invoke(card);
     }
 
     // Line-wide card state that isn't a slot property. Runs when a card arrives

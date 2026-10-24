@@ -49,6 +49,11 @@ public interface ISelectCardsFromDamageZone
     Task<List<VanguardCard>> SelectCardsFromDamageZone(int amount);
 }
 
+public interface ISelectCardsToCounterCharge
+{
+    Task<List<VanguardCard>> SelectCardsToCounterCharge(int amount);
+}
+
 public interface ISelectCardsFromSoul
 {
     Task<List<VanguardCard>> SelectCardsFromSoul(int amount);

@@ -62,6 +62,8 @@ public static class CardMotion
 
         var flights = presenter.Flights;
         if(flights is null || from is null || droppedByPlayer || !Presenter.Animates(context.Side)) return;
+        // Already there (e.g. a ridden vanguard going into the soul under the new one)
+        if(ReferenceEquals(source, destination) && sourceNode is null) return;
 
         var node = destination.FindCardNode(card);
         SetHidden(node, true);

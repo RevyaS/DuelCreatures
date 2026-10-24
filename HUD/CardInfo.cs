@@ -40,7 +40,7 @@ public partial class CardInfo : Control
         }
     }
 
-    public void Show(VanguardCard card, bool canActivate = false)
+    public void Show(VanguardCard card, bool canActivate = false, VanguardSkill[]? grantedSkills = null)
     {
         CurrentCard = card;
         CardName.Text = card.Name;
@@ -66,12 +66,21 @@ public partial class CardInfo : Control
             _ => string.Empty,
         };
 
-        if(card.Skills.Length == 0)
+        // AddText (not BBCode): skill text has brackets like [AUTO]
+        Skills.Clear();
+        Skills.AddText(card.Skills.Length == 0
+            ? "This card has no skills"
+            : VanguardSkillToStringInterpreter.ExtractSkills(card.Skills));
+
+        if(grantedSkills is { Length: > 0 })
         {
-            Skills.Text = "This card has no skills";
-        } else
-        {
-            Skills.Text = VanguardSkillToStringInterpreter.ExtractSkills(card.Skills);
+            Skills.Newline();
+            Skills.Newline();
+            Skills.PushColor(PresentationConfig.GrantedSkillColor);
+            Skills.AddText("Granted:");
+            Skills.Newline();
+            Skills.AddText(VanguardSkillToStringInterpreter.ExtractSkills(grantedSkills));
+            Skills.Pop();
         }
         ActivateButton.Visible = ShowActivateButton && card.HasActivationSkill;
         ActivateButton.Disabled = !canActivate;

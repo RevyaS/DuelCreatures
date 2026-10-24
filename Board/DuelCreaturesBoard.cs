@@ -22,6 +22,8 @@ public partial class DuelCreaturesBoard : Control
     // Cards on ArC's guardian circle this battle. ArC sends them to the drop zone right
     // before AttackEnded; the board flies them there itself once the battle ends.
     readonly HashSet<CardBase> guardians = new(ReferenceEqualityComparer.Instance);
+    // Each guardian's shield (printed + effects, e.g. Security Guardian's +5000), as of OnGuarded
+    readonly Dictionary<CardBase, int> guardianShields = new(ReferenceEqualityComparer.Instance);
     VanguardPlayerProfile player1 => _gameSession.Game.Player1;
     VanguardPlayerProfile player2 => _gameSession.Game.Player2;
     Stack<string> playerPhaseIndicatorStack = new();
@@ -212,6 +214,14 @@ public partial class DuelCreaturesBoard : Control
         // already put them in the drop zone
         presenter.AddHolder(card => guardians.Contains(card));
 
+        // Guard zone cards show their shield instead of power
+        GuardZone.DecorateCard = card =>
+        {
+            if(card is not VanguardCardComponent guardian || guardian.CurrentCard is null) return;
+            guardian.GuardMode = true;
+            guardian.Guard = guardianShields.TryGetValue(guardian.CurrentCard, out var shield) ? shield : guardian.CurrentCard.Guard;
+        };
+
         Reset();
 
         OnPhaseChanged(gameSession.CurrentPhase);
@@ -230,7 +240,6 @@ public partial class DuelCreaturesBoard : Control
     {
         eventBus.PhaseChanged += OnPhaseChanged;
         eventBus.AttackEnded += OnAttackEnded;
-        eventBus.OnGuardRequested += OnGuardRequested;
         eventBus.OnGuarded += OnGuarded;
         eventBus.CardAddedToHand += OnHandChanged;
         eventBus.CardTakenFromHand += OnHandChanged;
@@ -250,6 +259,8 @@ public partial class DuelCreaturesBoard : Control
 
     private Task OnAttack(UnitCircle attacker, UnitCircle target)
     {
+        // The target's side guards this battle
+        guardingSide = OppArea.GetUnitCircleComponentOrDefault(target) is not null ? BoardSide.Opponent : BoardSide.Player;
         presentation.Present(() => ShowAttackLine(attacker, target));
         return Task.CompletedTask;
     }
@@ -273,12 +284,6 @@ public partial class DuelCreaturesBoard : Control
         RecalculateStats();
     }
 
-    private Task OnGuardRequested(UnitCircle circle)
-    {
-        guardingSide = OppArea.GetUnitCircleComponentOrDefault(circle) is not null ? BoardSide.Opponent : BoardSide.Player;
-        return Task.CompletedTask;
-    }
-
     // ArC's guardian circle now holds the hand guards and the interceptors. (Not read from
     // OnInterceptorPlacedOnGuardianCircle: ArC awaits only that event's last subscriber,
     // which must stay its own skill binder so "when placed on (GC)" skills resolve.)
@@ -288,6 +293,17 @@ public partial class DuelCreaturesBoard : Control
         var defender = ReferenceEquals(hand, OppHand.Hand) ? OppArea.PlayArea : PlayerArea.PlayArea;
         var onGuardianCircle = defender.GuardZone.Cards.ToList();
         guardians.UnionWith(onGuardianCircle);
+
+        var shields = onGuardianCircle.ToDictionary(card => card, card => ((VanguardCard)card).Guard + defender.EffectService.GetEffectTotalShield(card),
+            (IEqualityComparer<CardBase>)ReferenceEqualityComparer.Instance);
+        presentation.Present(() =>
+        {
+            foreach(var (card, shield) in shields)
+            {
+                guardianShields[card] = shield;
+            }
+            GuardZone.Refresh();
+        });
 
         // The player's own guards were already placed by the guard step's UI
         if(!ReferenceEquals(hand, OppHand.Hand)) return;
@@ -339,6 +355,7 @@ public partial class DuelCreaturesBoard : Control
             }
 
             GuardZone.ClearCards();
+            guardianShields.Clear();
             HideAttackLines();
             HideBoostLines();
         });
