@@ -326,7 +326,17 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     public Task<List<VanguardCard>> SelectCardsFromDamageZone(int amount)
     {
-        return WhenPresented(() => ((ISelectCardsFromDamageZone)strategy).SelectCardsFromDamageZone(amount));
+        return WhenPresented(() => {
+            if(GameContext.GameState is CounterBlastPhaseState)
+            {
+                return ((ISelectCardsToCounterBlast)strategy).SelectCardsFromDamageZone(amount);
+            }
+            if(GameContext.GameState is CounterChargePhaseState)
+            {
+                return ((ISelectCardsToCounterCharge)strategy).SelectCardsFromDamageZone(amount);
+            }
+            throw new NotImplementedException();
+        });
     }
 
     public Task<List<VanguardCard>> SelectCardsFromSoul(int amount)
@@ -428,14 +438,6 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         board.HideLeftButton();
         board.PopPlayerPhaseIndicatorText();
         return selected;
-    }
-
-    public Task<List<VanguardCard>> SelectCardsToCounterCharge(int amount)
-    {
-        return WhenPresented(() => strategy is ISelectCardsToCounterCharge counterCharge
-            ? counterCharge.SelectCardsToCounterCharge(amount)
-            // Outside a skill's own prompt: ArC's default, the earliest damage first
-            : Task.FromResult(PlayArea.DamageZone.Cards.Where(card => !card.IsFaceUp).Take(amount).Cast<VanguardCard>().ToList()));
     }
 
     public Task<List<UnitCircle>> SelectOwnUnitCircles(UnitSelector selector)

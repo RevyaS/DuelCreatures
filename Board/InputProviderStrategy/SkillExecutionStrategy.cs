@@ -6,7 +6,7 @@ using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Vanguard;
 using Godot;
 
-public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea PlayArea, CardList CardList, SelectFromCardList SelectFromCardList, string SkillSource = "") : BaseStrategy(Board), ISelectOpponentCircle, IQueryActivateSkill, ISelectCardsFromDamageZone, ISelectCardsToCounterCharge, ISelectCardsFromSoul, ISelectCardFromDeck, ISelectCardFromHand, ISelectCardsFromHand, ISelectOwnUnitCircle
+public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea PlayArea, CardList CardList, SelectFromCardList SelectFromCardList, string SkillSource = "") : BaseStrategy(Board), ISelectOpponentCircle, IQueryActivateSkill, ISelectCardsToCounterBlast, ISelectCardsToCounterCharge, ISelectCardsFromSoul, ISelectCardFromDeck, ISelectCardFromHand, ISelectCardsFromHand, ISelectOwnUnitCircle
 {
     // QueryActivateSkill
     public async Task<bool> QueryActivateSkill(VanguardCard Invoker, VanguardAutomaticSkill Skill)
@@ -63,7 +63,7 @@ public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea P
     }
 
     // CounterBlast
-    public async Task<List<VanguardCard>> SelectCardsFromDamageZone(int amount)
+    async Task<List<VanguardCard>> ISelectCardsToCounterBlast.SelectCardsFromDamageZone(int amount)
     {
         GameBoard.PushPlayerPhaseIndicatorText($"Counter Blast ({amount})");
         GameBoard.ShowLeftButton(TextConstants.Confirm);
@@ -107,7 +107,7 @@ public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea P
     }
 
     // CounterCharge: long press face-down damage to turn it face up
-    public async Task<List<VanguardCard>> SelectCardsToCounterCharge(int amount)
+    async Task<List<VanguardCard>> ISelectCardsToCounterCharge.SelectCardsFromDamageZone(int amount)
     {
         GameBoard.PushPlayerPhaseIndicatorText($"Counter Charge ({amount})");
         GameBoard.ShowLeftButton(TextConstants.Confirm);

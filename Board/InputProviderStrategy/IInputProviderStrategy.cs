@@ -44,14 +44,14 @@ public interface IQueryActivateSkill
     Task<bool> QueryActivateSkill(VanguardCard Invoker, VanguardAutomaticSkill Skill);
 }
 
-public interface ISelectCardsFromDamageZone
+public interface ISelectCardsToCounterBlast
 {
     Task<List<VanguardCard>> SelectCardsFromDamageZone(int amount);
 }
 
 public interface ISelectCardsToCounterCharge
 {
-    Task<List<VanguardCard>> SelectCardsToCounterCharge(int amount);
+    Task<List<VanguardCard>> SelectCardsFromDamageZone(int amount);
 }
 
 public interface ISelectCardsFromSoul
