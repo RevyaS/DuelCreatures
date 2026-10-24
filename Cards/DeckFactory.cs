@@ -1,9 +1,9 @@
-using ArC.CardGames.Setup;
+using ArC.CardGames.Predefined.Vanguard;
 using static ArC.CardGames.Predefined.Vanguard.Cards.VanguardCardsFactory;
 
 public static class DeckFactory
 {
-    public static DeckBuilder RoyalPaladinTrialDeck => DeckBuilder.Create()
+    public static VanguardDeckBuilder RoyalPaladinTrialDeck => VanguardDeckBuilder.Create()
         .AddCards(RoyalPaladin.Flogal, 4)
         .AddCards(RoyalPaladin.WeaponsDealerGovannon, 4)
         .AddCards(RoyalPaladin.YggdrasilMaidenElaine, 4)
@@ -18,9 +18,10 @@ public static class DeckFactory
         .AddCards(RoyalPaladin.KnightOfSilenceGallatin, 4)
         .AddCards(RoyalPaladin.SolitaryKnightGancelot, 2)
         .AddCards(RoyalPaladin.KnightOfConvictionBors, 1)
-        .AddCards(RoyalPaladin.CrimsonButterflyBrigitte, 4);
+        .AddCards(RoyalPaladin.CrimsonButterflyBrigitte, 4)
+        .SetStartingVanguard(RoyalPaladin.StardustTrumpeteer);
 
-    public static DeckBuilder KageroTrialDeck => DeckBuilder.Create()
+    public static VanguardDeckBuilder KageroTrialDeck => VanguardDeckBuilder.Create()
         .AddCards(Kagero.DemonicDragonMageRakshasa, 4)
         .AddCards(Kagero.DragonMonkGenjo, 4)
         .AddCards(Kagero.LizardSoldierGanlu, 4)
@@ -35,5 +36,42 @@ public static class DeckFactory
         .AddCards(Kagero.DragonKnightNehalem, 4)
         .AddCards(Kagero.DemonicDragonBerserkerYaksha, 4)
         .AddCards(Kagero.DragonMonkGoku, 1)
-        .AddCards(Kagero.DragonicOverlord, 2);
+        .AddCards(Kagero.DragonicOverlord, 2)
+        .SetStartingVanguard(Kagero.LizardRunnerUndeux);
+
+    public static VanguardDeckBuilder OTTTrialDeck => VanguardDeckBuilder.Create()
+        .SetStartingVanguard(OracleThinkTank.LozengeMagus)
+        .AddCards(OracleThinkTank.LozengeMagus, 3)
+        .AddCards(OracleThinkTank.VictoryMaker, 4)
+        .AddCards(OracleThinkTank.DreamEater, 4)
+        .AddCards(OracleThinkTank.OracleGuardianNike, 4)
+        .AddCards(OracleThinkTank.LuckBird, 3)
+        .AddCards(OracleThinkTank.BattleSisterMaple, 2)
+        .AddCards(OracleThinkTank.WeatherGirlMilk, 4)
+        .AddCards(OracleThinkTank.DarkCat, 4)
+        .AddCards(OracleThinkTank.OracleGuardianGemini, 4)
+        .AddCards(OracleThinkTank.SwordDancerAngel, 2)
+        .AddCards(OracleThinkTank.SecurityGuardian, 4)
+        .AddCards(OracleThinkTank.OracleGuardianWiseman, 4)
+        .AddCards(OracleThinkTank.MeteorBreakWizard, 2)
+        .AddCards(OracleThinkTank.GoddessOfFlowDivinationSakuya, 1)
+        .AddCards(OracleThinkTank.OracleGuardianApollon, 4);
+
+    public static VanguardDeckBuilder NovaGrapplerTrialDeck => VanguardDeckBuilder.Create()
+        .SetStartingVanguard(NovaGrappler.BattleRaizer)
+        .AddCards(NovaGrappler.BattleRaizer, 3)
+        .AddCards(NovaGrappler.RingGirlClara, 4)
+        .AddCards(NovaGrappler.CannonBall, 4)
+        .AddCards(NovaGrappler.ShiningLady, 4)
+        .AddCards(NovaGrappler.BatteringMinotaur, 2)
+        .AddCards(NovaGrappler.QueenOfHeart, 3)
+        .AddCards(NovaGrappler.ScreaminAndDancinAnnouncerShout, 4)
+        .AddCards(NovaGrappler.OasisGirl, 4)
+        .AddCards(NovaGrappler.ToughBoy, 4)
+        .AddCards(NovaGrappler.NGMPrototype, 4)
+        .AddCards(NovaGrappler.SuperElectromagneticLifeformStorm, 2)
+        .AddCards(NovaGrappler.KingOfSword, 4)
+        .AddCards(NovaGrappler.MrInvincible, 4)
+        .AddCards(NovaGrappler.DeathMetalDroid, 3)
+        .AddCards(NovaGrappler.GoldRutile, 1);
 }

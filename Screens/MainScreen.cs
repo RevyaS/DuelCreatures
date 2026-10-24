@@ -69,6 +69,12 @@ public partial class MainScreen : Control
             case "KageroTrialDeck":
                 DeckSelected = PlayerDeck.KAGERO_TRIAL_DECK;
                 break;
+            case "OTTTrialDeck":
+                DeckSelected = PlayerDeck.OTT_TRIAL_DECK;
+                break;
+            case "NovaGrapplerTrialDeck":
+                DeckSelected = PlayerDeck.NOVA_GRAPPLER_TRIAL_DECK;
+                break;
             default:
                 throw new NotSupportedException($"Opponent Not Supported {button.Name}");
         }

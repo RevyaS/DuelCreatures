@@ -18,7 +18,9 @@ public enum OpponentType
 public enum PlayerDeck
 {
     ROYAL_PALADIN_TRIAL_DECK,
-    KAGERO_TRIAL_DECK
+    KAGERO_TRIAL_DECK,
+    OTT_TRIAL_DECK,
+    NOVA_GRAPPLER_TRIAL_DECK
 }
 
 public partial class Session : Control
@@ -30,7 +32,7 @@ public partial class Session : Control
     InputProvider InputProviderComponent = null!;
     DuelCreaturesBoard Board => InputProviderComponent.Board;
 
-    DeckBuilder TestDeck => DeckBuilder.Create()
+    VanguardDeckBuilder TestDeck => VanguardDeckBuilder.Create()
         .AddCards(RoyalPaladin.ArdentJewelKnightPolli, 4)
         .AddCards(RoyalPaladin.BringerOfGoodLuckEpona, 4)
         .AddCards(RoyalPaladin.Flogal, 4)
@@ -44,7 +46,8 @@ public partial class Session : Control
         .AddCards(RoyalPaladin.KnightOfTheHarpTristan, 4)
         .AddCards(RoyalPaladin.KingOfKnightsAlfred, 4) 
         .AddCards(RoyalPaladin.CrimsonButterflyBrigitte, 4)
-        .AddCards(RoyalPaladin.SolitaryKnightGancelot, 4);
+        .AddCards(RoyalPaladin.SolitaryKnightGancelot, 4)
+        .SetStartingVanguard(RoyalPaladin.StardustTrumpeteer);
 
     public void Initialize(PlayerDeck playerDeck, OpponentType opponent)
     {
@@ -65,16 +68,18 @@ public partial class Session : Control
 
         var player1 = PlayerDeck switch
         {
-            PlayerDeck.ROYAL_PALADIN_TRIAL_DECK => new VanguardPlayerProfile(DeckFactory.RoyalPaladinTrialDeck, RoyalPaladin.StardustTrumpeteer),
-            PlayerDeck.KAGERO_TRIAL_DECK => new VanguardPlayerProfile(DeckFactory.KageroTrialDeck, Kagero.LizardRunnerUndeux),
+            PlayerDeck.ROYAL_PALADIN_TRIAL_DECK => new VanguardPlayerProfile(DeckFactory.RoyalPaladinTrialDeck),
+            PlayerDeck.KAGERO_TRIAL_DECK => new VanguardPlayerProfile(DeckFactory.KageroTrialDeck),
+            PlayerDeck.NOVA_GRAPPLER_TRIAL_DECK => new VanguardPlayerProfile(DeckFactory.NovaGrapplerTrialDeck),
+            PlayerDeck.OTT_TRIAL_DECK => new VanguardPlayerProfile(DeckFactory.OTTTrialDeck),
             _ => throw new NotSupportedException("Invalid Deck")
         };
 
         VanguardPlayerProfile player2 = Opponent switch
         {
-            OpponentType.RULE_BOT_ROYAL_PALADIN_TRIAL_DECK => new(RoyalPaladinTrialDeckBot.Deck, RoyalPaladinTrialDeckBot.StartingVanguard),
-            OpponentType.RULE_BOT_KAGERO_TRIAL_DECK => new(KageroTrialDeckBot.Deck, KageroTrialDeckBot.StartingVanguard),
-            OpponentType.AI => new(aiDeck, RoyalPaladin.StardustTrumpeteer),
+            OpponentType.RULE_BOT_ROYAL_PALADIN_TRIAL_DECK => new(RoyalPaladinTrialDeckBot.Deck),
+            OpponentType.RULE_BOT_KAGERO_TRIAL_DECK => new(KageroTrialDeckBot.Deck),
+            OpponentType.AI => new(aiDeck),
             _ => throw new NotSupportedException("Invalid Opponent")
         };
 
@@ -117,7 +122,9 @@ public partial class Session : Control
         #region DEBUG
         // session.Game.Board.Player1Area.Vanguard.Assign(RoyalPaladin.LittleSageMarron);
 
-        // session.Game.Board.Player1Area.Vanguard.Assign(RoyalPaladin.KnightOfRoseMorgana);
+        // session.Game.Board.Player1Area.Vanguard.Assign(NovaGrappler.KingOfSword);
+        // session.Game.Board.Player1Area.Hand.AddCard(NovaGrappler.MrInvincible);
+        // session.Game.Board.Player1Area.Hand.AddCard(NovaGrappler.MrInvincible);
         // session.Game.Board.Player1Area.FrontLeft.Assign(RoyalPaladin.KnightOfRoseMorgana);
         // session.Game.Board.Player1Area.FrontRight.Assign(RoyalPaladin.KnightOfRoseMorgana);
         // session.Game.Board.Player2Area.Vanguard.Assign(RoyalPaladin.KnightOfTheHarpTristan);

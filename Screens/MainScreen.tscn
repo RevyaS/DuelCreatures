@@ -56,6 +56,18 @@ theme = ExtResource("1_wtm7l")
 toggle_mode = true
 text = "Kagero Trial Deck"
 
+[node name="OTTTrialDeck" type="Button" parent="VBoxContainer/VBoxContainer/Deck"]
+layout_mode = 2
+theme = ExtResource("1_wtm7l")
+toggle_mode = true
+text = "OTT Trial Deck"
+
+[node name="NovaGrapplerTrialDeck" type="Button" parent="VBoxContainer/VBoxContainer/Deck"]
+layout_mode = 2
+theme = ExtResource("1_wtm7l")
+toggle_mode = true
+text = "Nova Grappler Trial Deck"
+
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer/VBoxContainer"]
 layout_mode = 2
 

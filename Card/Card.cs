@@ -32,7 +32,10 @@ public partial class Card : CardBaseComponent
 
     protected Texture2D GetCardNameTexture(string cardName)
     {
-        var cleanedName = cardName.Replace(" ", "").Replace(",", "");
+        var cleanedName = cardName.Replace(" ", "")
+            .Replace(",", "")
+            .Replace(".", "")
+            .Replace("'", "");
         var path = $"res://Assets/Cards/{cleanedName}.png";
         return ResourceLoader.Load<Texture2D>(path);
     }
