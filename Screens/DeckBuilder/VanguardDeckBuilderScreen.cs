@@ -5,7 +5,7 @@ using ArC.CardGames.Predefined.Vanguard;
 using Godot;
 
 /// <summary>
-/// Edits one deck of the current profile. Pool cards: swipe up adds a copy, long press sets a grade 0 as the starter.
+/// Edits one deck of the current profile. Pool cards: swipe up adds a copy, swipe down removes one, long press sets a grade 0 as the starter.
 /// Deck cards: swipe down removes a copy, long press sets it as the starter. Pressing any card shows its info.
 /// </summary>
 public partial class VanguardDeckBuilderScreen : Control
@@ -267,6 +267,7 @@ public partial class VanguardDeckBuilderScreen : Control
             view.BadgeText = $"{inDeck}/{owned}";
             view.Dimmed = CanAdd(card.Id) is not null;
             view.SwipedUp += AddCard;
+            view.SwipedDown += RemoveCard;
             view.LongPressed += SetStarter;
             CardPoolList.AddChild(view);
         }

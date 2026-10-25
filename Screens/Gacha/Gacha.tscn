@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://cjfw8k65eqk77"]
+[gd_scene load_steps=4 format=3 uid="uid://cjfw8k65eqk77"]
 
 [ext_resource type="Script" path="res://Screens/Gacha/GachaScreen.cs" id="1_screen"]
+[ext_resource type="Script" path="res://addons/rev_godot_core/Components/DragScrollContainer.cs" id="3_drag"]
 [ext_resource type="PackedScene" path="res://Screens/Gacha/PackOpening.tscn" id="2_opening"]
 
 [node name="Gacha" type="Control"]
@@ -59,6 +60,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
+script = ExtResource("3_drag")
 
 [node name="SetList" type="VBoxContainer" parent="Content/SetsView"]
 unique_name_in_owner = true
@@ -107,12 +109,14 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "New Box"
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Content/BoxView"]
+[node name="PackScroll" type="ScrollContainer" parent="Content/BoxView"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
+script = ExtResource("3_drag")
 
-[node name="PackGrid" type="GridContainer" parent="Content/BoxView/ScrollContainer"]
+[node name="PackGrid" type="GridContainer" parent="Content/BoxView/PackScroll"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6

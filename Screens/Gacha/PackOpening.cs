@@ -173,7 +173,9 @@ public partial class PackOpening : Control
         {
             var view = CardView.Create(cards[i].CardId, catalog.Create(cards[i].CardId), scale);
             var slot = GachaCardSlot.Create(cards[i], view, sleeve);
+            // A held press reveals too, not only a tap
             view.Pressed += _ => OnSlotPressed(slot);
+            view.LongPressed += _ => OnSlotPressed(slot);
 
             float angle = (i - (count - 1) / 2f) * angleStep;
             var restCenter = arcCenter + new Vector2(Mathf.Sin(angle), -Mathf.Cos(angle)) * GachaConfig.ArcRadius;

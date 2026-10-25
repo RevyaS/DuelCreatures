@@ -11,7 +11,8 @@ public partial class GachaScreen : Control
     GachaSet? CurrentSet;
 
     Label Tickets = null!, Title = null!, BoxInfo = null!, Guarantees = null!, StatusLabel = null!;
-    Control SetsView = null!, BoxView = null!;
+    Control BoxView = null!;
+    DragScrollContainer SetsView = null!, PackScroll = null!;
     VBoxContainer SetList = null!;
     TextureRect BoxImage = null!;
     GridContainer PackGrid = null!;
@@ -27,7 +28,8 @@ public partial class GachaScreen : Control
         BoxInfo = GetNode<Label>($"%{nameof(BoxInfo)}");
         Guarantees = GetNode<Label>($"%{nameof(Guarantees)}");
         StatusLabel = GetNode<Label>($"%{nameof(StatusLabel)}");
-        SetsView = GetNode<Control>($"%{nameof(SetsView)}");
+        SetsView = GetNode<DragScrollContainer>($"%{nameof(SetsView)}");
+        PackScroll = GetNode<DragScrollContainer>($"%{nameof(PackScroll)}");
         BoxView = GetNode<Control>($"%{nameof(BoxView)}");
         SetList = GetNode<VBoxContainer>($"%{nameof(SetList)}");
         BoxImage = GetNode<TextureRect>($"%{nameof(BoxImage)}");
@@ -81,7 +83,10 @@ public partial class GachaScreen : Control
                 CustomMinimumSize = new Vector2(0, 100)
             };
             button.AddThemeFontSizeOverride("font_size", 36);
-            if(set is not null) button.Pressed += () => ShowBox(set);
+            if(set is not null) button.Pressed += () =>
+            {
+                if(!SetsView.LastGestureWasDrag) ShowBox(set);
+            };
             SetList.AddChild(button);
 
             if(fileProblems is not null)
@@ -128,7 +133,11 @@ public partial class GachaScreen : Control
                 Text = opened ? "Opened" : texture is null ? $"Pack {i + 1}" : string.Empty,
                 Disabled = opened
             };
-            button.Pressed += () => OpenPack(set, box, packIndex);
+            button.Pressed += () =>
+            {
+                // A drag to scroll the packs ends on a pack, that's not a pick
+                if(!PackScroll.LastGestureWasDrag) OpenPack(set, box, packIndex);
+            };
             PackGrid.AddChild(button);
         }
     }
