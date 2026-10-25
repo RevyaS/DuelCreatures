@@ -96,6 +96,21 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 33
 text = "13"
 
+[node name="Total" type="HBoxContainer" parent="DeckInfo/HBoxContainer5"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="TotalLabel" type="Label" parent="DeckInfo/HBoxContainer5/Total"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 33
+text = "Total"
+
+[node name="TotalCount" type="Label" parent="DeckInfo/HBoxContainer5/Total"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 33
+text = "13"
+
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 2
 
@@ -103,41 +118,41 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 286)
 layout_mode = 2
 
-[node name="Cards" type="HBoxContainer" parent="PanelContainer/ScrollContainer"]
+[node name="SelectedCards" type="HBoxContainer" parent="PanelContainer/ScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="PanelContainer/ScrollContainer/Cards"]
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/ScrollContainer/SelectedCards"]
 custom_minimum_size = Vector2(210, 280)
 layout_mode = 2
 texture = ExtResource("2_bdx2a")
 expand_mode = 1
 
-[node name="TextureRect2" type="TextureRect" parent="PanelContainer/ScrollContainer/Cards"]
+[node name="TextureRect2" type="TextureRect" parent="PanelContainer/ScrollContainer/SelectedCards"]
 custom_minimum_size = Vector2(210, 280)
 layout_mode = 2
 texture = ExtResource("2_bdx2a")
 expand_mode = 1
 
-[node name="TextureRect3" type="TextureRect" parent="PanelContainer/ScrollContainer/Cards"]
+[node name="TextureRect3" type="TextureRect" parent="PanelContainer/ScrollContainer/SelectedCards"]
 custom_minimum_size = Vector2(210, 280)
 layout_mode = 2
 texture = ExtResource("2_bdx2a")
 expand_mode = 1
 
-[node name="TextureRect4" type="TextureRect" parent="PanelContainer/ScrollContainer/Cards"]
+[node name="TextureRect4" type="TextureRect" parent="PanelContainer/ScrollContainer/SelectedCards"]
 custom_minimum_size = Vector2(210, 280)
 layout_mode = 2
 texture = ExtResource("2_bdx2a")
 expand_mode = 1
 
-[node name="TextureRect5" type="TextureRect" parent="PanelContainer/ScrollContainer/Cards"]
+[node name="TextureRect5" type="TextureRect" parent="PanelContainer/ScrollContainer/SelectedCards"]
 custom_minimum_size = Vector2(210, 280)
 layout_mode = 2
 texture = ExtResource("2_bdx2a")
 expand_mode = 1
 
-[node name="TextureRect6" type="TextureRect" parent="PanelContainer/ScrollContainer/Cards"]
+[node name="TextureRect6" type="TextureRect" parent="PanelContainer/ScrollContainer/SelectedCards"]
 custom_minimum_size = Vector2(210, 280)
 layout_mode = 2
 texture = ExtResource("2_bdx2a")
@@ -168,13 +183,7 @@ text = "All"
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/Options"]
 layout_mode = 2
 
-[node name="Button" type="Button" parent="VBoxContainer/Options/HBoxContainer2"]
-custom_minimum_size = Vector2(0, 79)
-layout_mode = 2
-theme_override_font_sizes/font_size = 33
-text = "Auto Build"
-
-[node name="Button2" type="Button" parent="VBoxContainer/Options/HBoxContainer2"]
+[node name="Confirm Deck" type="Button" parent="VBoxContainer/Options/HBoxContainer2"]
 custom_minimum_size = Vector2(0, 79)
 layout_mode = 2
 theme_override_font_sizes/font_size = 33
@@ -296,47 +305,53 @@ layout_mode = 2
 theme_override_constants/separation = 30
 alignment = 1
 
-[node name="Button" type="Button" parent="VBoxContainer/MarginContainer/Filter"]
+[node name="Search" type="Button" parent="VBoxContainer/MarginContainer/Filter"]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 theme_override_font_sizes/font_size = 33
 text = "Search"
 
-[node name="Button2" type="Button" parent="VBoxContainer/MarginContainer/Filter"]
+[node name="Reset" type="Button" parent="VBoxContainer/MarginContainer/Filter"]
 custom_minimum_size = Vector2(300, 100)
 layout_mode = 2
 theme_override_font_sizes/font_size = 33
 text = "Reset"
 
-[node name="Button3" type="Button" parent="VBoxContainer/MarginContainer/Filter"]
+[node name="AllGrades" type="Button" parent="VBoxContainer/MarginContainer/Filter"]
 custom_minimum_size = Vector2(70, 100)
 layout_mode = 2
 theme_override_font_sizes/font_size = 33
 text = "All"
 
-[node name="Button4" type="Button" parent="VBoxContainer/MarginContainer/Filter"]
+[node name="Grade0" type="Button" parent="VBoxContainer/MarginContainer/Filter"]
 custom_minimum_size = Vector2(70, 100)
 layout_mode = 2
 theme_override_font_sizes/font_size = 33
 text = "0"
 
-[node name="Button5" type="Button" parent="VBoxContainer/MarginContainer/Filter"]
+[node name="Grade1" type="Button" parent="VBoxContainer/MarginContainer/Filter"]
 custom_minimum_size = Vector2(70, 100)
 layout_mode = 2
 theme_override_font_sizes/font_size = 33
 text = "1"
 
-[node name="Button6" type="Button" parent="VBoxContainer/MarginContainer/Filter"]
+[node name="Grade2" type="Button" parent="VBoxContainer/MarginContainer/Filter"]
 custom_minimum_size = Vector2(70, 100)
 layout_mode = 2
 theme_override_font_sizes/font_size = 33
 text = "2"
 
-[node name="Button7" type="Button" parent="VBoxContainer/MarginContainer/Filter"]
+[node name="Grade3" type="Button" parent="VBoxContainer/MarginContainer/Filter"]
 custom_minimum_size = Vector2(70, 100)
 layout_mode = 2
 theme_override_font_sizes/font_size = 33
 text = "3"
+
+[node name="Grade4" type="Button" parent="VBoxContainer/MarginContainer/Filter"]
+custom_minimum_size = Vector2(70, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 33
+text = "4"
 
 [node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer"]
 layout_mode = 2
