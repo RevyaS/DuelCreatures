@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bl86gfg2luf5o"]
 
-[ext_resource type="Script" uid="uid://dqxfvgeb4t8dd" path="res://HUD/CardInfo.cs" id="1_fafky"]
-[ext_resource type="PackedScene" path="res://HUD/CardDetails.tscn" id="2_details"]
+[ext_resource type="Script" uid="uid://dqxfvgeb4t8dd" path="res://HUD/Board/CardInfo.cs" id="1_fafky"]
+[ext_resource type="PackedScene" uid="uid://b2lfbpkxmm57c" path="res://HUD/Board/CardDetails.tscn" id="2_details"]
 
 [node name="CardInfo" type="Control"]
 layout_mode = 3

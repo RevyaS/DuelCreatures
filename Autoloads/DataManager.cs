@@ -128,6 +128,14 @@ public partial class DataManager : Node
         return index;
     }
 
+    public void AddTicketToProfile(int amount)
+    {
+        var profile = CurrentProfile ?? throw new InvalidOperationException("No profile is loaded");
+        profile.Resources.Tickets += amount;
+        SaveProfile();
+        ProfileChanged?.Invoke();
+    }
+
     public List<string> ValidateDeck(DeckInfo deck) => VanguardDeckRules.Validate(deck, Cards, CurrentProfile?.OwnedCards);
 
     public VanguardCard CreateCard(string cardId) => Cards.Create(cardId);
@@ -138,4 +146,29 @@ public partial class DataManager : Node
         CurrentProfile = profile;
         ProfileChanged?.Invoke();
     }
+
+    #region Play
+    /// <summary>The profile's decks, or the trial decks when no profile is loaded.</summary>
+    public IEnumerable<DeckChoice> GetDeckChoices()
+    {
+        if(CurrentProfile is null)
+        {
+            return InitialDecks.Select(deck => new DeckChoice(deck.Name, () => deck.Deck, true));
+        }
+        if(!HasCardPool)
+        {
+            return CurrentProfile.Decks.Select(deck => new DeckChoice($"{deck.Name} - no card pool generated", () => throw new InvalidOperationException("No card pool"), false));
+        }
+        return CurrentProfile.Decks.Select(deck => new DeckChoice(DescribeDeck(deck), () => Cards.BuildDeck(deck), ValidateDeck(deck).Count == 0));
+    }
+
+    public string DescribeDeck(DeckInfo deck)
+    {
+        bool playable = ValidateDeck(deck).Count == 0;
+        return $"{deck.Name} ({deck.Clan.DisplayName}) {deck.CardCount}/{VanguardDeckRules.DeckSize}{(playable ? string.Empty : " - incomplete")}";
+    }
+    #endregion
 }
+
+/// <summary>A deck that can be picked to play, only built when the game starts.</summary>
+public sealed record DeckChoice(string Label, Func<VanguardDeckBuilder> Build, bool Playable);

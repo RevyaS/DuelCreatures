@@ -4,4 +4,6 @@ using MessagePack;
 [MessagePackObject]
 public class ProfileResources
 {
+    [Key(0)]
+    public int Tickets { get; set; }
 }

@@ -1,6 +1,6 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=3 format=3 uid="uid://b2lfbpkxmm57c"]
 
-[ext_resource type="Script" path="res://HUD/CardDetails.cs" id="1_details"]
+[ext_resource type="Script" uid="uid://jrf2yv06pypn" path="res://HUD/Board/CardDetails.cs" id="1_details"]
 [ext_resource type="PackedScene" uid="uid://bd1411oyw560d" path="res://addons/rev_godot_core/Scenes/LabelValueContainer.tscn" id="1_fxwt2"]
 
 [node name="CardDetails" type="PanelContainer"]

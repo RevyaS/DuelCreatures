@@ -31,6 +31,14 @@ layout_mode = 2
 script = ExtResource("2_bbxde")
 metadata/_custom_type_script = "uid://p3ldeqjxb577"
 
+[node name="Tickets" type="Label" parent="VBoxContainer/VBoxNodeContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme = ExtResource("2_dnf8x")
+text = "Tickets: 0"
+horizontal_alignment = 1
+
 [node name="ProfileLabel" type="Label" parent="VBoxContainer/VBoxNodeContainer"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -85,6 +93,13 @@ metadata/_custom_type_script = "uid://p3ldeqjxb577"
 layout_mode = 2
 theme = ExtResource("2_dnf8x")
 text = "Select Opponent"
+
+[node name="Random" type="Button" parent="VBoxContainer/VBoxContainer/Opponent"]
+layout_mode = 2
+theme = ExtResource("1_wtm7l")
+toggle_mode = true
+button_pressed = true
+text = "Random"
 
 [node name="RoyalPaladinTrialDeckBot" type="Button" parent="VBoxContainer/VBoxContainer/Opponent"]
 layout_mode = 2

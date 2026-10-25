@@ -23,6 +23,9 @@ public partial class Session : Control
 
     InputProvider InputProviderComponent = null!;
     DuelCreaturesBoard Board => InputProviderComponent.Board;
+    
+    PanelContainer HUD = null!;
+    GameOverDialog GameOverDialog = null!;
 
     VanguardDeckBuilder TestDeck => VanguardDeckBuilder.Create()
         .AddCards(RoyalPaladin.ArdentJewelKnightPolli, 4)
@@ -53,6 +56,8 @@ public partial class Session : Control
         var effectService = new VanguardEffectService(eventBus);
         var gameContext = new GameContext();
 
+        HUD = GetNode<PanelContainer>($"%{nameof(HUD)}");
+        GameOverDialog = GetNode<GameOverDialog>($"%{nameof(GameOverDialog)}");
         InputProviderComponent = GetNode<InputProvider>($"%{nameof(InputProviderComponent)}");
         InputProviderComponent.SetEventBus(eventBus);
 
@@ -96,10 +101,10 @@ public partial class Session : Control
         var session = new VanguardGameSession(game, inputProviderFactory, eventBus, effectService, skillService, gameContext, logger);
         dataQuery.Init(session);
 
-        await StartGame(session);
+        await StartGame(session, dataQuery);
     }
 
-    private async Task StartGame(VanguardGameSession session)
+    private async Task StartGame(VanguardGameSession session, VanguardGameDataQuery dataQuery)
     {
         session.StartGame();
         Board.ApplySession(session, InputProviderComponent.Presenter);
@@ -124,7 +129,11 @@ public partial class Session : Control
         //     RoyalPaladin.SailorGuardianMichiru,
         //     RoyalPaladin.BlasterBlade,
         // ]);
-        // session.Game.Board.Player1Area.DamageZone.AddCard(Kagero.BerserkDragon);
+        // session.Game.Board.Player2Area.DamageZone.AddCard(Kagero.BerserkDragon);
+        // session.Game.Board.Player2Area.DamageZone.AddCard(Kagero.BerserkDragon);
+        // session.Game.Board.Player2Area.DamageZone.AddCard(Kagero.BerserkDragon);
+        // session.Game.Board.Player2Area.DamageZone.AddCard(Kagero.BerserkDragon);
+        // session.Game.Board.Player2Area.DamageZone.AddCard(Kagero.BerserkDragon);
         // session.Game.Board.Player1Area.Hand.AddCard(Kagero.BerserkDragon);
         // session.Game.Board.Player1Area.Hand.AddCard(Kagero.WyvernStrikeTejas);
         // session.Game.Board.Player1Area.Hand.AddCard(Kagero.DemonicDragonMadonnaJoka);
@@ -139,13 +148,17 @@ public partial class Session : Control
             await InputProviderComponent.Presenter.WhenIdle();
         }
 
-        if(session.Winner() == session.Game.Player1)
+        var playerWins = session.Winner() == session.Game.Player1;
+        if(playerWins)
         {
             GD.Print("You won");
         } else
         {
             GD.Print("You lose");
         }
+
+        GameOverDialog.Set(playerWins, dataQuery.GetPlayerDamage(session.Game.Player2), session.GameOverContext);
+        HUD.Show();
 
         GD.Print("Win Condition ", session.GameOverContext.ToString());
     }

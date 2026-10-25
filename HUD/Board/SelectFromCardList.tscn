@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://csdff6we3cpjo"]
 
-[ext_resource type="Script" uid="uid://d0x54wbf0ysd2" path="res://HUD/SelectFromCardList.cs" id="1_quvv4"]
-[ext_resource type="PackedScene" uid="uid://dt60jvmuuttc0" path="res://HUD/SelectCards.tscn" id="2_3g8pi"]
-[ext_resource type="PackedScene" uid="uid://cx38wvfuj0nja" path="res://HUD/CardListPanel.tscn" id="2_quvv4"]
+[ext_resource type="Script" uid="uid://d0x54wbf0ysd2" path="res://HUD/Board/SelectFromCardList.cs" id="1_quvv4"]
+[ext_resource type="PackedScene" uid="uid://dt60jvmuuttc0" path="res://HUD/Board/SelectCards.tscn" id="2_3g8pi"]
+[ext_resource type="PackedScene" uid="uid://cx38wvfuj0nja" path="res://HUD/Board/CardListPanel.tscn" id="2_quvv4"]
 
 [node name="SelectFromCardList" type="VBoxContainer"]
 offset_right = 40.0

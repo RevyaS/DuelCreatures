@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=3 uid="uid://cx38wvfuj0nja"]
 
 [ext_resource type="Script" uid="uid://cc4nfnq62e6nd" path="res://addons/rev_godot_core/Components/HFlowNodeContainer.cs" id="1_08y7q"]
-[ext_resource type="Script" uid="uid://t6w1dwdraq7f" path="res://HUD/CardListPanel.cs" id="1_cpwe8"]
+[ext_resource type="Script" uid="uid://t6w1dwdraq7f" path="res://HUD/Board/CardListPanel.cs" id="1_cpwe8"]
 [ext_resource type="Script" uid="uid://bqw5phtur46nx" path="res://Components/CardContainer.cs" id="2_cpwe8"]
 [ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Card/Card.tscn" id="3_cvvgv"]
-[ext_resource type="Script" uid="uid://dwrq2pnaqfw1s" path="res://HUD/DropArea.cs" id="5_cvvgv"]
+[ext_resource type="Script" uid="uid://dwrq2pnaqfw1s" path="res://HUD/Board/DropArea.cs" id="5_cvvgv"]
 
 [node name="Panel" type="PanelContainer"]
 anchors_preset = 8

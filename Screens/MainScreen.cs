@@ -2,18 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ArC.CardGames.Predefined.Vanguard;
+using ArC.Common.Utils;
 using Godot;
 
 public partial class MainScreen : Control
 {
-    /// <summary>A deck that can be picked to play, only built when the game starts.</summary>
-    sealed record DeckChoice(string Label, Func<VanguardDeckBuilder> Build, bool Playable);
-
     VBoxNodeContainer? Deck, Opponent;
     ButtonGroup? DeckChoiceGroup, OpponentChoiceGroup;
     Button? PlayButton;
     Button? NewProfile, LoadProfile, EditDecks;
-    Label? ProfileLabel;
+    Label? ProfileLabel, Tickets;
     DataManager? DataManager;
     Theme? GUITheme;
 
@@ -22,6 +20,7 @@ public partial class MainScreen : Control
 
     public override void _Ready()
     {
+        Tickets = GetNode<Label>($"%{nameof(Tickets)}");
         GUITheme = GD.Load<Theme>("res://Resources/Themes/GUITheme.tres");
         Deck = GetNode<VBoxNodeContainer>($"%{nameof(Deck)}");
         Opponent = GetNode<VBoxNodeContainer>($"%{nameof(Opponent)}");
@@ -43,6 +42,10 @@ public partial class MainScreen : Control
         LoadProfile.Pressed += LoadProfilePressed;
         EditDecks = GetNode<Button>($"%{nameof(EditDecks)}");
         EditDecks.Pressed += EditDecksPressed;
+
+
+        // Random is default
+        OpponentSelected = SessionHelper.SelectRandomOpponent();
 
         OnProfileChanged();
     }
@@ -103,7 +106,7 @@ public partial class MainScreen : Control
         var guiManager = GUIManager.Get(this);
         var decks = DataManager.CurrentProfile!.Decks;
         var choices = decks
-            .Select((deck, index) => new ChoiceDialog.Choice(DescribeDeck(deck), () => guiManager.OpenDeckBuilder(deck, index)))
+            .Select((deck, index) => new ChoiceDialog.Choice(DataManager!.DescribeDeck(deck), () => guiManager.OpenDeckBuilder(deck, index)))
             .Append(new ChoiceDialog.Choice("+ New Deck", ShowClanChoice));
         ChoiceDialog.Show(this, "Edit Deck", choices);
     }
@@ -115,12 +118,6 @@ public partial class MainScreen : Control
         var choices = clans.Select(clan => new ChoiceDialog.Choice(clan.DisplayName, () =>
             guiManager.OpenDeckBuilder(new DeckInfo { Name = $"{clan.DisplayName} Deck", Clan = clan }, null)));
         ChoiceDialog.Show(this, "New Deck Clan", choices);
-    }
-
-    private string DescribeDeck(DeckInfo deck)
-    {
-        bool playable = DataManager!.ValidateDeck(deck).Count == 0;
-        return $"{deck.Name} ({deck.Clan.DisplayName}) {deck.CardCount}/{VanguardDeckRules.DeckSize}{(playable ? string.Empty : " - incomplete")}";
     }
 
     private void ShowMessage(string message)
@@ -137,21 +134,6 @@ public partial class MainScreen : Control
     #endregion
 
     #region Play
-    /// <summary>The profile's decks, or the trial decks when no profile is loaded.</summary>
-    private IEnumerable<DeckChoice> GetDeckChoices()
-    {
-        var profile = DataManager!.CurrentProfile;
-        if(profile is null)
-        {
-            return DataManager.InitialDecks.Select(deck => new DeckChoice(deck.Name, () => deck.Deck, true));
-        }
-        if(!DataManager.HasCardPool)
-        {
-            return profile.Decks.Select(deck => new DeckChoice($"{deck.Name} - no card pool generated", () => throw new InvalidOperationException("No card pool"), false));
-        }
-        return profile.Decks.Select(deck => new DeckChoice(DescribeDeck(deck), () => DataManager.Cards.BuildDeck(deck), DataManager.ValidateDeck(deck).Count == 0));
-    }
-
     private void RenderDecks()
     {
         var deckList = Deck!;
@@ -163,7 +145,7 @@ public partial class MainScreen : Control
 
         DeckSelected = null;
         DeckChoiceGroup = new();
-        foreach(var choice in GetDeckChoices())
+        foreach(var choice in DataManager!.GetDeckChoices())
         {
             var button = new Button
             {
@@ -191,6 +173,7 @@ public partial class MainScreen : Control
     private void OpponentChoicePressed(BaseButton button)
     {
         GD.Print("Opponent Choice Pressed");
+
         switch(button.Name)
         {
             case "RoyalPaladinTrialDeckBot":
@@ -198,6 +181,9 @@ public partial class MainScreen : Control
                 break;
             case "KageroTrialDeckBot":
                 OpponentSelected = OpponentType.RULE_BOT_KAGERO_TRIAL_DECK;
+                break;
+            case "Random":
+                OpponentSelected = SessionHelper.SelectRandomOpponent();
                 break;
             default:
                 throw new NotSupportedException($"Opponent Not Supported {button.Name}");
@@ -208,7 +194,7 @@ public partial class MainScreen : Control
 
     private void Render()
     {
-        PlayButton!.Disabled = OpponentSelected is null || DeckSelected is null;
+        PlayButton!.Disabled = DeckSelected is null;
 
         var profile = DataManager!.CurrentProfile;
         ProfileLabel!.Text = profile is null
@@ -216,6 +202,12 @@ public partial class MainScreen : Control
             : $"{profile.Name} - {profile.Decks.Count} decks, {profile.OwnedCards.Values.Sum()} cards";
         LoadProfile!.Disabled = !DataManager.GetProfileSlots().Any(slot => slot.IsOccupied);
         EditDecks!.Disabled = profile is null;
+
+        Tickets!.Visible = profile is not null;
+        if(profile is not null)
+        {
+            Tickets.Text = $"Tickets: {profile.Resources.Tickets}";
+        }
     }
 
     private void SetButtonGroup(ButtonGroup buttonGroup, List<Button> buttons)

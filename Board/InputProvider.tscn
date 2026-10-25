@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" uid="uid://dg7uwa2tvdn5o" path="res://Board/InputProvider.cs" id="1_mnfo1"]
 [ext_resource type="PackedScene" uid="uid://cuqm30mdbu41k" path="res://Board/Board.tscn" id="2_g4tnu"]
-[ext_resource type="PackedScene" uid="uid://dt60jvmuuttc0" path="res://HUD/SelectCards.tscn" id="3_g4tnu"]
-[ext_resource type="PackedScene" uid="uid://cl0t7q61is3ro" path="res://HUD/CardList.tscn" id="4_3v0st"]
-[ext_resource type="PackedScene" uid="uid://bl86gfg2luf5o" path="res://HUD/CardInfo.tscn" id="5_jf7tj"]
-[ext_resource type="PackedScene" uid="uid://csdff6we3cpjo" path="res://HUD/SelectFromCardList.tscn" id="6_c2rk7"]
+[ext_resource type="PackedScene" uid="uid://dt60jvmuuttc0" path="res://HUD/Board/SelectCards.tscn" id="3_g4tnu"]
+[ext_resource type="PackedScene" uid="uid://cl0t7q61is3ro" path="res://HUD/Board/CardList.tscn" id="4_3v0st"]
+[ext_resource type="PackedScene" uid="uid://bl86gfg2luf5o" path="res://HUD/Board/CardInfo.tscn" id="5_jf7tj"]
+[ext_resource type="PackedScene" uid="uid://csdff6we3cpjo" path="res://HUD/Board/SelectFromCardList.tscn" id="6_c2rk7"]
 
 [node name="InputProviderComponent" type="Control"]
 layout_mode = 3

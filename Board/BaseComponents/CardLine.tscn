@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://cwwbsfwll5kn6" path="res://Board/BaseComponents/CardLine.cs" id="1_rfqe6"]
 [ext_resource type="Script" uid="uid://bqw5phtur46nx" path="res://Components/CardContainer.cs" id="2_rfqe6"]
 [ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Card/Card.tscn" id="3_kue8l"]
-[ext_resource type="Script" uid="uid://dwrq2pnaqfw1s" path="res://HUD/DropArea.cs" id="5_kue8l"]
+[ext_resource type="Script" uid="uid://dwrq2pnaqfw1s" path="res://HUD/Board/DropArea.cs" id="5_kue8l"]
 
 [node name="CardLineDynamic" type="PanelContainer"]
 offset_right = 489.0
