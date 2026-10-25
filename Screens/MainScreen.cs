@@ -171,7 +171,8 @@ public partial class MainScreen : Control
                 Theme = GUITheme,
                 ToggleMode = true,
                 ButtonGroup = DeckChoiceGroup,
-                Disabled = !choice.Playable
+                Disabled = !choice.Playable,
+                AutowrapMode = TextServer.AutowrapMode.WordSmart
             };
             button.Pressed += () =>
             {

@@ -12,7 +12,7 @@ using Godot;
 public partial class DataManager : Node
 {
     public const string GameDataDirectory = "Data/GameData";
-    public const CardPoolType DefaultCardPool = CardPoolType.BALANCED;
+    public const CardPoolType DefaultCardPool = CardPoolType.ORIGINAL;
     /// <summary>The card factory the game plays with, swap it for the project's own factory. See <see cref="CardRegistry"/>.</summary>
     public static readonly Type CardFactory = typeof(VanguardCardsFactory);
     public static readonly SaveSlotLayout ProfileSlots = new("user://Profiles", 5, "Profile");

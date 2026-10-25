@@ -9,6 +9,13 @@ v.0004 GUI Improvements
 - Target indicators will only apply for valid targets
 - PlayArea can now load Sleeves (Deck and Damage Zone)
 - Added phase change Sfx
+- Developed All Trial Decks
+- Added Deck Builder
+- Added Profile system
+
+TODO:
+- Reusable components, extract to RevGodotCore
+
 
 v.0003 Moar Cards
 - Updated for ArC v.0000006

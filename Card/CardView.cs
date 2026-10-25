@@ -58,7 +58,7 @@ public partial class CardView : Control
         BadgePanel.GrowHorizontal = GrowDirection.Begin;
         BadgePanel.GrowVertical = GrowDirection.Begin;
         Badge = new Label { HorizontalAlignment = HorizontalAlignment.Center };
-        Badge.AddThemeFontSizeOverride("font_size", Mathf.Max(16, (int)(50 * scale)));
+        Badge.AddThemeFontSizeOverride("font_size", Mathf.Max(46, (int)(50 * scale)));
         BadgePanel.AddChild(Badge);
         AddChild(BadgePanel);
     }

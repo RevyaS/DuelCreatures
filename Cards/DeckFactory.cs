@@ -72,6 +72,6 @@ public static class DeckFactory
         .AddCards(NovaGrappler.SuperElectromagneticLifeformStorm, 2)
         .AddCards(NovaGrappler.KingOfSword, 4)
         .AddCards(NovaGrappler.MrInvincible, 4)
-        .AddCards(NovaGrappler.DeathMetalDroid, 3)
+        .AddCards(NovaGrappler.DeathMetalDroid, 2)
         .AddCards(NovaGrappler.GoldRutile, 1);
 }

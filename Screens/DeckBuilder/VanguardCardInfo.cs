@@ -28,7 +28,7 @@ public partial class VanguardCardInfo : VBoxContainer
         CardSlot.FreeChildren();
         CardSlot.AddChild(CardView.Create(cardId, card, CardScale));
 
-        Owned.Text = $"Owned:\n{owned}\n\nIn Deck:\n{inDeck}";
+        Owned.Text = $"Owned:{owned}      In Deck:{inDeck}";
         CardDetails.ShowCard(card);
     }
 }

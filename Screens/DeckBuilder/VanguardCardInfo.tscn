@@ -1,10 +1,15 @@
 [gd_scene load_steps=3 format=3 uid="uid://dxlskx6kxh6nl"]
 
-[ext_resource type="Script" path="res://Screens/DeckBuilder/VanguardCardInfo.cs" id="1_info"]
+[ext_resource type="Script" uid="uid://d081r2yo2bfxr" path="res://Screens/DeckBuilder/VanguardCardInfo.cs" id="1_info"]
 [ext_resource type="PackedScene" path="res://HUD/CardDetails.tscn" id="2_details"]
 
 [node name="VanguardCardInfo" type="VBoxContainer"]
 custom_minimum_size = Vector2(950, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_constants/separation = 16
@@ -14,18 +19,20 @@ script = ExtResource("1_info")
 layout_mode = 2
 size_flags_horizontal = 4
 
-[node name="Owned" type="Label" parent="HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 8
-theme_override_font_sizes/font_size = 32
-text = "Owned:
-4"
-
 [node name="CardSlot" type="CenterContainer" parent="HBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(840, 1176)
 layout_mode = 2
+
+[node name="Owned" type="Label" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 32
+text = "Owned: 4"
+horizontal_alignment = 1
 
 [node name="CardDetails" parent="." instance=ExtResource("2_details")]
 unique_name_in_owner = true
