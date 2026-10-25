@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://bqw5phtur46nx" path="res://Components/CardContainer.cs" id="1_gggsp"]
 [ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Card/Card.tscn" id="2_xi216"]
 
-[node name="Panel" type="PanelContainer"]
+[node name="CardArea" type="PanelContainer"]
 script = ExtResource("1_fk78o")
 
 [node name="ColorRect" type="ColorRect" parent="."]
