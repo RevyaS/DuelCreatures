@@ -158,6 +158,14 @@ public partial class DataManager : Node
         return box;
     }
 
+    public GachaBox ResetGachaBox(GachaSet set)
+    {
+        var profile = CurrentProfile ?? throw new InvalidOperationException("No profile is loaded");
+        var box = GachaService.ResetBox(profile, set, Random.Shared);
+        SaveProfile();
+        return box;
+    }
+
     public PackResult OpenPack(GachaSet set, int packIndex)
     {
         var profile = CurrentProfile ?? throw new InvalidOperationException("No profile is loaded");

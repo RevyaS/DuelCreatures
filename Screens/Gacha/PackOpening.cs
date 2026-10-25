@@ -158,10 +158,14 @@ public partial class PackOpening : Control
     {
         var catalog = DataManager.Get(this).Cards;
         int count = cards.Count;
-        float scale = Mathf.Min(GachaConfig.MaxArcCardScale, GachaConfig.ArcWidth / (count * SizeConstants.CardDefaultSize.X * 0.85f));
+        // Fan width = one card plus a step per other card, shrunk to fit when needed
+        float stepFactor = 1 - GachaConfig.ArcOverlap;
+        float fanWidth = SizeConstants.CardDefaultSize.X * (1 + stepFactor * (count - 1));
+        float scale = Mathf.Min(GachaConfig.ArcCardScale, GachaConfig.ArcMaxWidth / fanWidth);
+        // The step is an arc length, so the cards keep their spacing however round the arc is
+        float angleStep = SizeConstants.CardDefaultSize.X * scale * stepFactor / GachaConfig.ArcRadius;
         var dealFrom = Stage.Size / 2;
-        var arcCenter = dealFrom + new Vector2(0, 100 + GachaConfig.ArcRadius);
-        float span = Mathf.DegToRad(GachaConfig.ArcSpanDeg);
+        var arcCenter = dealFrom + new Vector2(0, GachaConfig.ArcOffsetY + GachaConfig.ArcRadius);
 
         var timing = GachaConfig.ArcDeal;
         var tween = CreateTween().SetParallel();
@@ -171,7 +175,7 @@ public partial class PackOpening : Control
             var slot = GachaCardSlot.Create(cards[i], view, sleeve);
             view.Pressed += _ => OnSlotPressed(slot);
 
-            float angle = count == 1 ? 0 : Mathf.Lerp(-span / 2, span / 2, (float)i / (count - 1));
+            float angle = (i - (count - 1) / 2f) * angleStep;
             var restCenter = arcCenter + new Vector2(Mathf.Sin(angle), -Mathf.Cos(angle)) * GachaConfig.ArcRadius;
             slot.RestPosition = restCenter - slot.Size / 2;
             slot.RestRotation = angle;

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 /// <summary>Pick a set, then a pack out of its box. Opening a pack hands it to <see cref="PackOpening"/>.</summary>
@@ -9,12 +10,12 @@ public partial class GachaScreen : Control
     DataManager DataManager = null!;
     GachaSet? CurrentSet;
 
-    Label Tickets = null!, Title = null!, BoxInfo = null!, StatusLabel = null!;
+    Label Tickets = null!, Title = null!, BoxInfo = null!, Guarantees = null!, StatusLabel = null!;
     Control SetsView = null!, BoxView = null!;
     VBoxContainer SetList = null!;
     TextureRect BoxImage = null!;
     GridContainer PackGrid = null!;
-    Button BackButton = null!;
+    Button BackButton = null!, ResetBoxButton = null!;
     PackOpening Opening = null!;
 
     public override void _Ready()
@@ -24,6 +25,7 @@ public partial class GachaScreen : Control
         Tickets = GetNode<Label>($"%{nameof(Tickets)}");
         Title = GetNode<Label>($"%{nameof(Title)}");
         BoxInfo = GetNode<Label>($"%{nameof(BoxInfo)}");
+        Guarantees = GetNode<Label>($"%{nameof(Guarantees)}");
         StatusLabel = GetNode<Label>($"%{nameof(StatusLabel)}");
         SetsView = GetNode<Control>($"%{nameof(SetsView)}");
         BoxView = GetNode<Control>($"%{nameof(BoxView)}");
@@ -34,6 +36,8 @@ public partial class GachaScreen : Control
         Opening = GetNode<PackOpening>($"%{nameof(Opening)}");
 
         BackButton.Pressed += BackPressed;
+        ResetBoxButton = GetNode<Button>($"%{nameof(ResetBoxButton)}");
+        ResetBoxButton.Pressed += ConfirmResetBox;
         Opening.Finished += () =>
         {
             if(CurrentSet is not null) ShowBox(CurrentSet);
@@ -107,6 +111,7 @@ public partial class GachaScreen : Control
         Title.Text = set.Name;
         BoxImage.Texture = LoadTexture(set.BoxImage);
         BoxInfo.Text = $"{box.PacksLeft}/{box.Packs.Count} packs left - {set.TicketCost} tickets per pack";
+        RenderGuarantees(set, box);
 
         PackGrid.FreeChildren();
         for(int i = 0; i < box.Packs.Count; i++)
@@ -126,6 +131,46 @@ public partial class GachaScreen : Control
             button.Pressed += () => OpenPack(set, box, packIndex);
             PackGrid.AddChild(button);
         }
+    }
+
+    private void RenderGuarantees(GachaSet set, GachaBox box)
+    {
+        var progress = GachaService.GetHitProgress(set, box);
+        if(progress.Count == 0)
+        {
+            Guarantees.Text = "No guaranteed hits";
+            return;
+        }
+        Guarantees.Text = string.Join("   ", progress.Select(hit => $"{hit.Rarity.Name} {hit.Pulled}/{hit.Guaranteed}"))
+            + (progress.All(hit => hit.Done) ? "\nAll guaranteed hits pulled" : string.Empty);
+    }
+
+    private void ConfirmResetBox()
+    {
+        if(CurrentSet is not GachaSet set) return;
+
+        var box = DataManager.GetGachaBox(set);
+        var dialog = new ConfirmationDialog
+        {
+            Title = "New Box",
+            DialogText = $"Start a new box of {set.Name}? The {box.PacksLeft} unopened packs of this box are discarded.",
+            DialogAutowrap = true,
+            OkButtonText = "New Box",
+            Theme = GD.Load<Theme>("res://Resources/Themes/GUITheme.tres"),
+            MinSize = new Vector2I(900, 400)
+        };
+        dialog.Confirmed += () =>
+        {
+            DataManager.ResetGachaBox(set);
+            ShowBox(set);
+            StatusLabel.Text = "Started a new box";
+        };
+        dialog.VisibilityChanged += () =>
+        {
+            if(!dialog.Visible) dialog.QueueFree();
+        };
+        AddChild(dialog);
+        dialog.PopupCentered();
     }
 
     private void OpenPack(GachaSet set, GachaBox box, int packIndex)

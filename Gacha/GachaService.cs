@@ -9,6 +9,11 @@ public sealed record PackCard(string CardId, Rarity Rarity, Rarity? LateHitFrom,
     public Rarity ShownRarity => LateHitFrom ?? Rarity;
 }
 
+public sealed record HitProgress(Rarity Rarity, int Pulled, int Guaranteed)
+{
+    public bool Done => Pulled >= Guaranteed;
+}
+
 public sealed record PackResult(GachaSet Set, int PackIndex, IReadOnlyList<PackCard> Cards, int TicketsSpent)
 {
     public int DustTickets => Cards.Sum(card => card.DustTickets);
@@ -29,6 +34,25 @@ public static class GachaService
         profile.GachaBoxes[set.Id] = box;
         return box;
     }
+
+    /// <summary>Throws the set's box away, unopened packs included, for a freshly rolled one.</summary>
+    public static GachaBox ResetBox(Profile profile, GachaSet set, Random random)
+    {
+        var box = CreateBox(set, random);
+        profile.GachaBoxes[set.Id] = box;
+        return box;
+    }
+
+    /// <summary>How many of each guaranteed hit were pulled from the box so far, best rarity first.</summary>
+    public static List<HitProgress> GetHitProgress(GachaSet set, GachaBox box) => set.BoxHits
+        .Where(hit => hit.Value > 0 && GachaConfig.FindRarity(hit.Key) is not null)
+        .Select(hit => new HitProgress(
+            GachaConfig.GetRarity(hit.Key),
+            // The hit is a pack's last card, late hits only ever upgrade the others
+            box.Packs.Count(pack => pack.Opened && pack.Cards.Count > 0 && pack.Cards[^1].RarityId == hit.Key),
+            hit.Value))
+        .OrderByDescending(progress => progress.Rarity.Tier)
+        .ToList();
 
     public static GachaBox CreateBox(GachaSet set, Random random)
     {

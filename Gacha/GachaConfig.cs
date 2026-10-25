@@ -68,12 +68,14 @@ public static class GachaConfig
     public static float AnticipationShake = 6;          // pixels per tier
     public static readonly Transition PackBurst = new(0.35f, Easing.EaseIn);
 
-    // Cards fanned out face down in an arc
+    // Cards fanned out face down in an arc. Each card is ArcCardScale big and covers ArcOverlap of its neighbour's width,
+    // the scale only shrinks when the fan would get wider than ArcMaxWidth
     public static readonly Transition ArcDeal = new(0.35f, Easing.BackOut, Stagger: 0.08f);
-    public static float ArcRadius = 1600;
-    public static float ArcSpanDeg = 36;
-    public static float ArcWidth = 1000;                // the cards are scaled to fit it
-    public static float MaxArcCardScale = 0.8f;
+    public static float ArcCardScale = 0.8f;
+    public static float ArcOverlap = 0.3f;              // 0 side by side, 0.5 half covered
+    public static float ArcRadius = 1600;               // bigger is flatter
+    public static float ArcMaxWidth = 1040;
+    public static float ArcOffsetY = 100;               // below the screen's middle
 
     // A filler card jolting into its upgraded rarity
     public static readonly Transition LateHit = new(0.9f, Easing.EaseOut, Delay: 0.4f);
