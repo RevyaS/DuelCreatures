@@ -119,6 +119,18 @@ theme = ExtResource("1_wtm7l")
 toggle_mode = true
 text = "Kagero Trial Deck Bot"
 
+[node name="OTTTrialDeckBot" type="Button" parent="VBoxContainer/VBoxContainer/Opponent"]
+layout_mode = 2
+theme = ExtResource("1_wtm7l")
+toggle_mode = true
+text = "OTT Trial Deck Bot"
+
+[node name="NovaGrapplerTrialDeckBot" type="Button" parent="VBoxContainer/VBoxContainer/Opponent"]
+layout_mode = 2
+theme = ExtResource("1_wtm7l")
+toggle_mode = true
+text = "Nova Grappler Trial Deck Bot"
+
 [node name="HSeparator2" type="HSeparator" parent="VBoxContainer/VBoxContainer"]
 layout_mode = 2
 

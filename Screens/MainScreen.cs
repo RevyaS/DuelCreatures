@@ -194,6 +194,12 @@ public partial class MainScreen : Control
             case "KageroTrialDeckBot":
                 OpponentSelected = OpponentType.RULE_BOT_KAGERO_TRIAL_DECK;
                 break;
+            case "OTTTrialDeckBot":
+                OpponentSelected = OpponentType.RULE_BOT_OTT_TRIAL_DECK;
+                break;
+            case "NovaGrapplerTrialDeckBot":
+                OpponentSelected = OpponentType.RULE_BOT_NOVA_GRAPPLER_TRIAL_DECK;
+                break;
             case "Random":
                 OpponentSelected = SessionHelper.SelectRandomOpponent();
                 break;

@@ -4,12 +4,6 @@ using ArC.CardGames.Predefined.Vanguard;
 using ArC.CardGames.Predefined.Vanguard.Bots;
 using ArC.CardGames.Setup;
 
-public enum RuleBotDeck
-{
-    ROYAL_PALADIN_TRIAL,
-    KAGERO_TRIAL
-}
-
 // One provider per player for the whole game: the bots keep their plans between requests
 public class RuleBotInputProviderFactory : TwoPlayerInputProviderFactory<VanguardPlayerProfile, IVanguardPlayerInputProvider>
 {
@@ -21,10 +15,10 @@ public class RuleBotInputProviderFactory : TwoPlayerInputProviderFactory<Vanguar
     
     VanguardGameDataQuery DataQuery;
     VanguardSkillService SkillService;
-    RuleBotDeck RuleBot;
+    OpponentType RuleBot;
     VanguardBotDifficulty BotDifficulty;
 
-    public RuleBotInputProviderFactory(VanguardGame game, RuleBotDeck ruleBot, VanguardBotDifficulty botDifficulty, VanguardGameDataQuery dataQuery,
+    public RuleBotInputProviderFactory(VanguardGame game, OpponentType ruleBot, VanguardBotDifficulty botDifficulty, VanguardGameDataQuery dataQuery,
         InputProvider inputProviderComponent, GameContext gameContext, VanguardSkillService skillService)
         : base(game.Player1, game.Player2)
     {
@@ -51,8 +45,10 @@ public class RuleBotInputProviderFactory : TwoPlayerInputProviderFactory<Vanguar
     {
         return player2 ??= RuleBot switch
         {
-            RuleBotDeck.ROYAL_PALADIN_TRIAL => new RoyalPaladinTrialDeckBot(Game.Player2, DataQuery, SkillService, GameContext, BotDifficulty),
-            RuleBotDeck.KAGERO_TRIAL => new KageroTrialDeckBot(Game.Player2, DataQuery, SkillService, GameContext, BotDifficulty),
+            OpponentType.RULE_BOT_ROYAL_PALADIN_TRIAL_DECK => new RoyalPaladinTrialDeckBot(Game.Player2, DataQuery, SkillService, GameContext, BotDifficulty),
+            OpponentType.RULE_BOT_KAGERO_TRIAL_DECK => new KageroTrialDeckBot(Game.Player2, DataQuery, SkillService, GameContext, BotDifficulty),
+            OpponentType.RULE_BOT_OTT_TRIAL_DECK => new OracleThinkTankTrialDeckBot(Game.Player2, DataQuery, SkillService, GameContext, BotDifficulty),
+            OpponentType.RULE_BOT_NOVA_GRAPPLER_TRIAL_DECK => new NovaGrapplerTrialDeckBot(Game.Player2, DataQuery, SkillService, GameContext, BotDifficulty),
             _ => throw new NotSupportedException("Rule Bot is not supported"),
         };
     }

@@ -12,6 +12,8 @@ public enum OpponentType
 {
     RULE_BOT_ROYAL_PALADIN_TRIAL_DECK,
     RULE_BOT_KAGERO_TRIAL_DECK,
+    RULE_BOT_OTT_TRIAL_DECK,
+    RULE_BOT_NOVA_GRAPPLER_TRIAL_DECK,
     AI
 }
 
@@ -70,6 +72,8 @@ public partial class Session : Control
         {
             OpponentType.RULE_BOT_ROYAL_PALADIN_TRIAL_DECK => new(RoyalPaladinTrialDeckBot.Deck),
             OpponentType.RULE_BOT_KAGERO_TRIAL_DECK => new(KageroTrialDeckBot.Deck),
+            OpponentType.RULE_BOT_OTT_TRIAL_DECK => new(OracleThinkTankTrialDeckBot.Deck),
+            OpponentType.RULE_BOT_NOVA_GRAPPLER_TRIAL_DECK => new(NovaGrapplerTrialDeckBot.Deck),
             OpponentType.AI => new(aiDeck),
             _ => throw new NotSupportedException("Invalid Opponent")
         };
@@ -90,13 +94,7 @@ public partial class Session : Control
             inputProviderFactory = new InputProviderFactory(game, dataQuery, gameStateEncoder, decisionContextEncoder, optionEncoder, InputProviderComponent, gameContext, skillService, logger);
         } else
         {
-            RuleBotDeck ruleBotDeck = Opponent switch
-            {
-                OpponentType.RULE_BOT_ROYAL_PALADIN_TRIAL_DECK => RuleBotDeck.ROYAL_PALADIN_TRIAL,
-                OpponentType.RULE_BOT_KAGERO_TRIAL_DECK => RuleBotDeck.KAGERO_TRIAL,
-                _ => throw new NotSupportedException("Opponent Bot not supported")
-            };
-            inputProviderFactory = new RuleBotInputProviderFactory(game, ruleBotDeck, VanguardBotDifficulty.MASTER, dataQuery, InputProviderComponent, gameContext, skillService);
+            inputProviderFactory = new RuleBotInputProviderFactory(game, Opponent, VanguardBotDifficulty.MASTER, dataQuery, InputProviderComponent, gameContext, skillService);
         }
         
         var session = new VanguardGameSession(game, inputProviderFactory, eventBus, effectService, skillService, gameContext, logger);

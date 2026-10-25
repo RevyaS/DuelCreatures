@@ -6,7 +6,9 @@ public static class SessionHelper
 {
     static OpponentType[] selectableOpponents = [ 
         OpponentType.RULE_BOT_ROYAL_PALADIN_TRIAL_DECK,  
-        OpponentType.RULE_BOT_KAGERO_TRIAL_DECK
+        OpponentType.RULE_BOT_KAGERO_TRIAL_DECK,
+        OpponentType.RULE_BOT_OTT_TRIAL_DECK,
+        OpponentType.RULE_BOT_NOVA_GRAPPLER_TRIAL_DECK,
     ];
     
     public static OpponentType SelectRandomOpponent()
