@@ -4,25 +4,18 @@ using Godot;
 
 public partial class CardInfo : Control
 {
-    Label CardName = null!, Skill = null!;
+    CardDetails CardDetails = null!;
     Button ActivateButton = null!;
-    RichTextLabel Skills = null!;
-    LabelValueContainer Grade = null!, Power = null!, Critical = null!, Guard = null!, UnitType = null!;
     VanguardCard CurrentCard = null!;
 
     public bool ShowActivateButton { get; set; } = false;
 
     public override void _Ready()
     {
-        CardName = GetNode<Label>($"%{nameof(CardName)}");
-        Grade = GetNode<LabelValueContainer>($"%{nameof(Grade)}");
-        Power = GetNode<LabelValueContainer>($"%{nameof(Power)}");
-        Critical = GetNode<LabelValueContainer>($"%{nameof(Critical)}");
-        Guard = GetNode<LabelValueContainer>($"%{nameof(Guard)}");
-        Skills = GetNode<RichTextLabel>($"%{nameof(Skills)}");
+        CardDetails = GetNode<CardDetails>($"%{nameof(CardDetails)}");
         ActivateButton = GetNode<Button>($"%{nameof(ActivateButton)}");
-        UnitType = GetNode<LabelValueContainer>($"%{nameof(UnitType)}");
-        Skill = GetNode<Label>($"%{nameof(Skill)}");
+        // Sits under the skill text, inside the details panel
+        ActivateButton.Reparent(CardDetails.Content);
         ActivateButton.Pressed += OnActivateButtonPressed;
     }
 
@@ -43,45 +36,8 @@ public partial class CardInfo : Control
     public void Show(VanguardCard card, bool canActivate = false, VanguardSkill[]? grantedSkills = null)
     {
         CurrentCard = card;
-        CardName.Text = card.Name;
-        Grade.Value = card.Grade.ToString();
-        Power.Value = card.Power.ToString();
-        Critical.Value = card.Critical.ToString();
-        Guard.Value = card.Guard.ToString();
+        CardDetails.ShowCard(card, grantedSkills);
 
-        UnitType.Label = card.Trigger == VanguardTrigger.NONE ? "Normal Unit" : "Trigger Unit";
-        UnitType.Value = card.Trigger switch
-        {
-            VanguardTrigger.HEAL => "Heal",
-            VanguardTrigger.DRAW => "Draw",
-            VanguardTrigger.CRITICAL => "Critical",
-            VanguardTrigger.STAND => "Stand",
-            _ => string.Empty
-        };
-        Skill.Text = card.Skill switch
-        {
-            VanguardCardSkill.INTERCEPT => "Intercept",
-            VanguardCardSkill.BOOST => "Boost",
-            VanguardCardSkill.TWIN_DRIVE => "Twin Drive",
-            _ => string.Empty,
-        };
-
-        // AddText (not BBCode): skill text has brackets like [AUTO]
-        Skills.Clear();
-        Skills.AddText(card.Skills.Length == 0
-            ? "This card has no skills"
-            : VanguardSkillToStringInterpreter.ExtractSkills(card.Skills));
-
-        if(grantedSkills is { Length: > 0 })
-        {
-            Skills.Newline();
-            Skills.Newline();
-            Skills.PushColor(PresentationConfig.GrantedSkillColor);
-            Skills.AddText("Granted:");
-            Skills.Newline();
-            Skills.AddText(VanguardSkillToStringInterpreter.ExtractSkills(grantedSkills));
-            Skills.Pop();
-        }
         ActivateButton.Visible = ShowActivateButton && card.HasActivationSkill;
         ActivateButton.Disabled = !canActivate;
 

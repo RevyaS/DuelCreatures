@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ArC.CardGames.Predefined.Vanguard;
@@ -20,11 +21,16 @@ public class CardCatalog
         ? data
         : throw new KeyNotFoundException($"No card with id {cardId} in the {PoolType} card pool, run the DataGenerator");
 
-    public VanguardCard Create(string cardId) => GetData(cardId).ApplyTo(CardRegistry.Create(cardId));
+    public bool Contains(string cardId) => cards.ContainsKey(cardId);
+
+    public IEnumerable<CardData> GetCards(Clan clan) => cards.Values.Where(card => CardRegistry.GetClan(card.Id) == clan);
+
+    public VanguardCard Create(string cardId) => GetData(cardId).ApplyTo(CardRegistry.Game.Create(cardId));
 
     public VanguardDeckBuilder BuildDeck(DeckInfo deck)
     {
-        var builder = VanguardDeckBuilder.Create().SetStartingVanguard(Create(deck.FirstVanguardId));
+        string firstVanguardId = deck.FirstVanguardId ?? throw new InvalidOperationException($"{deck.Name} has no starting vanguard");
+        var builder = VanguardDeckBuilder.Create().SetStartingVanguard(Create(firstVanguardId));
         foreach(var (cardId, count) in deck.Cards)
         {
             builder.AddCards(Create(cardId), count);

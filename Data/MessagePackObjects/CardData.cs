@@ -41,6 +41,10 @@ public class CardData
         Trigger = card.Trigger
     };
 
+    public bool HasSameStats(CardData other) =>
+        Grade == other.Grade && Power == other.Power && Critical == other.Critical && Guard == other.Guard
+        && Drives == other.Drives && Skill == other.Skill && Trigger == other.Trigger;
+
     public VanguardCard ApplyTo(VanguardCard card) => card with
     {
         Grade = Grade,

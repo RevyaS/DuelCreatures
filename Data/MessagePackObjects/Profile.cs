@@ -24,8 +24,7 @@ public class Profile
 
     public void AddCards(DeckInfo deck)
     {
-        AddCards(deck.FirstVanguardId);
-        foreach(var (cardId, count) in deck.Cards)
+        foreach(var (cardId, count) in deck.GetAllCards())
         {
             AddCards(cardId, count);
         }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ArC.CardGames.Predefined.Vanguard;
+using ArC.CardGames.Predefined.Vanguard.Cards;
 using Godot;
 
 /// <summary>
@@ -12,6 +13,8 @@ public partial class DataManager : Node
 {
     public const string GameDataDirectory = "Data/GameData";
     public const CardPoolType DefaultCardPool = CardPoolType.BALANCED;
+    /// <summary>The card factory the game plays with, swap it for the project's own factory. See <see cref="CardRegistry"/>.</summary>
+    public static readonly Type CardFactory = typeof(VanguardCardsFactory);
     public static readonly SaveSlotLayout ProfileSlots = new("user://Profiles", 5, "Profile");
 
     /// <summary>Every new profile owns these decks, and the cards in them.</summary>
@@ -31,6 +34,8 @@ public partial class DataManager : Node
 
     public Profile? CurrentProfile { get; private set; }
     public SaveSlot? CurrentSlot { get; private set; }
+
+    public bool HasCardPool => cards is not null || data.Exists(GetCardPoolPath(cardPool));
 
     /// <summary>Loaded on first use, the card pools only exist once the DataGenerator has run.</summary>
     public CardCatalog Cards => cards ??= new CardCatalog(cardPool, data.Load<CardPool>(GetCardPoolPath(cardPool)));
@@ -88,6 +93,11 @@ public partial class DataManager : Node
     public Profile LoadProfile(SaveSlot slot)
     {
         var profile = ReadProfile(slot);
+        // Decks saved before decks had a clan
+        foreach(var deck in profile.Decks.Where(deck => deck.ClanId is null && deck.FirstVanguardId is not null))
+        {
+            deck.Clan = CardRegistry.GetClan(deck.FirstVanguardId!);
+        }
         UseProfile(slot, profile);
         return profile;
     }
@@ -97,6 +107,30 @@ public partial class DataManager : Node
         if(CurrentProfile is null || CurrentSlot is null) throw new InvalidOperationException("No profile is loaded");
         data.Save(CurrentSlot.Path, CurrentProfile);
     }
+
+    /// <summary>Saves the deck into the current profile and the profile to its slot. Returns the deck's index in the profile.</summary>
+    public int SaveDeck(DeckInfo deck, int? deckIndex)
+    {
+        var profile = CurrentProfile ?? throw new InvalidOperationException("No profile is loaded");
+        int index;
+        if(deckIndex is int existing)
+        {
+            profile.Decks[existing] = deck;
+            index = existing;
+        }
+        else
+        {
+            profile.Decks.Add(deck);
+            index = profile.Decks.Count - 1;
+        }
+        SaveProfile();
+        ProfileChanged?.Invoke();
+        return index;
+    }
+
+    public List<string> ValidateDeck(DeckInfo deck) => VanguardDeckRules.Validate(deck, Cards, CurrentProfile?.OwnedCards);
+
+    public VanguardCard CreateCard(string cardId) => Cards.Create(cardId);
 
     private void UseProfile(SaveSlot slot, Profile profile)
     {

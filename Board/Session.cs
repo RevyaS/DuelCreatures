@@ -15,18 +15,10 @@ public enum OpponentType
     AI
 }
 
-public enum PlayerDeck
-{
-    ROYAL_PALADIN_TRIAL_DECK,
-    KAGERO_TRIAL_DECK,
-    OTT_TRIAL_DECK,
-    NOVA_GRAPPLER_TRIAL_DECK
-}
-
 public partial class Session : Control
 {
     OpponentType Opponent;
-    PlayerDeck PlayerDeck;
+    VanguardDeckBuilder PlayerDeck = null!;
     VanguardBotDifficulty Difficulty = VanguardBotDifficulty.MASTER;
 
     InputProvider InputProviderComponent = null!;
@@ -49,7 +41,7 @@ public partial class Session : Control
         .AddCards(RoyalPaladin.SolitaryKnightGancelot, 4)
         .SetStartingVanguard(RoyalPaladin.StardustTrumpeteer);
 
-    public void Initialize(PlayerDeck playerDeck, OpponentType opponent)
+    public void Initialize(VanguardDeckBuilder playerDeck, OpponentType opponent)
     {
         PlayerDeck = playerDeck;
         Opponent = opponent;
@@ -66,14 +58,7 @@ public partial class Session : Control
 
         var aiDeck = DeckFactory.RoyalPaladinTrialDeck;
 
-        var player1 = PlayerDeck switch
-        {
-            PlayerDeck.ROYAL_PALADIN_TRIAL_DECK => new VanguardPlayerProfile(DeckFactory.RoyalPaladinTrialDeck),
-            PlayerDeck.KAGERO_TRIAL_DECK => new VanguardPlayerProfile(DeckFactory.KageroTrialDeck),
-            PlayerDeck.NOVA_GRAPPLER_TRIAL_DECK => new VanguardPlayerProfile(DeckFactory.NovaGrapplerTrialDeck),
-            PlayerDeck.OTT_TRIAL_DECK => new VanguardPlayerProfile(DeckFactory.OTTTrialDeck),
-            _ => throw new NotSupportedException("Invalid Deck")
-        };
+        var player1 = new VanguardPlayerProfile(PlayerDeck);
 
         VanguardPlayerProfile player2 = Opponent switch
         {

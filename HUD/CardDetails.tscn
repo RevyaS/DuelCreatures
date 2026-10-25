@@ -1,0 +1,111 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://HUD/CardDetails.cs" id="1_details"]
+[ext_resource type="PackedScene" uid="uid://bd1411oyw560d" path="res://addons/rev_godot_core/Scenes/LabelValueContainer.tscn" id="1_fxwt2"]
+
+[node name="CardDetails" type="PanelContainer"]
+offset_right = 900.0
+offset_bottom = 125.0
+script = ExtResource("1_details")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 2
+color = Color(0.14406255, 0.14406255, 0.14406255, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(900, 0)
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 10
+
+[node name="Content" type="VBoxContainer" parent="MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="CardName" type="Label" parent="MarginContainer/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 42
+text = "Blaster Blade"
+horizontal_alignment = 1
+
+[node name="StatsList" type="HBoxContainer" parent="MarginContainer/Content"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Grade" parent="MarginContainer/Content/StatsList" instance=ExtResource("1_fxwt2")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+FontSize = 32
+Label = "Grade"
+Value = "1"
+
+[node name="VSeparator3" type="VSeparator" parent="MarginContainer/Content/StatsList"]
+layout_mode = 2
+
+[node name="Power" parent="MarginContainer/Content/StatsList" instance=ExtResource("1_fxwt2")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+FontSize = 32
+Label = "Power"
+Value = "11000"
+
+[node name="VSeparator" type="VSeparator" parent="MarginContainer/Content/StatsList"]
+layout_mode = 2
+
+[node name="Critical" parent="MarginContainer/Content/StatsList" instance=ExtResource("1_fxwt2")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+FontSize = 32
+Label = "Critical"
+Value = "1"
+
+[node name="VSeparator2" type="VSeparator" parent="MarginContainer/Content/StatsList"]
+layout_mode = 2
+
+[node name="Guard" parent="MarginContainer/Content/StatsList" instance=ExtResource("1_fxwt2")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+FontSize = 32
+Label = "Guard"
+Value = "20000"
+
+[node name="InfoList" type="HBoxContainer" parent="MarginContainer/Content"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="UnitType" parent="MarginContainer/Content/InfoList" instance=ExtResource("1_fxwt2")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+FontSize = 32
+Label = "Trigger Type"
+Value = "Stand"
+
+[node name="VSeparator3" type="VSeparator" parent="MarginContainer/Content/InfoList"]
+layout_mode = 2
+
+[node name="Skill" type="Label" parent="MarginContainer/Content/InfoList"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 32
+text = "Boost"
+
+[node name="Skills" type="RichTextLabel" parent="MarginContainer/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/normal_font_size = 32
+text = "[AUTO]:[Counter Blast (2)] When this unit is placed on (VC), you may pay the cost. If you do, choose one of your opponent's rear-guards, and retire it."
+fit_content = true

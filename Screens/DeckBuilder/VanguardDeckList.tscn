@@ -1,300 +1,86 @@
-[gd_scene load_steps=4 format=3 uid="uid://buehwdfob3n0c"]
+[gd_scene load_steps=3 format=3 uid="uid://buehwdfob3n0c"]
 
-[ext_resource type="Script" uid="uid://p3ldeqjxb577" path="res://addons/rev_godot_core/Components/VBoxNodeContainer.cs" id="1_awhry"]
-[ext_resource type="PackedScene" uid="uid://xfgt43rddlvv" path="res://Board/BaseComponents/CardArea.tscn" id="2_rfrl7"]
-[ext_resource type="Texture2D" uid="uid://wf4mdmqcp32x" path="res://Assets/Cards/ArdentJewelKnightPolli.png" id="3_uykry"]
+[ext_resource type="Script" path="res://Screens/DeckBuilder/VanguardDeckList.cs" id="1_list"]
+[ext_resource type="Script" path="res://addons/rev_godot_core/Scenes/Table.cs" id="2_table"]
 
-[node name="DeckList" type="VBoxContainer"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("1_awhry")
-metadata/_custom_type_script = "uid://p3ldeqjxb577"
+[node name="VanguardDeckList" type="VBoxContainer"]
+custom_minimum_size = Vector2(1040, 1900)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 16
+script = ExtResource("1_list")
 
-[node name="VBoxNodeContainer" type="VBoxContainer" parent="."]
+[node name="DeckName" type="Label" parent="."]
+unique_name_in_owner = true
 layout_mode = 2
-script = ExtResource("1_awhry")
-metadata/_custom_type_script = "uid://p3ldeqjxb577"
-
-[node name="DeckName" type="Label" parent="VBoxNodeContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 42
 text = "Deck Name"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxNodeContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="StarterSlot" type="CenterContainer" parent="HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(210, 294)
 layout_mode = 2
 
-[node name="CardArea" parent="VBoxNodeContainer/HBoxContainer" instance=ExtResource("2_rfrl7")]
-layout_mode = 2
-
-[node name="DeckInfo" type="VBoxContainer" parent="VBoxNodeContainer/HBoxContainer"]
+[node name="DeckInfo" type="VBoxContainer" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-script = ExtResource("1_awhry")
-metadata/_custom_type_script = "uid://p3ldeqjxb577"
 
-[node name="ClanName" type="Label" parent="VBoxNodeContainer/HBoxContainer/DeckInfo"]
+[node name="ClanName" type="Label" parent="HBoxContainer/DeckInfo"]
+unique_name_in_owner = true
 layout_mode = 2
+theme_override_font_sizes/font_size = 36
 text = "Clan Name"
 
-[node name="Labels" type="HBoxContainer" parent="VBoxNodeContainer/HBoxContainer/DeckInfo"]
+[node name="TriggerTable" type="GridContainer" parent="HBoxContainer/DeckInfo"]
+unique_name_in_owner = true
 layout_mode = 2
+theme_override_constants/h_separation = 30
+columns = 4
+script = ExtResource("2_table")
+Headers = PackedStringArray("Critical", "Draw", "Heal", "Stand")
+HeaderFontSize = 32
 
-[node name="Critical" type="Label" parent="VBoxNodeContainer/HBoxContainer/DeckInfo/Labels"]
+[node name="TotalTriggers" type="Label" parent="HBoxContainer/DeckInfo"]
+unique_name_in_owner = true
 layout_mode = 2
-text = "Critical"
-
-[node name="Draw" type="Label" parent="VBoxNodeContainer/HBoxContainer/DeckInfo/Labels"]
-layout_mode = 2
-text = "Draw"
-
-[node name="Heal" type="Label" parent="VBoxNodeContainer/HBoxContainer/DeckInfo/Labels"]
-layout_mode = 2
-text = "Stand"
-
-[node name="Stand" type="Label" parent="VBoxNodeContainer/HBoxContainer/DeckInfo/Labels"]
-layout_mode = 2
-text = "Heal"
-
-[node name="Contents" type="HBoxContainer" parent="VBoxNodeContainer/HBoxContainer/DeckInfo"]
-layout_mode = 2
-
-[node name="Critical" type="Label" parent="VBoxNodeContainer/HBoxContainer/DeckInfo/Contents"]
-layout_mode = 2
-text = "0"
-
-[node name="Draw" type="Label" parent="VBoxNodeContainer/HBoxContainer/DeckInfo/Contents"]
-layout_mode = 2
-text = "0"
-
-[node name="Heal" type="Label" parent="VBoxNodeContainer/HBoxContainer/DeckInfo/Contents"]
-layout_mode = 2
-text = "0"
-
-[node name="Stand" type="Label" parent="VBoxNodeContainer/HBoxContainer/DeckInfo/Contents"]
-layout_mode = 2
-text = "0"
-
-[node name="TotalTriggers" type="Label" parent="VBoxNodeContainer/HBoxContainer/DeckInfo"]
-layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Triggers: 0"
 
-[node name="DeckTotal" type="Label" parent="VBoxNodeContainer/HBoxContainer/DeckInfo"]
+[node name="DeckTotal" type="Label" parent="HBoxContainer/DeckInfo"]
+unique_name_in_owner = true
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "Deck: 50/50"
 
-[node name="CardsPerGrade" type="VBoxContainer" parent="VBoxNodeContainer"]
+[node name="Problems" type="Label" parent="."]
+unique_name_in_owner = true
 layout_mode = 2
-script = ExtResource("1_awhry")
-metadata/_custom_type_script = "uid://p3ldeqjxb577"
+theme_override_colors/font_color = Color(1, 0.55, 0.45, 1)
+theme_override_font_sizes/font_size = 28
+autowrap_mode = 3
 
-[node name="GradeRow" type="HBoxContainer" parent="VBoxNodeContainer/CardsPerGrade"]
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
 layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
 
-[node name="Info" type="VBoxContainer" parent="VBoxNodeContainer/CardsPerGrade/GradeRow"]
+[node name="CardsPerGrade" type="GridContainer" parent="ScrollContainer"]
+unique_name_in_owner = true
 layout_mode = 2
-script = ExtResource("1_awhry")
-metadata/_custom_type_script = "uid://p3ldeqjxb577"
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+columns = 2
+script = ExtResource("2_table")
+ExpandedColumns = PackedInt32Array(1)
 
-[node name="Grade" type="Label" parent="VBoxNodeContainer/CardsPerGrade/GradeRow/Info"]
+[node name="BackButton" type="Button" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
-text = "Grade 1"
-
-[node name="Count" type="Label" parent="VBoxNodeContainer/CardsPerGrade/GradeRow/Info"]
-layout_mode = 2
-text = "15"
-
-[node name="GridContainer" type="GridContainer" parent="VBoxNodeContainer/CardsPerGrade/GradeRow"]
-layout_mode = 2
-columns = 5
-
-[node name="TextureRect" type="TextureRect" parent="VBoxNodeContainer/CardsPerGrade/GradeRow/GridContainer"]
-custom_minimum_size = Vector2(168, 224)
-layout_mode = 2
-texture = ExtResource("3_uykry")
-expand_mode = 1
-
-[node name="TextureRect2" type="TextureRect" parent="VBoxNodeContainer/CardsPerGrade/GradeRow/GridContainer"]
-custom_minimum_size = Vector2(168, 224)
-layout_mode = 2
-texture = ExtResource("3_uykry")
-expand_mode = 1
-
-[node name="TextureRect3" type="TextureRect" parent="VBoxNodeContainer/CardsPerGrade/GradeRow/GridContainer"]
-custom_minimum_size = Vector2(168, 224)
-layout_mode = 2
-texture = ExtResource("3_uykry")
-expand_mode = 1
-
-[node name="TextureRect4" type="TextureRect" parent="VBoxNodeContainer/CardsPerGrade/GradeRow/GridContainer"]
-custom_minimum_size = Vector2(168, 224)
-layout_mode = 2
-texture = ExtResource("3_uykry")
-expand_mode = 1
-
-[node name="TextureRect5" type="TextureRect" parent="VBoxNodeContainer/CardsPerGrade/GradeRow/GridContainer"]
-custom_minimum_size = Vector2(168, 224)
-layout_mode = 2
-texture = ExtResource("3_uykry")
-expand_mode = 1
-
-[node name="TextureRect6" type="TextureRect" parent="VBoxNodeContainer/CardsPerGrade/GradeRow/GridContainer"]
-custom_minimum_size = Vector2(168, 224)
-layout_mode = 2
-texture = ExtResource("3_uykry")
-expand_mode = 1
-
-[node name="TextureRect7" type="TextureRect" parent="VBoxNodeContainer/CardsPerGrade/GradeRow/GridContainer"]
-custom_minimum_size = Vector2(168, 224)
-layout_mode = 2
-texture = ExtResource("3_uykry")
-expand_mode = 1
-
-[node name="TextureRect8" type="TextureRect" parent="VBoxNodeContainer/CardsPerGrade/GradeRow/GridContainer"]
-custom_minimum_size = Vector2(168, 224)
-layout_mode = 2
-texture = ExtResource("3_uykry")
-expand_mode = 1
-
-[node name="GradeRow2" type="HBoxContainer" parent="VBoxNodeContainer/CardsPerGrade"]
-layout_mode = 2
-
-[node name="Info" type="VBoxContainer" parent="VBoxNodeContainer/CardsPerGrade/GradeRow2"]
-layout_mode = 2
-script = ExtResource("1_awhry")
-metadata/_custom_type_script = "uid://p3ldeqjxb577"
-
-[node name="Grade" type="Label" parent="VBoxNodeContainer/CardsPerGrade/GradeRow2/Info"]
-layout_mode = 2
-text = "Grade 2"
-
-[node name="Count" type="Label" parent="VBoxNodeContainer/CardsPerGrade/GradeRow2/Info"]
-layout_mode = 2
-text = "15"
-
-[node name="GridContainer" type="GridContainer" parent="VBoxNodeContainer/CardsPerGrade/GradeRow2"]
-layout_mode = 2
-columns = 5
-
-[node name="TextureRect" type="TextureRect" parent="VBoxNodeContainer/CardsPerGrade/GradeRow2/GridContainer"]
-custom_minimum_size = Vector2(168, 224)
-layout_mode = 2
-texture = ExtResource("3_uykry")
-expand_mode = 1
-
-[node name="TextureRect2" type="TextureRect" parent="VBoxNodeContainer/CardsPerGrade/GradeRow2/GridContainer"]
-custom_minimum_size = Vector2(168, 224)
-layout_mode = 2
-texture = ExtResource("3_uykry")
-expand_mode = 1
-
-[node name="TextureRect3" type="TextureRect" parent="VBoxNodeContainer/CardsPerGrade/GradeRow2/GridContainer"]
-custom_minimum_size = Vector2(168, 224)
-layout_mode = 2
-texture = ExtResource("3_uykry")
-expand_mode = 1
-
-[node name="TextureRect4" type="TextureRect" parent="VBoxNodeContainer/CardsPerGrade/GradeRow2/GridContainer"]
-custom_minimum_size = Vector2(168, 224)
-layout_mode = 2
-texture = ExtResource("3_uykry")
-expand_mode = 1
-
-[node name="TextureRect5" type="TextureRect" parent="VBoxNodeContainer/CardsPerGrade/GradeRow2/GridContainer"]
-custom_minimum_size = Vector2(168, 224)
-layout_mode = 2
-texture = ExtResource("3_uykry")
-expand_mode = 1
-
-[node name="TextureRect6" type="TextureRect" parent="VBoxNodeContainer/CardsPerGrade/GradeRow2/GridContainer"]
-custom_minimum_size = Vector2(168, 224)
-layout_mode = 2
-texture = ExtResource("3_uykry")
-expand_mode = 1
-
-[node name="TextureRect7" type="TextureRect" parent="VBoxNodeContainer/CardsPerGrade/GradeRow2/GridContainer"]
-custom_minimum_size = Vector2(168, 224)
-layout_mode = 2
-texture = ExtResource("3_uykry")
-expand_mode = 1
-
-[node name="TextureRect8" type="TextureRect" parent="VBoxNodeContainer/CardsPerGrade/GradeRow2/GridContainer"]
-custom_minimum_size = Vector2(168, 224)
-layout_mode = 2
-texture = ExtResource("3_uykry")
-expand_mode = 1
-
-[node name="GradeRow3" type="HBoxContainer" parent="VBoxNodeContainer/CardsPerGrade"]
-layout_mode = 2
-
-[node name="Info" type="VBoxContainer" parent="VBoxNodeContainer/CardsPerGrade/GradeRow3"]
-layout_mode = 2
-script = ExtResource("1_awhry")
-metadata/_custom_type_script = "uid://p3ldeqjxb577"
-
-[node name="Grade" type="Label" parent="VBoxNodeContainer/CardsPerGrade/GradeRow3/Info"]
-layout_mode = 2
-text = "Grade 3"
-
-[node name="Count" type="Label" parent="VBoxNodeContainer/CardsPerGrade/GradeRow3/Info"]
-layout_mode = 2
-text = "15"
-
-[node name="GridContainer" type="GridContainer" parent="VBoxNodeContainer/CardsPerGrade/GradeRow3"]
-layout_mode = 2
-columns = 5
-
-[node name="TextureRect" type="TextureRect" parent="VBoxNodeContainer/CardsPerGrade/GradeRow3/GridContainer"]
-custom_minimum_size = Vector2(168, 224)
-layout_mode = 2
-texture = ExtResource("3_uykry")
-expand_mode = 1
-
-[node name="TextureRect2" type="TextureRect" parent="VBoxNodeContainer/CardsPerGrade/GradeRow3/GridContainer"]
-custom_minimum_size = Vector2(168, 224)
-layout_mode = 2
-texture = ExtResource("3_uykry")
-expand_mode = 1
-
-[node name="TextureRect3" type="TextureRect" parent="VBoxNodeContainer/CardsPerGrade/GradeRow3/GridContainer"]
-custom_minimum_size = Vector2(168, 224)
-layout_mode = 2
-texture = ExtResource("3_uykry")
-expand_mode = 1
-
-[node name="TextureRect4" type="TextureRect" parent="VBoxNodeContainer/CardsPerGrade/GradeRow3/GridContainer"]
-custom_minimum_size = Vector2(168, 224)
-layout_mode = 2
-texture = ExtResource("3_uykry")
-expand_mode = 1
-
-[node name="TextureRect5" type="TextureRect" parent="VBoxNodeContainer/CardsPerGrade/GradeRow3/GridContainer"]
-custom_minimum_size = Vector2(168, 224)
-layout_mode = 2
-texture = ExtResource("3_uykry")
-expand_mode = 1
-
-[node name="TextureRect6" type="TextureRect" parent="VBoxNodeContainer/CardsPerGrade/GradeRow3/GridContainer"]
-custom_minimum_size = Vector2(168, 224)
-layout_mode = 2
-texture = ExtResource("3_uykry")
-expand_mode = 1
-
-[node name="TextureRect7" type="TextureRect" parent="VBoxNodeContainer/CardsPerGrade/GradeRow3/GridContainer"]
-custom_minimum_size = Vector2(168, 224)
-layout_mode = 2
-texture = ExtResource("3_uykry")
-expand_mode = 1
-
-[node name="TextureRect8" type="TextureRect" parent="VBoxNodeContainer/CardsPerGrade/GradeRow3/GridContainer"]
-custom_minimum_size = Vector2(168, 224)
-layout_mode = 2
-texture = ExtResource("3_uykry")
-expand_mode = 1
-
-[node name="Back" type="Button" parent="."]
-layout_mode = 2
-theme_override_font_sizes/font_size = 25
+theme_override_font_sizes/font_size = 32
 text = "Back"

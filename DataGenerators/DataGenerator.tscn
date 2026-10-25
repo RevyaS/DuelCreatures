@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cd2tfkyuoawvs"]
 
-[ext_resource type="Script" path="res://DataGenerators/DataGenerator.cs" id="1_datagen"]
+[ext_resource type="Script" uid="uid://bbg0bqoqo4kuv" path="res://DataGenerators/DataGenerator.cs" id="1_datagen"]
 
 [node name="DataGenerator" type="Control"]
 layout_mode = 3
@@ -11,7 +11,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_datagen")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,8 +22,33 @@ offset_right = -16.0
 offset_bottom = -16.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 16
 
-[node name="Log" type="Label" parent="ScrollContainer"]
+[node name="Buttons" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="GenerateButton" type="Button" parent="VBoxContainer/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 33
+text = "Generate Card Pools"
+
+[node name="ValidateButton" type="Button" parent="VBoxContainer/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 33
+text = "Validate Card Pool"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Log" type="Label" parent="VBoxContainer/ScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
