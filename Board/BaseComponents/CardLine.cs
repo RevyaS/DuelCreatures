@@ -10,7 +10,8 @@ public partial class CardLine : PanelContainer, ICardLocation
 {
     protected HBoxNodeContainer Container = null!;
     protected IChildManagerComponent ContainerNodeManager => Container;    
-    protected DropArea DropArea = null!;
+    // A plain Control: in the editor it can still be a script placeholder, so only the game casts it
+    protected Control DropArea = null!;
     ColorRect BG = null!;
 
     public int CardCount => Container.GetChildCount<CardContainer>();
@@ -169,8 +170,8 @@ public partial class CardLine : PanelContainer, ICardLocation
         Container.ChildExitingTree += OnContainerChildExiting;
         ContainerNodeManager.ApplyToChildren<CardContainer>(SubscribeContainer);
 
-        DropArea = GetNode<DropArea>($"%{nameof(DropArea)}");
-        DropArea.CardDropped += OnCardDropped;
+        DropArea = GetNode<Control>($"%{nameof(DropArea)}");
+        if(!Engine.IsEditorHint()) ((DropArea)DropArea).CardDropped += OnCardDropped;
         BG = GetNode<ColorRect>($"%{nameof(BG)}");
 
         OnComponentsSet();

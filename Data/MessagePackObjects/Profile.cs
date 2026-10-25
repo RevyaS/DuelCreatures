@@ -16,6 +16,9 @@ public class Profile
     public List<DeckInfo> Decks { get; set; } = new();
     [Key(4)]
     public ProfileResources Resources { get; set; } = new();
+    /// <summary>Set id to the box being pulled from.</summary>
+    [Key(5)]
+    public Dictionary<string, GachaBox> GachaBoxes { get; set; } = new();
 
     public void AddCards(string cardId, int count = 1)
     {

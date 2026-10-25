@@ -60,12 +60,12 @@ public partial class GameOverDialog : PanelContainer
     {
         var decks = DataManager.GetDeckChoices();
         var choices = decks
-            .Select((deck, index) => new ChoiceDialog.Choice(deck.Label, () => GUIManager.PlayGame(deck.Build(), SessionHelper.SelectRandomOpponent())));
+            .Select((deck, index) => new ChoiceDialog.Choice(deck.Label, () => GUIManager.PlayGame(deck.Build(), SessionHelper.SelectRandomOpponent()), !deck.Playable));
         ChoiceDialog.Show(this, "Select Deck", choices);
     }
 
     private void OnPlayNextGamePressed()
     {
-        GUIManager.PlayGame(CurrentPlayerDeck, SessionHelper.SelectRandomOpponent());
+        GUIManager.PlayGame(SessionHelper.CopyDeck(CurrentPlayerDeck), SessionHelper.SelectRandomOpponent());
     }
 }

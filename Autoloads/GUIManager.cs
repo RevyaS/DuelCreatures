@@ -22,6 +22,11 @@ public partial class GUIManager : Node
         ChangeScene<VanguardDeckBuilderScreen>("res://Screens/DeckBuilder/VanguardDeckBuilderScreen.tscn", screen => screen.Initialize(deck, deckIndex));
     }
 
+    public void OpenGacha()
+    {
+        ChangeScene<GachaScreen>("res://Screens/Gacha/Gacha.tscn");
+    }
+
     private void ChangeScene<T>(string path, Action<T>? initialize = null) where T : Node
     {
         T newScene = GD.Load<PackedScene>(path).Instantiate<T>();

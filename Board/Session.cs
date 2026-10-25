@@ -58,6 +58,7 @@ public partial class Session : Control
 
         HUD = GetNode<PanelContainer>($"%{nameof(HUD)}");
         GameOverDialog = GetNode<GameOverDialog>($"%{nameof(GameOverDialog)}");
+        GameOverDialog.Initialize(PlayerDeck);
         InputProviderComponent = GetNode<InputProvider>($"%{nameof(InputProviderComponent)}");
         InputProviderComponent.SetEventBus(eventBus);
 

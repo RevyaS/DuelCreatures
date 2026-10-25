@@ -5,12 +5,12 @@ using Godot;
 /// <summary>
 /// Dev scene, run it from the editor. Generate regenerates the original card pool from <see cref="CardRegistry.Game"/>,
 /// and adds new cards to the balanced pool while keeping the stats already edited there.
-/// Validate compares the game's card pool against ArC's.
+/// Validate compares the game's card pool against ArC's, Validate Gacha Sets checks the set json files.
 /// </summary>
 public partial class DataGenerator : Control
 {
     Label Log = null!;
-    Button GenerateButton = null!, ValidateButton = null!;
+    Button GenerateButton = null!, ValidateButton = null!, ValidateGachaButton = null!;
 
     public override void _Ready()
     {
@@ -19,6 +19,8 @@ public partial class DataGenerator : Control
         GenerateButton.Pressed += GenerateCardPools;
         ValidateButton = GetNode<Button>($"%{nameof(ValidateButton)}");
         ValidateButton.Pressed += ValidateCardPool;
+        ValidateGachaButton = GetNode<Button>($"%{nameof(ValidateGachaButton)}");
+        ValidateGachaButton.Pressed += ValidateGachaSets;
     }
 
     private void GenerateCardPools()
@@ -68,6 +70,27 @@ public partial class DataGenerator : Control
             }
             Write($"{poolType} card pool compared to {CardRegistry.Game.FactoryType.Name}");
             WriteComparison(CardPoolValidator.Compare(gamePool, pool));
+        }
+    }
+
+    private void ValidateGachaSets()
+    {
+        Log.Text = string.Empty;
+        var dataManager = DataManager.Get(this);
+        var files = dataManager.GachaSetFiles;
+        Write($"{files.Count} gacha sets in {GachaConfig.SetsDirectory}, cards checked against the {(dataManager.HasCardPool ? $"{dataManager.CardPool} card pool" : CardRegistry.Game.FactoryType.Name)}");
+
+        var problems = dataManager.ValidateGachaSets();
+        foreach(var file in files)
+        {
+            Write(string.Empty);
+            Write($"{file.Path}{(file.Set is null ? string.Empty : $" ({file.Set.Id}, {file.Set.Cards.Count} cards)")}");
+            if(!problems.TryGetValue(file.Path, out var fileProblems))
+            {
+                Write("  OK");
+                continue;
+            }
+            foreach(var problem in fileProblems) Write($"  - {problem}");
         }
     }
 

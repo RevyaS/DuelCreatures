@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ArC.CardGames.Predefined.Vanguard;
 using ArC.Common.Utils;
 
 public static class SessionHelper
@@ -11,6 +12,17 @@ public static class SessionHelper
     public static OpponentType SelectRandomOpponent()
     {
         return RNGUtils.SelectRandom(selectableOpponents);
+    }
+
+    /// <summary>Fresh copies of the deck's cards, so a replay doesn't reuse the card instances (and their state) of the last game.</summary>
+    public static VanguardDeckBuilder CopyDeck(VanguardDeckBuilder deck)
+    {
+        var copy = VanguardDeckBuilder.Create().SetStartingVanguard(deck.StartingVanguard with { });
+        foreach(var card in deck.GetCards())
+        {
+            copy.AddCards(card);
+        }
+        return copy;
     }
 
 }

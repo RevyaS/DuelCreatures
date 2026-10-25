@@ -1,5 +1,6 @@
 using System;
 using ArC.CardGames.Predefined.Vanguard;
+using DuelCreatures.Data;
 using Godot;
 
 /// <summary>
@@ -85,6 +86,19 @@ public partial class CardView : Control
     {
         get => card.Outline;
         set => card.Outline = value;
+    }
+
+    /// <summary>False shows the card's back, in <see cref="SleeveInfo"/>.</summary>
+    public bool IsFront
+    {
+        get => card.IsFront;
+        set => card.IsFront = value;
+    }
+
+    public SleeveInfo SleeveInfo
+    {
+        get => card.SleeveInfo;
+        set => card.SleeveInfo = value;
     }
 
     public override void _GuiInput(InputEvent e)

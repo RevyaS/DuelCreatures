@@ -9,9 +9,8 @@ using Orientation = ArC.CardGames.Components.Orientation;
 public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircle>, IEventBusUtilizer, ICardLocation
 {
     CardRotationContainer cardRotationContainer = null!;
-    DropArea dropArea = null!;
-    DragArea dragArea = null!;
-    HoverArea hoverArea = null!;
+    // Plain Controls: in the editor they can still be script placeholders, so only the game casts them
+    Control dropArea = null!, dragArea = null!, hoverArea = null!;
     Button SelectButton = null!;
     QuarterTurnContainer ButtonContainer = null!;
     TextureRect CircleTexture = null!, IconTexture = null!;
@@ -168,17 +167,23 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
         cardRotationContainer.CardPressed += OnCardPressed;
         cardRotationContainer.CardLongPressed += OnCardLongPressed;
 
-        dropArea = GetNode<DropArea>($"%{nameof(DropArea)}");
-        dropArea.CardDropped += OnCardDropped;
-        dropArea.DragHoverChanged += OnDropAreaDragHoverChanged;
+        dropArea = GetNode<Control>($"%{nameof(DropArea)}");
+        dragArea = GetNode<Control>($"%{nameof(DragArea)}");
+        hoverArea = GetNode<Control>($"%{nameof(HoverArea)}");
+        if(!Engine.IsEditorHint())
+        {
+            var drop = (DropArea)dropArea;
+            drop.CardDropped += OnCardDropped;
+            drop.DragHoverChanged += OnDropAreaDragHoverChanged;
 
-        dragArea = GetNode<DragArea>($"%{nameof(DragArea)}");
-        dragArea.Dragging += OnDragging;
-        dragArea.DragReleased += OnDragReleased;
+            var drag = (DragArea)dragArea;
+            drag.Dragging += OnDragging;
+            drag.DragReleased += OnDragReleased;
 
-        hoverArea = GetNode<HoverArea>($"%{nameof(HoverArea)}");
-        hoverArea.Hovering += OnHovering;
-        hoverArea.HoverReleased += OnHoverReleased;
+            var hover = (HoverArea)hoverArea;
+            hover.Hovering += OnHovering;
+            hover.HoverReleased += OnHoverReleased;
+        }
 
         SelectButton = GetNode<Button>($"%{nameof(SelectButton)}");
         ButtonContainer = GetNode<QuarterTurnContainer>($"%{nameof(ButtonContainer)}");

@@ -10,7 +10,7 @@ public partial class MainScreen : Control
     VBoxNodeContainer? Deck, Opponent;
     ButtonGroup? DeckChoiceGroup, OpponentChoiceGroup;
     Button? PlayButton;
-    Button? NewProfile, LoadProfile, EditDecks;
+    Button? NewProfile, LoadProfile, EditDecks, Gacha;
     Label? ProfileLabel, Tickets;
     DataManager? DataManager;
     Theme? GUITheme;
@@ -42,6 +42,8 @@ public partial class MainScreen : Control
         LoadProfile.Pressed += LoadProfilePressed;
         EditDecks = GetNode<Button>($"%{nameof(EditDecks)}");
         EditDecks.Pressed += EditDecksPressed;
+        Gacha = GetNode<Button>($"%{nameof(Gacha)}");
+        Gacha.Pressed += GachaPressed;
 
 
         // Random is default
@@ -109,6 +111,16 @@ public partial class MainScreen : Control
             .Select((deck, index) => new ChoiceDialog.Choice(DataManager!.DescribeDeck(deck), () => guiManager.OpenDeckBuilder(deck, index)))
             .Append(new ChoiceDialog.Choice("+ New Deck", ShowClanChoice));
         ChoiceDialog.Show(this, "Edit Deck", choices);
+    }
+
+    private void GachaPressed()
+    {
+        if(!DataManager!.HasCardPool)
+        {
+            ShowMessage("No card pool yet, run DataGenerators/DataGenerator.tscn and press Generate Card Pools");
+            return;
+        }
+        GUIManager.Get(this).OpenGacha();
     }
 
     private void ShowClanChoice()
@@ -202,6 +214,7 @@ public partial class MainScreen : Control
             : $"{profile.Name} - {profile.Decks.Count} decks, {profile.OwnedCards.Values.Sum()} cards";
         LoadProfile!.Disabled = !DataManager.GetProfileSlots().Any(slot => slot.IsOccupied);
         EditDecks!.Disabled = profile is null;
+        Gacha!.Disabled = profile is null;
 
         Tickets!.Visible = profile is not null;
         if(profile is not null)

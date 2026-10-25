@@ -136,6 +136,38 @@ public partial class DataManager : Node
         ProfileChanged?.Invoke();
     }
 
+    #region Gacha
+    List<GachaSetFile>? gachaSetFiles;
+
+    /// <summary>Every set json, read once.</summary>
+    public IReadOnlyList<GachaSetFile> GachaSetFiles => gachaSetFiles ??= GachaSets.LoadAll();
+
+    /// <summary>Problems per set file. Without <paramref name="checkImages"/> missing images are left out, the game shows placeholders for them.</summary>
+    public Dictionary<string, List<string>> ValidateGachaSets(bool checkImages = true) => GachaSetValidator.ValidateAll(
+        GachaSetFiles,
+        cardId => HasCardPool ? Cards.Contains(cardId) : CardRegistry.Game.Contains(cardId),
+        path => !checkImages || ResourceLoader.Exists(path));
+
+    /// <summary>The set's box in the current profile, rolling a new one (and saving it) when needed.</summary>
+    public GachaBox GetGachaBox(GachaSet set)
+    {
+        var profile = CurrentProfile ?? throw new InvalidOperationException("No profile is loaded");
+        var existing = profile.GachaBoxes.GetValueOrDefault(set.Id);
+        var box = GachaService.GetBox(profile, set, Random.Shared);
+        if(box != existing) SaveProfile();
+        return box;
+    }
+
+    public PackResult OpenPack(GachaSet set, int packIndex)
+    {
+        var profile = CurrentProfile ?? throw new InvalidOperationException("No profile is loaded");
+        var result = GachaService.OpenPack(profile, set, packIndex);
+        SaveProfile();
+        ProfileChanged?.Invoke();
+        return result;
+    }
+    #endregion
+
     public List<string> ValidateDeck(DeckInfo deck) => VanguardDeckRules.Validate(deck, Cards, CurrentProfile?.OwnedCards);
 
     public VanguardCard CreateCard(string cardId) => Cards.Create(cardId);
