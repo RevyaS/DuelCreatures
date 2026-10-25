@@ -17,6 +17,8 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+RevDataManager="*res://addons/rev_godot_core/Autoloads/RevDataManager.cs"
+DataManager="*res://Autoloads/DataManager.cs"
 GUIManager="*res://Autoloads/GUIManager.cs"
 
 [display]

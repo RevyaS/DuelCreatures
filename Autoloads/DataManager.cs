@@ -1,46 +1,107 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using ArC.CardGames.Predefined.Vanguard;
 using Godot;
-using MessagePack;
 
+/// <summary>
+/// The game's data: which card pool is played with, the profile in use, and what a new profile starts with.
+/// Reads and writes through the <see cref="RevDataManager"/> autoload, so it has to be loaded after it.
+/// </summary>
 public partial class DataManager : Node
 {
-    const string SavePath = "user://Save.dat";
-    const string DefaultSave = "res://Data/InitialData/Save.dat";
-    const string AIDeckListPath = "res://Data/InitialData/AIDecks.dat";
+    public const string GameDataDirectory = "Data/GameData";
+    public const CardPoolType DefaultCardPool = CardPoolType.BALANCED;
+    public static readonly SaveSlotLayout ProfileSlots = new("user://Profiles", 5, "Profile");
 
-    // AI Data
-    public DeckList AIDecks { get; private set; } = null!;
-    public DeckList PlayerDecks { get; private set; } = null!;
+    /// <summary>Every new profile owns these decks, and the cards in them.</summary>
+    public static IReadOnlyList<(string Name, VanguardDeckBuilder Deck)> InitialDecks =>
+    [
+        ("Royal Paladin Trial Deck", DeckFactory.RoyalPaladinTrialDeck),
+        ("Kagero Trial Deck", DeckFactory.KageroTrialDeck),
+        ("Oracle Think Tank Trial Deck", DeckFactory.OTTTrialDeck),
+        ("Nova Grappler Trial Deck", DeckFactory.NovaGrapplerTrialDeck)
+    ];
 
-    public override void _Ready()
+    RevDataManager data = null!;
+    CardCatalog? cards;
+    CardPoolType cardPool = DefaultCardPool;
+
+    public event Action? ProfileChanged;
+
+    public Profile? CurrentProfile { get; private set; }
+    public SaveSlot? CurrentSlot { get; private set; }
+
+    /// <summary>Loaded on first use, the card pools only exist once the DataGenerator has run.</summary>
+    public CardCatalog Cards => cards ??= new CardCatalog(cardPool, data.Load<CardPool>(GetCardPoolPath(cardPool)));
+
+    public CardPoolType CardPool
     {
-        EnsureSaveData();
-        LoadPlayerDecks();
-        LoadAIDecks();
-    }
-
-    private void EnsureSaveData()
-    {
-        if(FileAccess.FileExists(SavePath))
+        get => cardPool;
+        set
         {
-            using var src = FileAccess.Open(DefaultSave, FileAccess.ModeFlags.Read);
-            using var dst = FileAccess.Open(SavePath, FileAccess.ModeFlags.Write);
-
-            byte[] buffer = src.GetBuffer((long)src.GetLength());
-            dst.StoreBuffer(buffer);
+            if(cardPool == value) return;
+            cardPool = value;
+            cards = null;
         }
     }
 
-    private void LoadAIDecks()
+    public static DataManager Get(Node node) => node.GetTree().Root.GetNode<DataManager>(nameof(DataManager));
+
+    public static string GetCardPoolPath(CardPoolType poolType) => poolType switch
     {
-        using var file = FileAccess.Open(AIDeckListPath, FileAccess.ModeFlags.Read);
-        byte[] data = file.GetBuffer((long)file.GetLength());
-        AIDecks = MessagePackSerializer.Deserialize<DeckList>(data);
+        CardPoolType.ORIGINAL => $"{GameDataDirectory}/CardPool.Original.dat",
+        CardPoolType.BALANCED => $"{GameDataDirectory}/CardPool.Balanced.dat",
+        _ => throw new NotSupportedException($"Card Pool Not Supported {poolType}")
+    };
+
+    public override void _Ready()
+    {
+        data = RevDataManager.Get(this);
     }
 
-    private void LoadPlayerDecks()
+    public IReadOnlyList<SaveSlot> GetProfileSlots() => data.GetSlots(ProfileSlots);
+
+    public Profile ReadProfile(SaveSlot slot) => data.Load<Profile>(slot.Path);
+
+    public static Profile CreateInitialProfile(string name)
     {
-        using var file = FileAccess.Open(SavePath, FileAccess.ModeFlags.Read);
-        byte[] data = file.GetBuffer((long)file.GetLength());
-        PlayerDecks = MessagePackSerializer.Deserialize<DeckList>(data);
+        var profile = new Profile
+        {
+            Name = name,
+            CreatedAt = DateTime.Now,
+            Decks = InitialDecks.Select(deck => DeckInfo.From(deck.Name, deck.Deck)).ToList()
+        };
+        profile.Decks.ForEach(profile.AddCards);
+        return profile;
+    }
+
+    /// <summary>Creates a new profile in the slot, replacing whatever was there, and uses it.</summary>
+    public Profile CreateProfile(SaveSlot slot, string name)
+    {
+        var profile = CreateInitialProfile(name);
+        data.Save(slot.Path, profile);
+        UseProfile(data.ResolveLayout(ProfileSlots).GetSlot(slot.Index), profile);
+        return profile;
+    }
+
+    public Profile LoadProfile(SaveSlot slot)
+    {
+        var profile = ReadProfile(slot);
+        UseProfile(slot, profile);
+        return profile;
+    }
+
+    public void SaveProfile()
+    {
+        if(CurrentProfile is null || CurrentSlot is null) throw new InvalidOperationException("No profile is loaded");
+        data.Save(CurrentSlot.Path, CurrentProfile);
+    }
+
+    private void UseProfile(SaveSlot slot, Profile profile)
+    {
+        CurrentSlot = slot;
+        CurrentProfile = profile;
+        ProfileChanged?.Invoke();
     }
 }

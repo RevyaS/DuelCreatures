@@ -34,17 +34,27 @@ layout_mode = 2
 script = ExtResource("2_bbxde")
 metadata/_custom_type_script = "uid://p3ldeqjxb577"
 
+[node name="ProfileLabel" type="Label" parent="VBoxContainer/VBoxNodeContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("2_dnf8x")
+text = "No Profile"
+horizontal_alignment = 1
+
 [node name="NewProfile" type="Button" parent="VBoxContainer/VBoxNodeContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("1_wtm7l")
 text = "New Profile"
 
 [node name="LoadProfile" type="Button" parent="VBoxContainer/VBoxNodeContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("1_wtm7l")
 text = "Load Profile"
 
 [node name="EditDecks" type="Button" parent="VBoxContainer/VBoxNodeContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("1_wtm7l")
 text = "Edit Decks"
