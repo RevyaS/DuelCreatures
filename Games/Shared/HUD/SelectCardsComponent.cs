@@ -49,8 +49,12 @@ public partial class SelectCardsComponent : PanelContainer
         Render();
     }
 
+    // A card dragged out of the selection (not one being dropped into it)
+    Card? draggedOut = null;
+
     private void OnCardDragging(CardBaseComponent component)
     {
+        draggedOut = component as Card;
         CardDragging?.Invoke(component);
     }
 
@@ -103,6 +107,9 @@ public partial class SelectCardsComponent : PanelContainer
     // it goes back where it came from (CardReturned)
     private void OnCardDragEnded(Card card, bool dropped)
     {
+        if(!ReferenceEquals(card, draggedOut)) return;
+        draggedOut = null;
+
         var containedCard = SelectedCards.FindCard(selected => ReferenceEquals(selected, card));
         if(containedCard is null) return;
 
