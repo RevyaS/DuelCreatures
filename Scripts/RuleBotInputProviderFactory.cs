@@ -1,7 +1,7 @@
 using System;
 using ArC.CardGames.Flow;
-using ArC.CardGames.Predefined.Vanguard;
-using ArC.CardGames.Predefined.Vanguard.Bots;
+using ArC.CardGames.Vanguard;
+using ArC.CardGames.Vanguard.Bots;
 using ArC.CardGames.Setup;
 
 // One provider per player for the whole game: the bots keep their plans between requests

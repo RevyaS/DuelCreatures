@@ -1,4 +1,4 @@
-using ArC.CardGames.Predefined.Vanguard.Flow;
+using ArC.CardGames.Vanguard.Flow;
 using Godot;
 
 public class GodotLogger : VanguardConsoleLogger

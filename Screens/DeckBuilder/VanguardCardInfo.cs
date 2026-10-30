@@ -1,5 +1,5 @@
 using System;
-using ArC.CardGames.Predefined.Vanguard;
+using ArC.CardGames.Vanguard;
 using Godot;
 
 /// <summary>A card shown big, with how many copies are owned and in the deck, and its details.</summary>

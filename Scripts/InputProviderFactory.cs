@@ -1,6 +1,6 @@
 using ArC.CardGames.Flow;
-using ArC.CardGames.Predefined.Vanguard;
-using ArC.CardGames.Predefined.Vanguard.Flow;
+using ArC.CardGames.Vanguard;
+using ArC.CardGames.Vanguard.Flow;
 using ArC.CardGames.Setup;
 using ArC.VanguardAI.InputProviders;
 using ArC.VanguardAI.IO;

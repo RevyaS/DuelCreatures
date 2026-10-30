@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using ArC.CardGames.Components;
-using ArC.CardGames.Predefined.Vanguard;
+using ArC.CardGames.Vanguard;
 using Godot;
 using Orientation = ArC.CardGames.Components.Orientation;
 

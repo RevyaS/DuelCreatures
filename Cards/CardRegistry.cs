@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ArC.CardGames.Components;
-using ArC.CardGames.Predefined.Vanguard;
-using ArC.CardGames.Predefined.Vanguard.Cards;
+using ArC.CardGames.Vanguard;
+using ArC.CardGames.Vanguard.Cards;
 
 /// <summary>
 /// Every card of a card factory, keyed by "Clan.Property" (eg; RoyalPaladin.BlasterBlade). A factory is a static class

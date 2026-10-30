@@ -6,7 +6,7 @@ using ArC.CardGames;
 using ArC.CardGames.Components;
 using ArC.CardGames.Flow;
 using ArC.CardGames.Predefined.Common;
-using ArC.CardGames.Predefined.Vanguard;
+using ArC.CardGames.Vanguard;
 using ArC.CardGames.Rules;
 using ArC.CardGames.Setup;
 using Godot;

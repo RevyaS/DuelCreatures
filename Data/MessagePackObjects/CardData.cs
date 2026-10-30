@@ -1,4 +1,4 @@
-using ArC.CardGames.Predefined.Vanguard;
+using ArC.CardGames.Vanguard;
 using MessagePack;
 
 /// <summary>

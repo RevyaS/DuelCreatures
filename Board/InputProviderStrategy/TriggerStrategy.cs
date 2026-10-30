@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ArC.CardGames.Flow;
-using ArC.CardGames.Predefined.Vanguard;
+using ArC.CardGames.Vanguard;
 
 public class TriggerStrategy(VanguardBoard Board, VanguardPlayArea PlayArea, SelectFromCardList SelectFromCardList, GameContext GameContext) : BaseStrategy(Board), ISelectOwnUnitCircle, ISelectCardFromDamageZone
 {

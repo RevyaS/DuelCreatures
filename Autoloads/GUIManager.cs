@@ -1,5 +1,5 @@
 using System;
-using ArC.CardGames.Predefined.Vanguard;
+using ArC.CardGames.Vanguard;
 using Godot;
 
 public partial class GUIManager : Node

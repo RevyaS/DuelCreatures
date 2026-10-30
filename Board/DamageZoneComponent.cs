@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ArC.CardGames.Components;
-using ArC.CardGames.Predefined.Vanguard;
+using ArC.CardGames.Vanguard;
 using Godot;
 
 [Tool]

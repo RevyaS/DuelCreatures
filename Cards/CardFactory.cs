@@ -1,6 +1,6 @@
-using ArC.CardGames.Predefined.Vanguard.Skill;
+using ArC.CardGames.Vanguard.Skill;
 
-namespace ArC.CardGames.Predefined.Vanguard.Cards;
+namespace ArC.CardGames.Vanguard.Cards;
 
 public static class DuelMaidensCardsFactory
 {

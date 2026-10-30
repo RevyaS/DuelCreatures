@@ -1,5 +1,5 @@
-using ArC.CardGames.Predefined.Vanguard;
-using static ArC.CardGames.Predefined.Vanguard.Cards.VanguardCardsFactory;
+using ArC.CardGames.Vanguard;
+using static ArC.CardGames.Vanguard.Cards.VanguardCardsFactory;
 
 public static class DeckFactory
 {

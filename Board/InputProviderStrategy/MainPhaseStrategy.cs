@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using ArC.CardGames.Components;
 using ArC.CardGames.Flow;
 using ArC.CardGames.Predefined.Common;
-using ArC.CardGames.Predefined.Vanguard;
+using ArC.CardGames.Vanguard;
 using ArC.Common.Extensions;
 
 public class MainPhaseStrategy(VanguardBoard Board, CardInfo CardInfo, GameContext gameContext) : IInputProviderStrategy, IRequestMainPhaseAction, ISelectCardFromHand, ISelectOwnUnitCircle, ISelectSkillToActivate

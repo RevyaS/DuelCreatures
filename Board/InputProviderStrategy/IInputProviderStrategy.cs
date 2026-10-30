@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Common;
-using ArC.CardGames.Predefined.Vanguard;
+using ArC.CardGames.Vanguard;
 
 public interface IInputProviderStrategy;
 

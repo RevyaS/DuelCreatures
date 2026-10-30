@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ArC.CardGames.Predefined.Vanguard;
+using ArC.CardGames.Vanguard;
 
 /// <summary>The factory cards with the stats of a <see cref="CardPool"/> applied.</summary>
 public class CardCatalog

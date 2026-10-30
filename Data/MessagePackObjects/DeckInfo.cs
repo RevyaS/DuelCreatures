@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using ArC.CardGames.Predefined.Vanguard;
+using ArC.CardGames.Vanguard;
 using MessagePack;
 
 /// <summary>A deck as card ids (see <see cref="CardRegistry"/>), the first vanguard is not part of <see cref="Cards"/>.</summary>

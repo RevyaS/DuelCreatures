@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using ArC.CardGames.Predefined.Vanguard;
+using ArC.CardGames.Vanguard;
 
 public class BaseStrategy(VanguardBoard Board) : IInputProviderStrategy
 {

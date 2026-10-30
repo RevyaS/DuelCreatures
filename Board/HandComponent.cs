@@ -1,6 +1,6 @@
 using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Common;
-using ArC.CardGames.Predefined.Vanguard;
+using ArC.CardGames.Vanguard;
 using Godot;
 
 [Tool]

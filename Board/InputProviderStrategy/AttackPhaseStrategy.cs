@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using ArC.CardGames.Flow;
 using ArC.CardGames.Predefined.Common;
-using ArC.CardGames.Predefined.Vanguard;
+using ArC.CardGames.Vanguard;
 using ArC.Common.Extensions;
 using Godot;
 

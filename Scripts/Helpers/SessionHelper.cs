@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using ArC.CardGames.Predefined.Vanguard;
+using ArC.CardGames.Vanguard;
 using ArC.Common.Utils;
 
 public static class SessionHelper

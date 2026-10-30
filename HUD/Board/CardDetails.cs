@@ -1,4 +1,4 @@
-using ArC.CardGames.Predefined.Vanguard;
+using ArC.CardGames.Vanguard;
 using Godot;
 
 /// <summary>A card's name, stats and skill text, shared by the in-game <see cref="CardInfo"/> and the deck builder's <see cref="VanguardCardInfo"/>.</summary>

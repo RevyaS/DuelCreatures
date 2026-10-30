@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ArC.CardGames.Components;
-using ArC.CardGames.Predefined.Vanguard;
+using ArC.CardGames.Vanguard;
 using Godot;
 
 public class SkillExecutionStrategy(VanguardBoard Board, VanguardPlayArea PlayArea, CardList CardList, SelectFromCardList SelectFromCardList, string SkillSource = "") : BaseStrategy(Board), ISelectOpponentCircle, IQueryActivateSkill, ISelectCardsToCounterBlast, ISelectCardsToCounterCharge, ISelectCardsFromSoul, ISelectCardFromDeck, ISelectCardFromHand, ISelectCardsFromHand, ISelectOwnUnitCircle

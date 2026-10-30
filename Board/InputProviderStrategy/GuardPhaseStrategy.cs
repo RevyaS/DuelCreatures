@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ArC.CardGames.Components;
-using ArC.CardGames.Predefined.Vanguard;
-using ArC.CardGames.Predefined.Vanguard.Evaluations;
+using ArC.CardGames.Vanguard;
+using ArC.CardGames.Vanguard.Evaluations;
 
 public class GuardPhaseStrategy(VanguardBoard Board, UnitCircleComponent GuardedCircle, VanguardPlayArea PlayArea, GuardState GuardState) : IInputProviderStrategy, ISelectCardsFromHand, ISelectOwnUnitCircles
 {

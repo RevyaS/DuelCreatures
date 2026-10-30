@@ -1,12 +1,12 @@
 using System;
 using System.Threading.Tasks;
 using ArC.CardGames.Flow;
-using ArC.CardGames.Predefined.Vanguard;
-using ArC.CardGames.Predefined.Vanguard.Bots;
+using ArC.CardGames.Vanguard;
+using ArC.CardGames.Vanguard.Bots;
 using ArC.CardGames.Setup;
 using ArC.VanguardAI.IO;
 using Godot;
-using static ArC.CardGames.Predefined.Vanguard.Cards.VanguardCardsFactory;
+using static ArC.CardGames.Vanguard.Cards.VanguardCardsFactory;
 
 public enum OpponentType
 {
