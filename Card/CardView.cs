@@ -6,23 +6,14 @@ using Godot;
 /// <summary>
 /// Presents a base <see cref="Card"/> at a scale, for screens outside the game (deck builder, card lists).
 /// Besides press and long press it reports vertical flicks as swipes. A slower drag scrolls the
-/// <see cref="ScrollContainer"/> it is in, so a list of cards can still be scrolled by dragging on them.
+/// <see cref="ScrollContainer"/> it is in, so a list of cards can still be scrolled by dragging on them
+/// (all through its <see cref="GestureDetector"/>).
 /// </summary>
 public partial class CardView : Control
 {
-    const float SwipeDistance = 60;
-    const double SwipeMaxTime = 0.35;
-    const float DragTolerance = 10;
-
     Card card = null!;
     PanelContainer BadgePanel = null!;
     Label Badge = null!;
-
-    bool tracking;
-    bool scrolling;
-    double trackedTime;
-    Vector2 pressPosition;
-    Vector2 pendingScroll;
 
     public string CardId { get; private set; } = null!;
     public VanguardCard ShownCard { get; private set; } = null!;
@@ -46,13 +37,21 @@ public partial class CardView : Control
         CustomMinimumSize = SizeConstants.CardDefaultSize * scale;
 
         card = SceneFactory.CreateCard(vanguardCard);
-        // Lets the presses the card doesn't use reach this view, for swipes and scrolling
-        card.MouseFilter = MouseFilterEnum.Pass;
         // The card scene is centered on its parent and scales around its center
         card.Scale = new Vector2(scale, scale);
-        card.CardPressed += _ => Pressed?.Invoke(this);
-        card.CardLongPressed += _ => LongPressed?.Invoke(this);
         AddChild(card);
+        // This view takes every press; the card only shows
+        IgnoreMouse(card);
+
+        var gestures = new GestureDetector { Swipes = true };
+        gestures.Tapped += () => Pressed?.Invoke(this);
+        gestures.LongPressed += () => LongPressed?.Invoke(this);
+        gestures.Swiped += direction =>
+        {
+            if(direction == GestureDetector.SwipeDirection.Up) SwipedUp?.Invoke(this);
+            else if(direction == GestureDetector.SwipeDirection.Down) SwipedDown?.Invoke(this);
+        };
+        AddChild(gestures);
 
         BadgePanel = new PanelContainer { Visible = false, MouseFilter = MouseFilterEnum.Ignore };
         BadgePanel.SetAnchorsAndOffsetsPreset(LayoutPreset.BottomRight, LayoutPresetMode.KeepSize);
@@ -101,79 +100,12 @@ public partial class CardView : Control
         set => card.SleeveInfo = value;
     }
 
-    public override void _GuiInput(InputEvent e)
+    private static void IgnoreMouse(Node node)
     {
-        if(e is InputEventMouseButton mb && mb.ButtonIndex == MouseButton.Left)
+        if(node is Control control) control.MouseFilter = MouseFilterEnum.Ignore;
+        foreach(var child in node.GetChildren())
         {
-            if(mb.Pressed) StartTracking(mb.GlobalPosition);
-            else StopTracking(mb.GlobalPosition);
-        }
-        else if(e is InputEventMouseMotion mm && tracking)
-        {
-            Track(mm.GlobalPosition, mm.Relative);
-        }
-    }
-
-    public override void _Process(double delta)
-    {
-        if(tracking) trackedTime += delta;
-    }
-
-    private void StartTracking(Vector2 position)
-    {
-        tracking = true;
-        scrolling = false;
-        trackedTime = 0;
-        pressPosition = position;
-        pendingScroll = Vector2.Zero;
-    }
-
-    private void Track(Vector2 position, Vector2 relative)
-    {
-        if(scrolling)
-        {
-            Scroll(relative);
-            return;
-        }
-
-        pendingScroll += relative;
-        var moved = position - pressPosition;
-        if(moved.Length() < DragTolerance) return;
-
-        // Sideways drags never swipe, and a vertical drag slower than a flick is a scroll
-        if(Mathf.Abs(moved.X) > Mathf.Abs(moved.Y) || trackedTime > SwipeMaxTime)
-        {
-            scrolling = true;
-            Scroll(pendingScroll);
-        }
-    }
-
-    private void StopTracking(Vector2 position)
-    {
-        if(!tracking) return;
-        tracking = false;
-        if(scrolling) return;
-
-        var moved = position - pressPosition;
-        bool isSwipe = trackedTime <= SwipeMaxTime
-            && Mathf.Abs(moved.Y) >= SwipeDistance
-            && Mathf.Abs(moved.Y) > Mathf.Abs(moved.X) * 1.5f;
-        if(!isSwipe) return;
-
-        if(moved.Y < 0) SwipedUp?.Invoke(this);
-        else SwipedDown?.Invoke(this);
-    }
-
-    private void Scroll(Vector2 relative)
-    {
-        for(Node? node = GetParent(); node is not null; node = node.GetParent())
-        {
-            if(node is ScrollContainer scroll)
-            {
-                scroll.ScrollHorizontal -= (int)relative.X;
-                scroll.ScrollVertical -= (int)relative.Y;
-                return;
-            }
+            IgnoreMouse(child);
         }
     }
 }

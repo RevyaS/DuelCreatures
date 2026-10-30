@@ -50,6 +50,11 @@ public partial class PackOpening : Control
         EffectsPlayer = GetNode<AnimationPlayer>($"%{nameof(EffectsPlayer)}");
         sleeve = GD.Load<SleeveInfo>("res://Sleeves/VanguardDefaultSleeve.tres");
 
+        // A tap anywhere on the opening moves it along
+        var gestures = new GestureDetector();
+        gestures.Tapped += () => tap?.TrySetResult();
+        AddChild(gestures);
+
         RevealAllButton.Pressed += RevealAll;
         ContinueButton.Pressed += Close;
 
@@ -58,14 +63,6 @@ public partial class PackOpening : Control
             var voice = new AudioStreamPlayer();
             AddChild(voice);
             voices.Add(voice);
-        }
-    }
-
-    public override void _GuiInput(InputEvent e)
-    {
-        if(e is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left })
-        {
-            tap?.TrySetResult();
         }
     }
 
