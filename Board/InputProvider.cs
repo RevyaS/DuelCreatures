@@ -440,6 +440,42 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
         return selected;
     }
 
+    public Task<VanguardSkills.SkillAction> SelectSkillOption(IReadOnlyList<VanguardSkills.SkillAction> options, VanguardSkillContextObject context)
+    {
+        return WhenPresented(() => PromptSkillOption(options, context));
+    }
+
+    // "Choose one of": the options that can be used right now, each described as text
+    private Task<VanguardSkills.SkillAction> PromptSkillOption(IReadOnlyList<VanguardSkills.SkillAction> options, VanguardSkillContextObject context)
+    {
+        var choosable = options.Where(option => VanguardSkills.SkillRules.CanChooseSkillOption(option, context)).ToList();
+        if(choosable.Count == 1) return Task.FromResult(choosable[0]);
+
+        TaskCompletionSource<VanguardSkills.SkillAction> completionSource = new();
+        void Ask()
+        {
+            var dialog = ChoiceDialog.Show(this, $"{context.Invoker.Card.Name}: choose one",
+                choosable.Select(option => new ChoiceDialog.Choice(
+                    VanguardSkillToStringInterpreter.ExtractSkillAction(option),
+                    () => completionSource.TrySetResult(option))));
+
+            // The skill needs an answer: closing the dialog (Cancel) asks again. Deferred, since
+            // picking a choice also hides the dialog just before reporting the choice.
+            dialog.VisibilityChanged += () =>
+            {
+                if(!dialog.Visible)
+                {
+                    Callable.From(() =>
+                    {
+                        if(!completionSource.Task.IsCompleted) Ask();
+                    }).CallDeferred();
+                }
+            };
+        }
+        Ask();
+        return completionSource.Task;
+    }
+
     public Task<List<UnitCircle>> SelectOwnUnitCircles(UnitSelector selector)
     {
         return WhenPresented(() =>

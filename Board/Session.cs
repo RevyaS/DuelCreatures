@@ -78,7 +78,9 @@ public partial class Session : Control
             _ => throw new NotSupportedException("Invalid Opponent")
         };
 
-        var dataQuery = new VanguardGameDataQuery();
+        // The data query reads the session, which needs the query first
+        VanguardGameSession? createdSession = null;
+        var dataQuery = new VanguardGameDataQuery(() => createdSession);
         var game = new VanguardGame(player1, player2, dataQuery, eventBus, effectService);
         var skillService = new VanguardSkillService(eventBus, gameContext, dataQuery);
         var logger = new GodotLogger();
@@ -98,7 +100,7 @@ public partial class Session : Control
         }
         
         var session = new VanguardGameSession(game, inputProviderFactory, eventBus, effectService, skillService, gameContext, logger);
-        dataQuery.Init(session);
+        createdSession = session;
 
         await StartGame(session, dataQuery);
     }

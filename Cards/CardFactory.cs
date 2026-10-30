@@ -1,3 +1,4 @@
+using ArC.CardGames.Rules;
 using ArC.CardGames.Vanguard.Skill;
 
 namespace ArC.CardGames.Vanguard.Cards;
@@ -57,7 +58,7 @@ public static class DuelMaidensCardsFactory
         ]);
         public static VanguardCard CovenantKnightRandolf => new VanguardCard(2, "Covenant Knight, Randolf", 8000, 1, 5000, VanguardCardSkill.INTERCEPT, VanguardTrigger.NONE, [
             new VanguardAutomaticSkill(VanguardSkillCardLocation.VANGUARD | VanguardSkillCardLocation.REARGUARD, new OnAttackTiming(), new VanguardSkillCost(), [
-                new VanguardCompositeSkillAction(new HandGreaterThanOpponent(), new ProvidePowerToInvoker(3000, EffectDuration.ATTACK))
+                new VanguardSkills.Composite(new HandGreaterThanOpponent(), new ProvidePowerToInvoker(3000, EffectDuration.ATTACK))
             ])
         ]);
 
@@ -75,11 +76,11 @@ public static class DuelMaidensCardsFactory
         public static VanguardCard SolitaryKnightGancelot => new VanguardCard(3, "Solitary Knight, Gancelot", 9000, 1, 0, VanguardCardSkill.TWIN_DRIVE, VanguardTrigger.NONE, [
             new VanguardActivationSkill(VanguardSkillCardLocation.HAND, new VanguardSkillCost(), [
                 new ReturnInvokerToDeck(),
-                new TutorSpecificCard(new(() => BlasterBlade)),
+                new VanguardSkills.TutorSpecificCard(new(() => BlasterBlade)),
                 new ShuffleDeck()
             ]),
             new VanguardActivationSkill(VanguardSkillCardLocation.VANGUARD, new VanguardSkillCost { CounterBlast = 2 }, [
-                new VanguardCompositeSkillAction(new CardInSoul(new(() => BlasterBlade)), 
+                new VanguardSkills.Composite(new CardInSoul(new(() => BlasterBlade)), 
                     new ProvidePowerAndCriticalToInvoker(5000, 1, EffectDuration.TURN))
             ])
         ]);
