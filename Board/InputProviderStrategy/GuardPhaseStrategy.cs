@@ -6,7 +6,7 @@ using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Vanguard;
 using ArC.CardGames.Predefined.Vanguard.Evaluations;
 
-public class GuardPhaseStrategy(DuelCreaturesBoard Board, UnitCircleComponent GuardedCircle, VanguardPlayArea PlayArea, GuardState GuardState) : IInputProviderStrategy, ISelectCardsFromHand, ISelectOwnUnitCircles
+public class GuardPhaseStrategy(VanguardBoard Board, UnitCircleComponent GuardedCircle, VanguardPlayArea PlayArea, GuardState GuardState) : IInputProviderStrategy, ISelectCardsFromHand, ISelectOwnUnitCircles
 {
     List<UnitCircle> intercepts = [];
     public async Task<List<CardBase>> SelectCardsFromHand(int minimum, int maximum)

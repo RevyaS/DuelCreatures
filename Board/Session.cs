@@ -24,7 +24,7 @@ public partial class Session : Control
     VanguardBotDifficulty Difficulty = VanguardBotDifficulty.MASTER;
 
     InputProvider InputProviderComponent = null!;
-    DuelCreaturesBoard Board => InputProviderComponent.Board;
+    VanguardBoard Board => InputProviderComponent.Board;
     
     PanelContainer HUD = null!;
     GameOverDialog GameOverDialog = null!;

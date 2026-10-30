@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using ArC.CardGames.Flow;
 using ArC.CardGames.Predefined.Vanguard;
 
-public class TriggerStrategy(DuelCreaturesBoard Board, VanguardPlayArea PlayArea, SelectFromCardList SelectFromCardList, GameContext GameContext) : BaseStrategy(Board), ISelectOwnUnitCircle, ISelectCardFromDamageZone
+public class TriggerStrategy(VanguardBoard Board, VanguardPlayArea PlayArea, SelectFromCardList SelectFromCardList, GameContext GameContext) : BaseStrategy(Board), ISelectOwnUnitCircle, ISelectCardFromDamageZone
 {
     public async Task<VanguardCard> SelectCardFromDamageZone()
     {

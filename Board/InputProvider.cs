@@ -13,8 +13,8 @@ using Godot;
 
 public partial class InputProvider : Control, IVanguardPlayerInputProvider
 {
-    DuelCreaturesBoard board = null!;
-    public DuelCreaturesBoard Board => board;
+    VanguardBoard board = null!;
+    public VanguardBoard Board => board;
 
     public VanguardPlayArea PlayArea { get; private set; } = null!;
 
@@ -42,7 +42,7 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
 
     public override void _Ready()
     {
-        board = GetNode<DuelCreaturesBoard>($"%{nameof(DuelCreaturesBoard)}");
+        board = GetNode<VanguardBoard>($"%{nameof(VanguardBoard)}");
 
         // Card flights draw above the board and below the HUD
         var flights = new CardFlightLayer { Name = "CardFlights" };

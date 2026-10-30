@@ -7,7 +7,7 @@ using ArC.CardGames.Predefined.Vanguard;
 using ArC.Common.Extensions;
 using Godot;
 
-public class AttackPhaseStrategy(DuelCreaturesBoard Board, GameContext GameContext) : BaseStrategy(Board), IRequestAttackPhaseAction, ISelectOpponentCircle, ISelectOwnUnitCircle
+public class AttackPhaseStrategy(VanguardBoard Board, GameContext GameContext) : BaseStrategy(Board), IRequestAttackPhaseAction, ISelectOpponentCircle, ISelectOwnUnitCircle
 {
     UnitCircleComponent? boostingCircle = null;
     UnitCircleComponent? attackingCircle = null;

@@ -6,7 +6,7 @@ using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Vanguard;
 using Godot;
 
-public class SkillExecutionStrategy(DuelCreaturesBoard Board, VanguardPlayArea PlayArea, CardList CardList, SelectFromCardList SelectFromCardList, string SkillSource = "") : BaseStrategy(Board), ISelectOpponentCircle, IQueryActivateSkill, ISelectCardsToCounterBlast, ISelectCardsToCounterCharge, ISelectCardsFromSoul, ISelectCardFromDeck, ISelectCardFromHand, ISelectCardsFromHand, ISelectOwnUnitCircle
+public class SkillExecutionStrategy(VanguardBoard Board, VanguardPlayArea PlayArea, CardList CardList, SelectFromCardList SelectFromCardList, string SkillSource = "") : BaseStrategy(Board), ISelectOpponentCircle, IQueryActivateSkill, ISelectCardsToCounterBlast, ISelectCardsToCounterCharge, ISelectCardsFromSoul, ISelectCardFromDeck, ISelectCardFromHand, ISelectCardsFromHand, ISelectOwnUnitCircle
 {
     // QueryActivateSkill
     public async Task<bool> QueryActivateSkill(VanguardCard Invoker, VanguardAutomaticSkill Skill)

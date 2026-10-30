@@ -7,7 +7,7 @@ using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Predefined.Vanguard;
 using ArC.Common.Extensions;
 
-public class MainPhaseStrategy(DuelCreaturesBoard Board, CardInfo CardInfo, GameContext gameContext) : IInputProviderStrategy, IRequestMainPhaseAction, ISelectCardFromHand, ISelectOwnUnitCircle, ISelectSkillToActivate
+public class MainPhaseStrategy(VanguardBoard Board, CardInfo CardInfo, GameContext gameContext) : IInputProviderStrategy, IRequestMainPhaseAction, ISelectCardFromHand, ISelectOwnUnitCircle, ISelectSkillToActivate
 {
     CardBase selectedCardForCall = null!;
     CardBase selectedCardForHandSkillActivation = null!;

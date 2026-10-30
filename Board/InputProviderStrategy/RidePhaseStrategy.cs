@@ -4,7 +4,7 @@ using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Vanguard;
 using Godot;
 
-public class RidePhaseStrategy(DuelCreaturesBoard Board) : IInputProviderStrategy, ISelectCardFromHandOrNot
+public class RidePhaseStrategy(VanguardBoard Board) : IInputProviderStrategy, ISelectCardFromHandOrNot
 {
     public async Task<CardBase?> SelectCardFromHandOrNot(VanguardCard currentVanguard)
     {

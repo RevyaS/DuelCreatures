@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ArC.CardGames.Components;
 
-public class MulliganPhaseStrategy(DuelCreaturesBoard board, SelectCardsComponent selectCardsComponent) : IInputProviderStrategy, ISelectCardsFromHand
+public class MulliganPhaseStrategy(VanguardBoard board, SelectCardsComponent selectCardsComponent) : IInputProviderStrategy, ISelectCardsFromHand
 {
     public async Task<List<CardBase>> SelectCardsFromHand(int minimum, int maximum)
     {

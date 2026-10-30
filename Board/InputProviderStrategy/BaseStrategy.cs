@@ -2,9 +2,9 @@ using System;
 using System.Threading.Tasks;
 using ArC.CardGames.Predefined.Vanguard;
 
-public class BaseStrategy(DuelCreaturesBoard Board) : IInputProviderStrategy
+public class BaseStrategy(VanguardBoard Board) : IInputProviderStrategy
 {
-    protected DuelCreaturesBoard GameBoard => Board;
+    protected VanguardBoard GameBoard => Board;
     protected async Task<UnitCircle> SelectUnitCircle(UnitSelector selector)
     {
         GameBoard.EnableSelectOwnUnitCircle(selector);

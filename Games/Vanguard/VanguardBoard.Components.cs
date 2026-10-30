@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Godot;
 
 
-public partial class DuelCreaturesBoard : Control
+public partial class VanguardBoard : Control
 {
     // Everything that wants a sound raises it here (see PresentationConfig for which sides play)
     public SfxBus Sfx { get; } = new();

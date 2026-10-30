@@ -4,7 +4,7 @@ using ArC.CardGames.Predefined.Vanguard;
 using Godot;
 
 
-public partial class DuelCreaturesBoard : Control
+public partial class VanguardBoard : Control
 {
     public void ShowLeftButton(string caption)
     {
