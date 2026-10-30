@@ -1,7 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://c3xgtr5vl38o1"]
-
-[ext_resource type="PackedScene" uid="uid://xfgt43rddlvv" path="res://Board/BaseComponents/CardArea.tscn" id="1_wnbwo"]
-[ext_resource type="Script" uid="uid://csr3kn56bhdh6" path="res://Board/TriggerZoneComponent.cs" id="2_u60w1"]
-
-[node name="Panel" instance=ExtResource("1_wnbwo")]
-script = ExtResource("2_u60w1")

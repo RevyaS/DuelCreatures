@@ -1,0 +1,65 @@
+[gd_scene load_steps=7 format=3 uid="uid://54vx7214u53f"]
+
+[ext_resource type="Script" uid="uid://dg7uwa2tvdn5o" path="res://Games/Vanguard/Board/InputProvider.cs" id="1_mnfo1"]
+[ext_resource type="PackedScene" uid="uid://cuqm30mdbu41k" path="res://Games/Vanguard/VanguardBoard.tscn" id="2_g4tnu"]
+[ext_resource type="PackedScene" uid="uid://dt60jvmuuttc0" path="res://Games/Shared/HUD/SelectCards.tscn" id="3_g4tnu"]
+[ext_resource type="PackedScene" uid="uid://cl0t7q61is3ro" path="res://Games/Shared/HUD/CardList.tscn" id="4_3v0st"]
+[ext_resource type="PackedScene" uid="uid://bl86gfg2luf5o" path="res://Games/Vanguard/HUD/CardInfo.tscn" id="5_jf7tj"]
+[ext_resource type="PackedScene" uid="uid://csdff6we3cpjo" path="res://Games/Shared/HUD/SelectFromCardList.tscn" id="6_c2rk7"]
+
+[node name="InputProviderComponent" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_mnfo1")
+
+[node name="DuelCreaturesBoard" parent="." instance=ExtResource("2_g4tnu")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="HUD" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="SelectCardsComponent" parent="HUD" instance=ExtResource("3_g4tnu")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+offset_left = -455.0
+offset_top = -214.5
+offset_right = 455.0
+offset_bottom = 134.5
+
+[node name="CardListComponent" parent="HUD" instance=ExtResource("4_3v0st")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+
+[node name="CardInfoComponent" parent="HUD" instance=ExtResource("5_jf7tj")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+
+[node name="SelectFromCardListComponent" parent="HUD" instance=ExtResource("6_c2rk7")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -455.0
+offset_top = -375.0
+offset_right = 455.0
+offset_bottom = 375.0
+grow_horizontal = 2
+grow_vertical = 2

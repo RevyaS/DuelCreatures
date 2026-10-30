@@ -1,0 +1,12 @@
+[gd_scene load_steps=4 format=3 uid="uid://cnp5v17a7qgwg"]
+
+[ext_resource type="PackedScene" uid="uid://bqhy1u56ohnlg" path="res://Games/Shared/Zones/CardLine.tscn" id="1_ormq5"]
+[ext_resource type="Script" uid="uid://cv83uahtcwq4h" path="res://Games/Shared/Zones/CardLineDynamic.cs" id="2_baxsq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_baxsq"]
+
+[node name="CardLineDynamic" instance=ExtResource("1_ormq5")]
+offset_right = 814.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_baxsq")
+script = ExtResource("2_baxsq")
+HideCards = false

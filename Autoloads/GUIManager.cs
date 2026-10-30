@@ -8,7 +8,7 @@ public partial class GUIManager : Node
 
     public void PlayGame(VanguardDeckBuilder playerDeck, OpponentType opponentType)
     {
-        ChangeScene<Session>("res://Board/Session.tscn", session => session.Initialize(playerDeck, opponentType));
+        ChangeScene<Session>("res://Games/Vanguard/Board/Session.tscn", session => session.Initialize(playerDeck, opponentType));
     }
 
     public void OpenMainScreen()

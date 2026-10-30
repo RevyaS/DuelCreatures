@@ -36,6 +36,9 @@ public partial class VanguardBoard : Control
 
     public override void _Ready()
     {
+        // Vanguard's moves, sounds and card scene for the shared components
+        VanguardPresentationConfig.Register();
+
         LeftButton = GetNode<Button>($"%{nameof(LeftButton)}");
         LeftButton.Pressed += OnLeftButtonPressed;
         SetComponents();
@@ -289,16 +292,16 @@ public partial class VanguardBoard : Control
 
         oppPresentation.Present(async () =>
         {
-            if(PresentationConfig.GuardReveal.Includes(BoardSide.Opponent) && PresentationConfig.GuardRevealHold > 0)
+            if(VanguardPresentationConfig.GuardReveal.Includes(BoardSide.Opponent) && VanguardPresentationConfig.GuardRevealHold > 0)
             {
-                await ToSignal(GetTree().CreateTimer(PresentationConfig.GuardRevealHold), SceneTreeTimer.SignalName.Timeout);
+                await ToSignal(GetTree().CreateTimer(VanguardPresentationConfig.GuardRevealHold), SceneTreeTimer.SignalName.Timeout);
             }
         });
     }
 
     private void PresentOppGuardian(CardBase guardian)
     {
-        oppPresentation.PresentArrival(guardian, CardMove.ToGuardZone, GuardZone, null, () =>
+        oppPresentation.PresentArrival(guardian, VanguardMoves.ToGuardZone, GuardZone, null, () =>
         {
             if(!GuardZone.IsFull)
             {
@@ -323,7 +326,7 @@ public partial class VanguardBoard : Control
             // Read the guard zone when this plays: the opponent's guards are placed by earlier steps
             foreach(var guard in GuardZone.GetNonEmptyCards().Select(node => node.CurrentCard).ToList())
             {
-                await context.ArriveAsync(guard, CardMove.GuardToDropZone, dropZone, GuardZone,
+                await context.ArriveAsync(guard, VanguardMoves.GuardToDropZone, dropZone, GuardZone,
                     () => dropZone.ShowTopCard(dropTop));
             }
 

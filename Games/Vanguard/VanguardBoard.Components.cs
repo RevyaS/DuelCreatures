@@ -12,10 +12,10 @@ public partial class VanguardBoard : Control
 
     public CardLineStatic GuardZone { get; private set; } = null!; 
 
-    public HandComponent PlayerHand { get; private set; } = null!;
-    HandComponent OppHand = null!;
+    public VanguardHandComponent PlayerHand { get; private set; } = null!;
+    VanguardHandComponent OppHand = null!;
 
-    List<HandComponent> AllHands => [ 
+    List<VanguardHandComponent> AllHands => [ 
         PlayerHand, OppHand
     ];
 
@@ -37,8 +37,8 @@ public partial class VanguardBoard : Control
 
         GuardZone = GetNode<CardLineStatic>($"%{nameof(GuardZone)}");
 
-        PlayerHand = GetNode<HandComponent>($"%{nameof(PlayerHand)}");
-        OppHand = GetNode<HandComponent>($"%{nameof(OppHand)}");
+        PlayerHand = GetNode<VanguardHandComponent>($"%{nameof(PlayerHand)}");
+        OppHand = GetNode<VanguardHandComponent>($"%{nameof(OppHand)}");
 
         PlayerLeftAttackRightLine = GetNode<AttackIndicator>($"%{nameof(PlayerLeftAttackRightLine)}");
         PlayerLeftAttackCenterLine = GetNode<AttackIndicator>($"%{nameof(PlayerLeftAttackCenterLine)}");

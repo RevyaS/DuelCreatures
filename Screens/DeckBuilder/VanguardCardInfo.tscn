@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dxlskx6kxh6nl"]
 
 [ext_resource type="Script" uid="uid://d081r2yo2bfxr" path="res://Screens/DeckBuilder/VanguardCardInfo.cs" id="1_info"]
-[ext_resource type="PackedScene" uid="uid://b2lfbpkxmm57c" path="res://HUD/Board/CardDetails.tscn" id="2_details"]
+[ext_resource type="PackedScene" uid="uid://b2lfbpkxmm57c" path="res://Games/Vanguard/HUD/CardDetails.tscn" id="2_details"]
 
 [node name="VanguardCardInfo" type="VBoxContainer"]
 custom_minimum_size = Vector2(950, 0)

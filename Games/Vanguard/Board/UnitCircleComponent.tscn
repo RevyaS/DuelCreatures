@@ -1,0 +1,123 @@
+[gd_scene load_steps=8 format=3 uid="uid://dm8sksf3b1gcw"]
+
+[ext_resource type="Script" uid="uid://ccq70upyqje4r" path="res://Games/Vanguard/Board/UnitCircleComponent.cs" id="1_c2ben"]
+[ext_resource type="Texture2D" uid="uid://5xkkafu44j3" path="res://Assets/Board/UnitCircle/fight@card_effect_arrow.png" id="2_5133l"]
+[ext_resource type="Script" uid="uid://d0xdsvmtayatq" path="res://Games/Shared/Components/CardRotationContainer.cs" id="2_o1h87"]
+[ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Games/Shared/Cards/Card.tscn" id="3_j7olg"]
+[ext_resource type="Script" uid="uid://dwrq2pnaqfw1s" path="res://Games/Shared/HUD/DropArea.cs" id="4_5133l"]
+[ext_resource type="Script" uid="uid://bxkfbgldole4n" path="res://Games/Shared/Components/QuarterTurnContainer.cs" id="7_qtcnt"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n51kq"]
+
+[node name="UnitCircleComponent" type="PanelContainer"]
+custom_minimum_size = Vector2(189, 189)
+offset_right = 4.0
+offset_bottom = 4.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_n51kq")
+script = ExtResource("1_c2ben")
+
+[node name="BG" type="ColorRect" parent="."]
+visible = false
+layout_mode = 2
+color = Color(0.6784314, 0.6784314, 0.6784314, 1)
+
+[node name="CircleTexture" type="TextureRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+expand_mode = 1
+
+[node name="IconTexture" type="TextureRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 3
+
+[node name="MainContainer" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(189, 189)
+layout_mode = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="CardRotationContainer" type="Control" parent="MainContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 1
+script = ExtResource("2_o1h87")
+metadata/_custom_type_script = "uid://d0xdsvmtayatq"
+
+[node name="Card" parent="MainContainer/CardRotationContainer" instance=ExtResource("3_j7olg")]
+layout_mode = 1
+scale = Vector2(0.45, 0.45)
+
+[node name="DropArea" type="Control" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+script = ExtResource("4_5133l")
+metadata/_custom_type_script = "uid://dwrq2pnaqfw1s"
+
+[node name="ButtonContainer" type="Container" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("7_qtcnt")
+
+[node name="SelectButton" type="Button" parent="ButtonContainer"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(111, 58)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 36
+text = "Select"
+
+[node name="TargetIndicators" type="Control" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+mouse_filter = 2
+
+[node name="TopIndicator" type="TextureRect" parent="TargetIndicators"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -29.0
+offset_top = -41.0
+offset_right = 29.0
+grow_horizontal = 2
+texture = ExtResource("2_5133l")
+
+[node name="LeftIndicator" type="TextureRect" parent="TargetIndicators"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -19.5
+offset_right = 8.0
+offset_bottom = 21.5
+grow_vertical = 2
+rotation = -1.5707964
+pivot_offset = Vector2(29, 20.5)
+texture = ExtResource("2_5133l")
+
+[node name="RightIndicator" type="TextureRect" parent="TargetIndicators"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -8.0
+offset_top = -20.5
+offset_right = 50.0
+offset_bottom = 20.5
+grow_horizontal = 0
+grow_vertical = 2
+rotation = 1.5707964
+pivot_offset = Vector2(29, 20.5)
+texture = ExtResource("2_5133l")
