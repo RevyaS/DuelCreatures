@@ -5,25 +5,33 @@ using Godot;
 [Tool]
 public abstract partial class CardBaseComponent : Control
 {
-    private double LONG_PRESS_TRESHOLD = 0.5;
-    private float PRESS_MOVE_TOLERANCE = 10;
     TextureRect Front = null!;
-    private bool _pressed = false;
-    private double _pressTimeElapsed = 0;
-    private Vector2 _pressPosition = Vector2.Zero;
     BackgroundRect Back = null!;
+    // Press, long press and drag (see GestureDetector)
+    GestureDetector? gestures = null;
 
     private bool _currentlyDragged = false;
+    // The card stays where it is but can't be seen while a copy of it is dragged around.
+    // Transparent rather than hidden: a hidden control loses the press it's tracking.
     public bool CurrentlyDragged { 
         get => _currentlyDragged;
         set
         {
             _currentlyDragged = value;
-            Visible = !_currentlyDragged;
+            Modulate = _currentlyDragged ? Colors.Transparent : Colors.White;
         }
     }
 
-    public bool Draggable { get; set; } = false;
+    private bool _draggable = false;
+    public bool Draggable
+    {
+        get => _draggable;
+        set
+        {
+            _draggable = value;
+            if(gestures is not null) gestures.Drags = value;
+        }
+    }
 
     private Texture2D texture = null!;
     [Export]
@@ -83,6 +91,22 @@ public abstract partial class CardBaseComponent : Control
         CustomMinimumSize = SizeConstants.CardDefaultSize;
         Front = GetNode<TextureRect>($"%{nameof(Front)}");
         Back = GetNode<BackgroundRect>($"%{nameof(Back)}");
+
+        if(!Engine.IsEditorHint())
+        {
+            // A card dragged out of a list drags in any direction instead of scrolling it
+            gestures = new GestureDetector { Drags = _draggable, ScrollsParent = false };
+            gestures.Tapped += OnPressed;
+            gestures.LongPressed += OnLongPress;
+            gestures.DragStarted += position =>
+            {
+                if(this is Card card) CardDrag.Begin(card, position);
+            };
+            gestures.DragMoved += CardDrag.Move;
+            gestures.DragEnded += CardDrag.End;
+            gestures.DragCancelled += CardDrag.Cancel;
+            AddChild(gestures);
+        }
         Border = GetNode<ColorRect>($"%{nameof(Border)}");
         defaultBorderColor = Border.Color;
         Render();
@@ -103,112 +127,13 @@ public abstract partial class CardBaseComponent : Control
         SetSleeveInfo(_sleeveInfo);
     }
 
-    public override Variant _GetDragData(Vector2 atPosition)
-    {
-        if(!Draggable) return base._GetDragData(atPosition);
-
-        // The release goes to the drop target, so the press would otherwise
-        // stay armed and fire a long press mid-drag
-        CancelPress();
-        SetDragPreview(CreateClone());
-        CurrentlyDragged = true;
-        CardDragging?.Invoke(this);
-        return this;
-    }
-
-    // Starts this card's drag and drop when another control recognized the drag (e.g. a unit
-    // circle's GestureDetector), the same as dragging the card itself
-    public void BeginDrag()
-    {
-        if(!Draggable) return;
-
-        CancelPress();
-        var preview = CreateClone();
-        CurrentlyDragged = true;
-        CardDragging?.Invoke(this);
-        ForceDrag(this, preview);
-    }
-
-    public override void _Notification(int what)
-    {
-        if(what == NotificationExitTree)
-        {
-            CancelPress();
-        }
-
-        if(what == NotificationDragEnd && CurrentlyDragged)
-        {
-            if(!IsDragSuccessful())
-            {
-                CurrentlyDragged = false;
-                CardDragCancelled?.Invoke(this);
-            }
-        }
-    }
-
-    public override void _GuiInput(InputEvent e)
-    {
-        // Mouse click or touch
-        if (e is InputEventMouseButton mb && mb.ButtonIndex == MouseButton.Left)
-        {
-            if(mb.Pressed)
-            {
-                if(_pressed) return;
-
-                _pressed = true;
-                _pressTimeElapsed = 0;
-                _pressPosition = mb.Position;
-            }
-            else 
-            {
-                HandleRelease(mb.Position);
-            }
-        }
-        else if (e is InputEventMouseMotion mm && _pressed
-            && mm.Position.DistanceTo(_pressPosition) > PRESS_MOVE_TOLERANCE)
-        {
-            // Moved too far to be a press or long press (likely a drag)
-            CancelPress();
-        }
-    }
-
-    public override void _Process(double delta)
-    {
-        if (Engine.IsEditorHint()) return;
-
-        if (_pressed)
-        {
-            _pressTimeElapsed += delta;
-
-            if (_pressTimeElapsed >= LONG_PRESS_TRESHOLD)
-            {
-                _pressed = false;
-                OnLongPress();
-            }
-        }
-    }
+    // The drag session reports through this card's events
+    public void NotifyDragStarted() => CardDragging?.Invoke(this);
+    public void NotifyDragCancelled() => CardDragCancelled?.Invoke(this);
 
     protected virtual void OnLongPress()
     {
         
-    }
-
-    private void HandleRelease(Vector2 releasePosition)
-    {
-        if(!_pressed) return;
-
-        _pressed = false;
-
-        // Releasing outside the card cancels the press
-        if(!new Rect2(Vector2.Zero, Size).HasPoint(releasePosition)) return;
-
-        OnPressed();
-    }
-
-    private void CancelPress()
-    {
-        _pressed = false;
-        _pressTimeElapsed = 0;
     }
 
     protected virtual void OnPressed()

@@ -61,7 +61,7 @@ public class AttackPhaseStrategy(VanguardBoard Board, GameContext GameContext) :
             if(boostingCircle is not null && attackingCircle is null)
             {
                 var boosted = GameBoard.GetPlayerOppositeCircle(boostingCircle);
-                if(PointerHitTest.Contains(boosted, position))
+                if(UnderPointer.Contains(boosted, position))
                 {
                     Aim(boosted);
                     GameBoard.ShowBoostLine(boosted);
@@ -70,7 +70,7 @@ public class AttackPhaseStrategy(VanguardBoard Board, GameContext GameContext) :
             }
             if(attackingCircle is null) return;
 
-            var target = PointerHitTest.FindAt(targets, position);
+            var target = UnderPointer.Find(targets, position);
             if(ReferenceEquals(target, targetCircle)) return;
 
             targetCircle = target;

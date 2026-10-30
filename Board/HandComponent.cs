@@ -47,7 +47,7 @@ public partial class HandComponent : CardLineDynamic, ICardSpaceBindable<Hand>, 
         var cardComponent = FindCard((containedCard) => ReferenceEquals(containedCard.CurrentCard, card));
         if(cardComponent is not null)
         {
-            cardComponent.Show();
+            cardComponent.CurrentlyDragged = false;
         }
     }
 

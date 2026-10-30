@@ -169,9 +169,9 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
             gestures.Tapped += OnTapped;
             gestures.LongPressed += () => LongPressed?.Invoke(this);
             gestures.DragStarted += OnGestureDragStarted;
-            gestures.DragMoved += position => ScreenDragMoved?.Invoke(this, position);
-            gestures.DragEnded += _ => OnGestureDragFinished();
-            gestures.DragCancelled += OnGestureDragFinished;
+            gestures.DragMoved += OnGestureDragMoved;
+            gestures.DragEnded += OnGestureDragEnded;
+            gestures.DragCancelled += OnGestureDragCancelled;
             AddChild(gestures);
 
             // Cards here only show: the circle takes every press, so nothing on top can block it
@@ -240,6 +240,7 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
     }
 
     bool screenDragging = false;
+    bool movingCard = false;
 
     private void OnGestureDragStarted(Vector2 position)
     {
@@ -251,15 +252,43 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
             return;
         }
 
-        // Moving the unit: Godot's drag and drop takes over from here
-        gestures.Cancel();
-        if(Draggable && cardRotationContainer.CurrentCard is { } card)
+        // Moving the unit (e.g. a rearguard swap)
+        if(Draggable && cardRotationContainer.CurrentCard is { Draggable: true } card)
         {
-            card.BeginDrag();
+            movingCard = true;
+            CardDrag.Begin(card, position);
+            return;
         }
+        gestures.Cancel();
     }
 
-    private void OnGestureDragFinished()
+    private void OnGestureDragMoved(Vector2 position)
+    {
+        if(screenDragging) ScreenDragMoved?.Invoke(this, position);
+        else if(movingCard) CardDrag.Move(position);
+    }
+
+    private void OnGestureDragEnded(Vector2 position)
+    {
+        if(movingCard)
+        {
+            movingCard = false;
+            CardDrag.End(position);
+        }
+        FinishScreenDrag();
+    }
+
+    private void OnGestureDragCancelled()
+    {
+        if(movingCard)
+        {
+            movingCard = false;
+            CardDrag.Cancel();
+        }
+        FinishScreenDrag();
+    }
+
+    private void FinishScreenDrag()
     {
         if(!screenDragging) return;
         screenDragging = false;

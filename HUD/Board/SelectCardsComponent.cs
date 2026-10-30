@@ -89,21 +89,27 @@ public partial class SelectCardsComponent : PanelContainer
         Render();
     }
 
-    public override void _Notification(int what)
+    public override void _EnterTree()
     {
-        if(what == NotificationDragEnd)
+        CardDrag.Ended += OnCardDragEnded;
+    }
+
+    public override void _ExitTree()
+    {
+        CardDrag.Ended -= OnCardDragEnded;
+    }
+
+    // A selected card dragged out leaves the selection; let go anywhere that doesn't take it,
+    // it goes back where it came from (CardReturned)
+    private void OnCardDragEnded(Card card, bool dropped)
+    {
+        var containedCard = SelectedCards.FindCard(selected => ReferenceEquals(selected, card));
+        if(containedCard is null) return;
+
+        RemoveCard(containedCard);
+        if(!dropped)
         {
-            var containedCard = SelectedCards.FindCard(selected => selected.CurrentlyDragged);
-
-            if(containedCard is not null)
-            {
-                RemoveCard(containedCard);
-
-                if(!IsDragSuccessful())
-                {
-                    CardReturned?.Invoke(containedCard);
-                }
-            }
+            CardReturned?.Invoke(containedCard);
         }
     }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using ArC.CardGames.Vanguard;
 using Godot;
 
-public partial class CardList : Control
+public partial class CardList : Control, ICardDropTarget
 {
     CardListPanel CardListPanel = null!;
     CardBaseComponent? draggedCard = null;
@@ -49,15 +49,30 @@ public partial class CardList : Control
         CardListPanel.CardsDraggable = CardsDraggable;
     }
 
-    public override bool _CanDropData(Vector2 atPosition, Variant data)
+    public override void _EnterTree()
     {
-        return BaseDroppable && data.Obj is CardBaseComponent component && ReferenceEquals(draggedCard, component);
+        CardDrag.Register(this);
     }
 
-    public override void _DropData(Vector2 atPosition, Variant data)
+    public override void _ExitTree()
+    {
+        CardDrag.Unregister(this);
+    }
+
+    // The whole screen behind the list: a card dragged out of the list and let go anywhere
+    // else counts (the list's own drop area wins over its panel, being later in the tree)
+    public Control DropRegion => this;
+
+    public bool AcceptsCard(Card card) => BaseDroppable && IsVisibleInTree() && ReferenceEquals(draggedCard, card);
+
+    public void DropCard(Card card)
     {
         draggedCard = null;
-        CardDroppedOutside?.Invoke((Card)data.Obj!);
+        CardDroppedOutside?.Invoke(card);
+    }
+
+    public void SetCardHovering(bool hovering)
+    {
     }
 
     public override void _GuiInput(InputEvent e)
