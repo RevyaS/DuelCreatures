@@ -288,28 +288,6 @@ public partial class PlayAreaComponent : Control, IPlayAreaBindable, IEventBusUt
         Circles.ForEach(x => x.ScreenDraggable = false);
     }
 
-    public void EnableUnitCircleHovering(IEnumerable<UnitCircleComponent> circles)
-    {
-        foreach(var circle in circles)
-        {
-            circle.Hoverable = true;
-        }
-    }
-
-    public void DisableUnitCircleHovering()
-    {
-        Circles.ForEach((circle) => circle.Hoverable = false);
-    }
-
-    public void EnableFrontRowUnitCircleHovering()
-    {
-        FrontRowCircles.ForEach((circle) => circle.Hoverable = true);
-    }
-    public void DisableFrontRowUnitCircleHovering()
-    {
-        FrontRowCircles.ForEach((circle) => circle.Hoverable = false);
-    }
-
     public void ShowBoostLine(UnitCircleComponent unitCircleComponent)
     {
         if (ReferenceEquals(FrontLeft, unitCircleComponent)) LeftBoostLine.Show();

@@ -49,6 +49,7 @@ public partial class VanguardBoard : Control
             circle.CardDropped += (card) => OnPlayerRearguardCardDropped(circle, card);
             circle.ScreenDragging += OnPlayerCircleScreenDragged;
             circle.ScreenDragRelease += OnPlayerCircleScreenDragRelease;
+            circle.ScreenDragMoved += OnPlayerCircleScreenDragMoved;
             circle.CardPressed += (card) => OnPlayerUnitCircleCardPressed(circle, card);
             circle.Selected += OnPlayerCircleSelected;
             circle.Deselected += OnPlayerCircleDeselected;
@@ -59,19 +60,6 @@ public partial class VanguardBoard : Control
             circle.CardPressed += OnUnitCircleCardPressed;
             circle.Selected += OnOppUnitCircleSelected;
             circle.Deselected += OnOppUnitCircleDeselected;
-        });
-
-        PlayerArea.FrontRowCircles.ForEach((circle) =>
-        {
-            circle.Hovering += OnPlayerCircleHovering;
-            circle.HoverReleased += OnPlayerCircleHoverReleased;
-        });
-
-        // Every opponent circle: some attackers may target the back row (e.g. Tejas)
-        OppArea.Circles.ForEach((circle) =>
-        {
-            circle.Hovering += OnOppCircleHovering;
-            circle.HoverReleased += OnOppCircleHoverReleased;
         });
 
         PlayerArea.Rearguards.ForEach((rearguard) =>
@@ -143,29 +131,14 @@ public partial class VanguardBoard : Control
         UnitCircleCardPressed?.Invoke(card);
     }
 
-    private void OnOppCircleHoverReleased(UnitCircleComponent component)
-    {
-        OppCircleHoverReleased?.Invoke(component);
-    }
-
-    private void OnPlayerCircleHoverReleased(UnitCircleComponent component)
-    {
-        PlayerCircleHoverReleased?.Invoke(component);
-    }
-
     private void OnPlayerCircleScreenDragRelease(UnitCircleComponent component)
     {
         PlayerCircleScreenDragReleased?.Invoke(component);
     }
 
-    private void OnOppCircleHovering(UnitCircleComponent component)
+    private void OnPlayerCircleScreenDragMoved(UnitCircleComponent component, Vector2 position)
     {
-        OppCircleHovering?.Invoke(component);
-    }
-
-    private void OnPlayerCircleHovering(UnitCircleComponent component)
-    {
-        PlayerCircleHovering?.Invoke(component);
+        PlayerCircleScreenDragMoved?.Invoke(component, position);
     }
 
     private void OnPlayerCircleScreenDragged(UnitCircleComponent component)
@@ -525,10 +498,7 @@ public partial class VanguardBoard : Control
     public event Action<UnitCircleComponent, CardBaseComponent>? PlayerRearGuardCardDragCancelled;
     public event Action<UnitCircleComponent>? PlayerCircleScreenDragged;
     public event Action<UnitCircleComponent>? PlayerCircleScreenDragReleased;
-    public event Action<UnitCircleComponent>? PlayerCircleHovering;
-    public event Action<UnitCircleComponent>? PlayerCircleHoverReleased;
-    public event Action<UnitCircleComponent>? OppCircleHovering;
-    public event Action<UnitCircleComponent>? OppCircleHoverReleased;
+    public event Action<UnitCircleComponent, Vector2>? PlayerCircleScreenDragMoved;
     public event Action<UnitCircleComponent>? OppCircleSelected;
     public event Action<UnitCircleComponent>? OppCircleDeselected;
     public event Action<UnitCircleComponent>? PlayerCircleSelected;

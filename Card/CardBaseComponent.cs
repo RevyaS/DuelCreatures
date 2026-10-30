@@ -116,6 +116,19 @@ public abstract partial class CardBaseComponent : Control
         return this;
     }
 
+    // Starts this card's drag and drop when another control recognized the drag (e.g. a unit
+    // circle's GestureDetector), the same as dragging the card itself
+    public void BeginDrag()
+    {
+        if(!Draggable) return;
+
+        CancelPress();
+        var preview = CreateClone();
+        CurrentlyDragged = true;
+        CardDragging?.Invoke(this);
+        ForceDrag(this, preview);
+    }
+
     public override void _Notification(int what)
     {
         if(what == NotificationExitTree)

@@ -109,40 +109,20 @@ public partial class VanguardBoard : Control
         PlayerArea.DisableUnitCircleScreenDragging();
     }
 
-    public void EnablePlayerFrontRowUnitCircleHovering()
-    {
-        PlayerArea.EnableFrontRowUnitCircleHovering();
-    }
-
-    public void DisablePlayerFrontRowUnitCircleHovering()
-    {
-        PlayerArea.DisableFrontRowUnitCircleHovering();
-    }
-
-    // Lets the player aim at the opponent circles `attacker` may attack, as ArC's rules
-    // say (the front row, plus the back row of its column for e.g. Tejas)
-    public void EnableOppTargetHovering(UnitCircleComponent attacker)
-    {
-        OppArea.DisableUnitCircleHovering();
-        OppArea.EnableUnitCircleHovering(GetAttackTargets(attacker));
-    }
-
-    public void DisableOppTargetHovering()
-    {
-        OppArea.DisableUnitCircleHovering();
-    }
-
     public bool CanAttackTarget(UnitCircleComponent attacker, UnitCircleComponent target)
     {
         return VanguardGameRules.TargetCircleCanBeTargetted(PlayerArea.PlayArea, attacker.UnitCircle, OppArea.PlayArea, target.UnitCircle);
     }
 
-    private IEnumerable<UnitCircleComponent> GetAttackTargets(UnitCircleComponent attacker)
+    // The opponent circles `attacker` may attack, as ArC's rules say (the front row, plus
+    // the back row of its column for e.g. Tejas)
+    public List<UnitCircleComponent> GetAttackTargets(UnitCircleComponent attacker)
     {
         var targetable = VanguardGameRules.GetTargetableCircles(PlayerArea.PlayArea, attacker.UnitCircle, OppArea.PlayArea);
         return OppArea.PlayArea.GetUnitCirclesBySelector(new(targetable, UnitOccupancyFilterEnum.OCCUPIED_ONLY))
             .Select(OppArea.GetUnitCircleComponentOrDefault)
-            .OfType<UnitCircleComponent>();
+            .OfType<UnitCircleComponent>()
+            .ToList();
     }
     public void ShowBoostLine(UnitCircleComponent unitCircleComponent)
     {

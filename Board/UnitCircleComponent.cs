@@ -10,7 +10,9 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
 {
     CardRotationContainer cardRotationContainer = null!;
     // Plain Controls: in the editor they can still be script placeholders, so only the game casts them
-    Control dropArea = null!, dragArea = null!, hoverArea = null!;
+    Control dropArea = null!;
+    // The circle's only input: tap (card info), long press, and drags (attack aim or moving the card)
+    GestureDetector gestures = null!;
     Button SelectButton = null!;
     QuarterTurnContainer ButtonContainer = null!;
     TextureRect CircleTexture = null!, IconTexture = null!;
@@ -79,17 +81,6 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
         set
         {
             SetState(ComponentInputState.ScreenDraggable, value);
-            Render();
-        }
-    }
-
-    [Export]
-    public bool Hoverable
-    {
-        get => inputState == ComponentInputState.Hoverable;
-        set
-        {
-            SetState(ComponentInputState.Hoverable, value);
             Render();
         }
     }
@@ -168,21 +159,24 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
         cardRotationContainer.CardLongPressed += OnCardLongPressed;
 
         dropArea = GetNode<Control>($"%{nameof(DropArea)}");
-        dragArea = GetNode<Control>($"%{nameof(DragArea)}");
-        hoverArea = GetNode<Control>($"%{nameof(HoverArea)}");
         if(!Engine.IsEditorHint())
         {
             var drop = (DropArea)dropArea;
             drop.CardDropped += OnCardDropped;
             drop.DragHoverChanged += OnDropAreaDragHoverChanged;
 
-            var drag = (DragArea)dragArea;
-            drag.Dragging += OnDragging;
-            drag.DragReleased += OnDragReleased;
+            gestures = new GestureDetector();
+            gestures.Tapped += OnTapped;
+            gestures.LongPressed += () => LongPressed?.Invoke(this);
+            gestures.DragStarted += OnGestureDragStarted;
+            gestures.DragMoved += position => ScreenDragMoved?.Invoke(this, position);
+            gestures.DragEnded += _ => OnGestureDragFinished();
+            gestures.DragCancelled += OnGestureDragFinished;
+            AddChild(gestures);
 
-            var hover = (HoverArea)hoverArea;
-            hover.Hovering += OnHovering;
-            hover.HoverReleased += OnHoverReleased;
+            // Cards here only show: the circle takes every press, so nothing on top can block it
+            cardRotationContainer.CardAdded += IgnoreMouse;
+            if(cardRotationContainer.CurrentCard is not null) IgnoreMouse(cardRotationContainer.CurrentCard);
         }
 
         SelectButton = GetNode<Button>($"%{nameof(SelectButton)}");
@@ -237,19 +231,48 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
         CardPressed?.Invoke(card);
     }
 
-    private void OnHoverReleased()
+    private void OnTapped()
     {
-        HoverReleased?.Invoke(this);
+        if(cardRotationContainer.CurrentCard is { } card)
+        {
+            CardPressed?.Invoke(card);
+        }
     }
 
-    private void OnDragReleased()
+    bool screenDragging = false;
+
+    private void OnGestureDragStarted(Vector2 position)
     {
+        if(ScreenDraggable)
+        {
+            // Aiming (e.g. an attack): the strategy finds targets under the pointer
+            screenDragging = true;
+            ScreenDragging?.Invoke(this);
+            return;
+        }
+
+        // Moving the unit: Godot's drag and drop takes over from here
+        gestures.Cancel();
+        if(Draggable && cardRotationContainer.CurrentCard is { } card)
+        {
+            card.BeginDrag();
+        }
+    }
+
+    private void OnGestureDragFinished()
+    {
+        if(!screenDragging) return;
+        screenDragging = false;
         ScreenDragRelease?.Invoke(this);
     }
 
-    private void OnHovering()
+    private static void IgnoreMouse(Node node)
     {
-        Hovering?.Invoke(this);
+        if(node is Control control) control.MouseFilter = MouseFilterEnum.Ignore;
+        foreach(var child in node.GetChildren())
+        {
+            IgnoreMouse(child);
+        }
     }
 
     private void OnCardDragCancelled(CardBaseComponent component)
@@ -266,11 +289,6 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
         {
             inputState = newState;
         }
-    }
-
-    private void OnDragging()
-    {
-        ScreenDragging?.Invoke(this);
     }
 
     private void OnCardDragging(CardBaseComponent component)
@@ -416,8 +434,10 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
         cardRotationContainer.FlippedAppearance = FlippedAppearance;
         cardRotationContainer.Draggable = Draggable;
         cardRotationContainer.CardScale = CardScale;
-        dragArea.Visible = ScreenDraggable;
-        hoverArea.Visible = Hoverable;
+        if(gestures is not null)
+        {
+            gestures.Drags = ScreenDraggable || Draggable;
+        }
         SelectButton.Visible = Selectable;
         IconTexture.Texture = Icon;
         CircleTexture.Modulate = CircleColor;
@@ -484,8 +504,8 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
     public event Action<UnitCircleComponent, CardBaseComponent>? RearguardCardDragCancelled;
     public event Action<UnitCircleComponent>? ScreenDragging;
     public event Action<UnitCircleComponent>? ScreenDragRelease;
-    public event Action<UnitCircleComponent>? Hovering;
-    public event Action<UnitCircleComponent>? HoverReleased;
+    // Global pointer position while aiming from this circle
+    public event Action<UnitCircleComponent, Vector2>? ScreenDragMoved;
     public event Action<Card>? CardPressed;
     public event Action<UnitCircleComponent>? LongPressed;
     public event Action<UnitCircleComponent>? Selected;

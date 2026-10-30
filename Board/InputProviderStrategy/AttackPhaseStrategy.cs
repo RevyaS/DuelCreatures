@@ -16,7 +16,6 @@ public class AttackPhaseStrategy(VanguardBoard Board, GameContext GameContext) :
     public async Task<IAttackPhaseAction> RequestAttackPhaseAction(List<IAttackPhaseAction> actions)
     {
         GameBoard.ShowLeftButton(TextConstants.EndPhase);
-        GameBoard.DisablePlayerFrontRowUnitCircleHovering();
         GameBoard.EnablePlayerUnitCircleScreenDragging();
 
         TaskCompletionSource<IAttackPhaseAction> completionSource = new();
@@ -24,117 +23,97 @@ public class AttackPhaseStrategy(VanguardBoard Board, GameContext GameContext) :
         boostingCircle = null;
         attackingCircle = null;
         targetCircle = null;
-        
+        List<UnitCircleComponent> targets = [];
+
         Action endPhaseHandler = () =>
         {
             Board.Sfx.Play(SfxCue.PhaseChange, BoardSide.Player);
             completionSource.SetResult(actions.FirstOf<EndAttackPhase>());
         };
 
-        Action<UnitCircleComponent> oppHoverReleaseHandler = (unitCircleComponent) =>
+        void Aim(UnitCircleComponent attacker)
         {
-            if(ReferenceEquals(unitCircleComponent, targetCircle))
+            attackingCircle = attacker;
+            targets = GameBoard.GetAttackTargets(attacker);
+        }
+
+        // Aiming starts by dragging out of one of the player's circles: from the back row it's a
+        // boost (then over the unit in front of it to attack with that unit), from the front row an attack
+        Action<UnitCircleComponent> dragStartedHandler = (circle) =>
+        {
+            boostingCircle = null;
+            attackingCircle = null;
+            targetCircle = null;
+            targets = [];
+            if(GameBoard.IsBackRow(circle))
             {
-                GD.Print("Release targetCircle ", GameBoard.OppArea.GetUnitCircleComponentName(unitCircleComponent));
-                // Release
-                targetCircle = null;
-                GameBoard.HideAttackLines();
+                boostingCircle = circle;
+            }
+            else if(GameBoard.IsFrontRow(circle))
+            {
+                Aim(circle);
             }
         };
 
-        Action<UnitCircleComponent> dragReleaseHandler = (unitCircleComponent) =>
+        // What's under the pointer is found by position, so no overlay has to sit on the cards
+        Action<UnitCircleComponent, Vector2> dragMovedHandler = (circle, position) =>
+        {
+            if(boostingCircle is not null && attackingCircle is null)
+            {
+                var boosted = GameBoard.GetPlayerOppositeCircle(boostingCircle);
+                if(PointerHitTest.Contains(boosted, position))
+                {
+                    Aim(boosted);
+                    GameBoard.ShowBoostLine(boosted);
+                }
+                return;
+            }
+            if(attackingCircle is null) return;
+
+            var target = PointerHitTest.FindAt(targets, position);
+            if(ReferenceEquals(target, targetCircle)) return;
+
+            targetCircle = target;
+            GameBoard.OppArea.HideTargetIndicators();
+            GameBoard.HideAttackLines();
+            if(targetCircle is null) return;
+
+            targetCircle.ShowTargetIndicators();
+            GameBoard.Sfx.Play(SfxCue.Target, BoardSide.Player);
+            GameBoard.ShowAttackLine(attackingCircle, targetCircle);
+        };
+
+        Action<UnitCircleComponent> dragReleaseHandler = (circle) =>
         {
             GameBoard.OppArea.HideTargetIndicators();
-            if(targetCircle is not null)
+            if(attackingCircle is not null && targetCircle is not null)
             {
-                if (boostingCircle is not null)
-                {
-                    completionSource.SetResult(actions.FirstOf<BoostedAttackAction>());
-                }
-                else
-                {
-                    completionSource.SetResult(actions.FirstOf<AttackAction>());
-                }
-            } else
-            {
-                //RESET
-                GD.Print("Resetting");
-                boostingCircle = null;
-                attackingCircle = null;
-                targetCircle = null;
-                GameBoard.EnablePlayerUnitCircleScreenDragging();
-                GameBoard.DisableOppTargetHovering();
-                GameBoard.HideBoostLines();
-                GameBoard.HideAttackLines();
+                completionSource.SetResult(boostingCircle is not null
+                    ? actions.FirstOf<BoostedAttackAction>()
+                    : actions.FirstOf<AttackAction>());
+                return;
             }
-        };
 
-        Action<UnitCircleComponent> oppFrontRowHoverHandler = (unitCircleComponent) =>
-        {
-            if(attackingCircle is not null && GameBoard.CanAttackTarget(attackingCircle, unitCircleComponent))
-            {
-                targetCircle = unitCircleComponent;
-
-                if(!targetCircle.HasTargetIndicator)
-                {
-                    GameBoard.OppArea.HideTargetIndicators();
-                    targetCircle.ShowTargetIndicators();
-                    GameBoard.Sfx.Play(SfxCue.Target, BoardSide.Player);
-                }
-
-                GameBoard.HideAttackLines();
-                GameBoard.ShowAttackLine(attackingCircle, targetCircle);
-            }
-        };
-
-        Action<UnitCircleComponent> playerFrontRowHoverHandler = (unitCircleComponent) =>
-        {
-            if(boostingCircle is not null && ReferenceEquals(GameBoard.GetPlayerOppositeCircle(unitCircleComponent), boostingCircle))
-            {
-                attackingCircle = unitCircleComponent;
-                GameBoard.ShowBoostLine(unitCircleComponent);
-                GameBoard.DisablePlayerFrontRowUnitCircleHovering();
-                GameBoard.EnableOppTargetHovering(attackingCircle);
-            }
-        };
-
-        Action<UnitCircleComponent> screenDragHandler = (unitCircleComponent) => {
-            // Catalyst for Boosted attack
-            if(GameBoard.IsBackRow(unitCircleComponent))
-            {
-                boostingCircle = unitCircleComponent;
-                GameBoard.DisablePlayerUnitCircleScreenDragging();
-                GameBoard.EnablePlayerFrontRowUnitCircleHovering();
-            }
-            if(GameBoard.IsFrontRow(unitCircleComponent))
-            {
-                GD.Print("Front row dragging");
-                attackingCircle = unitCircleComponent;
-                GameBoard.DisablePlayerUnitCircleScreenDragging();
-                GameBoard.EnableOppTargetHovering(attackingCircle);
-            }
+            // Let go anywhere else: start over
+            boostingCircle = null;
+            attackingCircle = null;
+            targetCircle = null;
+            targets = [];
+            GameBoard.HideBoostLines();
+            GameBoard.HideAttackLines();
         };
 
         GameBoard.LeftButtonPressed += endPhaseHandler;
-        GameBoard.PlayerCircleHovering += playerFrontRowHoverHandler;
-        GameBoard.PlayerCircleScreenDragged += screenDragHandler;
-        GameBoard.OppCircleHovering += oppFrontRowHoverHandler;
-        GameBoard.OppCircleHoverReleased += oppHoverReleaseHandler;
+        GameBoard.PlayerCircleScreenDragged += dragStartedHandler;
+        GameBoard.PlayerCircleScreenDragMoved += dragMovedHandler;
         GameBoard.PlayerCircleScreenDragReleased += dragReleaseHandler;
 
         var result = await completionSource.Task;
         GameBoard.LeftButtonPressed -= endPhaseHandler;
-        GameBoard.PlayerCircleScreenDragged -= screenDragHandler;
-        GameBoard.PlayerCircleHovering -= playerFrontRowHoverHandler;
-        GameBoard.OppCircleHovering -= oppFrontRowHoverHandler;
+        GameBoard.PlayerCircleScreenDragged -= dragStartedHandler;
+        GameBoard.PlayerCircleScreenDragMoved -= dragMovedHandler;
         GameBoard.PlayerCircleScreenDragReleased -= dragReleaseHandler;
-        GameBoard.OppCircleHoverReleased -= oppHoverReleaseHandler;
-
-        // The hover/drag areas sit on top of the cards and block their input
-        // (e.g. long pressing the opponent's Vanguard), so don't leave them on
         GameBoard.DisablePlayerUnitCircleScreenDragging();
-        GameBoard.DisablePlayerFrontRowUnitCircleHovering();
-        GameBoard.DisableOppTargetHovering();
 
         GD.Print("Attack phase action selected: ", result.GetType().Name);
         return result;
