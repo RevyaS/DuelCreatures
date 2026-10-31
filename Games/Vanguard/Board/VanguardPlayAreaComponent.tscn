@@ -1,17 +1,17 @@
 [gd_scene load_steps=16 format=3 uid="uid://db3qwryrhb1rq"]
 
-[ext_resource type="PackedScene" uid="uid://dm8sksf3b1gcw" path="res://Games/Vanguard/Board/UnitCircleComponent.tscn" id="1_4bmb4"]
-[ext_resource type="Script" uid="uid://caskrex35q0kw" path="res://Games/Vanguard/Board/PlayAreaComponent.cs" id="1_d1wbq"]
-[ext_resource type="Texture2D" uid="uid://73eh8fb8nl0h" path="res://Assets/Board/fight_field@rgcircle_icon.png" id="2_d1wbq"]
-[ext_resource type="Texture2D" uid="uid://bmabqsdncxul4" path="res://Assets/Board/fight_field@rgcircle_base.png" id="3_45uic"]
-[ext_resource type="PackedScene" uid="uid://cvy4hb158pate" path="res://Games/Vanguard/Board/DamageZoneComponent.tscn" id="4_o1122"]
-[ext_resource type="PackedScene" uid="uid://bj6jrhfey56is" path="res://Games/Shared/Vfx/AttackIndicator.tscn" id="5_msmvm"]
-[ext_resource type="Texture2D" uid="uid://mgordbbihbn4" path="res://Assets/Board/fight_field@vgcircle_icon.png" id="6_1e6a7"]
-[ext_resource type="Texture2D" uid="uid://d1xm5kqnlel0l" path="res://Assets/Board/fight_field@vgcircle_base.png" id="7_5a861"]
-[ext_resource type="PackedScene" uid="uid://c3xgtr5vl38o1" path="res://Games/Vanguard/Board/TriggerZoneComponent.tscn" id="8_k3s5b"]
-[ext_resource type="PackedScene" uid="uid://d0hdjku8idjs" path="res://Games/Shared/Zones/DeckComponent.tscn" id="9_q3sux"]
-[ext_resource type="PackedScene" uid="uid://dlahod6s4jx0i" path="res://Games/Vanguard/Board/DropZoneComponent.tscn" id="10_pmg6b"]
-[ext_resource type="Script" path="res://Games/Shared/Components/QuarterTurnContainer.cs" id="11_qtcnt"]
+[ext_resource type="Script" uid="uid://caskrex35q0kw" path="res://Games/Vanguard/Board/VanguardPlayAreaComponent.cs" id="1_rcyta"]
+[ext_resource type="Script" uid="uid://bxkfbgldole4n" path="res://Games/Shared/Components/QuarterTurnContainer.cs" id="2_rfl4c"]
+[ext_resource type="PackedScene" uid="uid://dm8sksf3b1gcw" path="res://Games/Vanguard/Board/UnitCircleComponent.tscn" id="3_ubbex"]
+[ext_resource type="Texture2D" uid="uid://73eh8fb8nl0h" path="res://Assets/Board/fight_field@rgcircle_icon.png" id="4_iohmt"]
+[ext_resource type="Texture2D" uid="uid://bmabqsdncxul4" path="res://Assets/Board/fight_field@rgcircle_base.png" id="5_suipy"]
+[ext_resource type="PackedScene" uid="uid://cvy4hb158pate" path="res://Games/Vanguard/Board/DamageZoneComponent.tscn" id="6_85tbw"]
+[ext_resource type="PackedScene" uid="uid://bj6jrhfey56is" path="res://Games/Shared/Vfx/AttackIndicator.tscn" id="7_eu2du"]
+[ext_resource type="Texture2D" uid="uid://mgordbbihbn4" path="res://Assets/Board/fight_field@vgcircle_icon.png" id="8_5jkqo"]
+[ext_resource type="Texture2D" uid="uid://d1xm5kqnlel0l" path="res://Assets/Board/fight_field@vgcircle_base.png" id="9_ejofs"]
+[ext_resource type="PackedScene" uid="uid://c3xgtr5vl38o1" path="res://Games/Vanguard/Board/TriggerZoneComponent.tscn" id="10_xxfgt"]
+[ext_resource type="PackedScene" uid="uid://d0hdjku8idjs" path="res://Games/Shared/Zones/DeckComponent.tscn" id="11_3dga5"]
+[ext_resource type="PackedScene" uid="uid://dlahod6s4jx0i" path="res://Games/Vanguard/Board/DropZoneComponent.tscn" id="12_5ifqe"]
 
 [sub_resource type="Curve2D" id="Curve2D_tilg0"]
 _data = {
@@ -31,11 +31,11 @@ _data = {
 }
 point_count = 2
 
-[node name="PlayerAreaComponent" type="Control"]
+[node name="VanguardPlayerAreaComponent" type="Control"]
 custom_minimum_size = Vector2(1080, 860)
 layout_mode = 3
 anchors_preset = 0
-script = ExtResource("1_d1wbq")
+script = ExtResource("1_rcyta")
 
 [node name="BG" type="ColorRect" parent="."]
 layout_mode = 1
@@ -57,7 +57,7 @@ offset_right = -20.0
 offset_bottom = 229.0
 grow_horizontal = 2
 mouse_filter = 2
-script = ExtResource("11_qtcnt")
+script = ExtResource("2_rfl4c")
 
 [node name="PhaseIndicator" type="Label" parent="PhaseIndicatorTurn"]
 unique_name_in_owner = true
@@ -90,33 +90,33 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
-[node name="ExtraLeft1" parent="Sections/MarginContainer2/ExtraCircles/Left" instance=ExtResource("1_4bmb4")]
+[node name="ExtraLeft1" parent="Sections/MarginContainer2/ExtraCircles/Left" instance=ExtResource("3_ubbex")]
 unique_name_in_owner = true
 layout_mode = 2
-Icon = ExtResource("2_d1wbq")
-Circle = ExtResource("3_45uic")
+Icon = ExtResource("4_iohmt")
+Circle = ExtResource("5_suipy")
 
-[node name="ExtraLeft2" parent="Sections/MarginContainer2/ExtraCircles/Left" instance=ExtResource("1_4bmb4")]
+[node name="ExtraLeft2" parent="Sections/MarginContainer2/ExtraCircles/Left" instance=ExtResource("3_ubbex")]
 unique_name_in_owner = true
 layout_mode = 2
-Icon = ExtResource("2_d1wbq")
-Circle = ExtResource("3_45uic")
+Icon = ExtResource("4_iohmt")
+Circle = ExtResource("5_suipy")
 
 [node name="Right" type="HBoxContainer" parent="Sections/MarginContainer2/ExtraCircles"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="ExtraRight2" parent="Sections/MarginContainer2/ExtraCircles/Right" instance=ExtResource("1_4bmb4")]
+[node name="ExtraRight2" parent="Sections/MarginContainer2/ExtraCircles/Right" instance=ExtResource("3_ubbex")]
 unique_name_in_owner = true
 layout_mode = 2
-Icon = ExtResource("2_d1wbq")
-Circle = ExtResource("3_45uic")
+Icon = ExtResource("4_iohmt")
+Circle = ExtResource("5_suipy")
 
-[node name="ExtraRight1" parent="Sections/MarginContainer2/ExtraCircles/Right" instance=ExtResource("1_4bmb4")]
+[node name="ExtraRight1" parent="Sections/MarginContainer2/ExtraCircles/Right" instance=ExtResource("3_ubbex")]
 unique_name_in_owner = true
 layout_mode = 2
-Icon = ExtResource("2_d1wbq")
-Circle = ExtResource("3_45uic")
+Icon = ExtResource("4_iohmt")
+Circle = ExtResource("5_suipy")
 
 [node name="MarginContainer" type="MarginContainer" parent="Sections"]
 layout_mode = 2
@@ -131,16 +131,16 @@ layout_mode = 2
 custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 mouse_filter = 2
-script = ExtResource("11_qtcnt")
+script = ExtResource("2_rfl4c")
 Turns = 1
 
-[node name="DamageZone" parent="Sections/MarginContainer/HBoxContainer/Left" instance=ExtResource("4_o1122")]
+[node name="DamageZone" parent="Sections/MarginContainer/HBoxContainer/Left" instance=ExtResource("6_85tbw")]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(564, 193)
 layout_mode = 2
 MaxCards = 6
-FlippedAppearance = true
 Separation = -50
+FlippedAppearance = true
 
 [node name="Center" type="MarginContainer" parent="Sections/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -160,11 +160,11 @@ theme_override_constants/separation = 20
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="FrontLeft" parent="Sections/MarginContainer/HBoxContainer/Center/VBoxContainer/Circles/LeftZone" instance=ExtResource("1_4bmb4")]
+[node name="FrontLeft" parent="Sections/MarginContainer/HBoxContainer/Center/VBoxContainer/Circles/LeftZone" instance=ExtResource("3_ubbex")]
 unique_name_in_owner = true
 layout_mode = 2
-Icon = ExtResource("2_d1wbq")
-Circle = ExtResource("3_45uic")
+Icon = ExtResource("4_iohmt")
+Circle = ExtResource("5_suipy")
 CircleColor = Color(1, 0.9826667, 0.48000002, 1)
 
 [node name="CenterGuide" type="Control" parent="Sections/MarginContainer/HBoxContainer/Center/VBoxContainer/Circles/LeftZone/FrontLeft"]
@@ -172,11 +172,11 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="BackLeft" parent="Sections/MarginContainer/HBoxContainer/Center/VBoxContainer/Circles/LeftZone" instance=ExtResource("1_4bmb4")]
+[node name="BackLeft" parent="Sections/MarginContainer/HBoxContainer/Center/VBoxContainer/Circles/LeftZone" instance=ExtResource("3_ubbex")]
 unique_name_in_owner = true
 layout_mode = 2
-Icon = ExtResource("2_d1wbq")
-Circle = ExtResource("3_45uic")
+Icon = ExtResource("4_iohmt")
+Circle = ExtResource("5_suipy")
 CircleColor = Color(1, 0.9826667, 0.48000002, 1)
 
 [node name="CenterGuide" type="Control" parent="Sections/MarginContainer/HBoxContainer/Center/VBoxContainer/Circles/LeftZone/BackLeft"]
@@ -184,7 +184,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="LeftBoostLine" parent="Sections/MarginContainer/HBoxContainer/Center/VBoxContainer/Circles/LeftZone" instance=ExtResource("5_msmvm")]
+[node name="LeftBoostLine" parent="Sections/MarginContainer/HBoxContainer/Center/VBoxContainer/Circles/LeftZone" instance=ExtResource("7_eu2du")]
 unique_name_in_owner = true
 visible = false
 position = Vector2(96, 121)
@@ -196,11 +196,11 @@ TextureScale = 0.4
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Vanguard" parent="Sections/MarginContainer/HBoxContainer/Center/VBoxContainer/Circles/Center" instance=ExtResource("1_4bmb4")]
+[node name="Vanguard" parent="Sections/MarginContainer/HBoxContainer/Center/VBoxContainer/Circles/Center" instance=ExtResource("3_ubbex")]
 unique_name_in_owner = true
 layout_mode = 2
-Icon = ExtResource("6_1e6a7")
-Circle = ExtResource("7_5a861")
+Icon = ExtResource("8_5jkqo")
+Circle = ExtResource("9_ejofs")
 CircleColor = Color(0.6, 0.9266666, 1, 1)
 
 [node name="Control" type="Control" parent="Sections/MarginContainer/HBoxContainer/Center/VBoxContainer/Circles/Center/Vanguard"]
@@ -208,14 +208,14 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="BackCenter" parent="Sections/MarginContainer/HBoxContainer/Center/VBoxContainer/Circles/Center" instance=ExtResource("1_4bmb4")]
+[node name="BackCenter" parent="Sections/MarginContainer/HBoxContainer/Center/VBoxContainer/Circles/Center" instance=ExtResource("3_ubbex")]
 unique_name_in_owner = true
 layout_mode = 2
-Icon = ExtResource("2_d1wbq")
-Circle = ExtResource("3_45uic")
+Icon = ExtResource("4_iohmt")
+Circle = ExtResource("5_suipy")
 CircleColor = Color(1, 0.9826667, 0.48000002, 1)
 
-[node name="CenterBoostLine" parent="Sections/MarginContainer/HBoxContainer/Center/VBoxContainer/Circles/Center" instance=ExtResource("5_msmvm")]
+[node name="CenterBoostLine" parent="Sections/MarginContainer/HBoxContainer/Center/VBoxContainer/Circles/Center" instance=ExtResource("7_eu2du")]
 unique_name_in_owner = true
 visible = false
 position = Vector2(96, 121)
@@ -227,21 +227,21 @@ TextureScale = 0.4
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="FrontRight" parent="Sections/MarginContainer/HBoxContainer/Center/VBoxContainer/Circles/Right" instance=ExtResource("1_4bmb4")]
+[node name="FrontRight" parent="Sections/MarginContainer/HBoxContainer/Center/VBoxContainer/Circles/Right" instance=ExtResource("3_ubbex")]
 unique_name_in_owner = true
 layout_mode = 2
-Icon = ExtResource("2_d1wbq")
-Circle = ExtResource("3_45uic")
+Icon = ExtResource("4_iohmt")
+Circle = ExtResource("5_suipy")
 CircleColor = Color(1, 0.9826667, 0.48000002, 1)
 
-[node name="BackRight" parent="Sections/MarginContainer/HBoxContainer/Center/VBoxContainer/Circles/Right" instance=ExtResource("1_4bmb4")]
+[node name="BackRight" parent="Sections/MarginContainer/HBoxContainer/Center/VBoxContainer/Circles/Right" instance=ExtResource("3_ubbex")]
 unique_name_in_owner = true
 layout_mode = 2
-Icon = ExtResource("2_d1wbq")
-Circle = ExtResource("3_45uic")
+Icon = ExtResource("4_iohmt")
+Circle = ExtResource("5_suipy")
 CircleColor = Color(1, 0.9826667, 0.48000002, 1)
 
-[node name="RightBoostLine" parent="Sections/MarginContainer/HBoxContainer/Center/VBoxContainer/Circles/Right" instance=ExtResource("5_msmvm")]
+[node name="RightBoostLine" parent="Sections/MarginContainer/HBoxContainer/Center/VBoxContainer/Circles/Right" instance=ExtResource("7_eu2du")]
 unique_name_in_owner = true
 visible = false
 position = Vector2(96, 121)
@@ -258,10 +258,10 @@ alignment = 1
 [node name="TriggerZoneTurn" type="Container" parent="Sections/MarginContainer/HBoxContainer/Right"]
 layout_mode = 2
 mouse_filter = 2
-script = ExtResource("11_qtcnt")
+script = ExtResource("2_rfl4c")
 Turns = 3
 
-[node name="TriggerZone" parent="Sections/MarginContainer/HBoxContainer/Right/TriggerZoneTurn" instance=ExtResource("8_k3s5b")]
+[node name="TriggerZone" parent="Sections/MarginContainer/HBoxContainer/Right/TriggerZoneTurn" instance=ExtResource("10_xxfgt")]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(139, 193)
 layout_mode = 2
@@ -278,9 +278,9 @@ theme_override_constants/separation = 20
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
-script = ExtResource("11_qtcnt")
+script = ExtResource("2_rfl4c")
 
-[node name="Deck" parent="Sections/MarginContainer/HBoxContainer/Right/Control/Verticals/DeckTurn" instance=ExtResource("9_q3sux")]
+[node name="Deck" parent="Sections/MarginContainer/HBoxContainer/Right/Control/Verticals/DeckTurn" instance=ExtResource("11_3dga5")]
 unique_name_in_owner = true
 layout_mode = 2
 ShowCount = true
@@ -289,9 +289,9 @@ ShowCount = true
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
-script = ExtResource("11_qtcnt")
+script = ExtResource("2_rfl4c")
 
-[node name="DropZone" parent="Sections/MarginContainer/HBoxContainer/Right/Control/Verticals/DropZoneTurn" instance=ExtResource("10_pmg6b")]
+[node name="DropZone" parent="Sections/MarginContainer/HBoxContainer/Right/Control/Verticals/DropZoneTurn" instance=ExtResource("12_5ifqe")]
 unique_name_in_owner = true
 layout_mode = 2
 

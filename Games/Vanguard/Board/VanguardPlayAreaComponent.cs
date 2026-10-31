@@ -7,7 +7,7 @@ using DuelCreatures.Data;
 using Godot;
 
 [Tool]
-public partial class PlayAreaComponent : Control, IPlayAreaBindable, IEventBusUtilizer<VanguardEventBus>
+public partial class VanguardPlayAreaComponent : Control, IPlayAreaBindable, IEventBusUtilizer<VanguardEventBus>
 {
     Label PhaseIndicator = null!;
     QuarterTurnContainer PhaseIndicatorTurn = null!, DeckTurn = null!, DropZoneTurn = null!;

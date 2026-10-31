@@ -7,8 +7,8 @@ public partial class VanguardBoard : Control
     // Everything that wants a sound raises it here (see PresentationConfig for which sides play)
     public SfxBus Sfx { get; } = new();
 
-    public PlayAreaComponent PlayerArea { get; private set; } = null!;
-    public PlayAreaComponent OppArea { get; private set; } = null!;
+    public VanguardPlayAreaComponent PlayerArea { get; private set; } = null!;
+    public VanguardPlayAreaComponent OppArea { get; private set; } = null!;
 
     public CardLineStatic GuardZone { get; private set; } = null!; 
 
@@ -30,8 +30,8 @@ public partial class VanguardBoard : Control
     {
         GetNode<SfxPlayer>("%SfxPlayer").Listen(Sfx);
 
-        PlayerArea = GetNode<PlayAreaComponent>($"%{nameof(PlayerArea)}");
-        OppArea = GetNode<PlayAreaComponent>($"%{nameof(OppArea)}");
+        PlayerArea = GetNode<VanguardPlayAreaComponent>($"%{nameof(PlayerArea)}");
+        OppArea = GetNode<VanguardPlayAreaComponent>($"%{nameof(OppArea)}");
 
         GuardZone = GetNode<CardLineStatic>($"%{nameof(GuardZone)}");
 
