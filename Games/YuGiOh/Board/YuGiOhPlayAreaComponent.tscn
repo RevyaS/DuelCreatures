@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3 uid="uid://bbkqq03vdp4mq"]
+
+[ext_resource type="Script" uid="uid://p3ldeqjxb577" path="res://addons/rev_godot_core/Components/VBoxNodeContainer.cs" id="1_1185f"]
+
+[node name="YuGiOhPlayAreaComponent" type="MarginContainer"]
+
+[node name="BG" type="ColorRect" parent="."]
+layout_mode = 2
+color = Color(0.17641911, 0.17641908, 0.17641908, 1)
+
+[node name="VBoxNodeContainer" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+script = ExtResource("1_1185f")
+metadata/_custom_type_script = "uid://p3ldeqjxb577"
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxNodeContainer"]
+layout_mode = 2
+
+[node name="CircleTexture" type="TextureRect" parent="VBoxNodeContainer/PanelContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+expand_mode = 1
