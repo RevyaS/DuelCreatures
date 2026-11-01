@@ -9,7 +9,6 @@ using Orientation = ArC.CardGames.Components.Orientation;
 public partial class CardContainer : Control
 {
     Card? currentCard = null;
-    protected bool UpdateSizeOnCardPlacedment = true;
     private SleeveInfo sleeveInfo = null!;
     private Orientation orientation = Orientation.VERTICAL;
 
@@ -17,8 +16,10 @@ public partial class CardContainer : Control
     public bool HasCard => currentCard is not null && currentCard.CurrentCard is not null;
     float FlipRotation => FlippedAppearance ? Mathf.Pi : 0;
 
-    private float _cardScale = SizeConstants.CardScaleFactor;
-    [Export(PropertyHint.Range, "0.0, 1.0")]
+    // The one size setting: the slot is a card at this scale (CardDefaultSize * CardScale),
+    // whether or not it holds a card, so empty zones keep their place in the layout
+    private float _cardScale = SizeConstants.DefaultCardScale;
+    [Export(PropertyHint.Range, "0.05, 2.0, 0.01, or_greater")]
     public float CardScale
     {
         get => _cardScale;
@@ -75,7 +76,11 @@ public partial class CardContainer : Control
         {
             AdoptCard(card);
         }
+        Render();
     }
+
+    /// <summary>The card's size at this slot's scale, before any rotation.</summary>
+    public Vector2 CardSize => SizeConstants.CardDefaultSize * CardScale;
 
     public void SetSleeveInfo(SleeveInfo sleeveInfo)
     {
@@ -129,17 +134,13 @@ public partial class CardContainer : Control
     // used both when a card arrives and when a property changes
     private void Render()
     {
+        CustomMinimumSize = CalculateSlotSize();
         if(CurrentCard is null) return;
 
         CurrentCard.Scale = new Vector2(CardScale, CardScale);
         CurrentCard.SleeveInfo = sleeveInfo;
         CurrentCard.Draggable = _draggable;
         CurrentCard.Rotation = CalculateCardRotation(orientation);
-
-        if(UpdateSizeOnCardPlacedment)
-        {
-            CustomMinimumSize = UpdateSizeFromCard(CurrentCard);
-        }
     }
 
     private void OnCardDragCancelled(CardBaseComponent component)
@@ -189,10 +190,6 @@ public partial class CardContainer : Control
         card.CardPressed -= OnCardPressed;
         card.CardLongPressed -= OnCardLongPressed;
         card.Scale = Vector2.One;
-        if(UpdateSizeOnCardPlacedment)
-        {
-            CustomMinimumSize = Vector2.Zero;
-        }
     }
 
     private float CalculateCardRotation(Orientation orientation)
@@ -237,19 +234,18 @@ public partial class CardContainer : Control
         CardAdded?.Invoke(card);
     }
 
-    protected virtual Vector2 UpdateSizeFromCard(Card card)
+    // The space the card takes as it's turned now (a sideways card is wider than tall)
+    protected virtual Vector2 CalculateSlotSize()
     {
-        float w = card.EffectiveSize.X;
-        float h = card.EffectiveSize.Y;
+        var size = CardSize;
+        var rotation = CalculateCardRotation(orientation);
+        float cos = Mathf.Abs(Mathf.Cos(rotation));
+        float sin = Mathf.Abs(Mathf.Sin(rotation));
 
-        float cos = Mathf.Cos(card.Rotation);
-        float sin = Mathf.Sin(card.Rotation);
-
-        float newWidth = Mathf.Abs(w * cos) + Mathf.Abs(h * sin);
-        float newHeight = Mathf.Abs(w * sin) + Mathf.Abs(h * cos);
-
-        var result = new Vector2(newWidth, newHeight);
-        return result;
+        // Whole pixels, so lines of slots don't drift
+        return new Vector2(
+            Mathf.Round(size.X * cos + size.Y * sin),
+            Mathf.Round(size.X * sin + size.Y * cos));
     }
 
     // Global transform of the card in this slot, or of where one would sit

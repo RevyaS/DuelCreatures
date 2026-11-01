@@ -21,6 +21,19 @@ public partial class CardListPanel : PanelContainer
         }
     }
 
+    // Size of the listed cards; cards moved in take this scale
+    private float _cardScale = SizeConstants.DefaultCardScale;
+    [Export(PropertyHint.Range, "0.05, 2.0, 0.01, or_greater")]
+    public float CardScale
+    {
+        get => _cardScale;
+        set
+        {
+            _cardScale = value;
+            Render();
+        }
+    }
+
     private bool _Droppable = false;
     public bool Droppable { 
         get => _Droppable;
@@ -49,6 +62,7 @@ public partial class CardListPanel : PanelContainer
 
     private void Render()
     {
+        if(!IsNodeReady()) return;
         CardContainerManager.ApplyToChildren<CardContainer>(ConfigureContainer);
         DropArea.Visible = Droppable;
     }
@@ -57,6 +71,7 @@ public partial class CardListPanel : PanelContainer
     private void ConfigureContainer(CardContainer container)
     {
         container.Draggable = CardsDraggable;
+        container.CardScale = CardScale;
     }
 
     public void RemoveCard(Card card)

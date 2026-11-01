@@ -85,8 +85,9 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
         }
     }
 
-    private float _cardScale = SizeConstants.CardScaleFactor;
-    [Export(PropertyHint.Range, "0.0, 1.0")]
+    // Size of the unit; the circle is a square as wide as the card is long
+    private float _cardScale = SizeConstants.DefaultCardScale;
+    [Export(PropertyHint.Range, "0.05, 2.0, 0.01, or_greater")]
     public float CardScale
     {
         get => _cardScale;

@@ -11,7 +11,6 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n51kq"]
 
 [node name="UnitCircleComponent" type="PanelContainer"]
-custom_minimum_size = Vector2(189, 189)
 offset_right = 4.0
 offset_bottom = 4.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_n51kq")
@@ -34,7 +33,6 @@ expand_mode = 1
 stretch_mode = 3
 
 [node name="MainContainer" type="MarginContainer" parent="."]
-custom_minimum_size = Vector2(189, 189)
 layout_mode = 2
 theme_override_constants/margin_left = 2
 theme_override_constants/margin_top = 2

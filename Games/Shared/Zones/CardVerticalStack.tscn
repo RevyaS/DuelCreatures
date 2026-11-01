@@ -6,7 +6,6 @@
 [ext_resource type="Script" uid="uid://d2f15galko8gy" path="res://Games/Shared/HUD/PressArea.cs" id="4_bpvqm"]
 
 [node name="CardVerticalStack" type="PanelContainer"]
-custom_minimum_size = Vector2(139, 193)
 offset_right = 4.0
 offset_bottom = 4.0
 script = ExtResource("1_84xpp")
@@ -24,7 +23,6 @@ theme_override_constants/margin_bottom = 2
 
 [node name="CardContainer" type="Control" parent="MarginContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(135, 189)
 layout_mode = 2
 script = ExtResource("1_lyp1o")
 metadata/_custom_type_script = "uid://bqw5phtur46nx"

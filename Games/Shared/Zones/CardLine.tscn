@@ -33,7 +33,6 @@ script = ExtResource("1_d5578")
 metadata/_custom_type_script = "uid://tymprrxn341"
 
 [node name="CardContainer" type="Control" parent="MarginContainer/Container"]
-custom_minimum_size = Vector2(135, 189)
 layout_mode = 2
 script = ExtResource("2_rfqe6")
 metadata/_custom_type_script = "uid://bqw5phtur46nx"
@@ -52,7 +51,6 @@ offset_bottom = 0.0
 scale = Vector2(0.45, 0.45)
 
 [node name="CardContainer2" type="Control" parent="MarginContainer/Container"]
-custom_minimum_size = Vector2(135, 189)
 layout_mode = 2
 script = ExtResource("2_rfqe6")
 metadata/_custom_type_script = "uid://bqw5phtur46nx"
@@ -71,7 +69,6 @@ offset_bottom = 0.0
 scale = Vector2(0.45, 0.45)
 
 [node name="CardContainer3" type="Control" parent="MarginContainer/Container"]
-custom_minimum_size = Vector2(135, 189)
 layout_mode = 2
 script = ExtResource("2_rfqe6")
 metadata/_custom_type_script = "uid://bqw5phtur46nx"
@@ -90,7 +87,6 @@ offset_bottom = 0.0
 scale = Vector2(0.45, 0.45)
 
 [node name="CardContainer4" type="Control" parent="MarginContainer/Container"]
-custom_minimum_size = Vector2(135, 189)
 layout_mode = 2
 script = ExtResource("2_rfqe6")
 metadata/_custom_type_script = "uid://bqw5phtur46nx"
@@ -109,7 +105,6 @@ offset_bottom = 0.0
 scale = Vector2(0.45, 0.45)
 
 [node name="CardContainer5" type="Control" parent="MarginContainer/Container"]
-custom_minimum_size = Vector2(135, 189)
 layout_mode = 2
 script = ExtResource("2_rfqe6")
 metadata/_custom_type_script = "uid://bqw5phtur46nx"
@@ -128,7 +123,6 @@ offset_bottom = 0.0
 scale = Vector2(0.45, 0.45)
 
 [node name="CardContainer6" type="Control" parent="MarginContainer/Container"]
-custom_minimum_size = Vector2(135, 189)
 layout_mode = 2
 script = ExtResource("2_rfqe6")
 metadata/_custom_type_script = "uid://bqw5phtur46nx"

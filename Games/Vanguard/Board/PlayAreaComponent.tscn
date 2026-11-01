@@ -136,11 +136,10 @@ Turns = 1
 
 [node name="DamageZone" parent="Sections/MarginContainer/HBoxContainer/Left" instance=ExtResource("4_o1122")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(564, 193)
 layout_mode = 2
 MaxCards = 6
 FlippedAppearance = true
-Separation = -50
+Spacing = -0.37
 
 [node name="Center" type="MarginContainer" parent="Sections/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -263,7 +262,6 @@ Turns = 3
 
 [node name="TriggerZone" parent="Sections/MarginContainer/HBoxContainer/Right/TriggerZoneTurn" instance=ExtResource("8_k3s5b")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(139, 193)
 layout_mode = 2
 
 [node name="Control" type="MarginContainer" parent="Sections/MarginContainer/HBoxContainer/Right"]

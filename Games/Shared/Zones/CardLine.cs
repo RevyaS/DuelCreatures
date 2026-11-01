@@ -28,8 +28,9 @@ public partial class CardLine : PanelContainer, ICardLocation
         }
     }
 
-    private float _cardScale = SizeConstants.CardScaleFactor;
-    [Export(PropertyHint.Range, "0.0, 1.0")]
+    // Size of every card in the line; the line's height (and width, unless it overlaps) follows
+    private float _cardScale = SizeConstants.DefaultCardScale;
+    [Export(PropertyHint.Range, "0.05, 2.0, 0.01, or_greater")]
     public float CardScale
     {
         get => _cardScale;
@@ -40,15 +41,18 @@ public partial class CardLine : PanelContainer, ICardLocation
         }
     }
 
-    private int _separation = 0;
-    [Export]
-    public int Separation { 
-        get => _separation; 
+    // Gap between cards as a fraction of a card's width, so it follows CardScale
+    // (e.g. -0.37 overlaps each card by 37%). Lines that overlap to fit start from this.
+    private float _spacing = 0;
+    [Export(PropertyHint.Range, "-0.95, 1.0, 0.01, or_greater")]
+    public float Spacing
+    {
+        get => _spacing;
         set
         {
-            _separation = value;
+            _spacing = value;
             Render();
-        } 
+        }
     }
 
     private bool _shrinks = false;
@@ -285,7 +289,7 @@ public partial class CardLine : PanelContainer, ICardLocation
 
     protected virtual int CalculateSeparation()
     {
-        return _separation;
+        return Mathf.RoundToInt(_spacing * SizeConstants.CardDefaultSize.X * CardScale);
     }
 
     private void SetState(ComponentInputState newState, bool value)

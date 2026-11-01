@@ -2,11 +2,24 @@ using System;
 using ArC.CardGames.Components;
 using Godot;
 
-// Holds a single upright card. Turn it with a QuarterTurnContainer
+// Holds a single upright card, sized by CardScale. Turn it with a QuarterTurnContainer
 // when it needs to lie sideways (e.g. the trigger zone)
+[Tool]
 public partial class CardArea : PanelContainer, ICardLocation
 {
     CardContainer Container = null!;
+
+    private float _cardScale = SizeConstants.DefaultCardScale;
+    [Export(PropertyHint.Range, "0.05, 2.0, 0.01, or_greater")]
+    public float CardScale
+    {
+        get => _cardScale;
+        set
+        {
+            _cardScale = value;
+            Render();
+        }
+    }
 
     private bool _flippedAppearance = false;
     [Export]
@@ -32,6 +45,7 @@ public partial class CardArea : PanelContainer, ICardLocation
         if (IsNodeReady())
         {
             Container.FlippedAppearance = FlippedAppearance;
+            Container.CardScale = CardScale;
         }
     }
 

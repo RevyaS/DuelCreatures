@@ -2,11 +2,25 @@ using ArC.CardGames.Components;
 using DuelCreatures.Data;
 using Godot;
 
+// A pile showing its top card (deck, drop zone), sized by CardScale
+[Tool]
 public partial class CardVerticalStack : PanelContainer, ICardLocation
 {
     CardContainer cardContainer = null!;
     PressArea PressArea = null!;
     Label CardCount = null!;
+
+    private float _cardScale = SizeConstants.DefaultCardScale;
+    [Export(PropertyHint.Range, "0.05, 2.0, 0.01, or_greater")]
+    public float CardScale
+    {
+        get => _cardScale;
+        set
+        {
+            _cardScale = value;
+            Render();
+        }
+    }
 
     private int _countValue = 0;
     public int CountValue
@@ -47,11 +61,12 @@ public partial class CardVerticalStack : PanelContainer, ICardLocation
 
     protected void Render()
     {
-        if(!IsInsideTree()) return;
+        if(!IsInsideTree() || !IsNodeReady()) return;
         BeforeRender();
         CardCount.Visible = ShowCount;
         CardCount.Text = CountValue.ToString();
 
+        cardContainer.CardScale = CardScale;
         cardContainer.SetSleeveInfo(SleeveInfo);
     }
 
