@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://Screens/Gacha/PackOpening.cs" id="1_opening"]
+[ext_resource type="Script" path="res://addons/rev_godot_core/Components/GestureDetector.cs" id="2_gestures"]
 
 [node name="PackOpening" type="Control"]
 layout_mode = 3
@@ -149,3 +150,18 @@ text = "Continue"
 
 [node name="EffectsPlayer" type="AnimationPlayer" parent="."]
 unique_name_in_owner = true
+
+[node name="Gestures" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2_gestures")
+
+[node name="Voices" type="Node" parent="."]
+unique_name_in_owner = true
+
+[node name="Voice1" type="AudioStreamPlayer" parent="Voices"]
+
+[node name="Voice2" type="AudioStreamPlayer" parent="Voices"]
+
+[node name="Voice3" type="AudioStreamPlayer" parent="Voices"]
+
+[node name="Voice4" type="AudioStreamPlayer" parent="Voices"]

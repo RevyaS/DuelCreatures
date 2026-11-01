@@ -1,23 +1,24 @@
 using System;
 using System.Collections.Generic;
 using Godot;
+using static SceneHelper;
 
-/// <summary>A dialog listing choices as buttons, picking one closes it and runs the choice. Frees itself once closed.</summary>
+/// <summary>
+/// A dialog listing choices as buttons, picking one closes it and runs the choice. Frees itself once closed.
+/// Laid out in ChoiceDialog.tscn; only the buttons are added here.
+/// </summary>
 public partial class ChoiceDialog : AcceptDialog
 {
+    const string ScenePath = "res://Games/Shared/Components/ChoiceDialog.tscn";
+
     public sealed record Choice(string Label, Action OnChosen, bool Disabled = false);
 
     public static ChoiceDialog Show(Node parent, string title, IEnumerable<Choice> choices)
     {
-        var dialog = new ChoiceDialog
-        {
-            Title = title,
-            OkButtonText = "Cancel",
-            Theme = GD.Load<Theme>("res://Resources/Themes/GUITheme.tres"),
-            MinSize = new Vector2I(900, 800)
-        };
+        var dialog = GetScene<ChoiceDialog>(ScenePath);
+        dialog.Title = title;
 
-        var list = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+        var list = dialog.GetNode<VBoxContainer>("%Choices");
         foreach(var choice in choices)
         {
             var button = new Button { Text = choice.Label, Disabled = choice.Disabled, Alignment = HorizontalAlignment.Left };
@@ -28,10 +29,6 @@ public partial class ChoiceDialog : AcceptDialog
             };
             list.AddChild(button);
         }
-
-        var scroll = new ScrollContainer { HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled };
-        scroll.AddChild(list);
-        dialog.AddChild(scroll);
 
         dialog.VisibilityChanged += () =>
         {

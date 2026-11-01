@@ -44,11 +44,8 @@ public partial class InputProvider : Control, IVanguardPlayerInputProvider
     {
         board = GetNode<VanguardBoard>($"%{nameof(VanguardBoard)}");
 
-        // Card flights draw above the board and below the HUD
-        var flights = new CardFlightLayer { Name = "CardFlights" };
-        AddChild(flights);
-        MoveChild(flights, board.GetIndex() + 1);
-        Presenter.Flights = flights;
+        // Card flights draw above the board and below the HUD (see the scene)
+        Presenter.Flights = GetNode<CardFlightLayer>("%CardFlights");
         SelectCardsComponent = GetNode<SelectCardsComponent>($"%{nameof(SelectCardsComponent)}");
         SelectFromCardListComponent = GetNode<SelectFromCardList>($"%{nameof(SelectFromCardListComponent)}");
         CardListComponent = GetNode<CardList>($"%{nameof(CardListComponent)}");

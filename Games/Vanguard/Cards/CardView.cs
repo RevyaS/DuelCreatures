@@ -2,15 +2,18 @@ using System;
 using ArC.CardGames.Vanguard;
 using DuelCreatures.Data;
 using Godot;
+using static SceneHelper;
 
 /// <summary>
 /// Presents a base <see cref="Card"/> at a scale, for screens outside the game (deck builder, card lists).
 /// Besides press and long press it reports vertical flicks as swipes. A slower drag scrolls the
 /// <see cref="ScrollContainer"/> it is in, so a list of cards can still be scrolled by dragging on them
-/// (all through its <see cref="GestureDetector"/>).
+/// (all through its <see cref="GestureDetector"/>). Laid out in CardView.tscn; only the card is added here.
 /// </summary>
 public partial class CardView : Control
 {
+    const string ScenePath = "res://Games/Vanguard/Cards/CardView.tscn";
+
     Card card = null!;
     PanelContainer BadgePanel = null!;
     Label Badge = null!;
@@ -25,7 +28,7 @@ public partial class CardView : Control
 
     public static CardView Create(string cardId, VanguardCard card, float scale)
     {
-        var view = new CardView();
+        var view = GetScene<CardView>(ScenePath);
         view.Initialize(cardId, card, scale);
         return view;
     }
@@ -39,11 +42,11 @@ public partial class CardView : Control
         card = CardScenes.CreateBase(vanguardCard);
         // The card scene is centered on its parent and scales around its center
         card.Scale = new Vector2(scale, scale);
-        AddChild(card);
+        GetNode("%CardSlot").AddChild(card);
         // This view takes every press; the card only shows
         IgnoreMouse(card);
 
-        var gestures = new GestureDetector { Swipes = true };
+        var gestures = GetNode<GestureDetector>("%Gestures");
         gestures.Tapped += () => Pressed?.Invoke(this);
         gestures.LongPressed += () => LongPressed?.Invoke(this);
         gestures.Swiped += direction =>
@@ -51,16 +54,11 @@ public partial class CardView : Control
             if(direction == GestureDetector.SwipeDirection.Up) SwipedUp?.Invoke(this);
             else if(direction == GestureDetector.SwipeDirection.Down) SwipedDown?.Invoke(this);
         };
-        AddChild(gestures);
 
-        BadgePanel = new PanelContainer { Visible = false, MouseFilter = MouseFilterEnum.Ignore };
-        BadgePanel.SetAnchorsAndOffsetsPreset(LayoutPreset.BottomRight, LayoutPresetMode.KeepSize);
-        BadgePanel.GrowHorizontal = GrowDirection.Begin;
-        BadgePanel.GrowVertical = GrowDirection.Begin;
-        Badge = new Label { HorizontalAlignment = HorizontalAlignment.Center };
+        BadgePanel = GetNode<PanelContainer>($"%{nameof(BadgePanel)}");
+        Badge = GetNode<Label>($"%{nameof(Badge)}");
+        // Follows the view's scale
         Badge.AddThemeFontSizeOverride("font_size", Mathf.Max(46, (int)(50 * scale)));
-        BadgePanel.AddChild(Badge);
-        AddChild(BadgePanel);
     }
 
     /// <summary>A short text over the card's corner, eg; the copies in the deck. Null hides it.</summary>

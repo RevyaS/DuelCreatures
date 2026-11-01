@@ -28,9 +28,7 @@ public partial class VanguardBoard : Control
 
     private void SetComponents()
     {
-        var sfxPlayer = new SfxPlayer();
-        AddChild(sfxPlayer);
-        sfxPlayer.Listen(Sfx);
+        GetNode<SfxPlayer>("%SfxPlayer").Listen(Sfx);
 
         PlayerArea = GetNode<PlayAreaComponent>($"%{nameof(PlayerArea)}");
         OppArea = GetNode<PlayAreaComponent>($"%{nameof(OppArea)}");

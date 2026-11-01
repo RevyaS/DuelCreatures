@@ -48,9 +48,6 @@ public static class PresentationConfig
     // Sfx cue -> stream; games add theirs (cues without a stream are silent)
     public static readonly Dictionary<SfxCue, string> SfxStreams = new();
 
-    // Simultaneous sounds before the oldest one gets cut off
-    public static int SfxVoices = 4;
-
     // Adds (or replaces) a game's moves and sounds
     public static void Register(IReadOnlyDictionary<CardMove, Transition> moves, IReadOnlyDictionary<SfxCue, string> sfxStreams)
     {

@@ -14,6 +14,7 @@ public partial class MainScreen : Control
     Label? ProfileLabel, Tickets;
     DataManager? DataManager;
     Theme? GUITheme;
+    AcceptDialog MessageDialog = null!;
 
     OpponentType? OpponentSelected = null;
     DeckChoice? DeckSelected = null;
@@ -22,6 +23,7 @@ public partial class MainScreen : Control
     {
         Tickets = GetNode<Label>($"%{nameof(Tickets)}");
         GUITheme = GD.Load<Theme>("res://Resources/Themes/GUITheme.tres");
+        MessageDialog = GetNode<AcceptDialog>($"%{nameof(MessageDialog)}");
         Deck = GetNode<VBoxNodeContainer>($"%{nameof(Deck)}");
         Opponent = GetNode<VBoxNodeContainer>($"%{nameof(Opponent)}");
 
@@ -134,14 +136,8 @@ public partial class MainScreen : Control
 
     private void ShowMessage(string message)
     {
-        var dialog = new AcceptDialog { Title = "Duel Creatures", DialogText = message, Theme = GUITheme, MinSize = new Vector2I(900, 300) };
-        dialog.DialogAutowrap = true;
-        dialog.VisibilityChanged += () =>
-        {
-            if(!dialog.Visible) dialog.QueueFree();
-        };
-        AddChild(dialog);
-        dialog.PopupCentered();
+        MessageDialog.DialogText = message;
+        MessageDialog.PopupCentered();
     }
     #endregion
 

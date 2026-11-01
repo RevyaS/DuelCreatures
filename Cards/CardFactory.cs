@@ -27,19 +27,19 @@ public static class DuelMaidensCardsFactory
         public static VanguardCard KnightOfRoseMorgana => new VanguardCard(1, "Knight Of Rose, Morgana", 6000, 1, 5000, VanguardCardSkill.BOOST, VanguardTrigger.NONE, [
             new VanguardAutomaticSkill(VanguardSkillCardLocation.VANGUARD | VanguardSkillCardLocation.REARGUARD, new OnAttackTiming(),
                     new VanguardSkillCost{ Hand = 1 }, [
-                        new ProvidePowerToInvoker(4000, EffectDuration.ATTACK)
+                        new Provide(UnitSelection.Invoker, EffectDuration.ATTACK) { Power = 4000 }
                     ])
         ]);
         public static VanguardCard Wingal => new VanguardCard(1, "Wingal", 6000, 1, 5000, VanguardCardSkill.BOOST, VanguardTrigger.NONE, [
-            new VanguardAutomaticSkill(VanguardSkillCardLocation.VANGUARD | VanguardSkillCardLocation.REARGUARD, new OnBoostSpecificCardTiming(new(() => BlasterBlade)),
+            new VanguardAutomaticSkill(VanguardSkillCardLocation.VANGUARD | VanguardSkillCardLocation.REARGUARD, new OnBoostTiming(new(() => BlasterBlade)),
             new VanguardSkillCost(), [
-                new ProvidePowerToInvoker(4000, EffectDuration.ATTACK)
+                new Provide(UnitSelection.Invoker, EffectDuration.ATTACK) { Power = 4000 }
             ])
         ]);
         public static VanguardCard StarlightUnicorn => new VanguardCard(1, "Starlight Unicorn", 6000, 1, 5000, VanguardCardSkill.BOOST, VanguardTrigger.NONE, [
             new VanguardAutomaticSkill(VanguardSkillCardLocation.REARGUARD, new OnPlaceTiming(), 
             new VanguardSkillCost(), [
-                new ProvidePowerToOtherUnit(2000, EffectDuration.TURN)
+                new Provide(UnitSelection.Other, EffectDuration.TURN) { Power = 2000 }
             ])
         ]);
 
@@ -48,45 +48,45 @@ public static class DuelMaidensCardsFactory
         public static VanguardCard BlasterBlade => new VanguardCard(2, "Blaster Blade", 9000, 1, 5000, VanguardCardSkill.NONE, VanguardTrigger.NONE, [
             new VanguardAutomaticSkill(VanguardSkillCardLocation.VANGUARD | VanguardSkillCardLocation.REARGUARD,
                 new OnPlaceTiming(), new VanguardSkillCost { CounterBlast = 2 }, [
-                new RetireOpponentFrontRowRearGuard()
+                new Retire(UnitSelection.Opponent(UnitCircleEnum.FRONT_REARGUARD))
             ])
         ]);
         public static VanguardCard KnightOfTheHarpTristan => new VanguardCard(2, "Knight of the Harp, Tristan", 8000, 1, 5000, VanguardCardSkill.INTERCEPT, VanguardTrigger.NONE, [
             new VanguardAutomaticSkill(VanguardSkillCardLocation.VANGUARD, new OnDriveCheckSpecificGradeTiming(3), new VanguardSkillCost(), [
-                new ProvidePowerToInvoker(5000, EffectDuration.ATTACK)
+                new Provide(UnitSelection.Invoker, EffectDuration.ATTACK) { Power = 5000 }
             ])
         ]);
         public static VanguardCard CovenantKnightRandolf => new VanguardCard(2, "Covenant Knight, Randolf", 8000, 1, 5000, VanguardCardSkill.INTERCEPT, VanguardTrigger.NONE, [
             new VanguardAutomaticSkill(VanguardSkillCardLocation.VANGUARD | VanguardSkillCardLocation.REARGUARD, new OnAttackTiming(), new VanguardSkillCost(), [
-                new VanguardSkills.Composite(new HandGreaterThanOpponent(), new ProvidePowerToInvoker(3000, EffectDuration.ATTACK))
+                new VanguardSkills.Composite(new VanguardSkills.MoreThan(CardSelection.Player(VanguardPlace.HAND), CardSelection.Opponent(VanguardPlace.HAND)), new Provide(UnitSelection.Invoker, EffectDuration.ATTACK) { Power = 3000 })
             ])
         ]);
 
         //G3
         public static VanguardCard KingOfKnightsAlfred => new VanguardCard(3, "King of Knights, Alfred", 10000, 1, 0, VanguardCardSkill.TWIN_DRIVE, VanguardTrigger.NONE, [
             new VanguardActivationSkill(VanguardSkillCardLocation.VANGUARD, new VanguardSkillCost { CounterBlast = 2 }, [
-                new SuperiorCallFromDeck(0, 2)
+                new SuperiorCall(CardSelection.Player(VanguardPlace.DECK, new VanguardCardFilter(MinGrade: 0, MaxGrade: 2)))
             ])
         ]);
         public static VanguardCard CrimsonButterflyBrigitte => new VanguardCard(3, "Crimson Butterfly, Brigitte", 10000, 1, 0, VanguardCardSkill.TWIN_DRIVE, VanguardTrigger.NONE, [
             new VanguardAutomaticSkill(VanguardSkillCardLocation.VANGUARD, new OnDriveCheckSpecificGradeTiming(3), new VanguardSkillCost(), [
-                new ProvidePowerToInvoker(5000, EffectDuration.ATTACK)
+                new Provide(UnitSelection.Invoker, EffectDuration.ATTACK) { Power = 5000 }
             ])
         ]);
         public static VanguardCard SolitaryKnightGancelot => new VanguardCard(3, "Solitary Knight, Gancelot", 9000, 1, 0, VanguardCardSkill.TWIN_DRIVE, VanguardTrigger.NONE, [
             new VanguardActivationSkill(VanguardSkillCardLocation.HAND, new VanguardSkillCost(), [
-                new ReturnInvokerToDeck(),
+                new ReturnToDeck(CardSelection.Invoker),
                 new VanguardSkills.TutorSpecificCard(new(() => BlasterBlade)),
                 new ShuffleDeck()
             ]),
             new VanguardActivationSkill(VanguardSkillCardLocation.VANGUARD, new VanguardSkillCost { CounterBlast = 2 }, [
-                new VanguardSkills.Composite(new CardInSoul(new(() => BlasterBlade)), 
-                    new ProvidePowerAndCriticalToInvoker(5000, 1, EffectDuration.TURN))
+                new VanguardSkills.Composite(new VanguardSkills.Exists(CardSelection.Player(VanguardPlace.SOUL, new VanguardCardFilter(Named: new(() => BlasterBlade)))), 
+                    new Provide(UnitSelection.Invoker, EffectDuration.TURN) { Power = 5000, Critical = 1 })
             ])
         ]);
         public static VanguardCard KnightOfConvictionBors => new VanguardCard(3, "Knight of Conviction, Bors", 10000, 1, 0, VanguardCardSkill.TWIN_DRIVE, VanguardTrigger.NONE, [
             new VanguardAutomaticSkill(VanguardSkillCardLocation.VANGUARD | VanguardSkillCardLocation.REARGUARD, new OnAttackTiming(), new VanguardSkillCost{CounterBlast = 1}, [
-                new ProvidePowerToInvoker(3000, EffectDuration.ATTACK),
+                new Provide(UnitSelection.Invoker, EffectDuration.ATTACK) { Power = 3000 },
             ])
         ]);
     }

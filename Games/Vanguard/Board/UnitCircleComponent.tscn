@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dm8sksf3b1gcw"]
+[gd_scene load_steps=9 format=3 uid="uid://dm8sksf3b1gcw"]
 
 [ext_resource type="Script" uid="uid://ccq70upyqje4r" path="res://Games/Vanguard/Board/UnitCircleComponent.cs" id="1_c2ben"]
 [ext_resource type="Texture2D" uid="uid://5xkkafu44j3" path="res://Assets/Board/UnitCircle/fight@card_effect_arrow.png" id="2_5133l"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Games/Shared/Cards/Card.tscn" id="3_j7olg"]
 [ext_resource type="Script" uid="uid://dwrq2pnaqfw1s" path="res://Games/Shared/HUD/DropArea.cs" id="4_5133l"]
 [ext_resource type="Script" uid="uid://bxkfbgldole4n" path="res://Games/Shared/Components/QuarterTurnContainer.cs" id="7_qtcnt"]
+[ext_resource type="Script" path="res://addons/rev_godot_core/Components/GestureDetector.cs" id="9_gestures"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n51kq"]
 
@@ -121,3 +122,7 @@ grow_vertical = 2
 rotation = 1.5707964
 pivot_offset = Vector2(29, 20.5)
 texture = ExtResource("2_5133l")
+
+[node name="Gestures" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("9_gestures")

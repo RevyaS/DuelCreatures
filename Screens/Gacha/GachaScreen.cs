@@ -18,6 +18,7 @@ public partial class GachaScreen : Control
     GridContainer PackGrid = null!;
     Button BackButton = null!, ResetBoxButton = null!;
     PackOpening Opening = null!;
+    ConfirmationDialog ResetBoxDialog = null!;
 
     public override void _Ready()
     {
@@ -36,6 +37,8 @@ public partial class GachaScreen : Control
         PackGrid = GetNode<GridContainer>($"%{nameof(PackGrid)}");
         BackButton = GetNode<Button>($"%{nameof(BackButton)}");
         Opening = GetNode<PackOpening>($"%{nameof(Opening)}");
+        ResetBoxDialog = GetNode<ConfirmationDialog>($"%{nameof(ResetBoxDialog)}");
+        ResetBoxDialog.Confirmed += ResetBox;
 
         BackButton.Pressed += BackPressed;
         ResetBoxButton = GetNode<Button>($"%{nameof(ResetBoxButton)}");
@@ -159,27 +162,17 @@ public partial class GachaScreen : Control
         if(CurrentSet is not GachaSet set) return;
 
         var box = DataManager.GetGachaBox(set);
-        var dialog = new ConfirmationDialog
-        {
-            Title = "New Box",
-            DialogText = $"Start a new box of {set.Name}? The {box.PacksLeft} unopened packs of this box are discarded.",
-            DialogAutowrap = true,
-            OkButtonText = "New Box",
-            Theme = GD.Load<Theme>("res://Resources/Themes/GUITheme.tres"),
-            MinSize = new Vector2I(900, 400)
-        };
-        dialog.Confirmed += () =>
-        {
-            DataManager.ResetGachaBox(set);
-            ShowBox(set);
-            StatusLabel.Text = "Started a new box";
-        };
-        dialog.VisibilityChanged += () =>
-        {
-            if(!dialog.Visible) dialog.QueueFree();
-        };
-        AddChild(dialog);
-        dialog.PopupCentered();
+        ResetBoxDialog.DialogText = $"Start a new box of {set.Name}? The {box.PacksLeft} unopened packs of this box are discarded.";
+        ResetBoxDialog.PopupCentered();
+    }
+
+    private void ResetBox()
+    {
+        if(CurrentSet is not GachaSet set) return;
+
+        DataManager.ResetGachaBox(set);
+        ShowBox(set);
+        StatusLabel.Text = "Started a new box";
     }
 
     private void OpenPack(GachaSet set, GachaBox box, int packIndex)

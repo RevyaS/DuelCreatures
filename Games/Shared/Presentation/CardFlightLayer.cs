@@ -11,12 +11,6 @@ public partial class CardFlightLayer : Control
 {
     const string CardScenePath = "res://Games/Shared/Cards/Card.tscn";
 
-    public override void _Ready()
-    {
-        SetAnchorsPreset(LayoutPreset.FullRect);
-        MouseFilter = MouseFilterEnum.Ignore;
-    }
-
     // Flies a copy of `card` from `from` to wherever `to` says (re-read every frame, so it
     // follows a destination that's still moving, e.g. a hand re-spacing its cards)
     public async Task Fly(CardBase card, Transform2D from, Func<Transform2D> to, Transition transition,

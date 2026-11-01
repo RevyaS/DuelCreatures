@@ -29,6 +29,9 @@ public partial class VanguardDeckBuilderScreen : Control
     Button RenameButton = null!, OwnedButton = null!, AllButton = null!, ConfirmDeckButton = null!;
     Button SearchButton = null!, ResetButton = null!, AllGrades = null!, BackButton = null!, SaveButton = null!;
     LineEdit SearchBar = null!;
+    ConfirmationDialog RenameDialog = null!;
+    LineEdit NameEdit = null!;
+    ConfirmationDialog UnsavedDialog = null!;
     Control StarterSlot = null!, DeckCards = null!, CardPoolList = null!;
     Control CardInfoOverlay = null!, DeckListOverlay = null!;
     VanguardCardInfo CardInfo = null!;
@@ -62,6 +65,13 @@ public partial class VanguardDeckBuilderScreen : Control
         DeckListOverlay = GetNode<Control>($"%{nameof(DeckListOverlay)}");
         CardInfo = GetNode<VanguardCardInfo>($"%{nameof(CardInfo)}");
         DeckList = GetNode<VanguardDeckList>($"%{nameof(DeckList)}");
+
+        RenameDialog = GetNode<ConfirmationDialog>($"%{nameof(RenameDialog)}");
+        NameEdit = GetNode<LineEdit>($"%{nameof(NameEdit)}");
+        RenameDialog.RegisterTextEnter(NameEdit);
+        RenameDialog.Confirmed += RenameDeck;
+        UnsavedDialog = GetNode<ConfirmationDialog>($"%{nameof(UnsavedDialog)}");
+        UnsavedDialog.Confirmed += () => GUIManager.Get(this).OpenMainScreen();
 
         RenameButton = GetNode<Button>($"%{nameof(RenameButton)}");
         RenameButton.Pressed += ShowRenameDialog;
@@ -318,20 +328,18 @@ public partial class VanguardDeckBuilderScreen : Control
 
     private void ShowRenameDialog()
     {
-        var nameEdit = new LineEdit { Text = Deck.Name, CustomMinimumSize = new Vector2(700, 0) };
-        var dialog = CreateDialog(new ConfirmationDialog { Title = "Deck Name" });
-        dialog.AddChild(nameEdit);
-        dialog.RegisterTextEnter(nameEdit);
-        dialog.Confirmed += () =>
-        {
-            var name = nameEdit.Text.Trim();
-            if(name.Length == 0 || name == Deck.Name) return;
-            Deck.Name = name;
-            ChangeDeck($"Renamed to {name}");
-        };
-        dialog.PopupCentered();
-        nameEdit.GrabFocus();
-        nameEdit.SelectAll();
+        NameEdit.Text = Deck.Name;
+        RenameDialog.PopupCentered();
+        NameEdit.GrabFocus();
+        NameEdit.SelectAll();
+    }
+
+    private void RenameDeck()
+    {
+        var name = NameEdit.Text.Trim();
+        if(name.Length == 0 || name == Deck.Name) return;
+        Deck.Name = name;
+        ChangeDeck($"Renamed to {name}");
     }
 
     private void BackPressed()
@@ -343,22 +351,7 @@ public partial class VanguardDeckBuilderScreen : Control
             return;
         }
 
-        var dialog = CreateDialog(new ConfirmationDialog { Title = "Unsaved Changes", DialogText = "Leave without saving the deck?" });
-        dialog.OkButtonText = "Leave";
-        dialog.Confirmed += guiManager.OpenMainScreen;
-        dialog.PopupCentered();
-    }
-
-    private T CreateDialog<T>(T dialog) where T : AcceptDialog
-    {
-        dialog.Theme = GD.Load<Theme>("res://Resources/Themes/GUITheme.tres");
-        dialog.MinSize = new Vector2I(800, 300);
-        dialog.VisibilityChanged += () =>
-        {
-            if(!dialog.Visible) dialog.QueueFree();
-        };
-        AddChild(dialog);
-        return dialog;
+        UnsavedDialog.PopupCentered();
     }
     #endregion
 

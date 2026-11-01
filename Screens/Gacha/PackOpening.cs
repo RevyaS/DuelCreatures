@@ -13,7 +13,6 @@ using Godot;
 /// </summary>
 public partial class PackOpening : Control
 {
-    const int SfxVoices = 4;
     static readonly Vector2 PackSize = new(420, 700);
     static readonly Vector2 AnticipationAuraSize = new(1100, 1100);
 
@@ -51,19 +50,13 @@ public partial class PackOpening : Control
         sleeve = GD.Load<SleeveInfo>("res://Sleeves/VanguardDefaultSleeve.tres");
 
         // A tap anywhere on the opening moves it along
-        var gestures = new GestureDetector();
-        gestures.Tapped += () => tap?.TrySetResult();
-        AddChild(gestures);
+        GetNode<GestureDetector>("%Gestures").Tapped += () => tap?.TrySetResult();
 
         RevealAllButton.Pressed += RevealAll;
         ContinueButton.Pressed += Close;
 
-        for(int i = 0; i < SfxVoices; i++)
-        {
-            var voice = new AudioStreamPlayer();
-            AddChild(voice);
-            voices.Add(voice);
-        }
+        // Several voices so overlapping sounds don't cut each other off (add more in the scene)
+        voices.AddRange(GetNode("%Voices").GetChildren().OfType<AudioStreamPlayer>());
     }
 
     public async void Open(PackResult packResult, Texture2D? packTexture)

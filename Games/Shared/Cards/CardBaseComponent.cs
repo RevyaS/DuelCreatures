@@ -9,6 +9,7 @@ public abstract partial class CardBaseComponent : Control
     BackgroundRect Back = null!;
     // Press, long press and drag (see GestureDetector)
     GestureDetector? gestures = null;
+    const string Gestures = "Gestures";
 
     private bool _currentlyDragged = false;
     // The card stays where it is but can't be seen while a copy of it is dragged around.
@@ -94,8 +95,9 @@ public abstract partial class CardBaseComponent : Control
 
         if(!Engine.IsEditorHint())
         {
-            // A card dragged out of a list drags in any direction instead of scrolling it
-            gestures = new GestureDetector { Drags = _draggable, ScrollsParent = false };
+            // Set up in the card scene (a card dragged out of a list drags in any direction instead of scrolling it)
+            gestures = GetNode<GestureDetector>($"%{nameof(Gestures)}");
+            gestures.Drags = _draggable;
             gestures.Tapped += OnPressed;
             gestures.LongPressed += OnLongPress;
             gestures.DragStarted += position =>
@@ -105,7 +107,6 @@ public abstract partial class CardBaseComponent : Control
             gestures.DragMoved += CardDrag.Move;
             gestures.DragEnded += CardDrag.End;
             gestures.DragCancelled += CardDrag.Cancel;
-            AddChild(gestures);
         }
         Border = GetNode<ColorRect>($"%{nameof(Border)}");
         defaultBorderColor = Border.Color;

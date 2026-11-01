@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" uid="uid://1if5j8yqi77r" path="res://Games/Shared/Components/ChoiceDialog.cs" id="1_dialog"]
+[ext_resource type="Theme" uid="uid://ddhncwhruw31s" path="res://Resources/Themes/GUITheme.tres" id="2_theme"]
+
+[node name="ChoiceDialog" type="AcceptDialog"]
+min_size = Vector2i(900, 800)
+theme = ExtResource("2_theme")
+ok_button_text = "Cancel"
+script = ExtResource("1_dialog")
+
+[node name="Scroll" type="ScrollContainer" parent="."]
+horizontal_scroll_mode = 0
+
+[node name="Choices" type="VBoxContainer" parent="Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3

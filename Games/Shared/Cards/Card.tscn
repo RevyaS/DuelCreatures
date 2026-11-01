@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://b3rw6rjka7eon"]
+[gd_scene load_steps=4 format=3 uid="uid://b3rw6rjka7eon"]
 
 [ext_resource type="Script" uid="uid://d3joytsthq224" path="res://Games/Shared/Cards/Card.cs" id="1_gasdx"]
 [ext_resource type="PackedScene" uid="uid://871mkmeodd5s" path="res://Games/Shared/Components/BackgroundRect.tscn" id="2_6ma3f"]
+[ext_resource type="Script" path="res://addons/rev_godot_core/Components/GestureDetector.cs" id="9_gestures"]
 
 [node name="Card" type="Control"]
 custom_minimum_size = Vector2(300, 420)
@@ -127,3 +128,8 @@ theme_override_font_sizes/font_size = 46
 text = "1"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Gestures" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("9_gestures")
+ScrollsParent = false

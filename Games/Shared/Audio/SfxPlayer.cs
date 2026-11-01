@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
-// Plays SfxBus cues for the sides enabled in PresentationConfig.Sfx,
-// with a few voices so overlapping sounds don't cut each other off
+// Plays SfxBus cues for the sides enabled in PresentationConfig.Sfx. Its AudioStreamPlayer
+// children are the voices (see SfxPlayer.tscn), so overlapping sounds don't cut each other off.
 public partial class SfxPlayer : Node
 {
     readonly List<AudioStreamPlayer> voices = [];
@@ -12,12 +13,7 @@ public partial class SfxPlayer : Node
 
     public override void _Ready()
     {
-        for(int i = 0; i < PresentationConfig.SfxVoices; i++)
-        {
-            var voice = new AudioStreamPlayer();
-            AddChild(voice);
-            voices.Add(voice);
-        }
+        voices.AddRange(GetChildren().OfType<AudioStreamPlayer>());
     }
 
     public void Listen(SfxBus sfxBus)

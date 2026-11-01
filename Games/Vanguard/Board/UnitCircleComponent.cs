@@ -165,14 +165,13 @@ public partial class UnitCircleComponent : Control, ICardSpaceBindable<UnitCircl
             drop.CardDropped += OnCardDropped;
             drop.DragHoverChanged += OnDropAreaDragHoverChanged;
 
-            gestures = new GestureDetector();
+            gestures = GetNode<GestureDetector>("%Gestures");
             gestures.Tapped += OnTapped;
             gestures.LongPressed += () => LongPressed?.Invoke(this);
             gestures.DragStarted += OnGestureDragStarted;
             gestures.DragMoved += OnGestureDragMoved;
             gestures.DragEnded += OnGestureDragEnded;
             gestures.DragCancelled += OnGestureDragCancelled;
-            AddChild(gestures);
 
             // Cards here only show: the circle takes every press, so nothing on top can block it
             cardRotationContainer.CardAdded += IgnoreMouse;

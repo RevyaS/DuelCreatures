@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://54vx7214u53f"]
+[gd_scene load_steps=8 format=3 uid="uid://54vx7214u53f"]
 
 [ext_resource type="Script" uid="uid://dg7uwa2tvdn5o" path="res://Games/Vanguard/Board/InputProvider.cs" id="1_mnfo1"]
 [ext_resource type="PackedScene" uid="uid://cuqm30mdbu41k" path="res://Games/Vanguard/VanguardBoard.tscn" id="2_g4tnu"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://cl0t7q61is3ro" path="res://Games/Shared/HUD/CardList.tscn" id="4_3v0st"]
 [ext_resource type="PackedScene" uid="uid://bl86gfg2luf5o" path="res://Games/Vanguard/HUD/CardInfo.tscn" id="5_jf7tj"]
 [ext_resource type="PackedScene" uid="uid://csdff6we3cpjo" path="res://Games/Shared/HUD/SelectFromCardList.tscn" id="6_c2rk7"]
+[ext_resource type="Script" uid="uid://oevhg1o84cdb" path="res://Games/Shared/Presentation/CardFlightLayer.cs" id="7_flights"]
 
 [node name="InputProviderComponent" type="Control"]
 layout_mode = 3
@@ -19,6 +20,17 @@ script = ExtResource("1_mnfo1")
 [node name="DuelCreaturesBoard" parent="." instance=ExtResource("2_g4tnu")]
 unique_name_in_owner = true
 layout_mode = 1
+
+[node name="CardFlights" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("7_flights")
 
 [node name="HUD" type="Control" parent="."]
 layout_mode = 1

@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://c337rksfngpxb" path="res://Games/Shared/Audio/SfxPlayer.cs" id="1_sfx"]
+
+[node name="SfxPlayer" type="Node"]
+script = ExtResource("1_sfx")
+
+[node name="Voice1" type="AudioStreamPlayer" parent="."]
+
+[node name="Voice2" type="AudioStreamPlayer" parent="."]
+
+[node name="Voice3" type="AudioStreamPlayer" parent="."]
+
+[node name="Voice4" type="AudioStreamPlayer" parent="."]
