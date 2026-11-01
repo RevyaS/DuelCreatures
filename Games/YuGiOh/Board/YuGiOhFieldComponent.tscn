@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3 uid="uid://brtq4dfpxxt4v"]
+
+[ext_resource type="Script" uid="uid://d0xdsvmtayatq" path="res://Games/Shared/Components/CardRotationContainer.cs" id="1_ovhop"]
+[ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Games/Shared/Cards/Card.tscn" id="2_h00uk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4biws"]
+
+[node name="YuGiOhFieldComponent" type="PanelContainer"]
+custom_minimum_size = Vector2(147, 147)
+theme_override_styles/panel = SubResource("StyleBoxEmpty_4biws")
+
+[node name="BGColor" type="ColorRect" parent="."]
+layout_mode = 2
+color = Color(0.6784314, 0.6784314, 0.6784314, 1)
+
+[node name="FieldTexture" type="TextureRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+expand_mode = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+
+[node name="CardRotationContainer" type="Control" parent="MarginContainer"]
+layout_mode = 2
+script = ExtResource("1_ovhop")
+CardScale = 0.35
+metadata/_custom_type_script = "uid://d0xdsvmtayatq"
+
+[node name="Card" parent="MarginContainer/CardRotationContainer" instance=ExtResource("2_h00uk")]
+layout_mode = 1
+scale = Vector2(0.35, 0.35)
