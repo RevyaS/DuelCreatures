@@ -22,11 +22,12 @@ expand_mode = 1
 layout_mode = 2
 
 [node name="CardRotationContainer" type="Control" parent="MarginContainer"]
+custom_minimum_size = Vector2(160, 160)
 layout_mode = 2
 script = ExtResource("1_ovhop")
-CardScale = 0.35
+CardScale = 0.38
 metadata/_custom_type_script = "uid://d0xdsvmtayatq"
 
 [node name="Card" parent="MarginContainer/CardRotationContainer" instance=ExtResource("2_h00uk")]
 layout_mode = 1
-scale = Vector2(0.35, 0.35)
+scale = Vector2(0.38, 0.38)

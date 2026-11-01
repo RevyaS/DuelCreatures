@@ -1,15 +1,20 @@
-[gd_scene load_steps=5 format=3 uid="uid://bbkqq03vdp4mq"]
+[gd_scene load_steps=7 format=3 uid="uid://bbkqq03vdp4mq"]
 
 [ext_resource type="Script" uid="uid://p3ldeqjxb577" path="res://addons/rev_godot_core/Components/VBoxNodeContainer.cs" id="1_1185f"]
+[ext_resource type="Script" uid="uid://crctie0we45uq" path="res://Games/YuGiOh/Board/YuGiOhPlayAreaComponent.cs" id="1_vu3cf"]
+[ext_resource type="PackedScene" uid="uid://xfgt43rddlvv" path="res://Games/Shared/Zones/CardArea.tscn" id="2_4biws"]
 [ext_resource type="PackedScene" uid="uid://brtq4dfpxxt4v" path="res://Games/YuGiOh/Board/YuGiOhFieldComponent.tscn" id="2_upchb"]
 [ext_resource type="PackedScene" uid="uid://d0hdjku8idjs" path="res://Games/Shared/Zones/DeckComponent.tscn" id="3_hgsuh"]
+[ext_resource type="PackedScene" uid="uid://cow87og7qhndr" path="res://Games/Shared/Zones/CardVerticalStack.tscn" id="4_f7ryx"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hgsuh"]
-
-[node name="YuGiOhPlayAreaComponent" type="PanelContainer"]
-offset_right = 147.0
-offset_bottom = 147.0
-theme_override_styles/panel = SubResource("StyleBoxEmpty_hgsuh")
+[node name="YuGiOhPlayAreaComponent" type="MarginContainer"]
+custom_minimum_size = Vector2(1080, 0)
+offset_right = 1080.0
+offset_bottom = 461.0
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+script = ExtResource("1_vu3cf")
 
 [node name="BG" type="ColorRect" parent="."]
 visible = false
@@ -18,50 +23,79 @@ color = Color(0.6784314, 0.6784314, 0.6784314, 1)
 
 [node name="VBoxNodeContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
+theme_override_constants/separation = 20
 script = ExtResource("1_1185f")
 metadata/_custom_type_script = "uid://p3ldeqjxb577"
 
-[node name="Monsters" type="HBoxContainer" parent="VBoxNodeContainer"]
+[node name="TopCenter" type="HBoxContainer" parent="VBoxNodeContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 3
+
+[node name="CardVerticalStack" parent="VBoxNodeContainer/TopCenter" instance=ExtResource("4_f7ryx")]
+layout_mode = 2
+CardScale = 0.38
+
+[node name="Top2" type="HBoxContainer" parent="VBoxNodeContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="YuGiOhFieldComponent" parent="VBoxNodeContainer/Monsters" instance=ExtResource("2_upchb")]
+[node name="CardArea" parent="VBoxNodeContainer/Top2" instance=ExtResource("2_4biws")]
+layout_mode = 2
+CardScale = 0.38
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxNodeContainer/Top2"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="YuGiOhFieldComponent" parent="VBoxNodeContainer/Top2/HBoxContainer" instance=ExtResource("2_upchb")]
 layout_mode = 2
 
-[node name="YuGiOhFieldComponent6" parent="VBoxNodeContainer/Monsters" instance=ExtResource("2_upchb")]
+[node name="YuGiOhFieldComponent6" parent="VBoxNodeContainer/Top2/HBoxContainer" instance=ExtResource("2_upchb")]
 layout_mode = 2
 
-[node name="YuGiOhFieldComponent2" parent="VBoxNodeContainer/Monsters" instance=ExtResource("2_upchb")]
+[node name="YuGiOhFieldComponent2" parent="VBoxNodeContainer/Top2/HBoxContainer" instance=ExtResource("2_upchb")]
 layout_mode = 2
 
-[node name="YuGiOhFieldComponent3" parent="VBoxNodeContainer/Monsters" instance=ExtResource("2_upchb")]
+[node name="YuGiOhFieldComponent3" parent="VBoxNodeContainer/Top2/HBoxContainer" instance=ExtResource("2_upchb")]
 layout_mode = 2
 
-[node name="YuGiOhFieldComponent4" parent="VBoxNodeContainer/Monsters" instance=ExtResource("2_upchb")]
+[node name="YuGiOhFieldComponent4" parent="VBoxNodeContainer/Top2/HBoxContainer" instance=ExtResource("2_upchb")]
 layout_mode = 2
 
-[node name="YuGiOhFieldComponent5" parent="VBoxNodeContainer/Monsters" instance=ExtResource("2_upchb")]
+[node name="CardVerticalStack" parent="VBoxNodeContainer/Top2" instance=ExtResource("4_f7ryx")]
 layout_mode = 2
+CardScale = 0.38
 
-[node name="Spells" type="HBoxContainer" parent="VBoxNodeContainer"]
+[node name="Bottom" type="HBoxContainer" parent="VBoxNodeContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="YuGiOhFieldComponent" parent="VBoxNodeContainer/Spells" instance=ExtResource("2_upchb")]
+[node name="CardVerticalStack2" parent="VBoxNodeContainer/Bottom" instance=ExtResource("3_hgsuh")]
+layout_mode = 2
+CardScale = 0.38
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxNodeContainer/Bottom"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="YuGiOhFieldComponent" parent="VBoxNodeContainer/Bottom/HBoxContainer" instance=ExtResource("2_upchb")]
 layout_mode = 2
 
-[node name="YuGiOhFieldComponent2" parent="VBoxNodeContainer/Spells" instance=ExtResource("2_upchb")]
+[node name="YuGiOhFieldComponent2" parent="VBoxNodeContainer/Bottom/HBoxContainer" instance=ExtResource("2_upchb")]
 layout_mode = 2
 
-[node name="YuGiOhFieldComponent3" parent="VBoxNodeContainer/Spells" instance=ExtResource("2_upchb")]
+[node name="YuGiOhFieldComponent3" parent="VBoxNodeContainer/Bottom/HBoxContainer" instance=ExtResource("2_upchb")]
 layout_mode = 2
 
-[node name="YuGiOhFieldComponent4" parent="VBoxNodeContainer/Spells" instance=ExtResource("2_upchb")]
+[node name="YuGiOhFieldComponent4" parent="VBoxNodeContainer/Bottom/HBoxContainer" instance=ExtResource("2_upchb")]
 layout_mode = 2
 
-[node name="YuGiOhFieldComponent5" parent="VBoxNodeContainer/Spells" instance=ExtResource("2_upchb")]
+[node name="YuGiOhFieldComponent5" parent="VBoxNodeContainer/Bottom/HBoxContainer" instance=ExtResource("2_upchb")]
 layout_mode = 2
 
-[node name="CardVerticalStack" parent="VBoxNodeContainer/Spells" instance=ExtResource("3_hgsuh")]
+[node name="CardVerticalStack" parent="VBoxNodeContainer/Bottom" instance=ExtResource("3_hgsuh")]
 layout_mode = 2
-CardScale = 0.35
+CardScale = 0.38

@@ -23,6 +23,7 @@ theme_override_constants/margin_bottom = 2
 
 [node name="CardContainer" type="Control" parent="MarginContainer"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(135, 189)
 layout_mode = 2
 script = ExtResource("1_lyp1o")
 metadata/_custom_type_script = "uid://bqw5phtur46nx"

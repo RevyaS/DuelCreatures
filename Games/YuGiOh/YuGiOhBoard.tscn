@@ -1,0 +1,81 @@
+[gd_scene load_steps=4 format=3 uid="uid://ca1mvs1wcc75x"]
+
+[ext_resource type="PackedScene" uid="uid://b7fl8cs62jr2v" path="res://Games/Vanguard/Board/Hand.tscn" id="1_usnc8"]
+[ext_resource type="PackedScene" uid="uid://bbkqq03vdp4mq" path="res://Games/YuGiOh/Board/YuGiOhPlayAreaComponent.tscn" id="1_xeqle"]
+[ext_resource type="PackedScene" uid="uid://brtq4dfpxxt4v" path="res://Games/YuGiOh/Board/YuGiOhFieldComponent.tscn" id="3_2jgss"]
+
+[node name="YuGiOhBoard" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_horizontal_guides_ = [583.0, 747.0]
+metadata/_edit_vertical_guides_ = [296.0, 456.0, 624.0, 784.0]
+
+[node name="Board" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 1080.0
+offset_bottom = 1351.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 22
+
+[node name="OppHand" parent="Board" instance=ExtResource("1_usnc8")]
+layout_mode = 2
+CardScale = 0.5
+Alignment = 0
+ShowBackground = true
+
+[node name="Control" type="Control" parent="Board"]
+custom_minimum_size = Vector2(1080, 348)
+layout_mode = 2
+
+[node name="Opponent" parent="Board/Control" instance=ExtResource("1_xeqle")]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_right = 0.0
+offset_bottom = 532.0
+grow_horizontal = 2
+rotation = 3.1415927
+pivot_offset = Vector2(540, 266)
+
+[node name="MarginContainer" type="MarginContainer" parent="Board"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Board/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 168
+alignment = 1
+
+[node name="YuGiOhFieldComponent" parent="Board/MarginContainer/HBoxContainer" instance=ExtResource("3_2jgss")]
+layout_mode = 2
+
+[node name="YuGiOhFieldComponent2" parent="Board/MarginContainer/HBoxContainer" instance=ExtResource("3_2jgss")]
+layout_mode = 2
+
+[node name="Control2" type="Control" parent="Board"]
+custom_minimum_size = Vector2(1080, 348)
+layout_mode = 2
+
+[node name="Player" parent="Board/Control2" instance=ExtResource("1_xeqle")]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1080.0
+offset_top = -532.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="PlayerHand" parent="Board" instance=ExtResource("1_usnc8")]
+layout_mode = 2
+CardScale = 0.5
+Alignment = 0
+ShowBackground = true
