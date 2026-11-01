@@ -255,6 +255,14 @@ public partial class CardContainer : Control
         return CardPlacement.Centered(this, CardScale, CalculateCardRotation(orientation));
     }
 
+    // Global transform a card would have if this slot sat at `rect` in its parent's space,
+    // e.g. a hidden slot that's about to be shown
+    public Transform2D GetCardGlobalTransformAt(Rect2 rect)
+    {
+        var parent = GetParent<Control>().GetGlobalTransform() * new Transform2D(0, rect.Position);
+        return CardPlacement.Centered(parent, rect.Size, CardScale, CalculateCardRotation(orientation));
+    }
+
     public void ChangeOrientation(Orientation orientation)
     {
         this.orientation = orientation;

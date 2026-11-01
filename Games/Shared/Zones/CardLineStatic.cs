@@ -3,6 +3,8 @@ using System.Linq;
 using ArC.CardGames.Components;
 using Godot;
 
+// A line of MaxCards slots. It always takes the room of MaxCards cards, but only filled
+// slots show, so Alignment places the cards within that room (e.g. centered).
 [Tool]
 public partial class CardLineStatic : CardLine
 {
@@ -31,6 +33,37 @@ public partial class CardLineStatic : CardLine
             child.RemoveCardAndFree();
         });
         lastIndex = 0;
+        UpdateSlots();
+    }
+
+    protected override void RenderCore()
+    {
+        base.RenderCore();
+        UpdateSlots();
+        ReserveRoom();
+    }
+
+    // Empty slots take no room, so the cards line up by Alignment instead of
+    // always starting at the first slot. The editor keeps showing every slot.
+    private void UpdateSlots()
+    {
+        if(Engine.IsEditorHint()) return;
+        ContainerNodeManager.ApplyToChildren<CardContainer>(child => child.Visible = child.HasCard);
+    }
+
+    // The row is always as wide as MaxCards cards, so the zone's size doesn't change as it fills
+    private void ReserveRoom()
+    {
+        var slot = Container.GetChildren<CardContainer>().FirstOrDefault();
+        if(slot is null || MaxCards == 0)
+        {
+            Container.CustomMinimumSize = Vector2.Zero;
+            return;
+        }
+
+        var size = slot.GetCombinedMinimumSize();
+        var width = MaxCards * size.X + (MaxCards - 1) * CalculateSeparation();
+        Container.CustomMinimumSize = new Vector2(Mathf.Max(width, size.X), size.Y);
     }
 
     private void EvaluateContainers(bool initiation = false)
@@ -130,17 +163,31 @@ public partial class CardLineStatic : CardLine
         }
 
         lastIndex--;
+        UpdateSlots();
     }
 
     public bool IsFull => lastIndex >= MaxCards;
 
+    // Where the next card lands once it's shown: the filled cards plus it, placed by Alignment
+    // (the empty slot itself is hidden, so it has no place of its own yet)
     protected override Transform2D GetNextSlotTransform()
     {
-        if(lastIndex < Container.GetChildCount<CardContainer>())
+        var slots = Container.GetChildren<CardContainer>().ToList();
+        if(lastIndex >= slots.Count) return base.GetNextSlotTransform();
+
+        var slot = slots[lastIndex];
+        var size = slot.GetCombinedMinimumSize();
+        var separation = CalculateSeparation();
+        var count = lastIndex + 1;
+        var free = Container.Size.X - (count * size.X + (count - 1) * separation);
+        var start = Alignment switch
         {
-            return Container.GetChild<CardContainer>(lastIndex).GetCardGlobalTransform();
-        }
-        return base.GetNextSlotTransform();
+            BoxContainer.AlignmentMode.Center => free / 2,
+            BoxContainer.AlignmentMode.End => free,
+            _ => 0
+        };
+        var x = start + lastIndex * (size.X + separation);
+        return slot.GetCardGlobalTransformAt(new Rect2(x, 0, size.X, Container.Size.Y));
     }
 
     public void AddCard(Card card)
@@ -149,6 +196,7 @@ public partial class CardLineStatic : CardLine
 
         var container = Container.GetChild<CardContainer>(lastIndex++);
         container.AddCard(card);
+        UpdateSlots();
 
         // New cards arrive face up; afterwards the game owns the face (e.g. counter blast)
         card.IsFront = true;
