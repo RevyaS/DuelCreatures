@@ -6,9 +6,9 @@ public partial class GUIManager : Node
 {
     public static GUIManager Get(Node node) => node.GetTree().Root.GetNode<GUIManager>(nameof(GUIManager));
 
-    public void PlayGame(VanguardDeckBuilder playerDeck, OpponentType opponentType)
+    public void PlayVanguardGame(VanguardDeckBuilder playerDeck, OpponentType opponentType)
     {
-        ChangeScene<Session>("res://Games/Vanguard/Board/Session.tscn", session => session.Initialize(playerDeck, opponentType));
+        ChangeScene<VanguardSession>("res://Games/Vanguard/Board/VanguardSession.tscn", session => session.Initialize(playerDeck, opponentType));
     }
 
     public void OpenMainScreen()

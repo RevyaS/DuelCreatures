@@ -175,7 +175,7 @@ public partial class MainScreen : Control
 
     private void PlayPressed()
     {
-        GUIManager.Get(this).PlayGame(DeckSelected!.Build(), OpponentSelected!.Value);
+        GUIManager.Get(this).PlayVanguardGame(DeckSelected!.Build(), OpponentSelected!.Value);
     }
 
     private void OpponentChoicePressed(BaseButton button)

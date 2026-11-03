@@ -17,7 +17,7 @@ public enum OpponentType
     AI
 }
 
-public partial class Session : Control
+public partial class VanguardSession : Control
 {
     OpponentType Opponent;
     VanguardDeckBuilder PlayerDeck = null!;
