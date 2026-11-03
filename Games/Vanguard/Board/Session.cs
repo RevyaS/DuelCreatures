@@ -23,7 +23,7 @@ public partial class Session : Control
     VanguardDeckBuilder PlayerDeck = null!;
     VanguardBotDifficulty Difficulty = VanguardBotDifficulty.MASTER;
 
-    InputProvider InputProviderComponent = null!;
+    VanguardInputProvider InputProviderComponent = null!;
     VanguardBoard Board => InputProviderComponent.Board;
     
     PanelContainer HUD = null!;
@@ -61,7 +61,7 @@ public partial class Session : Control
         HUD = GetNode<PanelContainer>($"%{nameof(HUD)}");
         GameOverDialog = GetNode<GameOverDialog>($"%{nameof(GameOverDialog)}");
         GameOverDialog.Initialize(PlayerDeck);
-        InputProviderComponent = GetNode<InputProvider>($"%{nameof(InputProviderComponent)}");
+        InputProviderComponent = GetNode<VanguardInputProvider>($"%{nameof(InputProviderComponent)}");
         InputProviderComponent.SetEventBus(eventBus);
 
         var aiDeck = DeckFactory.RoyalPaladinTrialDeck;

@@ -11,7 +11,7 @@ using ArC.CardGames.Rules;
 using ArC.CardGames.Setup;
 using Godot;
 
-public partial class InputProvider : Control, IVanguardPlayerInputProvider
+public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvider
 {
     VanguardBoard board = null!;
     public VanguardBoard Board => board;

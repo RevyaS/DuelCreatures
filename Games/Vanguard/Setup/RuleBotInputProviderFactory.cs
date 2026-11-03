@@ -10,7 +10,7 @@ public class RuleBotInputProviderFactory : TwoPlayerInputProviderFactory<Vanguar
     IVanguardPlayerInputProvider? player1 = null, player2 = null;
 
     VanguardGame Game;
-    InputProvider InputProviderComponent;
+    VanguardInputProvider InputProviderComponent;
     GameContext GameContext;
     
     VanguardGameDataQuery DataQuery;
@@ -19,7 +19,7 @@ public class RuleBotInputProviderFactory : TwoPlayerInputProviderFactory<Vanguar
     VanguardBotDifficulty BotDifficulty;
 
     public RuleBotInputProviderFactory(VanguardGame game, OpponentType ruleBot, VanguardBotDifficulty botDifficulty, VanguardGameDataQuery dataQuery,
-        InputProvider inputProviderComponent, GameContext gameContext, VanguardSkillService skillService)
+        VanguardInputProvider inputProviderComponent, GameContext gameContext, VanguardSkillService skillService)
         : base(game.Player1, game.Player2)
     {
         Game = game;

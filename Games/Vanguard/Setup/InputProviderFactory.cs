@@ -14,7 +14,7 @@ public class InputProviderFactory : TwoPlayerInputProviderFactory<VanguardPlayer
     IVanguardPlayerInputProvider? player1 = null, player2 = null;
 
     VanguardGame Game;
-    InputProvider InputProviderComponent;
+    VanguardInputProvider InputProviderComponent;
     GameContext GameContext;
     
     VanguardGameDataQuery DataQuery;
@@ -27,7 +27,7 @@ public class InputProviderFactory : TwoPlayerInputProviderFactory<VanguardPlayer
 
     public InputProviderFactory(VanguardGame game, VanguardGameDataQuery dataQuery,
         VanguardAIGameStateEncoder gameStateEncoder, VanguardAIDecisionContextEncoder decisionContextEncoder, VanguardAIOptionEncoder optionEncoder,
-        InputProvider inputProviderComponent, GameContext gameContext, VanguardSkillService skillService, IVanguardLogger logger)
+        VanguardInputProvider inputProviderComponent, GameContext gameContext, VanguardSkillService skillService, IVanguardLogger logger)
         : base(game.Player1, game.Player2)
     {
         Game = game;
