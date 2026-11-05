@@ -9,7 +9,7 @@ using Godot;
 
 // One provider per player for the whole game: ArC asks for them constantly (every event
 // with a reacting skill), and building a new one each time would drop the AI's state
-public class InputProviderFactory : TwoPlayerInputProviderFactory<VanguardPlayerProfile, IVanguardPlayerInputProvider>
+public class VanguardInputProviderFactory : TwoPlayerInputProviderFactory<VanguardPlayerProfile, IVanguardPlayerInputProvider>
 {
     IVanguardPlayerInputProvider? player1 = null, player2 = null;
 
@@ -25,7 +25,7 @@ public class InputProviderFactory : TwoPlayerInputProviderFactory<VanguardPlayer
     VanguardAIOptionEncoder OptionEncoder;
     VanguardAIModel Model;
 
-    public InputProviderFactory(VanguardGame game, VanguardGameDataQuery dataQuery,
+    public VanguardInputProviderFactory(VanguardGame game, VanguardGameDataQuery dataQuery,
         VanguardAIGameStateEncoder gameStateEncoder, VanguardAIDecisionContextEncoder decisionContextEncoder, VanguardAIOptionEncoder optionEncoder,
         VanguardInputProvider inputProviderComponent, GameContext gameContext, VanguardSkillService skillService, IVanguardLogger logger)
         : base(game.Player1, game.Player2)

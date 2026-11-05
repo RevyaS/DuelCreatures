@@ -1,5 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://ca1mvs1wcc75x"]
+[gd_scene load_steps=5 format=3 uid="uid://ca1mvs1wcc75x"]
 
+[ext_resource type="Script" uid="uid://0yvuui1e7l76" path="res://Games/YuGiOh/YuGiOhBoard.cs" id="1_phugy"]
 [ext_resource type="PackedScene" uid="uid://b7fl8cs62jr2v" path="res://Games/Vanguard/Board/Hand.tscn" id="1_usnc8"]
 [ext_resource type="PackedScene" uid="uid://bbkqq03vdp4mq" path="res://Games/YuGiOh/Board/YuGiOhPlayAreaComponent.tscn" id="1_xeqle"]
 [ext_resource type="PackedScene" uid="uid://brtq4dfpxxt4v" path="res://Games/YuGiOh/Board/YuGiOhFieldComponent.tscn" id="3_2jgss"]
@@ -7,6 +8,7 @@
 [node name="YuGiOhBoard" type="MarginContainer"]
 offset_right = 1080.0
 offset_bottom = 1372.0
+script = ExtResource("1_phugy")
 metadata/_edit_horizontal_guides_ = [583.0, 747.0]
 metadata/_edit_vertical_guides_ = [296.0, 456.0, 624.0, 784.0]
 

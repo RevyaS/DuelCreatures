@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://cay842l6pf63k"]
+
+[ext_resource type="Script" uid="uid://do6iso016d4ry" path="res://Games/YuGiOh/YuGiOhSession.cs" id="1_454td"]
+[ext_resource type="PackedScene" uid="uid://cdr3i0iyowbxf" path="res://Games/YuGiOh/Board/YuGiOhInputProvider.tscn" id="1_jttoj"]
+
+[node name="YuGiOhSession" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_454td")
+
+[node name="InputProviderComponent" parent="." instance=ExtResource("1_jttoj")]
+unique_name_in_owner = true
+layout_mode = 1

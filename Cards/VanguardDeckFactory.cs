@@ -1,7 +1,7 @@
 using ArC.CardGames.Vanguard;
 using static ArC.CardGames.Vanguard.Cards.VanguardCardsFactory;
 
-public static class DeckFactory
+public static class VanguardDeckFactory
 {
     public static VanguardDeckBuilder RoyalPaladinTrialDeck => VanguardDeckBuilder.Create()
         .AddCards(RoyalPaladin.Flogal, 4)

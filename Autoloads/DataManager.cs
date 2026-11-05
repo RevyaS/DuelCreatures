@@ -20,10 +20,10 @@ public partial class DataManager : Node
     /// <summary>Every new profile owns these decks, and the cards in them.</summary>
     public static IReadOnlyList<(string Name, VanguardDeckBuilder Deck)> InitialDecks =>
     [
-        ("Royal Paladin Trial Deck", DeckFactory.RoyalPaladinTrialDeck),
-        ("Kagero Trial Deck", DeckFactory.KageroTrialDeck),
-        ("Oracle Think Tank Trial Deck", DeckFactory.OTTTrialDeck),
-        ("Nova Grappler Trial Deck", DeckFactory.NovaGrapplerTrialDeck)
+        ("Royal Paladin Trial Deck", VanguardDeckFactory.RoyalPaladinTrialDeck),
+        ("Kagero Trial Deck", VanguardDeckFactory.KageroTrialDeck),
+        ("Oracle Think Tank Trial Deck", VanguardDeckFactory.OTTTrialDeck),
+        ("Nova Grappler Trial Deck", VanguardDeckFactory.NovaGrapplerTrialDeck)
     ];
 
     RevDataManager data = null!;

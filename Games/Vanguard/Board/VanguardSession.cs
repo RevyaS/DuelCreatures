@@ -29,23 +29,6 @@ public partial class VanguardSession : Control
     PanelContainer HUD = null!;
     GameOverDialog GameOverDialog = null!;
 
-    VanguardDeckBuilder TestDeck => VanguardDeckBuilder.Create()
-        .AddCards(RoyalPaladin.ArdentJewelKnightPolli, 4)
-        .AddCards(RoyalPaladin.BringerOfGoodLuckEpona, 4)
-        .AddCards(RoyalPaladin.Flogal, 4)
-        .AddCards(RoyalPaladin.DevotingJewelKnightTabitha, 4)
-        .AddCards(RoyalPaladin.StarlightUnicorn, 4)
-        .AddCards(RoyalPaladin.Wingal, 4)
-        .AddCards(RoyalPaladin.KnightOfRoseMorgana, 4)
-        .AddCards(RoyalPaladin.LittleSageMarron, 4)
-        .AddCards(RoyalPaladin.BlasterBlade, 4)
-        .AddCards(RoyalPaladin.KnightOfSilenceGallatin, 4)
-        .AddCards(RoyalPaladin.KnightOfTheHarpTristan, 4)
-        .AddCards(RoyalPaladin.KingOfKnightsAlfred, 4) 
-        .AddCards(RoyalPaladin.CrimsonButterflyBrigitte, 4)
-        .AddCards(RoyalPaladin.SolitaryKnightGancelot, 4)
-        .SetStartingVanguard(RoyalPaladin.StardustTrumpeteer);
-
     public void Initialize(VanguardDeckBuilder playerDeck, OpponentType opponent)
     {
         PlayerDeck = playerDeck;
@@ -64,7 +47,7 @@ public partial class VanguardSession : Control
         InputProviderComponent = GetNode<VanguardInputProvider>($"%{nameof(InputProviderComponent)}");
         InputProviderComponent.SetEventBus(eventBus);
 
-        var aiDeck = DeckFactory.RoyalPaladinTrialDeck;
+        var aiDeck = VanguardDeckFactory.RoyalPaladinTrialDeck;
 
         var player1 = new VanguardPlayerProfile(PlayerDeck);
 
@@ -93,7 +76,7 @@ public partial class VanguardSession : Control
         IPlayerInputProviderFactory<IVanguardPlayerInputProvider> inputProviderFactory;
         if(Opponent == OpponentType.AI)
         {
-            inputProviderFactory = new InputProviderFactory(game, dataQuery, gameStateEncoder, decisionContextEncoder, optionEncoder, InputProviderComponent, gameContext, skillService, logger);
+            inputProviderFactory = new VanguardInputProviderFactory(game, dataQuery, gameStateEncoder, decisionContextEncoder, optionEncoder, InputProviderComponent, gameContext, skillService, logger);
         } else
         {
             inputProviderFactory = new RuleBotInputProviderFactory(game, Opponent, VanguardBotDifficulty.MASTER, dataQuery, InputProviderComponent, gameContext, skillService);
