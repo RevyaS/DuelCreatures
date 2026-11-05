@@ -197,7 +197,7 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
                 SetProviderStrategy(new RidePhaseStrategy(board));
                 return Task.CompletedTask;
             case MainPhase:
-                SetProviderStrategy(new MainPhaseStrategy(board, CardInfoComponent, GameContext));
+                SetProviderStrategy(new VanguardMainPhaseStrategy(board, CardInfoComponent, GameContext));
                 return Task.CompletedTask;
             case VanguardAttackPhase:
                 SetProviderStrategy(new AttackPhaseStrategy(board, GameContext));

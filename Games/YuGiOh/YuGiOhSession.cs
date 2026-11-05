@@ -17,6 +17,8 @@ public partial class YuGiOhSession : Control
         var effectService = new YuGiOhEffectService();
         var player1 = new YuGiOhPlayerProfile(YuGiOhDeckFactory.ExosisterTacticalTryDeck);
         var player2 = new YuGiOhPlayerProfile(YuGiOhDeckFactory.ExosisterTacticalTryDeck);
+
+        InputProviderComponent.SetEventBus(eventBus);
         
         var game = new YuGiOhGame(player1, player2, eventBus, effectService, new GodotLogger());
 

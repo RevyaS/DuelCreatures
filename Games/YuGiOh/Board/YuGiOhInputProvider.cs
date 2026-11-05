@@ -1,3 +1,4 @@
+using ArC.CardGames;
 using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Rules;
@@ -21,6 +22,9 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider
 
     PlayAreaBase IPlayerInputProvider.PlayArea => PlayArea;
 
+    IInputProviderStrategy strategy = null!;
+    Stack<IInputProviderStrategy> strategyStack = new();
+
     public override void _Ready()
     {
         board = GetNode<YuGiOhBoard>($"%{nameof(YuGiOhBoard)}"); 
@@ -31,6 +35,48 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider
         PlayArea = playArea;
         OpponentPlayArea = opponentPlayArea;
         SkillService = skillService;
+    }
+
+    public void SetEventBus(YuGiOhEventBus eventBus)
+    {
+        eventBus.PhaseChanged += OnPhaseChanged;
+    }
+
+    private Task OnPhaseChanged(IPhase phase)
+    {
+        if(phase is not IManualPhase) return Task.CompletedTask;
+
+        switch(phase)
+        {
+            case MainPhase:
+                SetProviderStrategy(new YuGiOhMainPhaseStrategy(board));
+                return Task.CompletedTask;
+        }
+        throw new NotSupportedException($"{phase.GetType().Name} is not supported yet");
+    }
+
+    public void SetProviderStrategy(IInputProviderStrategy strategy)
+    {
+        strategyStack.Clear();
+        strategyStack.Push(strategy);
+        SetProviderStrategyCore();
+    }
+
+    public void PushProviderStrategy(IInputProviderStrategy strategy)
+    {
+        strategyStack.Push(strategy);
+        SetProviderStrategyCore();
+    }
+
+    public void PopProviderStrategy()
+    {
+        strategyStack.Pop();
+        SetProviderStrategyCore();
+    }
+
+    private void SetProviderStrategyCore()
+    {
+        strategy = strategyStack.Peek();
     }
 
     public Task<bool> QueryActivateSkill(YuGiOhCard invoker, YuGiOhAutomaticSkill skill)
@@ -48,9 +94,9 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider
         throw new NotImplementedException();
     }
 
-    public Task<IMainPhaseAction> RequestMainPhaseAction(List<IMainPhaseAction> actions)
+    public async Task<IMainPhaseAction> RequestMainPhaseAction(List<IMainPhaseAction> actions)
     {
-        throw new NotImplementedException();
+        return await ((IRequestMainPhaseAction)strategy).RequestMainPhaseAction(actions);
     }
 
     public Task<YuGiOhCard> SelectCardFromDeck()
@@ -93,9 +139,9 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider
         throw new NotImplementedException();
     }
 
-    public Task<YuGiOhChainResponse?> SelectChainResponse(YuGiOhChain chain)
+    public async Task<YuGiOhChainResponse?> SelectChainResponse(YuGiOhChain chain)
     {
-        throw new NotImplementedException();
+        return await ((ISelectChainResponse)strategy).SelectChainResponse(chain);
     }
 
     public Task<IYuGiOhZone> SelectOpponentZone(ZoneSelector selector)
