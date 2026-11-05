@@ -51,7 +51,6 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
         CardListComponent = GetNode<CardList>($"%{nameof(CardListComponent)}");
         CardListComponent.CardPressed += OnCardListCardPressed;
 
-        CardInfoComponent = GetNode<CardInfo>($"%{nameof(CardInfoComponent)}");
 
         board.PlayerArea.DropZone.SetCardList(CardListComponent);
         board.OppArea.DropZone.SetCardList(CardListComponent);
@@ -65,12 +64,14 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
         Board.PublicCardPressed += OnPublicCardPressed;
         SelectCardsComponent.CardPressed += OnPublicCardPressed;
         SelectFromCardListComponent.CardPressed += OnPublicCardPressed;
+
+        CardInfoComponent = GetNode<CardInfo>($"%{nameof(CardInfoComponent)}");
+        CardInfoComponent.Init(board, this);
     }
 
     private void OnPlayerUnitCircleCardPressed(UnitCircleComponent unitCircle, Card card)
     {
-        var enableActivateButton = VanguardGameRules.UnitCircleCanActivateSkill(this, unitCircle.UnitCircle);
-        ShowCardInfo(card, enableActivateButton, GrantedSkills(unitCircle));
+        ShowCardInfo(card, true, GrantedSkills(unitCircle));
     }
 
     // Skills a unit got from effects (e.g. "this unit gets '[AUTO] ...' until end of turn")
@@ -231,15 +232,12 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
 
     private void OnHandCardPressed(Card card)
     {
-        bool enableActivateSkill = false;
+        bool skillActivationWindow = false;
         if(GameContext.GameState is SelectMainPhaseActionState)
         {
-            if(VanguardGameRules.HandCardCanActivateSkill(this, Board.PlayerHand.Hand, (VanguardCard)card.CurrentCard))
-            {
-                enableActivateSkill = true;
-            }
+            skillActivationWindow = true;
         }
-        ShowCardInfo(card, enableActivateSkill);
+        ShowCardInfo(card, skillActivationWindow);
     }
 
     private void OnUnitCircleCardPressed(Card card)
@@ -263,11 +261,11 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
         ShowCardInfo(card);
     }
 
-    private void ShowCardInfo(Card card, bool canActivate = false, VanguardSkill[]? grantedSkills = null)
+    private void ShowCardInfo(Card card, bool skillActivationWindow = false, VanguardSkill[]? grantedSkills = null)
     {
         // Above every other HUD panel, e.g. the card selection it was opened from
         CardInfoComponent.MoveToFront();
-        CardInfoComponent.Show((VanguardCard)card.CurrentCard, canActivate, grantedSkills);
+        CardInfoComponent.Show((VanguardCard)card.CurrentCard, skillActivationWindow, grantedSkills);
     }
 
     // Don't prompt the player before the board has caught up with the game

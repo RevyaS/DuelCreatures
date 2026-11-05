@@ -19,6 +19,7 @@ public partial class VanguardCardInfo : VBoxContainer
         Owned = GetNode<Label>($"%{nameof(Owned)}");
         CardSlot = GetNode<Control>($"%{nameof(CardSlot)}");
         CardDetails = GetNode<CardDetails>($"%{nameof(CardDetails)}");
+        CardDetails.ReadOnlyMode = true;
         BackButton = GetNode<Button>($"%{nameof(BackButton)}");
         BackButton.Pressed += () => Closed?.Invoke();
     }

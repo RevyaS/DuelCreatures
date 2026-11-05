@@ -5,23 +5,23 @@ using Godot;
 public partial class CardInfo : Control
 {
     CardDetails CardDetails = null!;
-    Button ActivateButton = null!;
-    VanguardCard CurrentCard = null!;
 
     public bool ShowActivateButton { get; set; } = false;
 
     public override void _Ready()
     {
         CardDetails = GetNode<CardDetails>($"%{nameof(CardDetails)}");
-        ActivateButton = GetNode<Button>($"%{nameof(ActivateButton)}");
-        // Sits under the skill text, inside the details panel
-        ActivateButton.Reparent(CardDetails.Content);
-        ActivateButton.Pressed += OnActivateButtonPressed;
+        CardDetails.ActivationPressed += OnActivation;
     }
 
-    private void OnActivateButtonPressed()
+    public void Init(VanguardBoard vanguardBoard, IVanguardPlayerInputProvider inputProvider)
     {
-        ActivationPressed?.Invoke(CurrentCard);
+        CardDetails.Init(vanguardBoard, inputProvider);
+    }
+
+    private void OnActivation(VanguardCard card, VanguardActivationSkill skill)
+    {
+        ActivationPressed?.Invoke(card, skill);
     }
 
     public override void _GuiInput(InputEvent e)
@@ -33,16 +33,11 @@ public partial class CardInfo : Control
         }
     }
 
-    public void Show(VanguardCard card, bool canActivate = false, VanguardSkill[]? grantedSkills = null)
+    public void Show(VanguardCard card, bool skillActivationWindow = false, VanguardSkill[]? grantedSkills = null)
     {
-        CurrentCard = card;
-        CardDetails.ShowCard(card, grantedSkills);
-
-        ActivateButton.Visible = ShowActivateButton && card.HasActivationSkill;
-        ActivateButton.Disabled = !canActivate;
-
+        CardDetails.ShowCard(card, skillActivationWindow, grantedSkills);
         Show();
     }
 
-    public event Action<VanguardCard>? ActivationPressed;
+    public event Action<VanguardCard, VanguardActivationSkill>? ActivationPressed;
 }

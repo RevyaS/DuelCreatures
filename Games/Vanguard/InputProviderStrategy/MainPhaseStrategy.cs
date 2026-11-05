@@ -26,25 +26,23 @@ public class MainPhaseStrategy(VanguardBoard Board, CardInfo CardInfo, GameConte
         Board.PlayerArea.DisableRearguardDragging([Board.PlayerArea.BackCenter]);
         Board.EnablePlayerHandDragging();
         Board.ShowLeftButton(TextConstants.EndPhase);
-        CardInfo.ShowActivateButton = true;
 
         rearguardDragging = false;
         rearguardDraggedFrom = null!;
 
-        Action<VanguardCard> activatedHandler = (card) =>
+        Action<VanguardCard, VanguardActivationSkill> activatedHandler = (card, skill) =>
         {
             CardInfo.Hide();
+            selectedSkillForActivation = skill;
             if(Board.IsCardInPlayerUnitCircle(card))
             {
                 selectedUnitCircleActivation = Board.GetPlayerUnitCircleComponent(card).UnitCircle;
-                selectedSkillForActivation = card.Skills.FirstOf<VanguardActivationSkill>(x => x.Location.HasFlag(VanguardSkillCardLocation.VANGUARD) || x.Location.HasFlag(VanguardSkillCardLocation.REARGUARD));
                 var selected = actions.FirstOf<ActivateSkillFromUnitCircle>();
                 completionSource.SetResult(selected);
             }
             else
             {
                 selectedCardForHandSkillActivation = card;
-                selectedSkillForActivation = card.Skills.FirstOf<VanguardActivationSkill>(x => x.Location.HasFlag(VanguardSkillCardLocation.HAND));
                 var selected = actions.FirstOf<ActivateSkillFromHand>();
                 completionSource.SetResult(selected);
             }
@@ -110,7 +108,6 @@ public class MainPhaseStrategy(VanguardBoard Board, CardInfo CardInfo, GameConte
         Board.HideLeftButton();
         Board.DisablePlayerRearguardDropping();
         Board.DisablePlayerHandDragging();
-        CardInfo.ShowActivateButton = false;
 
         return result;
     }

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://54vx7214u53f"]
+[gd_scene load_steps=9 format=3 uid="uid://54vx7214u53f"]
 
 [ext_resource type="Script" uid="uid://dg7uwa2tvdn5o" path="res://Games/Vanguard/Board/VanguardInputProvider.cs" id="1_mnfo1"]
 [ext_resource type="PackedScene" uid="uid://cuqm30mdbu41k" path="res://Games/Vanguard/VanguardBoard.tscn" id="2_g4tnu"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://cl0t7q61is3ro" path="res://Games/Shared/HUD/CardList.tscn" id="4_3v0st"]
 [ext_resource type="PackedScene" uid="uid://bl86gfg2luf5o" path="res://Games/Vanguard/HUD/CardInfo.tscn" id="5_jf7tj"]
 [ext_resource type="PackedScene" uid="uid://csdff6we3cpjo" path="res://Games/Shared/HUD/SelectFromCardList.tscn" id="6_c2rk7"]
+[ext_resource type="PackedScene" uid="uid://b2lfbpkxmm57c" path="res://Games/Vanguard/HUD/CardDetails.tscn" id="6_f2yvh"]
 [ext_resource type="Script" uid="uid://oevhg1o84cdb" path="res://Games/Shared/Presentation/CardFlightLayer.cs" id="7_flights"]
 
 [node name="InputProviderComponent" type="Control"]
@@ -54,6 +55,14 @@ offset_bottom = 134.5
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
+
+[node name="CardInfoComponent_new_attempt" parent="HUD" instance=ExtResource("6_f2yvh")]
+visible = false
+layout_mode = 0
+offset_left = 90.0
+offset_top = 200.0
+offset_right = 990.0
+offset_bottom = 668.0
 
 [node name="CardInfoComponent" parent="HUD" instance=ExtResource("5_jf7tj")]
 unique_name_in_owner = true
