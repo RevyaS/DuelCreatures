@@ -13,17 +13,24 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider
     YuGiOhBoard board = null!;
     public YuGiOhBoard Board => board;
 
-    public YuGiOhPlayArea PlayArea => throw new NotImplementedException();
+    public YuGiOhPlayArea PlayArea { get; private set; } = null!;
 
-    public YuGiOhPlayArea OpponentPlayArea => throw new NotImplementedException();
+    public YuGiOhPlayArea OpponentPlayArea { get; private set; } = null!;
 
-    public YuGiOhSkillService SkillService => throw new NotImplementedException();
+    public YuGiOhSkillService SkillService { get; private set; } = null!;
 
     PlayAreaBase IPlayerInputProvider.PlayArea => PlayArea;
 
     public override void _Ready()
     {
         board = GetNode<YuGiOhBoard>($"%{nameof(YuGiOhBoard)}"); 
+    }
+
+    public void Activate(YuGiOhPlayArea playArea, YuGiOhPlayArea opponentPlayArea, YuGiOhSkillService skillService)
+    {
+        PlayArea = playArea;
+        OpponentPlayArea = opponentPlayArea;
+        SkillService = skillService;
     }
 
     public Task<bool> QueryActivateSkill(YuGiOhCard invoker, YuGiOhAutomaticSkill skill)
@@ -117,6 +124,11 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider
     }
 
     public Task<List<YuGiOhCard>> SelectXYZMaterials(MonsterZone zone, int amount)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<string> DeclareCardName()
     {
         throw new NotImplementedException();
     }

@@ -12,17 +12,21 @@ public partial class YuGiOhSession : Control
     {
         InputProviderComponent = GetNode<YuGiOhInputProvider>($"%{nameof(InputProviderComponent)}");
 
+        var gameContext = new GameContext();
         var eventBus = new YuGiOhEventBus();
         var effectService = new YuGiOhEffectService();
         var player1 = new YuGiOhPlayerProfile(YuGiOhDeckFactory.ExosisterTacticalTryDeck);
         var player2 = new YuGiOhPlayerProfile(YuGiOhDeckFactory.ExosisterTacticalTryDeck);
         
         var game = new YuGiOhGame(player1, player2, eventBus, effectService, new GodotLogger());
-        var inputProviderFactory = new YuGiOhInputProviderFactory(game, InputProviderComponent);
-        var gameContext = new GameContext();
-        var session = new YuGiOhGameSession(game, inputProviderFactory, eventBus, gameContext, new GodotLogger());
 
-        await StartGame(session);
+        YuGiOhGameSession createdSession = null!;
+        var dataQuery = new YuGiOhGameDataQuery(() => createdSession);
+        var skillService = new YuGiOhSkillService(gameContext, dataQuery, eventBus);
+        var inputProviderFactory = new YuGiOhInputProviderFactory(game, dataQuery, InputProviderComponent, gameContext, skillService);
+        createdSession = new YuGiOhGameSession(game, inputProviderFactory, eventBus, gameContext, new GodotLogger());
+
+        await StartGame(createdSession);
     }
 
     private async Task StartGame(YuGiOhGameSession session)
