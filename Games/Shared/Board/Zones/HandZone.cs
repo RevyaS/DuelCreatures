@@ -83,6 +83,12 @@ public partial class HandZone : CardLineDynamic, IZoneView, IBindable<GroupSpace
         presentation.Present(() => Presented?.Invoke(change.After));
     }
 
+    protected override void RenderCore()
+    {
+        base.RenderCore();
+        ZoneLayout.KeepCardHeight(this, CardScale);
+    }
+
     // Runs whenever the line renders: keeps each card's facing (the base shows every card face up unless HideCards)
     protected override void ConfigureCard(Card card)
     {

@@ -80,6 +80,12 @@ public partial class LineZone : CardLineStatic, IZoneView, IBindable<GroupSpace>
         presentation.Present(() => Presented?.Invoke(change.After));
     }
 
+    protected override void RenderCore()
+    {
+        base.RenderCore();
+        ZoneLayout.KeepCardHeight(this, CardScale);
+    }
+
     private void Add(CardSnapshot card)
     {
         var node = ZonePresentation.CreateNode(card);

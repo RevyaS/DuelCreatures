@@ -257,15 +257,15 @@ public sealed class ArcDriver : IDisposable
     {
         var from = shown.GetValueOrDefault(moved.From);
         var to = shown.GetValueOrDefault(moved.To);
-        from?.View.Apply(new ZoneCardsLeft(moved.Cards, to?.View, ZoneSnapshot.Of(moved.From)), ContextFor(from.Side));
-        to?.View.Apply(new ZoneCardsArrived(moved.Cards, from?.View, MoveFor(moved.Reason, moved.To), ZoneSnapshot.Of(moved.To)), ContextFor(to.Side));
+        if(from is not null) Apply(from, new ZoneCardsLeft(moved.Cards, to?.View, ZoneSnapshot.Of(moved.From)));
+        if(to is not null) Apply(to, new ZoneCardsArrived(moved.Cards, from?.View, MoveFor(moved.Reason, moved.To), ZoneSnapshot.Of(moved.To)));
     }
 
     private void OnCardTurned(CardTurned turned)
     {
         if(shown.GetValueOrDefault(turned.Space) is { } entry)
         {
-            entry.View.Apply(new ZoneCardTurned(turned.Card, ZoneSnapshot.Of(turned.Space)), ContextFor(entry.Side));
+            Apply(entry, new ZoneCardTurned(turned.Card, ZoneSnapshot.Of(turned.Space)));
         }
     }
 
@@ -273,7 +273,21 @@ public sealed class ArcDriver : IDisposable
     {
         if(shown.GetValueOrDefault(deck) is { } entry)
         {
-            entry.View.Apply(new ZoneShuffled(ZoneSnapshot.Of(deck)), ContextFor(entry.Side));
+            Apply(entry, new ZoneShuffled(ZoneSnapshot.Of(deck)));
+        }
+    }
+
+    // Runs inside the game's event: a view that can't show a change reports it loudly, but must never stop the game
+    // (an exception here would unwind into ArC's move)
+    private void Apply(Shown entry, ZoneChange change)
+    {
+        try
+        {
+            entry.View.Apply(change, ContextFor(entry.Side));
+        }
+        catch(Exception e)
+        {
+            GD.PushError($"{nameof(ArcDriver)}: {ZoneDesync.NameOf(entry.View)} couldn't show a {change.GetType().Name}; the game goes on. {e.Message}");
         }
     }
 
