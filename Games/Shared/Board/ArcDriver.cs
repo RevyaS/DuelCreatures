@@ -107,9 +107,7 @@ public sealed class ArcDriver : IDisposable
 
         // Zones both play areas share: unique nodes of the board scene itself
         var sharedZones = PropertiesOf<ICardSpace>(board).Where(zone => !boundZones.Contains(zone.Value)).ToDictionary();
-        var boardViews = UniqueNodes.BindableOf(boardScene)
-            .Where(view => !boundInCode.Contains(view.Value) && !(view.Value is not IZoneView && Bindings.IsBindable(view.Value) && IsPlayArea(view.Key, board)))
-            .ToDictionary();
+        var boardViews = ZoneCandidates(boardScene);
         foreach(var (name, zone, view) in Bindings.BindByName(sharedZones, boardViews, boardPath, report))
         {
             Register(view, zone, BoardSide.Both, boardPath, name, alreadyBound: true);
@@ -131,7 +129,7 @@ public sealed class ArcDriver : IDisposable
             var zones = area.ZonesByName
                 .Where(zone => !boundZones.Contains(zone.Value) && !hiddenZones.Contains(zone.Value))
                 .ToDictionary();
-            var views = UniqueNodes.BindableOf(areaNode).Where(view => !boundInCode.Contains(view.Value)).ToDictionary();
+            var views = ZoneCandidates(areaNode);
             var areaPath = $"{boardPath}/{areaName}";
             foreach(var (name, zone, view) in Bindings.BindByName(zones, views, areaPath, report))
             {
@@ -179,8 +177,14 @@ public sealed class ArcDriver : IDisposable
 
     private void OnInspectRequested(IZoneView view) => ZoneInspected?.Invoke(view);
 
-    private static bool IsPlayArea<TPlayArea>(string name, TwoPlayerBoard<TPlayArea> board) where TPlayArea : PlayAreaBase
-        => PropertiesOf<TPlayArea>(board).ContainsKey(name);
+    // The unique nodes of a scene that are meant to show a zone: zone views, and nodes binding a kind of zone (which
+    // are then reported, not being zone views). Others, like a label showing life points, aren't matched to zones.
+    private Dictionary<string, Node> ZoneCandidates(Node scene) => UniqueNodes.BindableOf(scene)
+        .Where(view => !boundInCode.Contains(view.Value) && ShowsZones(view.Value))
+        .ToDictionary();
+
+    private static bool ShowsZones(Node node)
+        => node is IZoneView || Bindings.ModelTypesOf(node.GetType()).Any(type => typeof(ICardSpace).IsAssignableFrom(type));
 
     // The public properties of `model` holding a T, by property name
     private static Dictionary<string, T> PropertiesOf<T>(object model) where T : class => model.GetType()
