@@ -41,6 +41,12 @@ public static class ActivationGates
     /// <summary>Allows nothing (outside a game, or while nothing may be activated).</summary>
     public static IActivationGate DenyAll { get; } = new DenyAllGate();
 
+    /// <summary>
+    /// The gate an ancestor of <paramref name="node"/> provides, or null when none does: the details are read-only
+    /// (e.g. the deck builder), so activated skills read as text rather than buttons.
+    /// </summary>
+    public static IActivationGate? ProvidedTo(Godot.Node node) => node.DependOn<IActivationGate?>(null);
+
     sealed class DenyAllGate : IActivationGate
     {
         public bool CanActivate(CardBase card, ICardSpace? from, ISkill skill) => false;

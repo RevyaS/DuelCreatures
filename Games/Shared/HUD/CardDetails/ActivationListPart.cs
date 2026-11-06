@@ -5,8 +5,8 @@ using Godot;
 
 /// <summary>
 /// One button per skill the player activates (IManuallyActivatedSkill), own and granted. A button is enabled only while
-/// the IActivationGate an ancestor provides allows it (none: never), and is re-checked whenever the gate changes, so
-/// it can't be pressed when the game isn't asking.
+/// the IActivationGate an ancestor provides allows it, and is re-checked whenever the gate changes, so it can't be
+/// pressed when the game isn't asking. With no gate provided (read-only, e.g. the deck builder) it shows nothing.
 /// </summary>
 [Tool]
 public partial class ActivationListPart : VBoxContainer, ICardDetailPart
@@ -20,11 +20,18 @@ public partial class ActivationListPart : VBoxContainer, ICardDetailPart
     public void Show(CardDetail detail)
     {
         this.detail = detail;
-        UseGate(this.DependOn(ActivationGates.DenyAll));
-        var interpreter = this.DependOn<ISkillTextInterpreter>(SkillKindInterpreter.Instance);
-
         this.FreeChildren();
         buttons.Clear();
+
+        // Read-only (no gate provided, e.g. the deck builder): no buttons, the skill text shows these skills instead
+        if(ActivationGates.ProvidedTo(this) is not { } provided)
+        {
+            UseGate(null);
+            Visible = false;
+            return;
+        }
+        UseGate(provided);
+        var interpreter = this.DependOn<ISkillTextInterpreter>(SkillKindInterpreter.Instance);
         foreach(var skill in detail.AllSkills.OfType<IManuallyActivatedSkill>())
         {
             var button = new Button
@@ -58,12 +65,12 @@ public partial class ActivationListPart : VBoxContainer, ICardDetailPart
         }
     }
 
-    private void UseGate(IActivationGate next)
+    private void UseGate(IActivationGate? next)
     {
         if(ReferenceEquals(gate, next)) return;
         if(gate is not null) gate.Changed -= Refresh;
         gate = next;
-        gate.Changed += Refresh;
+        if(gate is not null) gate.Changed += Refresh;
     }
 
     public override void _ExitTree()
