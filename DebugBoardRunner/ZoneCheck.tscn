@@ -1,12 +1,12 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=8 format=3 uid="uid://degua3wgeeypn"]
 
-[ext_resource type="Script" path="res://DebugBoardRunner/ZoneCheck.cs" id="1_check"]
+[ext_resource type="Script" uid="uid://bx35uc1c6lutr" path="res://DebugBoardRunner/ZoneCheck.cs" id="1_check"]
 [ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/StackZone.tscn" id="2_stack"]
 [ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/HandZone.tscn" id="3_hand"]
 [ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/CardBox.tscn" id="4_box"]
 [ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/CardSlot.tscn" id="5_slot"]
 [ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/LineZone.tscn" id="6_line"]
-[ext_resource type="Script" path="res://Games/Shared/Presentation/CardFlightLayer.cs" id="7_flights"]
+[ext_resource type="Script" uid="uid://oevhg1o84cdb" path="res://Games/Shared/Presentation/CardFlightLayer.cs" id="7_flights"]
 
 [node name="ZoneCheck" type="Control"]
 layout_mode = 3
@@ -72,9 +72,9 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Results" type="Label" parent="Layout"]
+[node name="Results" type="Label" parent="Layout/Board"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(560, 0)
+custom_minimum_size = Vector2(5, 1100)
 layout_mode = 2
 size_flags_vertical = 1
 text = "Running the zone check..."
