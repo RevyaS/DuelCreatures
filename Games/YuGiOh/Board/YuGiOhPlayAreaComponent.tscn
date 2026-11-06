@@ -11,8 +11,8 @@ custom_minimum_size = Vector2(1080, 0)
 offset_right = 1080.0
 offset_bottom = 461.0
 size_flags_horizontal = 3
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_right = 10
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_right = 0
 script = ExtResource("1_vu3cf")
 
 [node name="BG" type="ColorRect" parent="."]
@@ -34,9 +34,10 @@ size_flags_vertical = 3
 [node name="BanishZone" parent="VBoxNodeContainer/TopCenter" instance=ExtResource("4_stack")]
 unique_name_in_owner = true
 layout_mode = 2
+HideCards = false
+Inspectable = true
 CardScale = 0.38
 ShowCount = true
-Inspectable = true
 
 [node name="Top2" type="HBoxContainer" parent="VBoxNodeContainer"]
 layout_mode = 2
@@ -80,9 +81,10 @@ CardScale = 0.38
 [node name="Graveyard" parent="VBoxNodeContainer/Top2" instance=ExtResource("4_stack")]
 unique_name_in_owner = true
 layout_mode = 2
+HideCards = false
+Inspectable = true
 CardScale = 0.38
 ShowCount = true
-Inspectable = true
 
 [node name="Bottom" type="HBoxContainer" parent="VBoxNodeContainer"]
 layout_mode = 2
@@ -91,9 +93,10 @@ size_flags_vertical = 3
 [node name="ExtraMonsterDeck" parent="VBoxNodeContainer/Bottom" instance=ExtResource("4_stack")]
 unique_name_in_owner = true
 layout_mode = 2
+HideCards = true
+Inspectable = false
 CardScale = 0.38
 ShowCount = true
-HideCards = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxNodeContainer/Bottom"]
 layout_mode = 2
@@ -102,32 +105,38 @@ alignment = 1
 
 [node name="SpellAndTrapZone1" parent="VBoxNodeContainer/Bottom/HBoxContainer" instance=ExtResource("2_slot")]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(164, 0)
 layout_mode = 2
 CardScale = 0.38
 
 [node name="SpellAndTrapZone2" parent="VBoxNodeContainer/Bottom/HBoxContainer" instance=ExtResource("2_slot")]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(164, 0)
 layout_mode = 2
 CardScale = 0.38
 
 [node name="SpellAndTrapZone3" parent="VBoxNodeContainer/Bottom/HBoxContainer" instance=ExtResource("2_slot")]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(164, 0)
 layout_mode = 2
 CardScale = 0.38
 
 [node name="SpellAndTrapZone4" parent="VBoxNodeContainer/Bottom/HBoxContainer" instance=ExtResource("2_slot")]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(164, 0)
 layout_mode = 2
 CardScale = 0.38
 
 [node name="SpellAndTrapZone5" parent="VBoxNodeContainer/Bottom/HBoxContainer" instance=ExtResource("2_slot")]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(164, 0)
 layout_mode = 2
 CardScale = 0.38
 
 [node name="Deck" parent="VBoxNodeContainer/Bottom" instance=ExtResource("4_stack")]
 unique_name_in_owner = true
 layout_mode = 2
+HideCards = true
+Inspectable = false
 CardScale = 0.38
 ShowCount = true
-HideCards = true

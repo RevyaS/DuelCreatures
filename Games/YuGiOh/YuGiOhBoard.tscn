@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://ca1mvs1wcc75x"]
 
 [ext_resource type="Script" uid="uid://0yvuui1e7l76" path="res://Games/YuGiOh/YuGiOhBoard.cs" id="1_phugy"]
-[ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/HandZone.tscn" id="2_hand"]
 [ext_resource type="PackedScene" uid="uid://bbkqq03vdp4mq" path="res://Games/YuGiOh/Board/YuGiOhPlayAreaComponent.tscn" id="1_xeqle"]
+[ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/HandZone.tscn" id="2_hand"]
 [ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/CardBox.tscn" id="3_box"]
 
 [node name="YuGiOhBoard" type="MarginContainer"]
@@ -20,9 +20,8 @@ theme_override_constants/separation = 22
 unique_name_in_owner = true
 custom_minimum_size = Vector2(1080, 0)
 layout_mode = 2
-Alignment = 1
-ShowBackground = true
 HideCards = true
+Alignment = 1
 
 [node name="Control" type="Control" parent="Board"]
 custom_minimum_size = Vector2(1080, 348)
@@ -64,16 +63,16 @@ layout_mode = 2
 [node name="Player1Area" parent="Board/Control2" instance=ExtResource("1_xeqle")]
 unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
+anchors_preset = 7
+anchor_left = 0.5
 anchor_top = 1.0
-anchor_right = 1.0
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -1080.0
+offset_left = -540.0
 offset_top = -532.0
-offset_right = 0.0
+offset_right = 540.0
 offset_bottom = 0.0
-grow_horizontal = 0
+grow_horizontal = 2
 grow_vertical = 0
 
 [node name="PlayerHand" parent="Board" instance=ExtResource("2_hand")]
@@ -81,4 +80,3 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(1080, 0)
 layout_mode = 2
 Alignment = 1
-ShowBackground = true
