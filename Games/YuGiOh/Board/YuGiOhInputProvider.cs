@@ -10,12 +10,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, IProvide<PresentationContext>
+public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, IProvide<PresentationContext>, IProvide<IActivationGate>
 {
     YuGiOhBoard board = null!;
     public YuGiOhBoard Board => board;
     CardList CardListComponent = null!;
+    CardDetailsView CardDetails = null!;
     ArcDriver? driver;
+    // The zone whose cards CardListComponent is showing
+    IZoneView? listedZone;
+
+    /// <summary>What the card details may activate: nothing, unless the current strategy puts its gate in (<see cref="ActivationGateSlot.Use"/>).</summary>
+    public ActivationGateSlot Activations { get; } = new();
+    IActivationGate IProvide<IActivationGate>.Value() => Activations;
 
     public YuGiOhPlayArea PlayArea { get; private set; } = null!;
 
@@ -34,6 +41,8 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
     {
         board = GetNode<YuGiOhBoard>($"%{nameof(YuGiOhBoard)}");
         CardListComponent = GetNode<CardList>($"%{nameof(CardListComponent)}");
+        CardListComponent.CardPressed += OnListedCardPressed;
+        CardDetails = GetNode<CardDetailsView>($"%{nameof(CardDetails)}");
         // Card flights draw above the board and below the HUD (see the scene)
         Presenter.Flights = GetNode<CardFlightLayer>("%CardFlights");
     }
@@ -48,6 +57,7 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
         driver?.Dispose();
         driver = board.Show(session, Presenter);
         driver.ZoneInspected += OnZoneInspected;
+        driver.CardInspected += OnCardInspected;
         driver.BindAll<ArC.CardGames.Rules.GameSession>(this, session);
     }
 
@@ -55,7 +65,19 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
     {
         if(view.Space is null) return;
         var cards = ZoneSnapshot.Of(view.Space).Cards.Select(card => card.Card).ToList();
-        if(cards.Count > 0) CardListComponent.Show(((Node)view).Name, cards);
+        if(cards.Count == 0) return;
+        listedZone = view;
+        CardListComponent.Show(((Node)view).Name, cards);
+    }
+
+    private void OnCardInspected(IZoneView view, CardBase card)
+    {
+        CardDetails.Show(new CardDetail(card, view.Space, []));
+    }
+
+    private void OnListedCardPressed(Card node)
+    {
+        if(node.CurrentCard is { } card) CardDetails.Show(new CardDetail(card, listedZone?.Space, []));
     }
 
     public override void _ExitTree()

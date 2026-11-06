@@ -24,6 +24,7 @@ public partial class StackZone : CardVerticalStack, IZoneView, IBindable<GroupSp
 
     public event Action<ZoneSnapshot>? Presented;
     public event Action<IZoneView>? InspectRequested;
+    public event Action<IZoneView, CardBase>? CardInspected;
 
     public void Bind(GroupSpace space)
     {
@@ -35,14 +36,14 @@ public partial class StackZone : CardVerticalStack, IZoneView, IBindable<GroupSp
     {
         get
         {
-            var top = Visible(shownSnapshot).Top;
+            var top = VisiblePart(shownSnapshot).Top;
             if(top is null || FindCardNode(top.Value.Card) is not { } node) return ZoneSnapshot.Empty;
             return new([ new(node.CurrentCard, node.IsFront ? Facing.UP : Facing.DOWN) ], null);
         }
     }
 
     // Only the top card that isn't held elsewhere, as it is shown
-    public ZoneSnapshot Visible(ZoneSnapshot zone)
+    public ZoneSnapshot VisiblePart(ZoneSnapshot zone)
     {
         var top = zone.Cards.LastOrDefault(card => !IsHeld(card.Card));
         if(top.Card is null) return ZoneSnapshot.Empty;
@@ -107,9 +108,15 @@ public partial class StackZone : CardVerticalStack, IZoneView, IBindable<GroupSp
         presentation.Present(() => Presented?.Invoke(change.After));
     }
 
+    // Inspectable: a press shows the whole pile; otherwise the top card's details, when it's face up
     protected override void OnPressed()
     {
-        if(Inspectable && Space is not null) InspectRequested?.Invoke(this);
+        if(Inspectable && Space is not null)
+        {
+            InspectRequested?.Invoke(this);
+            return;
+        }
+        if(VisiblePart(shownSnapshot).Top is { IsFaceUp: true } top) CardInspected?.Invoke(this, top.Card);
     }
 
     private bool IsHeld(CardBase card) => presenter?.IsHeld(card) ?? false;
@@ -117,7 +124,7 @@ public partial class StackZone : CardVerticalStack, IZoneView, IBindable<GroupSp
     private void Render(ZoneSnapshot snapshot)
     {
         shownSnapshot = snapshot;
-        var visible = Visible(snapshot);
+        var visible = VisiblePart(snapshot);
         CountValue = snapshot.Count;
 
         if(visible.Top is not { } top)

@@ -1,6 +1,6 @@
-[gd_scene load_steps=9 format=3 uid="uid://cdr3i0iyowbxf"]
+[gd_scene load_steps=10 format=3 uid="uid://cdr3i0iyowbxf"]
 
-[ext_resource type="PackedScene" uid="uid://b2lfbpkxmm57c" path="res://Games/Vanguard/HUD/CardDetails.tscn" id="1_nh885"]
+[ext_resource type="PackedScene" path="res://Games/YuGiOh/HUD/CardDetails/YuGiOhCardDetails.tscn" id="1_nh885"]
 [ext_resource type="Script" uid="uid://bhfky186db8q7" path="res://Games/YuGiOh/Board/YuGiOhInputProvider.cs" id="1_qtv2h"]
 [ext_resource type="PackedScene" uid="uid://ca1mvs1wcc75x" path="res://Games/YuGiOh/YuGiOhBoard.tscn" id="1_qxasj"]
 [ext_resource type="PackedScene" uid="uid://dt60jvmuuttc0" path="res://Games/Shared/HUD/SelectCards.tscn" id="3_mrbjy"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://csdff6we3cpjo" path="res://Games/Shared/HUD/SelectFromCardList.tscn" id="5_srywf"]
 [ext_resource type="Script" uid="uid://oevhg1o84cdb" path="res://Games/Shared/Presentation/CardFlightLayer.cs" id="6_flights"]
 [ext_resource type="Script" uid="uid://b3srrk0amiv8t" path="res://Games/Shared/HUD/PhaseLabel.cs" id="7_phase"]
+[ext_resource type="Script" path="res://Games/Shared/HUD/TurnLabel.cs" id="8_turn"]
 
 [node name="YuGiOhInputProvider" type="Control"]
 layout_mode = 3
@@ -34,6 +35,7 @@ theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 0
 
 [node name="CardDetails" parent="VBoxContainer/CardInfoMarginContainer" instance=ExtResource("1_nh885")]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="YuGiOhBoard" parent="VBoxContainer" instance=ExtResource("1_qxasj")]
@@ -77,7 +79,7 @@ layout_mode = 2
 size_flags_horizontal = 6
 theme_override_font_sizes/font_size = 45
 text = "Opponent Turn"
-script = ExtResource("7_phase")
+script = ExtResource("8_turn")
 
 [node name="CardFlights" type="Control" parent="."]
 unique_name_in_owner = true

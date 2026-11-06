@@ -62,6 +62,9 @@ public sealed class ArcDriver : IDisposable
     /// <summary>A zone view asked to show its whole zone (an Inspectable LineZone or StackZone was pressed).</summary>
     public event Action<IZoneView>? ZoneInspected;
 
+    /// <summary>A face-up card on the board was pressed, to see its details.</summary>
+    public event Action<IZoneView, CardBase>? CardInspected;
+
     /// <summary>The views shown, by zone.</summary>
     public IEnumerable<IZoneView> Views => shown.Values.Select(entry => entry.View);
 
@@ -167,6 +170,7 @@ public sealed class ArcDriver : IDisposable
 
         if(view is LineZone line) line.InspectRequested += OnInspectRequested;
         if(view is StackZone stack) stack.InspectRequested += OnInspectRequested;
+        zoneView.CardInspected += (inspected, card) => CardInspected?.Invoke(inspected, card);
 
         // Its extensions: the nodes under it that show its zone
         foreach(var extension in Descendants(view).Where(node => node is not IZoneView && Bindings.IsBindable(node)))

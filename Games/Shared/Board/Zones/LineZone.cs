@@ -17,14 +17,17 @@ public partial class LineZone : CardLineStatic, IZoneView, IBindable<GroupSpace>
 
     public event Action<ZoneSnapshot>? Presented;
     public event Action<IZoneView>? InspectRequested;
+    public event Action<IZoneView, CardBase>? CardInspected;
 
     public override void _Ready()
     {
         base._Ready();
         if(Engine.IsEditorHint()) return;
-        CardPressed += _ =>
+        // Inspectable: a press shows the whole zone; otherwise the pressed card's details
+        CardPressed += node =>
         {
             if(Inspectable && Space is not null) InspectRequested?.Invoke(this);
+            else if(node.IsFront && node.CurrentCard is { } card) CardInspected?.Invoke(this, card);
         };
     }
 

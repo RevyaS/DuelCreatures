@@ -15,6 +15,17 @@ public partial class CardSlot : CardArea, IZoneView, IBindable<ISingleSpace>
     public ICardSpace? Space { get; private set; }
 
     public event Action<ZoneSnapshot>? Presented;
+    public event Action<IZoneView, CardBase>? CardInspected;
+
+    public override void _Ready()
+    {
+        base._Ready();
+        if(Engine.IsEditorHint()) return;
+        CardPressed += node =>
+        {
+            if(node.IsFront && node.CurrentCard is { } card) CardInspected?.Invoke(this, card);
+        };
+    }
 
     /// <summary>Whether a card here may lie sideways. A <see cref="CardBox"/>'s square fits one; a card-shaped slot doesn't.</summary>
     protected virtual bool AllowsSideways => false;

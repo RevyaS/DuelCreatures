@@ -18,6 +18,17 @@ public partial class HandZone : CardLineDynamic, IZoneView, IBindable<GroupSpace
     public ICardSpace? Space { get; private set; }
 
     public event Action<ZoneSnapshot>? Presented;
+    public event Action<IZoneView, CardBase>? CardInspected;
+
+    public override void _Ready()
+    {
+        base._Ready();
+        if(Engine.IsEditorHint()) return;
+        CardPressed += node =>
+        {
+            if(node.IsFront && node.CurrentCard is { } card) CardInspected?.Invoke(this, card);
+        };
+    }
 
     public void Bind(GroupSpace space)
     {
@@ -34,7 +45,7 @@ public partial class HandZone : CardLineDynamic, IZoneView, IBindable<GroupSpace
         .Select(node => new CardSnapshot(node.CurrentCard, node.IsFront ? Facing.UP : Facing.DOWN))
         .ToList(), null);
 
-    public ZoneSnapshot Visible(ZoneSnapshot zone) => HideCards
+    public ZoneSnapshot VisiblePart(ZoneSnapshot zone) => HideCards
         ? zone with { Cards = zone.Cards.Select(card => card with { Facing = Facing.DOWN }).ToList() }
         : zone;
 

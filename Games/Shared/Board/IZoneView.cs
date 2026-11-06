@@ -21,6 +21,9 @@ public interface IZoneView : ICardLocation
 
     /// <summary>Raised once a change was shown, with the content after it (e.g. for a zone's extensions to refresh).</summary>
     event Action<ZoneSnapshot>? Presented;
+
+    /// <summary>A face-up card it shows was pressed, to see its details. Face-down cards never raise it: nothing hidden is revealed.</summary>
+    event Action<IZoneView, CardBase>? CardInspected;
 }
 
 /// <summary>
@@ -44,7 +47,7 @@ public static class ZoneDesync
     /// </summary>
     public static string? Describe(IZoneView view, ZoneSnapshot zone)
     {
-        var expected = view is IShowsPartOfZone partial ? partial.Visible(zone) : zone;
+        var expected = view is IShowsPartOfZone partial ? partial.VisiblePart(zone) : zone;
         var shown = view.Displayed;
 
         if(view is IShowsPartOfZone { ShownTotal: { } total } && total != zone.Count)
@@ -72,7 +75,7 @@ public static class ZoneDesync
 /// </summary>
 public interface IShowsPartOfZone
 {
-    ZoneSnapshot Visible(ZoneSnapshot zone);
+    ZoneSnapshot VisiblePart(ZoneSnapshot zone);
 
     /// <summary>How many cards it says the zone holds (a pile's count), when it shows one; checked against the zone.</summary>
     int? ShownTotal { get; }
