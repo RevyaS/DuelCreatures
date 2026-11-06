@@ -17,15 +17,16 @@ layout_mode = 2
 theme_override_constants/separation = 22
 
 [node name="OppHand" parent="Board" instance=ExtResource("1_usnc8")]
+unique_name_in_owner = true
 layout_mode = 2
-CardScale = 0.5
 ShowBackground = true
 
 [node name="Control" type="Control" parent="Board"]
 custom_minimum_size = Vector2(1080, 348)
 layout_mode = 2
 
-[node name="Opponent" parent="Board/Control" instance=ExtResource("1_xeqle")]
+[node name="OppArea" parent="Board/Control" instance=ExtResource("1_xeqle")]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -53,7 +54,8 @@ layout_mode = 2
 custom_minimum_size = Vector2(1080, 348)
 layout_mode = 2
 
-[node name="Player" parent="Board/Control2" instance=ExtResource("1_xeqle")]
+[node name="PlayerArea" parent="Board/Control2" instance=ExtResource("1_xeqle")]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -68,6 +70,6 @@ grow_horizontal = 0
 grow_vertical = 0
 
 [node name="PlayerHand" parent="Board" instance=ExtResource("1_usnc8")]
+unique_name_in_owner = true
 layout_mode = 2
-CardScale = 0.5
 ShowBackground = true

@@ -5,13 +5,23 @@ using ArC.CardGames.Components;
 using ArC.CardGames.Flow;
 using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Vanguard;
+using ArC.CardGames.YuGiOh;
 using ArC.Common.Extensions;
 
-public class YuGiOhMainPhaseStrategy(YuGiOhBoard Board) : IInputProviderStrategy, IRequestMainPhaseAction
+public class YuGiOhMainPhaseStrategy(YuGiOhBoard Board) : IInputProviderStrategy, IRequestMainPhaseAction, ISelectChainResponse
 {
     public async Task<IMainPhaseAction> RequestMainPhaseAction(List<IMainPhaseAction> actions)
     {
         TaskCompletionSource<IMainPhaseAction> completionSource = new();
+
+        var result = await completionSource.Task;
+
+        return result;
+    }
+
+    public async Task<YuGiOhChainResponse?> SelectChainResponse(YuGiOhChain chain)
+    {
+        TaskCompletionSource<YuGiOhChainResponse> completionSource = new();
 
         var result = await completionSource.Task;
 

@@ -34,7 +34,7 @@ public partial class YuGiOhSession : Control
     private async Task StartGame(YuGiOhGameSession session)
     {
         session.StartGame();
-        // Board.ApplySession(session, InputProviderComponent.Presenter);
+        Board.ApplySession(session, InputProviderComponent.Presenter);
 
         #region DEBUG
         // session.Game.Board.Player1Area.Vanguard.Assign(RoyalPaladin.LittleSageMarron);

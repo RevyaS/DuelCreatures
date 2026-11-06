@@ -22,6 +22,8 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider
 
     PlayAreaBase IPlayerInputProvider.PlayArea => PlayArea;
 
+    public Presenter Presenter { get; } = new();
+
     IInputProviderStrategy strategy = null!;
     Stack<IInputProviderStrategy> strategyStack = new();
 

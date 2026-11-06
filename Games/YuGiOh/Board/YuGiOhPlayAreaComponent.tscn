@@ -64,7 +64,8 @@ layout_mode = 2
 [node name="YuGiOhFieldComponent4" parent="VBoxNodeContainer/Top2/HBoxContainer" instance=ExtResource("2_upchb")]
 layout_mode = 2
 
-[node name="CardVerticalStack" parent="VBoxNodeContainer/Top2" instance=ExtResource("4_f7ryx")]
+[node name="Deck" parent="VBoxNodeContainer/Top2" instance=ExtResource("3_hgsuh")]
+unique_name_in_owner = true
 layout_mode = 2
 CardScale = 0.38
 
