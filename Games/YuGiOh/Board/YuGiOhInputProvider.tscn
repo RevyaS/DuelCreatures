@@ -72,7 +72,6 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 45
 text = "Next Phase"
 script = ExtResource("9_button")
-Kind = 0
 
 [node name="SkipToEndPhase" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -82,7 +81,10 @@ text = "End Phase"
 script = ExtResource("9_button")
 Kind = 1
 
-[node name="TurnLabel" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer"]
+[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="TurnLabel" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/MarginContainer2"]
 layout_mode = 2
 size_flags_horizontal = 6
 theme_override_font_sizes/font_size = 45
