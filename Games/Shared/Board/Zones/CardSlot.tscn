@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" uid="uid://xfgt43rddlvv" path="res://Games/Shared/Zones/CardArea.tscn" id="1_area"]
+[ext_resource type="Script" path="res://Games/Shared/Board/Zones/CardSlot.cs" id="2_slot"]
+
+[node name="CardSlot" instance=ExtResource("1_area")]
+script = ExtResource("2_slot")

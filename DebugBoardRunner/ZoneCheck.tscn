@@ -1,0 +1,92 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://DebugBoardRunner/ZoneCheck.cs" id="1_check"]
+[ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/StackZone.tscn" id="2_stack"]
+[ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/HandZone.tscn" id="3_hand"]
+[ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/CardBox.tscn" id="4_box"]
+[ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/CardSlot.tscn" id="5_slot"]
+[ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/LineZone.tscn" id="6_line"]
+[ext_resource type="Script" path="res://Games/Shared/Presentation/CardFlightLayer.cs" id="7_flights"]
+
+[node name="ZoneCheck" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_check")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.12, 0.14, 0.18, 1)
+
+[node name="Layout" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 24
+
+[node name="Board" type="VBoxContainer" parent="Layout"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 24
+
+[node name="Field" type="HBoxContainer" parent="Layout/Board"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="Deck" parent="Layout/Board/Field" instance=ExtResource("2_stack")]
+unique_name_in_owner = true
+layout_mode = 2
+ShowCount = true
+HideCards = true
+
+[node name="MonsterZone1" parent="Layout/Board/Field" instance=ExtResource("4_box")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="SpellAndTrapZone1" parent="Layout/Board/Field" instance=ExtResource("5_slot")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Graveyard" parent="Layout/Board/Field" instance=ExtResource("2_stack")]
+unique_name_in_owner = true
+layout_mode = 2
+ShowCount = true
+Inspectable = true
+
+[node name="BanishZone" parent="Layout/Board" instance=ExtResource("6_line")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Hand" parent="Layout/Board" instance=ExtResource("3_hand")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Results" type="Label" parent="Layout"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 2
+size_flags_vertical = 1
+text = "Running the zone check..."
+autowrap_mode = 3
+
+[node name="CardFlights" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("7_flights")

@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" uid="uid://cnp5v17a7qgwg" path="res://Games/Shared/Zones/CardLineDynamic.tscn" id="1_line"]
+[ext_resource type="Script" path="res://Games/Shared/Board/Zones/HandZone.cs" id="2_zone"]
+
+[node name="HandZone" instance=ExtResource("1_line")]
+script = ExtResource("2_zone")

@@ -7,7 +7,7 @@ using Godot;
 [Tool]
 public partial class CardArea : PanelContainer, ICardLocation
 {
-    CardContainer Container = null!;
+    protected CardContainer Container { get; private set; } = null!;
 
     private float _cardScale = SizeConstants.DefaultCardScale;
     [Export(PropertyHint.Range, "0.05, 2.0, 0.01, or_greater")]

@@ -13,6 +13,8 @@ public partial class CardContainer : Control
     private Orientation orientation = Orientation.VERTICAL;
 
     public Card? CurrentCard => currentCard;
+    /// <summary>How its card is turned (see <see cref="ChangeOrientation"/>).</summary>
+    public Orientation CardOrientation => orientation;
     public bool HasCard => currentCard is not null && currentCard.CurrentCard is not null;
     float FlipRotation => FlippedAppearance ? Mathf.Pi : 0;
 
