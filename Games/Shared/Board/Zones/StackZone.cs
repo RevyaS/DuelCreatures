@@ -89,6 +89,18 @@ public partial class StackZone : CardVerticalStack, IZoneView, IBindable<GroupSp
                 });
                 break;
 
+            case ZoneShuffled:
+                presentation.Present(async () =>
+                {
+                    var flights = presentation?.Presenter.Flights;
+                    if(presentation is not null && flights is not null && Presenter.Animates(presentation.Side) && change.After.Count > 0)
+                    {
+                        await flights.Shuffle(GetCardTransform(null), SleeveInfo);
+                    }
+                    Render(change.After);
+                });
+                break;
+
             default:
                 throw new NotSupportedException($"{Name} can't show a {change.GetType().Name}");
         }

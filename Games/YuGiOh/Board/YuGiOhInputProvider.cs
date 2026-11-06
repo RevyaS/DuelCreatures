@@ -7,12 +7,15 @@ using ArC.CardGames.YuGiOh;
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
-public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider
+public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, IProvide<PresentationContext>
 {
     YuGiOhBoard board = null!;
     public YuGiOhBoard Board => board;
+    CardList CardListComponent = null!;
+    ArcDriver? driver;
 
     public YuGiOhPlayArea PlayArea { get; private set; } = null!;
 
@@ -29,7 +32,35 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider
 
     public override void _Ready()
     {
-        board = GetNode<YuGiOhBoard>($"%{nameof(YuGiOhBoard)}"); 
+        board = GetNode<YuGiOhBoard>($"%{nameof(YuGiOhBoard)}");
+        CardListComponent = GetNode<CardList>($"%{nameof(CardListComponent)}");
+        // Card flights draw above the board and below the HUD (see the scene)
+        Presenter.Flights = GetNode<CardFlightLayer>("%CardFlights");
+    }
+
+    // For the HUD's components showing the game in step with the board (e.g. the phase label)
+    PresentationContext IProvide<PresentationContext>.Value() => driver?.ContextFor(BoardSide.Both)
+        ?? throw new InvalidOperationException($"{nameof(YuGiOhInputProvider)} provides a presentation once it shows a game ({nameof(Show)})");
+
+    /// <summary>Shows <paramref name="session"/> on the board and the HUD. Call once its game has started.</summary>
+    public void Show(YuGiOhGameSession session)
+    {
+        driver?.Dispose();
+        driver = board.Show(session, Presenter);
+        driver.ZoneInspected += OnZoneInspected;
+        driver.BindAll<ArC.CardGames.Rules.GameSession>(this, session);
+    }
+
+    private void OnZoneInspected(IZoneView view)
+    {
+        if(view.Space is null) return;
+        var cards = ZoneSnapshot.Of(view.Space).Cards.Select(card => card.Card).ToList();
+        if(cards.Count > 0) CardListComponent.Show(((Node)view).Name, cards);
+    }
+
+    public override void _ExitTree()
+    {
+        driver?.Dispose();
     }
 
     public void Activate(YuGiOhPlayArea playArea, YuGiOhPlayArea opponentPlayArea, YuGiOhSkillService skillService)

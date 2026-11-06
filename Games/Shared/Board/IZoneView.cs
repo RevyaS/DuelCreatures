@@ -35,16 +35,21 @@ public static class ZoneDesync
         .Select(found => $"{NameOf(found.view)}: {found.mismatch}")
         .ToList();
 
-    /// <summary>How <paramref name="view"/>'s display differs from its zone, or null when it matches.</summary>
-    public static string? Describe(IZoneView view)
+    /// <summary>How <paramref name="view"/>'s display differs from its zone now, or null when it matches.</summary>
+    public static string? Describe(IZoneView view) => view.Space is null ? "not bound" : Describe(view, ZoneSnapshot.Of(view.Space));
+
+    /// <summary>
+    /// How <paramref name="view"/>'s display differs from <paramref name="zone"/> (its zone's content at some moment,
+    /// e.g. when the game settled), or null when it matches.
+    /// </summary>
+    public static string? Describe(IZoneView view, ZoneSnapshot zone)
     {
-        if(view.Space is null) return "not bound";
-        var expected = view is IShowsPartOfZone partial ? partial.Visible(ZoneSnapshot.Of(view.Space)) : ZoneSnapshot.Of(view.Space);
+        var expected = view is IShowsPartOfZone partial ? partial.Visible(zone) : zone;
         var shown = view.Displayed;
 
-        if(view is IShowsPartOfZone { ShownTotal: { } total } && total != ZoneSnapshot.Of(view.Space).Count)
+        if(view is IShowsPartOfZone { ShownTotal: { } total } && total != zone.Count)
         {
-            return $"counts {total} card(s), the zone holds {ZoneSnapshot.Of(view.Space).Count}";
+            return $"counts {total} card(s), the zone holds {zone.Count}";
         }
         if(shown.Count != expected.Count) return $"shows {shown.Count} card(s), the zone holds {expected.Count}";
         for(int i = 0; i < expected.Count; i++)
@@ -57,7 +62,7 @@ public static class ZoneDesync
         return null;
     }
 
-    static string NameOf(IZoneView view) => view is Godot.Node node ? node.GetPath() : view.GetType().Name;
+    public static string NameOf(IZoneView view) => view is Godot.Node node ? node.GetPath() : view.GetType().Name;
     static string Lower<T>(T value) => value?.ToString()?.ToLowerInvariant() ?? "unknown";
 }
 

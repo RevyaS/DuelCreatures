@@ -44,3 +44,6 @@ public sealed record ZoneCardsLeft(IReadOnlyList<CardBase> Cards, IZoneView? To,
 
 /// <summary><see cref="Card"/> was flipped, or its zone turned, without moving.</summary>
 public sealed record ZoneCardTurned(CardBase Card, ZoneSnapshot After) : ZoneChange(After);
+
+/// <summary>The zone's cards were shuffled (a deck). Only piles show it; other zones refuse it.</summary>
+public sealed record ZoneShuffled(ZoneSnapshot After) : ZoneChange(After);

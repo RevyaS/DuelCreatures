@@ -1,47 +1,32 @@
 using ArC.CardGames.YuGiOh;
 using Godot;
 
+// The YuGiOh board. Its zones are bound by name (see ArcDriver): %Player1Area and %Player2Area hold one zone node per
+// YuGiOhPlayArea zone, %ExtraMonsterZone1/2 are shared. Only the hands sit outside the play areas, so they're bound here.
 public partial class YuGiOhBoard : MarginContainer
 {
     // Everything that wants a sound raises it here (see PresentationConfig for which sides play)
     public SfxBus Sfx { get; } = new();
-    PresentationContext presentation = null!;
-    PresentationContext playerPresentation = null!;
-    PresentationContext oppPresentation = null!;
 
-    YuGiOhPlayAreaComponent PlayerArea { get; set; } = null!;
-    YuGiOhPlayAreaComponent OppArea { get; set; } = null!;
-    HandComponent PlayerHand { get; set; } = null!;
-    HandComponent OppHand = null!;
+    HandZone PlayerHand = null!;
+    HandZone OppHand = null!;
 
     public override void _Ready()
     {
-        PlayerArea = GetNode<YuGiOhPlayAreaComponent>($"%{nameof(PlayerArea)}");
-        OppArea = GetNode<YuGiOhPlayAreaComponent>($"%{nameof(OppArea)}");
-        PlayerHand = GetNode<HandComponent>($"%{nameof(PlayerHand)}");
-        OppHand = GetNode<HandComponent>($"%{nameof(OppHand)}");
+        PlayerHand = GetNode<HandZone>($"%{nameof(PlayerHand)}");
+        OppHand = GetNode<HandZone>($"%{nameof(OppHand)}");
     }
 
-    public void ApplySession(YuGiOhGameSession gameSession, Presenter presenter)
+    /// <summary>Shows <paramref name="session"/> on this board (once its game has started, so every zone exists).</summary>
+    public ArcDriver Show(YuGiOhGameSession session, Presenter presenter)
     {
-        var game = gameSession.Game;
-        presentation = new(presenter, Sfx, BoardSide.Both);
-        playerPresentation = presentation with { Side = BoardSide.Player };
-        playerPresentation = presentation with { Side = BoardSide.Opponent };
-
-        PlayerArea.Bind(game.Board.Player1Area);
-        OppArea.Bind(game.Board.Player2Area);
-
-        PlayerHand.Bind(game.Board.Player1Area.Hand);
-        OppHand.Bind(game.Board.Player2Area.Hand);
-    }
-
-    private void SetupEventBus(YuGiOhEventBus eventBus)
-    {
-        PlayerHand.DrawSource = PlayerArea.DeckLocation;
-        OppHand.DrawSource = OppArea.DeckLocation;
-
-        PlayerHand.SetEventBus(eventBus, playerPresentation);
-        OppHand.SetEventBus(eventBus, oppPresentation);
+        var board = session.Game.Board;
+        var driver = new ArcDriver(session.EventBus, presenter, Sfx);
+        driver.Bind(PlayerHand, board.Player1Area.Hand, BoardSide.Player);
+        driver.Bind(OppHand, board.Player2Area.Hand, BoardSide.Opponent);
+        // Cards waiting to become XYZ materials aren't shown anywhere
+        driver.BindBoard(this, board, area => [ area.PendingMaterials ]);
+        driver.Start();
+        return driver;
     }
 }
