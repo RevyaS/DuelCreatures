@@ -98,6 +98,9 @@ public partial class CardList : Control, ICardDropTarget
         Show();
     }
 
+    /// <summary>The card nodes shown, in the order they were given to <see cref="Show"/>.</summary>
+    public IReadOnlyList<Card> ShownCards => CardListPanel.ShownCards;
+
     public event Action<Card>? CardPressed;
     public event Action<Card>? CardDroppedOutside;
     public event Action? OnClosed;

@@ -50,6 +50,58 @@ public static class Prompts
         }
     }
 
+    /// <summary>
+    /// One of <paramref name="options"/>, each shown as its card in <paramref name="list"/> (the same card once per
+    /// option, e.g. once per effect): pressing a card calls <paramref name="inspect"/> with its option (to show what
+    /// it does), dragging it out of the list picks it. With <paramref name="canDecline"/>, closing the list picks
+    /// nothing (Picked is false); without, the list can't be closed. The mobile-friendly choice of an effect.
+    /// </summary>
+    public static async Task<(bool Picked, T Value)> DragOutOfCardList<T>(CardList list, string title,
+        IReadOnlyList<(CardBase Card, T Value)> options, bool canDecline, Action<CardBase, T>? inspect = null)
+    {
+        if(options.Count == 0) throw new ArgumentException($"Nothing to choose from for \"{title}\"", nameof(options));
+
+        list.Show(title, options.Select(option => option.Card));
+        var shown = list.ShownCards;
+        var optionOf = new Dictionary<Card, T>(ReferenceEqualityComparer.Instance);
+        for(int i = 0; i < shown.Count && i < options.Count; i++) optionOf[shown[i]] = options[i].Value;
+
+        var result = new TaskCompletionSource<(bool, T)>();
+        Action<Card> onDropped = node =>
+        {
+            if(optionOf.TryGetValue(node, out var value)) result.TrySetResult((true, value));
+        };
+        Action<Card> onPressed = node =>
+        {
+            if(optionOf.TryGetValue(node, out var value)) inspect?.Invoke(node.CurrentCard, value);
+        };
+        Action onClosed = () =>
+        {
+            if(canDecline) result.TrySetResult((false, default!));
+        };
+
+        list.CanClose = canDecline;
+        list.BaseDroppable = true;
+        list.CardsDraggable = true;
+        list.CardDroppedOutside += onDropped;
+        list.CardPressed += onPressed;
+        list.OnClosed += onClosed;
+        try
+        {
+            return await result.Task;
+        }
+        finally
+        {
+            list.CardDroppedOutside -= onDropped;
+            list.CardPressed -= onPressed;
+            list.OnClosed -= onClosed;
+            list.BaseDroppable = false;
+            list.CardsDraggable = false;
+            list.CanClose = true;
+            if(list.Visible) list.Hide();
+        }
+    }
+
     /// <summary>A type or enum name in words: "ActivateEffectsOnField" -> "Activate Effects On Field".</summary>
     public static string Words(string name) => System.Text.RegularExpressions.Regex.Replace(name, "(?<=[a-z0-9])(?=[A-Z])", " ");
 }

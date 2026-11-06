@@ -10,6 +10,12 @@ public sealed record CardDetail(CardBase Card, ICardSpace? From, IReadOnlyList<I
 {
     public CardDetail(CardBase card) : this(card, null, []) {}
 
+    /// <summary>
+    /// One skill to show alone (e.g. the effect a card stands for in a list of effects to pick from): the skill text
+    /// shows only it, and nothing offers to activate it.
+    /// </summary>
+    public ISkill? Focus { get; init; }
+
     /// <summary>The card's own skills, then the granted ones.</summary>
     public IEnumerable<ISkill> AllSkills => (Card is SkilledCard skilled ? skilled.Skills : []).Concat(GrantedSkills);
 }

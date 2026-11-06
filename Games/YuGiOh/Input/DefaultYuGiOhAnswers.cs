@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Common;
+using ArC.CardGames.Rules;
 using ArC.CardGames.YuGiOh;
 using static YuGiOhQuestions;
 
@@ -23,13 +24,14 @@ public sealed class DefaultYuGiOhAnswers(YuGiOhInput input) : IYuGiOhAnswers
         public static string ChooseZone = "Choose a zone";
         public static string ChooseOpponentZone = "Choose one of your opponent's zones";
         public static string ChooseZones = "Choose zones, then Confirm";
-        public static string ChooseSkill = "Which effect?";
+        public static string ChooseSkill = "Which effect? Drag it out of the list";
         public static string ChooseOption = "Choose an option";
         public static string Summon = "Summon";
         public static string Activate = "Activate";
         public static string Set = "Set";
         public static string Pass = "Don't respond";
-        public static string Respond = "Respond to the chain?";
+        public static string Respond = "Respond to the chain? Drag an effect out, or close to pass";
+        public static string ActivateTrigger = "Activate this effect? Drag the card out, or close not to";
         public static string Yes = "Yes";
         public static string No = "No";
         public static string Selected = "Selected";
@@ -228,8 +230,12 @@ public sealed class DefaultYuGiOhAnswers(YuGiOhInput input) : IYuGiOhAnswers
     #endregion
 
     #region Skills and choices
-    public Task<YuGiOhNonPassiveSkill> SelectSkillToActivate(List<YuGiOhNonPassiveSkill> skills)
-        => Prompts.Choose(input.DialogParent, Text.ChooseSkill, skills.Select(skill => new Prompts.Option<YuGiOhNonPassiveSkill>(input.SkillText.Describe(skill), skill)).ToList());
+    // Effects are picked from the effect picker: one card per effect, pressed to read it, dragged out to pick it
+    public async Task<YuGiOhNonPassiveSkill> SelectSkillToActivate(List<YuGiOhNonPassiveSkill> skills)
+    {
+        var (_, skill) = await PickEffect(Text.ChooseSkill, skills.Select(skill => (OwnerOf(skill), skill)).ToList(), canDecline: false);
+        return skill;
+    }
 
     public Task<bool> QuerySetCard(YuGiOhCard card) => card switch
     {
@@ -240,19 +246,34 @@ public sealed class DefaultYuGiOhAnswers(YuGiOhInput input) : IYuGiOhAnswers
         _ => Task.FromResult(true),
     };
 
-    public Task<YuGiOhChainResponse?> SelectChainResponse(YuGiOhChain chain)
+    // Drag a response out to activate it; close the list to pass
+    public async Task<YuGiOhChainResponse?> SelectChainResponse(YuGiOhChain chain)
     {
         var responses = YuGiOhGameRules.ChainResponses(Player, chain);
-        List<Prompts.Option<YuGiOhChainResponse?>> options =
-        [
-            ..responses.Select(response => new Prompts.Option<YuGiOhChainResponse?>($"{response.Card.Name}: {input.SkillText.Describe(response.Skill)}", response)),
-            new(Text.Pass, null),
-        ];
-        return Prompts.Choose(input.DialogParent, Text.Respond, options);
+        var (picked, response) = await PickEffect(Text.Respond, responses.Select(response => ((CardBase)response.Card, response)).ToList(), canDecline: true,
+            focusOf: response => response.Skill);
+        return picked ? response : null;
     }
 
-    public Task<bool> QueryActivateSkill(YuGiOhCard invoker, YuGiOhAutomaticSkill skill)
-        => Prompts.Choose<bool>(input.DialogParent, $"{invoker.Name}: {input.SkillText.Describe(skill)}", [ new(Text.Yes, true), new(Text.No, false) ]);
+    // Drag the card out to activate its effect; close the list not to
+    public async Task<bool> QueryActivateSkill(YuGiOhCard invoker, YuGiOhAutomaticSkill skill)
+    {
+        var (picked, _) = await PickEffect(Text.ActivateTrigger, [ ((CardBase)invoker, skill) ], canDecline: true);
+        return picked;
+    }
+
+    private Task<(bool Picked, T Value)> PickEffect<T>(string title, IReadOnlyList<(CardBase Card, T Value)> options, bool canDecline, Func<T, ISkill>? focusOf = null)
+        => Prompts.DragOutOfCardList(input.EffectPicker, title, options, canDecline,
+            (card, value) => input.ShowDetails(new CardDetail(card) { Focus = focusOf?.Invoke(value) ?? value as ISkill }));
+
+    // The card a skill is printed on (copies share their skills, so any copy will do): the player's cards first
+    private CardBase OwnerOf(ISkill skill)
+        => new[] { PlayArea, OpponentPlayArea }
+            .SelectMany(area => area.Zones)
+            .SelectMany(zone => ZoneSnapshot.Of(zone).Cards.Select(card => card.Card))
+            .OfType<SkilledCard>()
+            .FirstOrDefault(card => card.Skills.Contains(skill))
+            ?? throw new InvalidOperationException($"No card has the skill \"{input.SkillText.Describe(skill)}\"");
 
     public Task<YuGiOhSkills.SkillAction> SelectSkillOption(IReadOnlyList<YuGiOhSkills.SkillAction> options, YuGiOhSkillContextObject context)
         => Prompts.Choose(input.DialogParent, Text.ChooseOption, options.Select(option => new Prompts.Option<YuGiOhSkills.SkillAction>(Prompts.Words(option.GetType().Name), option)).ToList());

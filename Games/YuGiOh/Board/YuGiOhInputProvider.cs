@@ -81,7 +81,7 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
         PlayArea = playArea;
         OpponentPlayArea = opponentPlayArea;
         SkillService = skillService;
-        input = new(this, inputBoard, this, SelectFromCardListComponent, CardDetails.SkillTextInterpreter());
+        input = new(this, inputBoard, this, SelectFromCardListComponent, CardListComponent, CardDetails.Show, CardDetails.SkillTextInterpreter());
         answers = defaults = new(input);
     }
 
@@ -169,6 +169,8 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
 
     private void OnListedCardPressed(Card node)
     {
+        // While the list offers effects to pick (cards draggable), the pick shows each card's own effect instead
+        if(CardListComponent.CardsDraggable) return;
         if(node.CurrentCard is { } card) CardDetails.Show(new CardDetail(card, listedZone?.Space, []));
     }
     #endregion

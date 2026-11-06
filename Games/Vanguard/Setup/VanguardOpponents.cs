@@ -1,4 +1,5 @@
 using System;
+using ArC.CardGames.Bots;
 using ArC.CardGames.Vanguard;
 using ArC.CardGames.Vanguard.Bots;
 using ArC.VanguardAI.InputProviders;
@@ -12,7 +13,7 @@ public static class VanguardOpponents
 {
     const string AIModelPath = "res://Scripts/VanguardAI/CurrentAI.onnx";
 
-    public static IVanguardPlayerInputProvider Create(OpponentType opponent, VanguardBotDifficulty difficulty, VanguardServices services) => opponent switch
+    public static IVanguardPlayerInputProvider Create(OpponentType opponent, BotDifficulty difficulty, VanguardServices services) => opponent switch
     {
         OpponentType.RULE_BOT_ROYAL_PALADIN_TRIAL_DECK => new RoyalPaladinTrialDeckBot(services.Game.Player2, services.DataQuery, services.SkillService, services.GameContext, difficulty),
         OpponentType.RULE_BOT_KAGERO_TRIAL_DECK => new KageroTrialDeckBot(services.Game.Player2, services.DataQuery, services.SkillService, services.GameContext, difficulty),

@@ -12,8 +12,15 @@ public sealed class YuGiOhInput(
     InputBoard board,
     Node dialogParent,
     SelectFromCardList cardPicker,
+    CardList effectPicker,
+    System.Action<CardDetail> showDetails,
     ISkillTextInterpreter skillText)
 {
+    /// <summary>Where effects are picked: one card per effect, pressed to read it, dragged out to pick it (Prompts.DragOutOfCardList).</summary>
+    public CardList EffectPicker { get; } = effectPicker;
+    /// <summary>Shows a card's details (e.g. the effect a card stands for in the effect picker).</summary>
+    public System.Action<CardDetail> ShowDetails { get; } = showDetails;
+
     /// <summary>The player being asked (for the rules that need to know who asks).</summary>
     public IYuGiOhPlayerInputProvider Player { get; } = player;
     public YuGiOhPlayArea PlayArea => Player.PlayArea;

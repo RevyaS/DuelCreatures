@@ -87,7 +87,8 @@ public partial class CardListPanel : PanelContainer
         var cards = cardsToShow.ToList();
         Title.Text = title;
         Amount.Text = $"({cards.Count})";
-        CardContainerList.ClearChildren();
+        // Freed now, not queued: the list's children are the new cards as soon as this returns (ShownCards)
+        CardContainerList.FreeChildren();
         foreach(var card in cards)
         {
             AddCard(CardScenes.Create(card));
@@ -113,6 +114,12 @@ public partial class CardListPanel : PanelContainer
     {
         CardPressed?.Invoke(card);
     }
+
+    /// <summary>The card nodes shown, in the order they were given (the same card given twice is two nodes).</summary>
+    public IReadOnlyList<Card> ShownCards => CardContainerList.GetChildren<CardContainer>()
+        .Where(container => container.CurrentCard is not null)
+        .Select(container => container.CurrentCard!)
+        .ToList();
 
     public event Action<Card>? CardPressed;
     public event Action<Card>? CardDropped;

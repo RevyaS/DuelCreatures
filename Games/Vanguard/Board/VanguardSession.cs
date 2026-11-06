@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using ArC.CardGames.Bots;
 using ArC.CardGames.Vanguard;
 using ArC.CardGames.Vanguard.Bots;
 using Godot;
@@ -18,7 +19,7 @@ public partial class VanguardSession : Control
 {
     OpponentType Opponent;
     VanguardDeckBuilder PlayerDeck = null!;
-    VanguardBotDifficulty Difficulty = VanguardBotDifficulty.MASTER;
+    BotDifficulty Difficulty = BotDifficulty.MASTER;
 
     VanguardInputProvider InputProviderComponent = null!;
     VanguardBoard Board => InputProviderComponent.Board;
