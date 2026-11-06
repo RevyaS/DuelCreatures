@@ -1,10 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using ArC.CardGames.Flow;
 using ArC.CardGames.Vanguard;
 using ArC.CardGames.Vanguard.Bots;
-using ArC.CardGames.Setup;
-using ArC.VanguardAI.IO;
 using Godot;
 using static ArC.CardGames.Vanguard.Cards.VanguardCardsFactory;
 
@@ -37,19 +34,10 @@ public partial class VanguardSession : Control
 
     public async override void _Ready()
     {
-        var eventBus = new VanguardEventBus();
-        var effectService = new VanguardEffectService(eventBus);
-        var gameContext = new GameContext();
-
         HUD = GetNode<PanelContainer>($"%{nameof(HUD)}");
         GameOverDialog = GetNode<GameOverDialog>($"%{nameof(GameOverDialog)}");
         GameOverDialog.Initialize(PlayerDeck);
         InputProviderComponent = GetNode<VanguardInputProvider>($"%{nameof(InputProviderComponent)}");
-        InputProviderComponent.SetEventBus(eventBus);
-
-        var aiDeck = VanguardDeckFactory.RoyalPaladinTrialDeck;
-
-        var player1 = new VanguardPlayerProfile(PlayerDeck);
 
         VanguardPlayerProfile player2 = Opponent switch
         {
@@ -57,35 +45,23 @@ public partial class VanguardSession : Control
             OpponentType.RULE_BOT_KAGERO_TRIAL_DECK => new(KageroTrialDeckBot.Deck),
             OpponentType.RULE_BOT_OTT_TRIAL_DECK => new(OracleThinkTankTrialDeckBot.Deck),
             OpponentType.RULE_BOT_NOVA_GRAPPLER_TRIAL_DECK => new(NovaGrapplerTrialDeckBot.Deck),
-            OpponentType.AI => new(aiDeck),
+            OpponentType.AI => new(VanguardDeckFactory.RoyalPaladinTrialDeck),
             _ => throw new NotSupportedException("Invalid Opponent")
         };
 
-        // The data query reads the session, which needs the query first
-        VanguardGameSession? createdSession = null;
-        var dataQuery = new VanguardGameDataQuery(() => createdSession);
-        var game = new VanguardGame(player1, player2, dataQuery, eventBus, effectService);
-        var skillService = new VanguardSkillService(eventBus, gameContext, dataQuery);
-        var logger = new GodotLogger();
-        logger.Enabled = true;
+        var (session, services) = VanguardSessionBuilder.Create()
+            .Player1(new(PlayerDeck), services =>
+            {
+                InputProviderComponent.Activate(services.Game.Board.Player1Area, services.Game.Board.Player2Area, services.SkillService, services.GameContext);
+                return InputProviderComponent;
+            })
+            .Player2(player2, services => VanguardOpponents.Create(Opponent, Difficulty, services))
+            .WithLogger(new GodotLogger { Enabled = true })
+            .Build();
 
-        VanguardAIGameStateEncoder gameStateEncoder = new(dataQuery);
-        VanguardAIDecisionContextEncoder decisionContextEncoder = new(dataQuery);
-        VanguardAIOptionEncoder optionEncoder = new(dataQuery);
+        InputProviderComponent.SetEventBus(services.EventBus);
 
-        IPlayerInputProviderFactory<IVanguardPlayerInputProvider> inputProviderFactory;
-        if(Opponent == OpponentType.AI)
-        {
-            inputProviderFactory = new VanguardInputProviderFactory(game, dataQuery, gameStateEncoder, decisionContextEncoder, optionEncoder, InputProviderComponent, gameContext, skillService, logger);
-        } else
-        {
-            inputProviderFactory = new RuleBotInputProviderFactory(game, Opponent, VanguardBotDifficulty.MASTER, dataQuery, InputProviderComponent, gameContext, skillService);
-        }
-        
-        var session = new VanguardGameSession(game, inputProviderFactory, eventBus, effectService, skillService, gameContext, logger);
-        createdSession = session;
-
-        await StartGame(session, dataQuery);
+        await StartGame(session, services.DataQuery);
     }
 
     private async Task StartGame(VanguardGameSession session, VanguardGameDataQuery dataQuery)

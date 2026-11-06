@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
-using ArC.CardGames.Flow;
+using ArC.CardGames.Bots;
 using ArC.CardGames.YuGiOh;
+using ArC.CardGames.YuGiOh.Bots;
 using Godot;
 
 public partial class YuGiOhSession : Control
@@ -12,23 +13,20 @@ public partial class YuGiOhSession : Control
     {
         InputProviderComponent = GetNode<YuGiOhInputProvider>($"%{nameof(InputProviderComponent)}");
 
-        var gameContext = new GameContext();
-        var eventBus = new YuGiOhEventBus();
-        var effectService = new YuGiOhEffectService();
-        var player1 = new YuGiOhPlayerProfile(YuGiOhDeckFactory.ExosisterTacticalTryDeck);
-        var player2 = new YuGiOhPlayerProfile(YuGiOhDeckFactory.ExosisterTacticalTryDeck);
+        var (session, services) = YuGiOhSessionBuilder.Create()
+            .Player1(new(YuGiOhDeckFactory.ExosisterTacticalTryDeck), services =>
+            {
+                InputProviderComponent.Activate(services.Game.Board.Player1Area, services.Game.Board.Player2Area, services.SkillService);
+                return InputProviderComponent;
+            })
+            .Player2(new(YuGiOhDeckFactory.ExosisterTacticalTryDeck), services =>
+                new ExosisterTacticalTryDeckBot(services.Game.Player2, services.DataQuery, services.SkillService, services.GameContext, BotDifficulty.MASTER))
+            .WithLogger(new GodotLogger())
+            .Build();
 
-        InputProviderComponent.SetEventBus(eventBus);
-        
-        var game = new YuGiOhGame(player1, player2, eventBus, effectService, new GodotLogger());
+        InputProviderComponent.SetEventBus(services.EventBus);
 
-        YuGiOhGameSession createdSession = null!;
-        var dataQuery = new YuGiOhGameDataQuery(() => createdSession);
-        var skillService = new YuGiOhSkillService(gameContext, dataQuery, eventBus);
-        var inputProviderFactory = new YuGiOhInputProviderFactory(game, dataQuery, InputProviderComponent, gameContext, skillService);
-        createdSession = new YuGiOhGameSession(game, inputProviderFactory, eventBus, gameContext, new GodotLogger());
-
-        await StartGame(createdSession);
+        await StartGame(session);
     }
 
     private async Task StartGame(YuGiOhGameSession session)
