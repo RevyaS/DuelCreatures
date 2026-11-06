@@ -1,0 +1,40 @@
+using System.Collections.Generic;
+using System.Linq;
+using ArC.CardGames;
+using ArC.CardGames.Flow;
+using ArC.CardGames.Rules;
+using ArC.CardGames.YuGiOh;
+using Godot;
+
+/// <summary>Everything YuGiOh's answers and strategies work with: the player, the board's input, and the HUD's prompts.</summary>
+public sealed class YuGiOhInput(
+    IYuGiOhPlayerInputProvider player,
+    InputBoard board,
+    Node dialogParent,
+    SelectFromCardList cardPicker,
+    ISkillTextInterpreter skillText)
+{
+    /// <summary>The player being asked (for the rules that need to know who asks).</summary>
+    public IYuGiOhPlayerInputProvider Player { get; } = player;
+    public YuGiOhPlayArea PlayArea => Player.PlayArea;
+    public YuGiOhPlayArea OpponentPlayArea => Player.OpponentPlayArea;
+    /// <summary>The game's states: what a skill is selecting for (e.g. SearchDeckState's filter).</summary>
+    public GameContext Game => Player.SkillService.Context;
+
+    public InputBoard Board { get; } = board;
+    public Node DialogParent { get; } = dialogParent;
+    public SelectFromCardList CardPicker { get; } = cardPicker;
+    public ISkillTextInterpreter SkillText { get; } = skillText;
+
+    /// <summary>Answers known ahead, given before anyone is asked.</summary>
+    public PreAnswers Answers { get; } = new();
+    /// <summary>What the next prompt for a question may offer, once.</summary>
+    public Narrowing Narrowing { get; } = new();
+
+    /// <summary>The innermost game state of type <typeparamref name="TState"/>, if any.</summary>
+    public TState? State<TState>() where TState : class, IGameState => Game.States.OfType<TState>().FirstOrDefault();
+
+    public bool IsOwnZone(IYuGiOhZone zone)
+        => PlayArea.ControlledMonsterZones.Cast<IYuGiOhZone>().Concat(PlayArea.SpellAndTrapZones).Append(PlayArea.FieldZone)
+            .Contains(zone, ReferenceEqualityComparer.Instance);
+}

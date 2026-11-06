@@ -15,16 +15,46 @@ public partial class CardSlot : CardArea, IZoneView, IBindable<ISingleSpace>
     public ICardSpace? Space { get; private set; }
 
     public event Action<ZoneSnapshot>? Presented;
-    public event Action<IZoneView, CardBase>? CardInspected;
+    public event Action<IZoneView, CardBase?>? Clicked;
+
+    [Export] public Color HighlightColor { get; set; } = new(1f, 0.85f, 0.2f);
+    [Export] public float HighlightWidth { get; set; } = 4;
+    [Export] public Color CardHighlightColor { get; set; } = new(1f, 0.85f, 0.2f);
+
+    ReferenceRect? highlight;
+    Func<CardBase, bool>? highlightedCards;
 
     public override void _Ready()
     {
         base._Ready();
         if(Engine.IsEditorHint()) return;
+        highlight = ZoneInput.AddHighlight(this, HighlightColor, HighlightWidth);
+        ZoneInput.PassClicksToZone(this);
         CardPressed += node =>
         {
-            if(node.IsFront && node.CurrentCard is { } card) CardInspected?.Invoke(this, card);
+            if(node.CurrentCard is { } card) Clicked?.Invoke(this, card);
         };
+    }
+
+    // A click on the slot itself (its card takes its own clicks)
+    public override void _GuiInput(InputEvent input)
+    {
+        if(!Engine.IsEditorHint() && ZoneInput.IsClick(input)) Clicked?.Invoke(this, null);
+    }
+
+    public void SetHighlight(bool zone, Func<CardBase, bool>? cards)
+    {
+        if(highlight is not null) highlight.Visible = zone;
+        highlightedCards = cards;
+        OutlineCard();
+    }
+
+    private void OutlineCard()
+    {
+        if(Container.CurrentCard is { CurrentCard: { } card } node)
+        {
+            node.Outline = highlightedCards?.Invoke(card) == true ? CardHighlightColor : null;
+        }
     }
 
     /// <summary>Whether a card here may lie sideways. A <see cref="CardBox"/>'s square fits one; a card-shaped slot doesn't.</summary>
@@ -96,6 +126,7 @@ public partial class CardSlot : CardArea, IZoneView, IBindable<ISingleSpace>
             AddCard(ZonePresentation.CreateNode(top));
         }
         Container.ChangeOrientation(snapshot.Orientation ?? Orientation.VERTICAL);
+        OutlineCard();
     }
 
     private void EnsureFits(ZoneSnapshot snapshot)

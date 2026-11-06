@@ -62,8 +62,11 @@ public sealed class ArcDriver : IDisposable
     /// <summary>A zone view asked to show its whole zone (an Inspectable LineZone or StackZone was pressed).</summary>
     public event Action<IZoneView>? ZoneInspected;
 
-    /// <summary>A face-up card on the board was pressed, to see its details.</summary>
+    /// <summary>A card on the board its viewer may see was clicked, to see its details: face-up, or their own Set cards.</summary>
     public event Action<IZoneView, CardBase>? CardInspected;
+
+    /// <summary>Any zone or card on the board was clicked (the card, or null for the zone itself), for input scopes.</summary>
+    public event Action<IZoneView, CardBase?>? Clicked;
 
     /// <summary>The views shown, by zone.</summary>
     public IEnumerable<IZoneView> Views => shown.Values.Select(entry => entry.View);
@@ -170,7 +173,7 @@ public sealed class ArcDriver : IDisposable
 
         if(view is LineZone line) line.InspectRequested += OnInspectRequested;
         if(view is StackZone stack) stack.InspectRequested += OnInspectRequested;
-        zoneView.CardInspected += (inspected, card) => CardInspected?.Invoke(inspected, card);
+        zoneView.Clicked += (clicked, card) => OnClicked(clicked, card, side);
 
         // Its extensions: the nodes under it that show its zone
         foreach(var extension in Descendants(view).Where(node => node is not IZoneView && Bindings.IsBindable(node)))
@@ -180,6 +183,22 @@ public sealed class ArcDriver : IDisposable
     }
 
     private void OnInspectRequested(IZoneView view) => ZoneInspected?.Invoke(view);
+
+    private void OnClicked(IZoneView view, CardBase? card, BoardSide side)
+    {
+        Clicked?.Invoke(view, card);
+        // Zones that list their cards when pressed show the list instead
+        if(card is null || view is LineZone { Inspectable: true } or StackZone { Inspectable: true }) return;
+        if(MaySee(view, card, side)) CardInspected?.Invoke(view, card);
+    }
+
+    // A face-up card, or the player's own card outside a hidden pile or hand (e.g. their Set cards)
+    private static bool MaySee(IZoneView view, CardBase card, BoardSide side)
+    {
+        bool faceUp = view.Displayed.Cards.Any(shown => ReferenceEquals(shown.Card, card) && shown.IsFaceUp);
+        bool hidden = view is StackZone { HideCards: true } or HandZone { HideCards: true };
+        return faceUp || (side == BoardSide.Player && !hidden);
+    }
 
     // The unique nodes of a scene that are meant to show a zone: zone views, and nodes binding a kind of zone (which
     // are then reported, not being zone views). Others, like a label showing life points, aren't matched to zones.

@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://cdr3i0iyowbxf"]
+[gd_scene load_steps=12 format=3 uid="uid://cdr3i0iyowbxf"]
 
 [ext_resource type="PackedScene" path="res://Games/YuGiOh/HUD/CardDetails/YuGiOhCardDetails.tscn" id="1_nh885"]
 [ext_resource type="Script" uid="uid://bhfky186db8q7" path="res://Games/YuGiOh/Board/YuGiOhInputProvider.cs" id="1_qtv2h"]
@@ -9,6 +9,8 @@
 [ext_resource type="Script" uid="uid://oevhg1o84cdb" path="res://Games/Shared/Presentation/CardFlightLayer.cs" id="6_flights"]
 [ext_resource type="Script" uid="uid://b3srrk0amiv8t" path="res://Games/Shared/HUD/PhaseLabel.cs" id="7_phase"]
 [ext_resource type="Script" path="res://Games/Shared/HUD/TurnLabel.cs" id="8_turn"]
+[ext_resource type="Script" path="res://Games/Shared/Input/BoardButtonView.cs" id="9_button"]
+[ext_resource type="Script" path="res://Games/Shared/Input/InputHintLabel.cs" id="10_hint"]
 
 [node name="YuGiOhInputProvider" type="Control"]
 layout_mode = 3
@@ -67,12 +69,16 @@ layout_mode = 2
 layout_mode = 2
 theme_override_font_sizes/font_size = 45
 text = "Next Phase"
+script = ExtResource("9_button")
+Kind = 0
 
 [node name="SkipToEndPhase" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
 theme_override_font_sizes/font_size = 45
 text = "End Phase"
+script = ExtResource("9_button")
+Kind = 1
 
 [node name="TurnLabel" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -80,6 +86,31 @@ size_flags_horizontal = 6
 theme_override_font_sizes/font_size = 45
 text = "Opponent Turn"
 script = ExtResource("8_turn")
+
+[node name="ActionRow" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Actions" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/ActionRow"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 45
+text = "Actions"
+script = ExtResource("9_button")
+Kind = 2
+
+[node name="Confirm" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/ActionRow"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_font_sizes/font_size = 45
+text = "Confirm"
+script = ExtResource("9_button")
+Kind = 3
+
+[node name="InputHint" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 1
+autowrap_mode = 3
+script = ExtResource("10_hint")
 
 [node name="CardFlights" type="Control" parent="."]
 unique_name_in_owner = true

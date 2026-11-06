@@ -14,6 +14,9 @@ public partial class CardDetailsView : Control, IProvide<ISkillTextInterpreter>
 
     ISkillTextInterpreter IProvide<ISkillTextInterpreter>.Value() => SkillText;
 
+    /// <summary>How this game's skills read, for other UI (e.g. prompts listing skills).</summary>
+    public ISkillTextInterpreter SkillTextInterpreter() => SkillText;
+
     public CardDetail? Current { get; private set; }
 
     public void Show(CardDetail detail)

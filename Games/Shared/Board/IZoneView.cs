@@ -22,8 +22,17 @@ public interface IZoneView : ICardLocation
     /// <summary>Raised once a change was shown, with the content after it (e.g. for a zone's extensions to refresh).</summary>
     event Action<ZoneSnapshot>? Presented;
 
-    /// <summary>A face-up card it shows was pressed, to see its details. Face-down cards never raise it: nothing hidden is revealed.</summary>
-    event Action<IZoneView, CardBase>? CardInspected;
+    /// <summary>
+    /// The player clicked a card it shows (the card), or the zone itself (null). Raised for face-down cards too: what may
+    /// be seen of them is decided by whoever listens (ArcDriver only inspects cards their viewer may see).
+    /// </summary>
+    event Action<IZoneView, CardBase?>? Clicked;
+
+    /// <summary>
+    /// Shows what the player can click now: the zone itself (<paramref name="zone"/>) and the cards
+    /// <paramref name="cards"/> accepts (none when null). Set by input scopes, cleared when they end.
+    /// </summary>
+    void SetHighlight(bool zone, Func<CardBase, bool>? cards);
 }
 
 /// <summary>

@@ -24,7 +24,36 @@ public partial class StackZone : CardVerticalStack, IZoneView, IBindable<GroupSp
 
     public event Action<ZoneSnapshot>? Presented;
     public event Action<IZoneView>? InspectRequested;
-    public event Action<IZoneView, CardBase>? CardInspected;
+    public event Action<IZoneView, CardBase?>? Clicked;
+
+    [Export] public Color HighlightColor { get; set; } = new(1f, 0.85f, 0.2f);
+    [Export] public float HighlightWidth { get; set; } = 4;
+    [Export] public Color CardHighlightColor { get; set; } = new(1f, 0.85f, 0.2f);
+
+    ReferenceRect? highlight;
+    Func<CardBase, bool>? highlightedCards;
+
+    public override void _Ready()
+    {
+        base._Ready();
+        if(Engine.IsEditorHint()) return;
+        highlight = ZoneInput.AddHighlight(this, HighlightColor, HighlightWidth);
+    }
+
+    public void SetHighlight(bool zone, Func<CardBase, bool>? cards)
+    {
+        if(highlight is not null) highlight.Visible = zone;
+        highlightedCards = cards;
+        OutlineTop();
+    }
+
+    private void OutlineTop()
+    {
+        if(VisiblePart(shownSnapshot).Top is { } top && FindCardNode(top.Card) is { } node)
+        {
+            node.Outline = highlightedCards?.Invoke(top.Card) == true ? CardHighlightColor : null;
+        }
+    }
 
     public void Bind(GroupSpace space)
     {
@@ -108,15 +137,11 @@ public partial class StackZone : CardVerticalStack, IZoneView, IBindable<GroupSp
         presentation.Present(() => Presented?.Invoke(change.After));
     }
 
-    // Inspectable: a press shows the whole pile; otherwise the top card's details, when it's face up
+    // A press is a click on its top card (the pile itself when empty); Inspectable also asks to show the whole pile
     protected override void OnPressed()
     {
-        if(Inspectable && Space is not null)
-        {
-            InspectRequested?.Invoke(this);
-            return;
-        }
-        if(VisiblePart(shownSnapshot).Top is { IsFaceUp: true } top) CardInspected?.Invoke(this, top.Card);
+        Clicked?.Invoke(this, VisiblePart(shownSnapshot).Top?.Card);
+        if(Inspectable && Space is not null) InspectRequested?.Invoke(this);
     }
 
     private bool IsHeld(CardBase card) => presenter?.IsHeld(card) ?? false;
@@ -137,5 +162,6 @@ public partial class StackZone : CardVerticalStack, IZoneView, IBindable<GroupSp
             SetCard(top.Card);
         }
         FindCardNode(top.Card)!.IsFront = top.IsFaceUp;
+        OutlineTop();
     }
 }

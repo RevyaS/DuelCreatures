@@ -17,18 +17,32 @@ public partial class LineZone : CardLineStatic, IZoneView, IBindable<GroupSpace>
 
     public event Action<ZoneSnapshot>? Presented;
     public event Action<IZoneView>? InspectRequested;
-    public event Action<IZoneView, CardBase>? CardInspected;
+    public event Action<IZoneView, CardBase?>? Clicked;
+
+    [Export] public Color HighlightColor { get; set; } = new(1f, 0.85f, 0.2f);
+    [Export] public float HighlightWidth { get; set; } = 4;
+    [Export] public Color CardHighlightColor { get; set; } = new(1f, 0.85f, 0.2f);
+
+    ReferenceRect? highlight;
 
     public override void _Ready()
     {
         base._Ready();
         if(Engine.IsEditorHint()) return;
-        // Inspectable: a press shows the whole zone; otherwise the pressed card's details
+        highlight = ZoneInput.AddHighlight(this, HighlightColor, HighlightWidth);
+        // Inspectable: a press also asks to show the whole zone
         CardPressed += node =>
         {
+            if(node.CurrentCard is { } card) Clicked?.Invoke(this, card);
             if(Inspectable && Space is not null) InspectRequested?.Invoke(this);
-            else if(node.IsFront && node.CurrentCard is { } card) CardInspected?.Invoke(this, card);
         };
+    }
+
+    public void SetHighlight(bool zone, Func<CardBase, bool>? cards)
+    {
+        if(highlight is not null) highlight.Visible = zone;
+        OutlineCard = cards is null ? null : node => node.CurrentCard is { } card && cards(card) ? CardHighlightColor : null;
+        Refresh();
     }
 
     public void Bind(GroupSpace space)

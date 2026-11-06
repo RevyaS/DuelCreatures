@@ -18,16 +18,30 @@ public partial class HandZone : CardLineDynamic, IZoneView, IBindable<GroupSpace
     public ICardSpace? Space { get; private set; }
 
     public event Action<ZoneSnapshot>? Presented;
-    public event Action<IZoneView, CardBase>? CardInspected;
+    public event Action<IZoneView, CardBase?>? Clicked;
+
+    [Export] public Color HighlightColor { get; set; } = new(1f, 0.85f, 0.2f);
+    [Export] public float HighlightWidth { get; set; } = 4;
+    [Export] public Color CardHighlightColor { get; set; } = new(1f, 0.85f, 0.2f);
+
+    ReferenceRect? highlight;
 
     public override void _Ready()
     {
         base._Ready();
         if(Engine.IsEditorHint()) return;
+        highlight = ZoneInput.AddHighlight(this, HighlightColor, HighlightWidth);
         CardPressed += node =>
         {
-            if(node.IsFront && node.CurrentCard is { } card) CardInspected?.Invoke(this, card);
+            if(node.CurrentCard is { } card) Clicked?.Invoke(this, card);
         };
+    }
+
+    public void SetHighlight(bool zone, Func<CardBase, bool>? cards)
+    {
+        if(highlight is not null) highlight.Visible = zone;
+        OutlineCard = cards is null ? null : node => node.CurrentCard is { } card && cards(card) ? CardHighlightColor : null;
+        Refresh();
     }
 
     public void Bind(GroupSpace space)
