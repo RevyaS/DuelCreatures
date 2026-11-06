@@ -26,6 +26,10 @@ public partial class YuGiOhBotSession : Control
         session.StartGame();
         InputProviderComponent.Show(session);
 
+        // The play areas must keep their size: warn about anything in them that changes size
+        var board = InputProviderComponent.Board;
+        LayoutWatch.Watch(this, board.GetNode<Control>("%Player1Area"), board.GetNode<Control>("%Player2Area"));
+
         if(await SessionLoop.Run(session, InputProviderComponent.Presenter))
         {
             GD.Print($"Bot game over: {(session.Winner() == session.Game.Player1 ? "player 1" : session.Winner() is null ? "nobody" : "player 2")} won ({session.GameOverContext}), turn {session.TurnCount}");
