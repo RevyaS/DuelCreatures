@@ -53,8 +53,10 @@ public partial class CardLineDynamic : CardLine
 
     private float GetAvailableCardWidth()
     {
-        // Panel and margin padding around the card row
-        var padding = GetCombinedMinimumSize().X - Container.GetCombinedMinimumSize().X;
+        // Panel and margin padding around the card row. GetMinimumSize, not GetCombinedMinimumSize: the combined one
+        // includes custom_minimum_size (e.g. a hand's 1080), which would count the free space as padding, so the cards
+        // would never overlap and the line would grow with every card instead
+        var padding = GetMinimumSize().X - Container.GetCombinedMinimumSize().X;
         return Size.X - padding;
     }
 

@@ -38,9 +38,9 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
         Presenter.Flights = GetNode<CardFlightLayer>("%CardFlights");
     }
 
-    // For the HUD's components showing the game in step with the board (e.g. the phase label)
-    PresentationContext IProvide<PresentationContext>.Value() => driver?.ContextFor(BoardSide.Both)
-        ?? throw new InvalidOperationException($"{nameof(YuGiOhInputProvider)} provides a presentation once it shows a game ({nameof(Show)})");
+    // For the board's and HUD's components showing the game in step with the board (e.g. the phase label, life points)
+    PresentationContext? hudPresentation;
+    PresentationContext IProvide<PresentationContext>.Value() => hudPresentation ??= new(Presenter, board.Sfx, BoardSide.Both);
 
     /// <summary>Shows <paramref name="session"/> on the board and the HUD. Call once its game has started.</summary>
     public void Show(YuGiOhGameSession session)

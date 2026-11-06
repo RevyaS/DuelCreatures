@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://ca1mvs1wcc75x"]
+[gd_scene load_steps=6 format=3 uid="uid://ca1mvs1wcc75x"]
 
 [ext_resource type="Script" uid="uid://0yvuui1e7l76" path="res://Games/YuGiOh/YuGiOhBoard.cs" id="1_phugy"]
 [ext_resource type="PackedScene" uid="uid://bbkqq03vdp4mq" path="res://Games/YuGiOh/Board/YuGiOhPlayAreaComponent.tscn" id="1_xeqle"]
 [ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/HandZone.tscn" id="2_hand"]
 [ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/CardBox.tscn" id="3_box"]
+[ext_resource type="Script" path="res://Games/YuGiOh/HUD/LifePointsLabel.cs" id="4_lp"]
 
 [node name="YuGiOhBoard" type="MarginContainer"]
 offset_right = 1080.0
@@ -27,11 +28,13 @@ HideCards = true
 Alignment = 1
 
 [node name="OppLP" type="Label" parent="Board/VBoxContainer2"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
 text = "8000"
 horizontal_alignment = 1
 vertical_alignment = 1
+script = ExtResource("4_lp")
 
 [node name="Control" type="Control" parent="Board/VBoxContainer2"]
 custom_minimum_size = Vector2(1080, 348)
@@ -89,11 +92,13 @@ grow_horizontal = 2
 grow_vertical = 0
 
 [node name="PlayerLP" type="Label" parent="Board/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
 text = "8000"
 horizontal_alignment = 1
 vertical_alignment = 1
+script = ExtResource("4_lp")
 
 [node name="PlayerHand" parent="Board/VBoxContainer" instance=ExtResource("2_hand")]
 unique_name_in_owner = true

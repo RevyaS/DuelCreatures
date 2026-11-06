@@ -83,10 +83,23 @@ public partial class HandZone : CardLineDynamic, IZoneView, IBindable<GroupSpace
         presentation.Present(() => Presented?.Invoke(change.After));
     }
 
+    // The height it keeps when empty: a card at CardScale, plus this (the margins around the card row)
+    private float _emptyHeightPadding = 4;
+    [Export]
+    public float EmptyHeightPadding
+    {
+        get => _emptyHeightPadding;
+        set
+        {
+            _emptyHeightPadding = value;
+            Render();
+        }
+    }
+
     protected override void RenderCore()
     {
         base.RenderCore();
-        ZoneLayout.KeepCardHeight(this, CardScale);
+        ZoneLayout.KeepCardHeight(this, CardScale, EmptyHeightPadding);
     }
 
     // Runs whenever the line renders: keeps each card's facing (the base shows every card face up unless HideCards)
