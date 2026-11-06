@@ -16,18 +16,28 @@ metadata/_edit_vertical_guides_ = [296.0, 456.0, 624.0, 784.0]
 layout_mode = 2
 theme_override_constants/separation = 22
 
-[node name="OppHand" parent="Board" instance=ExtResource("2_hand")]
+[node name="VBoxContainer2" type="VBoxContainer" parent="Board"]
+layout_mode = 2
+
+[node name="OppHand" parent="Board/VBoxContainer2" instance=ExtResource("2_hand")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(1080, 0)
+custom_minimum_size = Vector2(1080, 193)
 layout_mode = 2
 HideCards = true
 Alignment = 1
 
-[node name="Control" type="Control" parent="Board"]
+[node name="OppLP" type="Label" parent="Board/VBoxContainer2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "8000"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Control" type="Control" parent="Board/VBoxContainer2"]
 custom_minimum_size = Vector2(1080, 348)
 layout_mode = 2
 
-[node name="Player2Area" parent="Board/Control" instance=ExtResource("1_xeqle")]
+[node name="Player2Area" parent="Board/VBoxContainer2/Control" instance=ExtResource("1_xeqle")]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 10
@@ -56,11 +66,14 @@ unique_name_in_owner = true
 layout_mode = 2
 CardScale = 0.38
 
-[node name="Control2" type="Control" parent="Board"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Board"]
+layout_mode = 2
+
+[node name="Control2" type="Control" parent="Board/VBoxContainer"]
 custom_minimum_size = Vector2(1080, 348)
 layout_mode = 2
 
-[node name="Player1Area" parent="Board/Control2" instance=ExtResource("1_xeqle")]
+[node name="Player1Area" parent="Board/VBoxContainer/Control2" instance=ExtResource("1_xeqle")]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 7
@@ -75,8 +88,15 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="PlayerHand" parent="Board" instance=ExtResource("2_hand")]
+[node name="PlayerLP" type="Label" parent="Board/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "8000"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PlayerHand" parent="Board/VBoxContainer" instance=ExtResource("2_hand")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(1080, 0)
+custom_minimum_size = Vector2(1080, 193)
 layout_mode = 2
 Alignment = 1
