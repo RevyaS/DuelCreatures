@@ -6,8 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://dt60jvmuuttc0" path="res://Games/Shared/HUD/SelectCards.tscn" id="3_mrbjy"]
 [ext_resource type="PackedScene" uid="uid://cl0t7q61is3ro" path="res://Games/Shared/HUD/CardList.tscn" id="4_qtv2h"]
 [ext_resource type="PackedScene" uid="uid://csdff6we3cpjo" path="res://Games/Shared/HUD/SelectFromCardList.tscn" id="5_srywf"]
-[ext_resource type="Script" path="res://Games/Shared/Presentation/CardFlightLayer.cs" id="6_flights"]
-[ext_resource type="Script" path="res://Games/Shared/HUD/PhaseLabel.cs" id="7_phase"]
+[ext_resource type="Script" uid="uid://oevhg1o84cdb" path="res://Games/Shared/Presentation/CardFlightLayer.cs" id="6_flights"]
+[ext_resource type="Script" uid="uid://b3srrk0amiv8t" path="res://Games/Shared/HUD/PhaseLabel.cs" id="7_phase"]
 
 [node name="YuGiOhInputProvider" type="Control"]
 layout_mode = 3
@@ -45,25 +45,39 @@ layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_right = 20
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer"]
 layout_mode = 2
 
-[node name="NextPhase" type="Button" parent="VBoxContainer/MarginContainer/HBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 45
-text = "Next Phase"
 
-[node name="PhaseLabel" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer"]
+[node name="PhaseLabel" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
 theme_override_font_sizes/font_size = 45
 text = "Current phase"
 script = ExtResource("7_phase")
 
-[node name="SkipToEndPhase" type="Button" parent="VBoxContainer/MarginContainer/HBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="NextPhase" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 45
-text = "Skip to End Phase"
+text = "Next Phase"
+
+[node name="SkipToEndPhase" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_font_sizes/font_size = 45
+text = "End Phase"
+
+[node name="TurnLabel" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_font_sizes/font_size = 45
+text = "Opponent Turn"
+script = ExtResource("7_phase")
 
 [node name="CardFlights" type="Control" parent="."]
 unique_name_in_owner = true
