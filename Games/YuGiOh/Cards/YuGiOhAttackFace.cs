@@ -8,7 +8,6 @@ public partial class YuGiOhAttackFace : CardFaceText
 {
     public YuGiOhAttackFace()
     {
-        Prefix = "ATK/";
     }
 
     protected override string? Format(CardBase card) => card is YuGiOhMonsterCard monster ? monster.Attack.ToString() : null;

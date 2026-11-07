@@ -4,4 +4,8 @@ using Godot;
 // (%MonsterZone1, %Graveyard, ...), which is all ArcDriver needs to show the play area on them.
 public partial class YuGiOhPlayAreaComponent : MarginContainer
 {
+    
+
+        // PlayerLP.Bind(board.Player1Area);
+        // OppLP.Bind(board.Player2Area);
 }

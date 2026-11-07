@@ -169,7 +169,7 @@ Copy `Games/Vanguard/Input/` (or `Games/YuGiOh/Input/`) and the input provider.
 5. **Phase strategies** answer by gestures, opening an `InputScope` per question:
    - `Drag`/`Drop` with `DropChoice`s (labelled regions on the zone);
    - `Aim`, or `Aim(…, via, …)` for a boost (no line until a target is under the pointer; the target shows
-     `SetTargeted`: a yellow block on a `CardSlot`, or a zone's own marks by overriding `ShowTargeted`);
+	 `SetTargeted`: a yellow block on a `CardSlot`, or a zone's own marks by overriding `ShowTargeted`);
    - `Swipe`, `LongPress`, `Cards`/`Zones` taps;
    - `Button(BoardButton.…)`;
    - `Activatable`/`Commands` for the card details;
@@ -177,7 +177,7 @@ Copy `Games/Vanguard/Input/` (or `Games/YuGiOh/Input/`) and the input provider.
 
    Then:
    - Pre-answer the questions the chosen action asks next (`Input.Answers.Set(…)`); any left unasked fail loudly at
-     the next action.
+	 the next action.
    - Use `Narrowing` when a later prompt should only offer what the action can use.
    - Preview answers on the board (guards, a mulligan) and `Resync()` the views afterwards.
 6. **The input provider** (`VanguardInputProvider.cs`):
@@ -188,7 +188,7 @@ Copy `Games/Vanguard/Input/` (or `Games/YuGiOh/Input/`) and the input provider.
 7. **The HUD scene:**
    - **Required:** a `CardFlightLayer` (`%CardFlights`).
    - **For the strategies:** an `AimIndicatorLayer`, a `BoardButtonView` per `BoardButton` they offer (set
-     `HideWhenUnavailable` to share a spot), and an `InputHintLabel` (Vanguard's is in the player's play area,
+	 `HideWhenUnavailable` to share a spot), and an `InputHintLabel` (Vanguard's is in the player's play area,
      under its phase label).
    - **Prompts:** `CardList` and `SelectFromCardList`, plus `SelectCards` for hand-drag picks.
    - **Details:** the details scene (step 6).
@@ -242,7 +242,7 @@ These were found by building Vanguard after YuGiOh. They're ordered by how much 
    - The pass-through `MyStrategy` (one line per question) could be dropped if strategies held a "below" and the
      provider tried each answerer in turn.
    - That would cost a little type safety (a strategy would have to say which questions it answers), so it's a
-     trade-off rather than a clear win.
+	 trade-off rather than a clear win.
 3. **`YuGiOhInput` and `VanguardInput` overlap:** the board, answers, narrowing, dialog parent, pickers, details
    and `State<T>()` are the same. A shared `GameInput` base with the game adding its play areas would do.
 4. **The default answers duplicate helpers:** `PickEffect`, `OwnerOf(skill)` and `EnsureAny` are copied between
@@ -267,7 +267,7 @@ These were found by building Vanguard after YuGiOh. They're ordered by how much 
 11. **`TurnLabel` vs `PhaseLabel.OnlyOnItsAreasTurn`** say the same thing in two ways; YuGiOh still uses
     `TurnLabel`.
 12. **Card details placement** differs (in the HUD for YuGiOh, an overlay for Vanguard). It's a layout choice, but
-    `CardDetailsOverlay` could be the default so a game needs no decision.
+	`CardDetailsOverlay` could be the default so a game needs no decision.
 
 ### Done since
 

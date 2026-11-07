@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="CardGameStyle" format=3]
+[gd_resource type="Resource" script_class="CardGameStyle" load_steps=0 format=3]
 
-[ext_resource type="Script" path="res://Data/Resources/CardGameStyle.cs" id="1_style"]
+[ext_resource type="Script" uid="uid://b8mwkjkvfrkb6" path="res://Data/Resources/CardGameStyle.cs" id="1_style"]
 [ext_resource type="PackedScene" uid="uid://b4ogsmqyb7phr" path="res://Games/Vanguard/Cards/VanguardCard.tscn" id="2_card"]
 [ext_resource type="Resource" uid="uid://cprca6flaorhc" path="res://Games/Vanguard/Sleeves/VanguardDefaultSleeve.tres" id="3_sleeve"]
 

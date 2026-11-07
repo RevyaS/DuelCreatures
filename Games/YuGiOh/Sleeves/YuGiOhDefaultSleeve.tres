@@ -1,12 +1,9 @@
-[gd_resource type="Resource" script_class="ColorSleeveInfo" load_steps=2 format=3 uid="uid://vog4qb6mhfq8"]
+[gd_resource type="Resource" script_class="TextureSleeveInfo" load_steps=3 format=3 uid="uid://bsocgg21fx11q"]
 
-[ext_resource type="Script" uid="uid://kykm6g4hsp1b" path="res://Data/Resources/ColorSleeveInfo.cs" id="1_hx4nd"]
+[ext_resource type="Texture2D" uid="uid://cg37e3lfovcib" path="res://Assets/CardSleeves/YuGiOh/default.png" id="1_4h5ml"]
+[ext_resource type="Script" uid="uid://dher6tmfm3ur1" path="res://Data/Resources/TextureSleeveInfo.cs" id="1_82ncf"]
 
 [resource]
-script = ExtResource("1_hx4nd")
-Color = Color(0.07450981, 0.3137255, 0.57254905, 1)
-MarginLeft = 10
-MarginRight = 10
-MarginTop = 10
-MarginBottom = 10
-metadata/_custom_type_script = "uid://kykm6g4hsp1b"
+script = ExtResource("1_82ncf")
+Texture = ExtResource("1_4h5ml")
+metadata/_custom_type_script = "uid://dher6tmfm3ur1"

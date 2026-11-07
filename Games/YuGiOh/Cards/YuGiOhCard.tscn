@@ -1,38 +1,37 @@
-[gd_scene format=3]
+[gd_scene load_steps=7 format=3 uid="uid://cyyv18sljb87o"]
 
 [ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Games/Shared/Cards/Card.tscn" id="1_card"]
-[ext_resource type="Script" path="res://Games/YuGiOh/Cards/YuGiOhLevelFace.cs" id="2_level"]
-[ext_resource type="Script" path="res://Games/YuGiOh/Cards/YuGiOhAttackFace.cs" id="3_attack"]
-[ext_resource type="Script" path="res://Games/YuGiOh/Cards/YuGiOhDefenseFace.cs" id="4_defense"]
-[ext_resource type="Script" path="res://Games/Shared/Cards/CardFacePanel.cs" id="5_panel"]
+[ext_resource type="Script" uid="uid://gyo6ja063yda" path="res://Games/YuGiOh/Cards/YuGiOhLevelFace.cs" id="2_level"]
+[ext_resource type="Script" uid="uid://c51l3r73ka3kn" path="res://Games/YuGiOh/Cards/YuGiOhAttackFace.cs" id="3_attack"]
+[ext_resource type="Script" uid="uid://bfpwrij2gxufx" path="res://Games/YuGiOh/Cards/YuGiOhDefenseFace.cs" id="4_defense"]
+[ext_resource type="Script" uid="uid://dlx0iriqbw2l0" path="res://Games/Shared/Cards/CardFacePanel.cs" id="5_panel"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_face"]
 bg_color = Color(0, 0, 0, 0.6)
 
 [node name="Card" instance=ExtResource("1_card")]
 
-[node name="LevelPanel" type="PanelContainer" parent="Border"]
+[node name="LevelPanel" type="PanelContainer" parent="Border" index="2"]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -150.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = 66.0
+offset_left = -140.0
+offset_bottom = 56.0
 grow_horizontal = 0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_face")
 script = ExtResource("5_panel")
 
-[node name="Level" type="Label" parent="Border/LevelPanel"]
+[node name="Level" type="Label" parent="Border/LevelPanel" index="0"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 72
 text = "★4"
 horizontal_alignment = 1
 script = ExtResource("2_level")
+Prefix = "★"
 
-[node name="StatsPanel" type="PanelContainer" parent="Border"]
+[node name="StatsPanel" type="PanelContainer" parent="Border" index="3"]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -45,21 +44,21 @@ mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_face")
 script = ExtResource("5_panel")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Border/StatsPanel"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Border/StatsPanel" index="0"]
 layout_mode = 2
 
-[node name="Attack" type="Label" parent="Border/StatsPanel/HBoxContainer"]
+[node name="Attack" type="Label" parent="Border/StatsPanel/HBoxContainer" index="0"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 36
-text = "ATK/1800"
+theme_override_font_sizes/font_size = 50
+text = "1800"
 horizontal_alignment = 1
 script = ExtResource("3_attack")
 
-[node name="Defense" type="Label" parent="Border/StatsPanel/HBoxContainer"]
+[node name="Defense" type="Label" parent="Border/StatsPanel/HBoxContainer" index="1"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 36
-text = "DEF/1000"
+theme_override_font_sizes/font_size = 50
+text = "1000"
 horizontal_alignment = 1
 script = ExtResource("4_defense")

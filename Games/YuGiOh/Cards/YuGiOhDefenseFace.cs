@@ -8,7 +8,6 @@ public partial class YuGiOhDefenseFace : CardFaceText
 {
     public YuGiOhDefenseFace()
     {
-        Prefix = "DEF/";
     }
 
     protected override string? Format(CardBase card) => card is YuGiOhMonsterCard monster ? monster.Defense.ToString() : null;

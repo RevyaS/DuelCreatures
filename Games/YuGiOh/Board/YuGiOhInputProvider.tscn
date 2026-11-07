@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cdr3i0iyowbxf"]
+[gd_scene load_steps=13 format=3 uid="uid://cdr3i0iyowbxf"]
 
 [ext_resource type="PackedScene" path="res://Games/YuGiOh/HUD/CardDetails/YuGiOhCardDetails.tscn" id="1_nh885"]
 [ext_resource type="Script" uid="uid://bhfky186db8q7" path="res://Games/YuGiOh/Board/YuGiOhInputProvider.cs" id="1_qtv2h"]
@@ -6,14 +6,12 @@
 [ext_resource type="PackedScene" uid="uid://dt60jvmuuttc0" path="res://Games/Shared/HUD/SelectCards.tscn" id="3_mrbjy"]
 [ext_resource type="PackedScene" uid="uid://cl0t7q61is3ro" path="res://Games/Shared/HUD/CardList.tscn" id="4_qtv2h"]
 [ext_resource type="PackedScene" uid="uid://csdff6we3cpjo" path="res://Games/Shared/HUD/SelectFromCardList.tscn" id="5_srywf"]
-[ext_resource type="PackedScene" uid="uid://cx38wvfuj0nja" path="res://Games/Shared/HUD/CardListPanel.tscn" id="13_chain"]
 [ext_resource type="Script" uid="uid://oevhg1o84cdb" path="res://Games/Shared/Presentation/CardFlightLayer.cs" id="6_flights"]
-[ext_resource type="Script" uid="uid://b3srrk0amiv8t" path="res://Games/Shared/HUD/PhaseLabel.cs" id="7_phase"]
-[ext_resource type="Script" uid="uid://bkbpnqxh1mba7" path="res://Games/Shared/HUD/TurnLabel.cs" id="8_turn"]
 [ext_resource type="Script" uid="uid://wpkwmk8pl57r" path="res://Games/Shared/Input/BoardButtonView.cs" id="9_button"]
 [ext_resource type="Script" uid="uid://bdhn0i6xtl5f6" path="res://Games/Shared/Input/InputHintLabel.cs" id="10_hint"]
 [ext_resource type="Script" uid="uid://dy0qllpcj4gug" path="res://Games/Shared/Input/AimIndicatorLayer.cs" id="11_aim"]
 [ext_resource type="PackedScene" uid="uid://bj6jrhfey56is" path="res://Games/Shared/Vfx/AttackIndicator.tscn" id="12_indicator"]
+[ext_resource type="PackedScene" uid="uid://cx38wvfuj0nja" path="res://Games/Shared/HUD/CardListPanel.tscn" id="13_chain"]
 
 [node name="YuGiOhInputProvider" type="Control"]
 layout_mode = 3
@@ -31,16 +29,8 @@ anchor_right = 1.0
 grow_horizontal = 2
 theme_override_constants/separation = 20
 
-[node name="CardInfoMarginContainer" type="MarginContainer" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 500)
-layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 0
-
-[node name="CardDetails" parent="VBoxContainer/CardInfoMarginContainer" instance=ExtResource("1_nh885")]
-unique_name_in_owner = true
+[node name="Control" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 400)
 layout_mode = 2
 
 [node name="YuGiOhBoard" parent="VBoxContainer" instance=ExtResource("1_qxasj")]
@@ -57,13 +47,6 @@ layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-
-[node name="PhaseLabel" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/MarginContainer"]
-layout_mode = 2
-size_flags_horizontal = 6
-theme_override_font_sizes/font_size = 45
-text = "Current phase"
-script = ExtResource("7_phase")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer/VBoxContainer/MarginContainer"]
 layout_mode = 2
@@ -85,14 +68,7 @@ Kind = 1
 [node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="TurnLabel" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/MarginContainer2"]
-layout_mode = 2
-size_flags_horizontal = 6
-theme_override_font_sizes/font_size = 45
-text = "Opponent Turn"
-script = ExtResource("8_turn")
-
-[node name="InputHint" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer"]
+[node name="InputHint" type="Label" parent="VBoxContainer/MarginContainer/VBoxContainer/MarginContainer2"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 horizontal_alignment = 1
@@ -121,6 +97,20 @@ mouse_filter = 2
 script = ExtResource("11_aim")
 IndicatorScene = ExtResource("12_indicator")
 
+[node name="CardInfoMarginContainer" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(0, 560)
+layout_mode = 0
+offset_right = 1080.0
+offset_bottom = 500.0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 0
+
+[node name="CardDetails" parent="CardInfoMarginContainer" instance=ExtResource("1_nh885")]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="HUD" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -148,17 +138,10 @@ layout_mode = 1
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
 offset_left = -450.0
 offset_top = -420.0
 offset_right = 450.0
 offset_bottom = -140.0
-grow_horizontal = 2
-grow_vertical = 2
 
 [node name="SelectFromCardListComponent" parent="HUD" instance=ExtResource("5_srywf")]
 unique_name_in_owner = true

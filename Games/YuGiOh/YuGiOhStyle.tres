@@ -1,12 +1,14 @@
-[gd_resource type="Resource" script_class="CardGameStyle" format=3]
+[gd_resource type="Resource" script_class="CardGameStyle" load_steps=5 format=3 uid="uid://dbtuqiia0xj6a"]
 
-[ext_resource type="Script" path="res://Data/Resources/CardGameStyle.cs" id="1_style"]
-[ext_resource type="PackedScene" path="res://Games/YuGiOh/Cards/YuGiOhCard.tscn" id="2_card"]
-[ext_resource type="Resource" uid="uid://vog4qb6mhfq8" path="res://Games/YuGiOh/Sleeves/YuGiOhDefaultSleeve.tres" id="3_sleeve"]
+[ext_resource type="Script" uid="uid://b8mwkjkvfrkb6" path="res://Data/Resources/CardGameStyle.cs" id="1_style"]
+[ext_resource type="PackedScene" uid="uid://cyyv18sljb87o" path="res://Games/YuGiOh/Cards/YuGiOhCard.tscn" id="2_card"]
+[ext_resource type="Resource" uid="uid://bsocgg21fx11q" path="res://Games/YuGiOh/Sleeves/YuGiOhDefaultSleeve.tres" id="2_rxj8j"]
+[ext_resource type="Script" uid="uid://md5r1ftbx525" path="res://Data/Resources/SleeveInfo.cs" id="3_vb2sg"]
 
 [resource]
 script = ExtResource("1_style")
 Id = "YuGiOh"
 CardScene = ExtResource("2_card")
 ArtFolder = "res://Assets/Cards/YuGiOh"
-DefaultSleeve = ExtResource("3_sleeve")
+DefaultSleeve = ExtResource("2_rxj8j")
+Sleeves = Array[ExtResource("3_vb2sg")]([])
