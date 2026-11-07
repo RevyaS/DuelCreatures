@@ -78,10 +78,10 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
     PresentationContext IProvide<PresentationContext>.Value() => hudPresentation ??= new(Presenter, board.Sfx, BoardSide.Both);
 
     /// <summary>Shows <paramref name="session"/> on the board and the HUD. Call once its game has started.</summary>
-    public void Show(YuGiOhGameSession session)
+    public void Show(YuGiOhGameSession session, BoardSleeves sleeves)
     {
         driver?.Dispose();
-        driver = board.Show(session, Presenter);
+        driver = board.Show(session, Presenter, sleeves);
         driver.ZoneInspected += OnZoneInspected;
         driver.CardInspected += OnCardInspected;
         driver.BindAll<ArC.CardGames.Rules.GameSession>(this, session);

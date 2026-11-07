@@ -73,11 +73,10 @@ public static class VanguardPresentationConfig
         .Hold<Intercepted>(GuardRevealHold, GuardReveal);
     // Drive checks into the hand, cards returned to the hand or deck: the shared hand and deck moves (ArcDriver's defaults)
 
-    // Once, when a Vanguard board starts: its moves, sounds, and the card scene shared components use
+    // Once, when a Vanguard board starts: its moves and sounds (its card scene is in VanguardStyle.tres)
     public static void Register()
     {
         PresentationConfig.Register(Moves, SfxStreams);
-        CardScenes.Create = card => SceneFactory.CreateVanguardCard((VanguardCard)card);
     }
 }
 

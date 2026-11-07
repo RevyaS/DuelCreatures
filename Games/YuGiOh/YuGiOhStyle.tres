@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CardGameStyle" format=3]
+
+[ext_resource type="Script" path="res://Data/Resources/CardGameStyle.cs" id="1_style"]
+[ext_resource type="PackedScene" path="res://Games/YuGiOh/Cards/YuGiOhCard.tscn" id="2_card"]
+[ext_resource type="Resource" uid="uid://vog4qb6mhfq8" path="res://Games/YuGiOh/Sleeves/YuGiOhDefaultSleeve.tres" id="3_sleeve"]
+
+[resource]
+script = ExtResource("1_style")
+Id = "YuGiOh"
+CardScene = ExtResource("2_card")
+ArtFolder = "res://Assets/Cards/YuGiOh"
+DefaultSleeve = ExtResource("3_sleeve")

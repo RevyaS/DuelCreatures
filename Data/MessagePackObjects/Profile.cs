@@ -19,6 +19,9 @@ public class Profile
     /// <summary>Set id to the box being pulled from.</summary>
     [Key(5)]
     public Dictionary<string, GachaBox> GachaBoxes { get; set; } = new();
+    /// <summary>Game id (CardGameStyle.Id) to the resource path of the sleeve picked for that game.</summary>
+    [Key(6)]
+    public Dictionary<string, string> Sleeves { get; set; } = new();
 
     public void AddCards(string cardId, int count = 1)
     {

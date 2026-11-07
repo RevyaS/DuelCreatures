@@ -78,6 +78,8 @@ public partial class HandZone : CardLineDynamic, IZoneView, IBindable<GroupSpace
         Refresh();
     }
 
+    public void UseSleeve(DuelCreatures.Data.SleeveInfo sleeve) => SleeveInfo = sleeve;
+
     public void Resync()
     {
         if(Space is GroupSpace space) Bind(space);

@@ -61,6 +61,9 @@ public interface IZoneView : ICardLocation
     /// </summary>
     void Resync();
 
+    /// <summary>The sleeve its face-down cards show (its side's, ArcDriver.UseSleeves).</summary>
+    void UseSleeve(DuelCreatures.Data.SleeveInfo sleeve);
+
     /// <summary>
     /// Shows it's the target a drag would be let go on (e.g. the unit an attack would hit), while that drag lasts. Zones
     /// that are never aimed at show nothing.

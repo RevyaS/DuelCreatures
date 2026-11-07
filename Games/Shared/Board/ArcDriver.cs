@@ -326,6 +326,13 @@ public sealed class ArcDriver : IDisposable
     public static readonly CardMove DefaultMove = new(nameof(DefaultMove));
     #endregion
 
+    /// <summary>Face-down cards show <paramref name="sleeves"/>: each zone its side's (shared zones the player's).</summary>
+    public ArcDriver UseSleeves(BoardSleeves sleeves)
+    {
+        foreach(var (view, side) in shown.Values) view.UseSleeve(sleeves.For(side));
+        return this;
+    }
+
     #region Running
     /// <summary>Starts showing the game. Fails, listing every binding problem, when the board doesn't match the game.</summary>
     public void Start()

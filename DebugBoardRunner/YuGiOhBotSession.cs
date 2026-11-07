@@ -24,7 +24,7 @@ public partial class YuGiOhBotSession : Control
             .Build();
 
         session.StartGame();
-        InputProviderComponent.Show(session);
+        InputProviderComponent.Show(session, BoardSleeves.Defaults<YuGiOhCard>());
 
         // The play areas must keep their size: warn about anything in them that changes size
         var board = InputProviderComponent.Board;

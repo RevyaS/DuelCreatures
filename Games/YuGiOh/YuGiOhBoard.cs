@@ -23,7 +23,7 @@ public partial class YuGiOhBoard : MarginContainer
     }
 
     /// <summary>Shows <paramref name="session"/> on this board (once its game has started, so every zone exists).</summary>
-    public ArcDriver Show(YuGiOhGameSession session, Presenter presenter)
+    public ArcDriver Show(YuGiOhGameSession session, Presenter presenter, BoardSleeves sleeves)
     {
         var board = session.Game.Board;
         var driver = new ArcDriver(session.EventBus, presenter, Sfx);
@@ -31,6 +31,7 @@ public partial class YuGiOhBoard : MarginContainer
         driver.Bind(OppHand, board.Player2Area.Hand, BoardSide.Opponent);
         // Cards waiting to become XYZ materials aren't shown anywhere
         driver.BindBoard(this, board, area => [ area.PendingMaterials ]);
+        driver.UseSleeves(sleeves);
         driver.Start();
 
         PlayerLP.Bind(board.Player1Area);

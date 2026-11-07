@@ -68,7 +68,7 @@ public partial class VanguardSession : Control
     {
         session.StartGame();
         // After StartGame: the game's board and decks exist from here on
-        InputProviderComponent.Show(session);
+        InputProviderComponent.Show(session, DataManager.Get(this).BoardSleevesFor<VanguardCard>());
 
         #region DEBUG
         // session.Game.Board.Player1Area.Vanguard.Assign(RoyalPaladin.LittleSageMarron);

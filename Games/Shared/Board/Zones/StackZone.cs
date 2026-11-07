@@ -91,6 +91,8 @@ public partial class StackZone : CardVerticalStack, IZoneView, IBindable<GroupSp
         Render(ZoneSnapshot.Of(space));
     }
 
+    public void UseSleeve(DuelCreatures.Data.SleeveInfo sleeve) => SleeveInfo = sleeve;
+
     public void Resync()
     {
         if(Space is GroupSpace space) Bind(space);

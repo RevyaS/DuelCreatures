@@ -105,6 +105,8 @@ public partial class CardSlot : CardArea, IZoneView, IBindable<ISingleSpace>
 
     public void SetTargeted(bool targeted) => ShowTargeted(targeted);
 
+    public void UseSleeve(DuelCreatures.Data.SleeveInfo sleeve) => Container.SetSleeveInfo(sleeve);
+
     /// <summary>How the slot shows it's targeted: a yellow block over it. A zone with its own target marks overrides this.</summary>
     protected virtual void ShowTargeted(bool targeted)
     {

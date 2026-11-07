@@ -32,7 +32,7 @@ public partial class YuGiOhSession : Control
     {
         session.StartGame();
         // After StartGame: the game's board and decks exist from here on
-        InputProviderComponent.Show(session);
+        InputProviderComponent.Show(session, DataManager.Get(this).BoardSleevesFor<YuGiOhCard>());
 
         if(!await SessionLoop.Run(session, InputProviderComponent.Presenter)) return;
 

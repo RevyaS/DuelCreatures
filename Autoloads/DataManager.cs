@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ArC.CardGames.Components;
 using ArC.CardGames.Vanguard;
 using ArC.CardGames.Vanguard.Cards;
+using DuelCreatures.Data;
 using Godot;
 
 /// <summary>
@@ -50,6 +52,36 @@ public partial class DataManager : Node
             cards = null;
         }
     }
+
+    #region Sleeves
+    /// <summary>
+    /// The sleeve the player uses for <typeparamref name="TCard"/>'s game: their pick, while the game still offers it,
+    /// else the game's default (also with no profile loaded).
+    /// </summary>
+    public SleeveInfo SleeveFor<TCard>() where TCard : CardBase
+    {
+        var style = CardStyles.For<TCard>();
+        var picked = CurrentProfile?.Sleeves.GetValueOrDefault(style.Id);
+        return style.SleeveChoices.FirstOrDefault(sleeve => sleeve.ResourcePath == picked) ?? style.DefaultSleeve!;
+    }
+
+    /// <summary>Makes <paramref name="sleeve"/> (one of the game's SleeveChoices) the player's sleeve for <typeparamref name="TCard"/>'s game, and saves the profile.</summary>
+    public void ChooseSleeve<TCard>(SleeveInfo sleeve) where TCard : CardBase
+    {
+        var style = CardStyles.For<TCard>();
+        if(!style.SleeveChoices.Any(choice => choice.ResourcePath == sleeve.ResourcePath))
+        {
+            throw new ArgumentException($"{sleeve.ResourcePath} isn't one of {style.Id}'s sleeves ({style.ResourcePath})", nameof(sleeve));
+        }
+        var profile = CurrentProfile ?? throw new InvalidOperationException("No profile is loaded to keep the sleeve in");
+        profile.Sleeves[style.Id] = sleeve.ResourcePath;
+        SaveProfile();
+    }
+
+    /// <summary>The sleeves of a board of <typeparamref name="TCard"/>'s game: the player's pick, and the game's default for the opponent.</summary>
+    public BoardSleeves BoardSleevesFor<TCard>() where TCard : CardBase
+        => new(SleeveFor<TCard>(), CardStyles.For<TCard>().DefaultSleeve!);
+    #endregion
 
     public static DataManager Get(Node node) => node.GetTree().Root.GetNode<DataManager>(nameof(DataManager));
 

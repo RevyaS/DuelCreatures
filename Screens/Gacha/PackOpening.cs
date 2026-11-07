@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DuelCreatures.Data;
+using ArC.CardGames.Vanguard;
 using Godot;
 
 /// <summary>
@@ -47,7 +48,7 @@ public partial class PackOpening : Control
         Results = GetNode<Control>($"%{nameof(Results)}");
         ResultsList = GetNode<VBoxContainer>($"%{nameof(ResultsList)}");
         EffectsPlayer = GetNode<AnimationPlayer>($"%{nameof(EffectsPlayer)}");
-        sleeve = GD.Load<SleeveInfo>("res://Sleeves/VanguardDefaultSleeve.tres");
+        sleeve = DataManager.Get(this).SleeveFor<VanguardCard>();
 
         // A tap anywhere on the opening moves it along
         GetNode<GestureDetector>("%Gestures").Tapped += () => tap?.TrySetResult();

@@ -130,7 +130,7 @@ public partial class VanguardCardComponent : Card
 
     public override Card CreateClone()
     {
-        var card = SceneFactory.CreateVanguardCard(CurrentCard);
+        var card = (VanguardCardComponent)CardScenes.Create(CurrentCard);
         card.GuardMode = GuardMode;
         return card;
     }

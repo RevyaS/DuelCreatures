@@ -42,13 +42,10 @@ public partial class VanguardBoardView : Control, IProvide<VanguardGameSession>,
         Player1Area = GetNode<VanguardPlayAreaView>($"%{nameof(Player1Area)}");
         Player2Area = GetNode<VanguardPlayAreaView>($"%{nameof(Player2Area)}");
 
-        // Hands live outside the play areas, so they take their side's sleeve from there
-        if(Player1Area.SleeveInfo is { } playerSleeve) PlayerHand.SleeveInfo = playerSleeve;
-        if(Player2Area.SleeveInfo is { } oppSleeve) OppHand.SleeveInfo = oppSleeve;
     }
 
-    /// <summary>Shows <paramref name="session"/> on this board (once its game has started, so every zone exists).</summary>
-    public ArcDriver Show(VanguardGameSession session, Presenter presenter)
+    /// <summary>Shows <paramref name="session"/> on this board (once its game has started, so every zone exists), face-down cards in <paramref name="sleeves"/>.</summary>
+    public ArcDriver Show(VanguardGameSession session, Presenter presenter, BoardSleeves sleeves)
     {
         if(driver is not null) throw new InvalidOperationException($"{Name} already shows a game");
         this.session = session;
@@ -63,6 +60,7 @@ public partial class VanguardBoardView : Control, IProvide<VanguardGameSession>,
         // The phase and turn labels, the battle lines
         driver.BindAll<GameSession>(this, session);
         driver.ShowVanguardMoves();
+        driver.UseSleeves(sleeves);
         driver.Start();
         return driver;
     }

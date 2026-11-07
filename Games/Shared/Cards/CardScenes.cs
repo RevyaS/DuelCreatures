@@ -1,16 +1,26 @@
-using System;
 using ArC.CardGames.Components;
+using Godot;
 using static SceneHelper;
 
-// How shared components make a card node for a game's card. A game sets Create once (e.g.
-// VanguardPresentationConfig.Register uses Vanguard's card scene, with its stats); the default
-// is the base card scene, which shows the card's art only.
+/// <summary>
+/// Makes card nodes. <see cref="Create"/> uses the card's game's card scene (its CardGameStyle, e.g. Vanguard's with
+/// power and critical); <see cref="CreateBase"/> the base card scene, art only (e.g. a deck list).
+/// </summary>
 public static class CardScenes
 {
     public const string BaseCardScene = "res://Games/Shared/Cards/Card.tscn";
 
-    public static Func<CardBase, Card> Create { get; set; } = CreateBase;
+    /// <summary>A node showing <paramref name="card"/> as its game shows cards in game.</summary>
+    public static Card Create(CardBase card)
+    {
+        var scene = CardStyles.For(card).CardScene;
+        if(scene is null) return CreateBase(card);
+        var node = scene.Instantiate<Card>();
+        node.LoadCard(card);
+        return node;
+    }
 
+    /// <summary>A node showing <paramref name="card"/>'s art only.</summary>
     public static Card CreateBase(CardBase card)
     {
         var scene = GetScene<Card>(BaseCardScene);

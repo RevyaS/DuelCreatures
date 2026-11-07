@@ -75,11 +75,11 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
         inputBoard.Gestures.Subscribe<SkillActivated>(_ => CardDetails.Hide());
     }
 
-    /// <summary>Shows <paramref name="session"/> on the board and the HUD. Call once its game has started.</summary>
-    public void Show(VanguardGameSession session)
+    /// <summary>Shows <paramref name="session"/> on the board and the HUD, face-down cards in <paramref name="sleeves"/>. Call once its game has started.</summary>
+    public void Show(VanguardGameSession session, BoardSleeves sleeves)
     {
         driver?.Dispose();
-        driver = board.Show(session, Presenter);
+        driver = board.Show(session, Presenter, sleeves);
         driver.ZoneInspected += OnZoneInspected;
         driver.CardInspected += OnCardInspected;
         driver.LongPressed += OnLongPressed;

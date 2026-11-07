@@ -8,7 +8,7 @@ What you write per game, and what is shared:
 | Layer | You write (per game) | Shared (already there) |
 |-------|----------------------|------------------------|
 | ArC | the game: zones as properties, moves through `Move`/`PublishMoved`, in-place changes through `Turn`, move reasons, rules (`Can…`/`Validate…`), a `…SessionBuilder` | `CardsMoved`, `CardTurned`, `PlayAreaBase.ZonesByName`, `EventBus.Settled`, `PhaseStarted` |
-| Look | card scene, move timings and sounds, which move reason animates how | `PresentationConfig`, `Presenter`, `CardFlightLayer`, `SfxBus`/`SfxPlayer` |
+| Look | a style resource (card scene, art folder, sleeves), face parts, move timings and sounds, which move reason animates how | `CardGameStyle`, `CardStyles`, `Card` + `CardFaceText`/`CardFacePanel`, `PresentationConfig`, `Presenter`, `CardFlightLayer`, `SfxBus`/`SfxPlayer` |
 | Board | a play area scene, a board scene, a small board script | zone scenes, `ArcDriver` (binding, moves, desync check), `DropChoicesOverlay` |
 | Extras | game-specific extensions (stats, shields, battle lines, life points) | `PhaseLabel`, `TurnLabel`, `ZoneLinesLayer`, `IBindable`/`DependOn` |
 | Details | a details scene from parts, maybe a stat part or two | `CardDetailsView` + parts, `IActivationGate`, `CardDetailsOverlay` |
@@ -37,12 +37,35 @@ The board only ever sees two events: `CardsMoved` and `CardTurned`. Everything b
   and rebuilds every zone from the two events alone (`EventOnlyBoard`). That test passing means the board can't
   drift.
 
-## 1. Look: cards, moves, sounds
+## 1. Look: cards, sleeves, moves, sounds
 
-Copy `Games/Vanguard/VanguardPresentationConfig.cs`.
+**The game's style** (copy `Games/YuGiOh/YuGiOhStyle.tres`), one `CardGameStyle` resource edited in the inspector:
 
-- `Register()`: `PresentationConfig.Register(Moves, SfxStreams)`, and `CardScenes.Create = …` if your cards need
-  their own scene (Vanguard's show power and critical; YuGiOh uses the base `Card.tscn`).
+- `Id`: the game's key in a profile (keep it once players have profiles);
+- `CardScene`: how a card looks in game (empty: the base card, art only);
+- `ArtFolder`: where the art is, one `.png` per card named after it without spaces and punctuation
+  (`res://Assets/Cards/<Game>/BlasterBlade.png`);
+- `DefaultSleeve`, and `Sleeves`: the others a player may pick (sleeves are `ColorSleeveInfo` or
+  `TextureSleeveInfo` resources, e.g. in `Games/<Game>/Sleeves/`).
+
+Then add the game in `Games/CardGames.cs`: `CardStyles.Register<MyCard>("res://Games/MyGame/MyGameStyle.tres")`.
+Every card of that type (and its subtypes) then uses that scene, folder and sleeves.
+
+**The card scene** (copy `Games/YuGiOh/Cards/YuGiOhCard.tscn`): inherit `Games/Shared/Cards/Card.tscn` and place
+face parts anywhere under it. A face part is a `CardFaceText` subclass (a Label: write `Format(card)`, null hides it;
+`Prefix`/`Suffix` around the value), like `YuGiOhLevelFace`, `YuGiOhAttackFace` and `YuGiOhDefenseFace`. Put
+them in a `CardFacePanel` to hide their background when none has a value (a spell's ATK bar). Parts show only face
+up. The card needs no script of its own; a card with values that change in game (Vanguard's power) has one
+(`VanguardCardComponent`).
+
+**Sleeves on a board:** the board's `Show(session, presenter, sleeves)` calls `driver.UseSleeves(sleeves)`. The
+session passes `DataManager.BoardSleevesFor<MyCard>()` (the player's pick, the default for the opponent); a debug
+scene passes `BoardSleeves.Defaults<MyCard>()`. A player picks with `DataManager.ChooseSleeve<MyCard>(sleeve)`
+(one of the style's `SleeveChoices`), saved in their profile.
+
+**Moves and sounds** (copy `Games/Vanguard/VanguardPresentationConfig.cs`):
+
+- `Register()`: `PresentationConfig.Register(Moves, SfxStreams)`.
 - `CardMove`s with their `Transition`s, and `SfxCue`s with their streams.
 - An extension like `ShowVanguardMoves(this ArcDriver driver)`: `driver.Animate<Called>(Moves.ToUnitCircle)
   .Sound<Called>(Sfx.Call)` for each move reason, and `.Hold<DriveChecked>(seconds, sides)` for moves to read before
@@ -245,6 +268,12 @@ These were found by building Vanguard after YuGiOh. They're ordered by how much 
     `TurnLabel`.
 12. **Card details placement** differs (in the HUD for YuGiOh, an overlay for Vanguard). It's a layout choice, but
     `CardDetailsOverlay` could be the default so a game needs no decision.
+
+### Done since
+
+- **Card looks per game:** `CardGameStyle` replaced the settable `CardScenes.Create`, `SceneFactory`, the sleeve
+  export on Vanguard's play area (copied to the hands in code) and the sleeve path fixed in pack opening. Vanguard's
+  stat panels left the shared `Card.tscn` for `VanguardCard.tscn`.
 
 ### Removed in step 8e
 

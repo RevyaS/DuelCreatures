@@ -36,7 +36,7 @@ public partial class VanguardBotSession : Control
             .Build();
 
         session.StartGame();
-        var driver = board.Show(session, presenter);
+        var driver = board.Show(session, presenter, BoardSleeves.Defaults<VanguardCard>());
         driver.CardInspected += (view, card) => details.Show(new CardDetail(card, view.Space, []));
         driver.ZoneInspected += view =>
         {
