@@ -53,6 +53,11 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
         CardListComponent = GetNode<CardList>($"%{nameof(CardListComponent)}");
         CardListComponent.CardPressed += OnListedCardPressed;
         SelectFromCardListComponent = GetNode<SelectFromCardList>($"%{nameof(SelectFromCardListComponent)}");
+        // A card offered to pick (a search, a cost, materials): its details, to read before picking
+        SelectFromCardListComponent.CardPressed += node =>
+        {
+            if(node.CurrentCard is { } card) CardDetails.Show(new CardDetail(card));
+        };
         CardDetails = GetNode<CardDetailsView>($"%{nameof(CardDetails)}");
         // Card flights draw above the board and below the HUD (see the scene)
         Presenter.Flights = GetNode<CardFlightLayer>("%CardFlights");

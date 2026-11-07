@@ -30,6 +30,27 @@ public interface ICardDetailPart
 }
 
 /// <summary>
+/// Which of a card's effects its details activate with a button, where the card is now; the others read as text
+/// (e.g. a spell in the hand is activated by dropping it, not from its details). Provided by the details root
+/// (CardDetailsView, per game).
+/// </summary>
+public interface ISkillButtons
+{
+    bool HasButton(ISkill skill, CardDetail detail);
+}
+
+public static class SkillButtons
+{
+    /// <summary>Every effect the player activates (IManuallyActivatedSkill) has a button.</summary>
+    public static ISkillButtons ManuallyActivated { get; } = new ManuallyActivatedButtons();
+
+    sealed class ManuallyActivatedButtons : ISkillButtons
+    {
+        public bool HasButton(ISkill skill, CardDetail detail) => skill is IManuallyActivatedSkill;
+    }
+}
+
+/// <summary>
 /// What a card's details may do now: activate a skill shown in them, or a card command (e.g. "Summon" an Xyz monster
 /// from the Extra Deck). The details only show the buttons: what is allowed is decided outside (the current input
 /// strategy), so a stale button can't fire. Provided by an ancestor (IProvide); without one, the details are read-only.

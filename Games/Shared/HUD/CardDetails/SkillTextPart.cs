@@ -3,9 +3,10 @@ using ArC.CardGames.Rules;
 using Godot;
 
 /// <summary>
-/// The card's own skills as text (the game's ISkillTextInterpreter, from the details root). Skills the player activates
-/// are left to an ActivationListPart while an activation gate is provided (in a game); read-only (no gate, e.g. the deck
-/// builder) or with <see cref="IncludeActivatedSkills"/>, they're text here too.
+/// The card's own skills as text (the game's ISkillTextInterpreter, from the details root). Skills activated with a
+/// button where the card is now (ISkillButtons, from the details root) are left to an ActivationListPart while an
+/// activation gate is provided (in a game); read-only (no gate, e.g. the deck builder) or with
+/// <see cref="IncludeActivatedSkills"/>, they're text here too.
 /// </summary>
 [Tool]
 public partial class SkillTextPart : RichTextLabel, ICardDetailPart
@@ -24,9 +25,11 @@ public partial class SkillTextPart : RichTextLabel, ICardDetailPart
             Visible = true;
             return;
         }
-        var includeActivated = IncludeActivatedSkills || ActivationGates.ProvidedTo(this) is null;
+        // Effects with a button (the ActivationListPart's) aren't repeated here; read-only, there are no buttons
+        var readOnly = ActivationGates.ProvidedTo(this) is null;
+        var buttons = this.DependOn<ISkillButtons>(SkillButtons.ManuallyActivated);
         var skills = detail.AllSkills.Except(detail.GrantedSkills)
-            .Where(skill => includeActivated || skill is not IManuallyActivatedSkill)
+            .Where(skill => IncludeActivatedSkills || readOnly || !buttons.HasButton(skill, detail))
             .ToList();
         var hasOwnSkills = detail.AllSkills.Except(detail.GrantedSkills).Any();
 

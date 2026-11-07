@@ -4,8 +4,8 @@ using ArC.CardGames.Rules;
 using Godot;
 
 /// <summary>
-/// One button per skill the player activates (IManuallyActivatedSkill), own and granted. A button is enabled only while
-/// the IActivationGate an ancestor provides allows it, and is re-checked whenever the gate changes, so it can't be
+/// One button per skill activated from the details where the card is now (ISkillButtons, from the details root), own
+/// and granted. A button is enabled only while the IActivationGate an ancestor provides allows it, and is re-checked whenever the gate changes, so it can't be
 /// pressed when the game isn't asking. With no gate provided (read-only, e.g. the deck builder) it shows nothing.
 /// </summary>
 [Tool]
@@ -32,7 +32,8 @@ public partial class ActivationListPart : VBoxContainer, ICardDetailPart
         }
         UseGate(provided);
         var interpreter = this.DependOn<ISkillTextInterpreter>(SkillKindInterpreter.Instance);
-        foreach(var skill in detail.AllSkills.OfType<IManuallyActivatedSkill>())
+        var withButtons = this.DependOn<ISkillButtons>(SkillButtons.ManuallyActivated);
+        foreach(var skill in detail.AllSkills.Where(skill => withButtons.HasButton(skill, detail)))
         {
             var button = new Button
             {

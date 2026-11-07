@@ -7,10 +7,18 @@ using Godot;
 /// freely; <see cref="Show"/> passes the card to every part under it. The game's subclass provides how its skills read
 /// (<see cref="SkillText"/>) to the skill parts.
 /// </summary>
-public partial class CardDetailsView : Control, IProvide<ISkillTextInterpreter>
+public partial class CardDetailsView : Control, IProvide<ISkillTextInterpreter>, IProvide<ISkillButtons>, ISkillButtons
 {
     /// <summary>How this game's skills read; kinds of skills ("Ignition Skill") unless the game says.</summary>
     protected virtual ISkillTextInterpreter SkillText => SkillKindInterpreter.Instance;
+
+    /// <summary>
+    /// Whether <paramref name="skill"/> is activated with a button in these details, for the card where it is now
+    /// (<paramref name="detail"/>); otherwise it reads as text. Every effect the player activates, unless the game says.
+    /// </summary>
+    public virtual bool HasButton(ISkill skill, CardDetail detail) => SkillButtons.ManuallyActivated.HasButton(skill, detail);
+
+    ISkillButtons IProvide<ISkillButtons>.Value() => this;
 
     ISkillTextInterpreter IProvide<ISkillTextInterpreter>.Value() => SkillText;
 

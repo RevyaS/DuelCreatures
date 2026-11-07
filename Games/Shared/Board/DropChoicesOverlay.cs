@@ -5,25 +5,37 @@ using ArC.CardGames.Components;
 using Godot;
 
 /// <summary>
-/// Lets a zone take dropped cards, split into regions while a card it takes hovers over it (e.g. "Summon" | "Set"):
-/// the region under the pointer is highlighted, and dropping there picks its choice. Any zone can have one: place a
-/// DropChoicesOverlay in the zone's scene to style it (colors, font), or the zone adds a default one when it first
-/// offers a drop. It covers the zone but never takes the mouse.
+/// Lets a zone take dropped cards, split into side-by-side regions while a card it takes hovers over it (e.g. "Summon"
+/// | "Set"): the region under the pointer is tinted, and dropping there picks its choice. Each choice's label sits
+/// above the zone, at its region's outer corner (the first on the left, the last on the right), so the zone stays
+/// readable:
+/// <code>
+/// Activate        Set
+/// [      zone       ]
+/// </code>
+/// Any zone can have one: place a DropChoicesOverlay in the zone's scene to style it (colors, font, gaps), or the
+/// zone adds a default one when it first offers a drop. It never takes the mouse.
 /// </summary>
 public partial class DropChoicesOverlay : Control, ICardDropTarget
 {
-    [Export] public Color RegionColor { get; set; } = new(0f, 0f, 0f, 0.55f);
-    [Export] public Color HoveredRegionColor { get; set; } = new(1f, 0.85f, 0.2f, 0.75f);
-    [Export] public Color FontColor { get; set; } = Colors.White;
+    [Export] public Color RegionColor { get; set; } = new(0f, 0f, 0f, 0.15f);
+    [Export] public Color HoveredRegionColor { get; set; } = new(1f, 0.85f, 0.2f, 0.35f);
+    [Export] public Color FontColor { get; set; } = new(1f, 1f, 1f, 0.75f);
+    [Export] public Color HoveredFontColor { get; set; } = new(1f, 0.85f, 0.2f);
     [Export] public int FontSize { get; set; } = 26;
+    /// <summary>Text outline, so a label reads over anything.</summary>
+    [Export] public int OutlineSize { get; set; } = 8;
+    [Export] public Color OutlineColor { get; set; } = Colors.Black;
     /// <summary>Space between regions.</summary>
     [Export] public int Separation { get; set; } = 4;
+    /// <summary>Space between the labels and the zone's top edge.</summary>
+    [Export] public float LabelGap { get; set; } = 4;
 
     DropOffer? offer;
     Control zone = null!;
     CardBase? candidate;
     IReadOnlyList<DropChoice> shownChoices = [];
-    readonly List<(PanelContainer Region, StyleBoxFlat Style, DropChoice Choice)> regions = [];
+    readonly List<(PanelContainer Region, StyleBoxFlat Style, Label Label, DropChoice Choice)> regions = [];
     HBoxContainer row = null!;
 
     /// <summary>A card was dropped on the zone, on <see cref="DropChoice"/>'s region.</summary>
@@ -35,7 +47,8 @@ public partial class DropChoicesOverlay : Control, ICardDropTarget
         var overlay = zone.GetChildren().OfType<DropChoicesOverlay>().FirstOrDefault();
         if(overlay is null)
         {
-            overlay = new DropChoicesOverlay { Name = nameof(DropChoicesOverlay) };
+            // Drawn above the zones around it: its labels sit outside the zone
+            overlay = new DropChoicesOverlay { Name = nameof(DropChoicesOverlay), ZIndex = 10 };
             zone.AddChild(overlay);
         }
         overlay.zone = zone;
@@ -107,10 +120,25 @@ public partial class DropChoicesOverlay : Control, ICardDropTarget
     public override void _Process(double delta)
     {
         var hovered = ChoiceUnderPointer();
-        foreach(var (_, style, choice) in regions)
+        for(int i = 0; i < regions.Count; i++)
         {
-            style.BgColor = ReferenceEquals(choice, hovered) ? HoveredRegionColor : RegionColor;
+            var (region, style, label, choice) = regions[i];
+            bool isHovered = ReferenceEquals(choice, hovered);
+            style.BgColor = isHovered ? HoveredRegionColor : RegionColor;
+            label.AddThemeColorOverride("font_color", isHovered ? HoveredFontColor : FontColor);
+            PlaceLabel(label, region, i);
         }
+    }
+
+    // Above the zone, at the region's outer corner: the first region's on the left, the last's on the right, others centered
+    private void PlaceLabel(Label label, Control region, int index)
+    {
+        var size = label.GetMinimumSize();
+        label.Size = size;
+        float x = index == 0 && regions.Count > 1 ? region.Position.X
+            : index == regions.Count - 1 && regions.Count > 1 ? region.Position.X + region.Size.X - size.X
+            : region.Position.X + (region.Size.X - size.X) / 2;
+        label.Position = new Vector2(x, -size.Y - LabelGap);
     }
 
     private DropChoice? ChoiceUnderPointer()
@@ -124,25 +152,23 @@ public partial class DropChoicesOverlay : Control, ICardDropTarget
         if(ReferenceEquals(choices, shownChoices) || choices.SequenceEqual(shownChoices)) return;
         shownChoices = choices;
         row.FreeChildren();
+        foreach(var (_, _, label, _) in regions) label.QueueFree();
         regions.Clear();
         foreach(var choice in choices)
         {
             var style = new StyleBoxFlat { BgColor = RegionColor };
             var region = new PanelContainer { MouseFilter = MouseFilterEnum.Ignore, SizeFlagsHorizontal = SizeFlags.ExpandFill };
             region.AddThemeStyleboxOverride("panel", style);
-            var label = new Label
-            {
-                Text = choice.Label,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
-                AutowrapMode = TextServer.AutowrapMode.WordSmart,
-                MouseFilter = MouseFilterEnum.Ignore,
-            };
+            row.AddChild(region);
+
+            // A child of the overlay, not the region: it sits outside the zone, above it
+            var label = new Label { Text = choice.Label, MouseFilter = MouseFilterEnum.Ignore };
             label.AddThemeFontSizeOverride("font_size", FontSize);
             label.AddThemeColorOverride("font_color", FontColor);
-            region.AddChild(label);
-            row.AddChild(region);
-            regions.Add((region, style, choice));
+            label.AddThemeConstantOverride("outline_size", OutlineSize);
+            label.AddThemeColorOverride("font_outline_color", OutlineColor);
+            AddChild(label);
+            regions.Add((region, style, label, choice));
         }
     }
 }
