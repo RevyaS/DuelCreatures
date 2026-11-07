@@ -16,13 +16,21 @@ public partial class CardSlot : CardArea, IZoneView, IBindable<ISingleSpace>
 
     public event Action<ZoneSnapshot>? Presented;
     public event Action<IZoneView, CardBase?>? Clicked;
+    public event Action<IZoneView, CardBase, DropChoice>? CardDropped;
+    public event Action<IZoneView, GestureDetector.SwipeDirection>? Swiped;
+    public event Action<IZoneView, AimStep, Vector2>? Aiming;
 
     [Export] public Color HighlightColor { get; set; } = new(1f, 0.85f, 0.2f);
     [Export] public float HighlightWidth { get; set; } = 4;
     [Export] public Color CardHighlightColor { get; set; } = new(1f, 0.85f, 0.2f);
+    /// <summary>How far and how fast a flick must be to count as a swipe (GestureDetector).</summary>
+    [Export] public float SwipeDistance { get; set; } = 60;
+    [Export] public float SwipeMaxTime { get; set; } = 0.35f;
 
     ReferenceRect? highlight;
     Func<CardBase, bool>? highlightedCards;
+    GestureDetector? gestures;
+    DropChoicesOverlay? drops;
 
     public override void _Ready()
     {
@@ -30,16 +38,52 @@ public partial class CardSlot : CardArea, IZoneView, IBindable<ISingleSpace>
         if(Engine.IsEditorHint()) return;
         highlight = ZoneInput.AddHighlight(this, HighlightColor, HighlightWidth);
         ZoneInput.PassClicksToZone(this);
-        CardPressed += node =>
+
+        // The slot takes every press (its card only shows): a tap, a swipe, or a drag from it
+        Container.CardAdded += ZoneInput.IgnoreMouse;
+        if(Container.CurrentCard is { } shown) ZoneInput.IgnoreMouse(shown);
+        gestures = new GestureDetector
         {
-            if(node.CurrentCard is { } card) Clicked?.Invoke(this, card);
+            Name = "Gestures",
+            Swipes = false,
+            HorizontalSwipes = true,
+            VerticalSwipes = false,
+            Drags = false,
+            ScrollsParent = false,
+            SwipeDistance = SwipeDistance,
+            SwipeMaxTime = SwipeMaxTime,
         };
+        AddChild(gestures);
+        gestures.Tapped += () => Clicked?.Invoke(this, Container.CurrentCard?.CurrentCard);
+        gestures.Swiped += direction => Swiped?.Invoke(this, direction);
+        gestures.DragStarted += position => Aiming?.Invoke(this, AimStep.Start, position);
+        gestures.DragMoved += position => Aiming?.Invoke(this, AimStep.Move, position);
+        gestures.DragEnded += position => Aiming?.Invoke(this, AimStep.End, position);
+        gestures.DragCancelled += () => Aiming?.Invoke(this, AimStep.Cancel, GetGlobalMousePosition());
     }
 
-    // A click on the slot itself (its card takes its own clicks)
-    public override void _GuiInput(InputEvent input)
+    public void SetGestures(bool swipes, bool aims)
     {
-        if(!Engine.IsEditorHint() && ZoneInput.IsClick(input)) Clicked?.Invoke(this, null);
+        if(gestures is null) return;
+        gestures.Swipes = swipes;
+        gestures.Drags = aims;
+    }
+
+    public void SetDraggable(Func<CardBase, bool>? cards)
+    {
+        // Its card is moved by the game, not dragged out: a drag from it is an aim (SetGestures)
+        if(cards is not null) throw new NotSupportedException($"{GetPath()} ({GetType().Name}) can't have its card dragged out; use SetGestures to aim from it");
+    }
+
+    public void OfferDrop(DropOffer? offer)
+    {
+        if(offer is null && drops is null) return;
+        if(drops is null)
+        {
+            drops = DropChoicesOverlay.For(this);
+            drops.Dropped += (card, choice) => CardDropped?.Invoke(this, card, choice);
+        }
+        drops.Offer(offer);
     }
 
     public void SetHighlight(bool zone, Func<CardBase, bool>? cards)

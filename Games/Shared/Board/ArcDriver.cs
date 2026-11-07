@@ -67,6 +67,16 @@ public sealed class ArcDriver : IDisposable
 
     /// <summary>Any zone or card on the board was clicked (the card, or null for the zone itself), for input scopes.</summary>
     public event Action<IZoneView, CardBase?>? Clicked;
+    /// <summary>A card was dropped on a zone (IZoneView.OfferDrop), for input scopes.</summary>
+    public event Action<IZoneView, CardBase, DropChoice>? CardDropped;
+    /// <summary>A zone was swiped (IZoneView.SetGestures), for input scopes.</summary>
+    public event Action<IZoneView, GestureDetector.SwipeDirection>? Swiped;
+    /// <summary>A drag from a zone moved (IZoneView.SetGestures), for input scopes.</summary>
+    public event Action<IZoneView, AimStep, Vector2>? Aiming;
+
+    readonly Dictionary<PlayAreaBase, Control> areaViews = new(ReferenceEqualityComparer.Instance);
+    /// <summary>The node showing each play area (its scene instance on the board), e.g. to aim at a play area itself.</summary>
+    public IReadOnlyDictionary<PlayAreaBase, Control> AreaViews => areaViews;
 
     /// <summary>The views shown, by zone.</summary>
     public IEnumerable<IZoneView> Views => shown.Values.Select(entry => entry.View);
@@ -128,6 +138,7 @@ public sealed class ArcDriver : IDisposable
                 report.Add(new MissingView(boardPath, areaName, area.GetType()));
                 continue;
             }
+            if(areaNode is Control areaControl) areaViews[area] = areaControl;
             // A play area's own script may show the play area itself (e.g. its life points)
             if(Bindings.IsBindable(areaNode)) Bindings.TryBind(areaNode, area, boardPath, areaName, report);
 
@@ -172,8 +183,15 @@ public sealed class ArcDriver : IDisposable
         shown[zone] = new(zoneView, side);
 
         if(view is LineZone line) line.InspectRequested += OnInspectRequested;
-        if(view is StackZone stack) stack.InspectRequested += OnInspectRequested;
+        // A pile hiding its cards (a deck, an Extra Deck) only lists them to its owner
+        if(view is StackZone stack) stack.InspectRequested += inspected =>
+        {
+            if(!stack.HideCards || side == BoardSide.Player) OnInspectRequested(inspected);
+        };
         zoneView.Clicked += (clicked, card) => OnClicked(clicked, card, side);
+        zoneView.CardDropped += (target, card, choice) => CardDropped?.Invoke(target, card, choice);
+        zoneView.Swiped += (swiped, direction) => Swiped?.Invoke(swiped, direction);
+        zoneView.Aiming += (from, step, position) => Aiming?.Invoke(from, step, position);
 
         // Its extensions: the nodes under it that show its zone
         foreach(var extension in Descendants(view).Where(node => node is not IZoneView && Bindings.IsBindable(node)))

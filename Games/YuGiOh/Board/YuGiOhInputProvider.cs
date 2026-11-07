@@ -57,7 +57,8 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
         // Card flights draw above the board and below the HUD (see the scene)
         Presenter.Flights = GetNode<CardFlightLayer>("%CardFlights");
         // The HUD's buttons and hint, wherever they are in the scene
-        inputBoard = new(Activations, Descendants(this).OfType<BoardButtonView>(), Descendants(this).OfType<InputHintLabel>().FirstOrDefault());
+        inputBoard = new(Activations, Descendants(this).OfType<BoardButtonView>(),
+            Descendants(this).OfType<InputHintLabel>().FirstOrDefault(), Descendants(this).OfType<AimIndicatorLayer>().FirstOrDefault());
     }
 
     // For the board's and HUD's components showing the game in step with the board (e.g. the phase label, life points)
@@ -90,13 +91,14 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
         eventBus.PhaseChanged += OnPhaseChanged;
     }
 
-    // Each phase's strategy on top of the default answers (the main phase by clicking; the rest by the defaults)
+    // Each phase's strategy on top of the default answers (main and battle by touch gestures; the rest by the defaults)
     private Task OnPhaseChanged(IPhase phase)
     {
         if(input is null || defaults is null) return Task.CompletedTask;
         answers = phase switch
         {
             MainPhase => new YuGiOhMainPhaseStrategy(input, defaults),
+            AttackPhase => new YuGiOhBattlePhaseStrategy(input, defaults),
             _ => defaults,
         };
         return Task.CompletedTask;

@@ -30,15 +30,18 @@ public interface ICardDetailPart
 }
 
 /// <summary>
-/// Whether a skill shown in card details may be activated now, and activating it. The details only show the buttons:
-/// what is allowed is decided outside (the current input strategy), so a stale button can't fire. Provided by an
-/// ancestor (IProvide); without one, nothing can be activated.
+/// What a card's details may do now: activate a skill shown in them, or a card command (e.g. "Summon" an Xyz monster
+/// from the Extra Deck). The details only show the buttons: what is allowed is decided outside (the current input
+/// strategy), so a stale button can't fire. Provided by an ancestor (IProvide); without one, the details are read-only.
 /// </summary>
 public interface IActivationGate
 {
     bool CanActivate(CardBase card, ICardSpace? from, ISkill skill);
     void Activate(CardBase card, ICardSpace? from, ISkill skill);
-    /// <summary>What can be activated changed: shown buttons are re-checked.</summary>
+    /// <summary>The commands the details offer for <paramref name="card"/> where it is now.</summary>
+    IReadOnlyList<CardCommand> CommandsFor(CardBase card, ICardSpace? from);
+    void Invoke(CardBase card, ICardSpace? from, CardCommand command);
+    /// <summary>What can be done changed: shown buttons are re-checked.</summary>
     event Action? Changed;
 }
 
@@ -57,6 +60,8 @@ public static class ActivationGates
     {
         public bool CanActivate(CardBase card, ICardSpace? from, ISkill skill) => false;
         public void Activate(CardBase card, ICardSpace? from, ISkill skill) => throw new InvalidOperationException("Nothing can be activated now");
+        public IReadOnlyList<CardCommand> CommandsFor(CardBase card, ICardSpace? from) => [];
+        public void Invoke(CardBase card, ICardSpace? from, CardCommand command) => throw new InvalidOperationException("Nothing can be done now");
         public event Action? Changed { add {} remove {} }
     }
 }
@@ -85,6 +90,14 @@ public sealed class ActivationGateSlot : IActivationGate
     {
         if(!current.CanActivate(card, from, skill)) throw new InvalidOperationException($"{card.Name}'s skill can't be activated now");
         current.Activate(card, from, skill);
+    }
+
+    public IReadOnlyList<CardCommand> CommandsFor(CardBase card, ICardSpace? from) => current.CommandsFor(card, from);
+
+    public void Invoke(CardBase card, ICardSpace? from, CardCommand command)
+    {
+        if(!current.CommandsFor(card, from).Contains(command)) throw new InvalidOperationException($"{command} can't be done with {card.Name} now");
+        current.Invoke(card, from, command);
     }
 
     private void Switch(IActivationGate gate)

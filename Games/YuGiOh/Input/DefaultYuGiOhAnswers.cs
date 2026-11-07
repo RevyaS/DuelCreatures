@@ -23,7 +23,8 @@ public sealed class DefaultYuGiOhAnswers(YuGiOhInput input) : IYuGiOhAnswers
         public static string ChooseFromHand = "Choose a card from your hand";
         public static string ChooseZone = "Choose a zone";
         public static string ChooseOpponentZone = "Choose one of your opponent's zones";
-        public static string ChooseZones = "Choose zones, then Confirm";
+        public static string ChooseZones = "Choose zones";
+        public static string ChooseZonesOrFinish = "Choose more zones, or tap a chosen one to finish";
         public static string ChooseSkill = "Which effect? Drag it out of the list";
         public static string ChooseOption = "Choose an option";
         public static string Summon = "Summon";
@@ -173,17 +174,20 @@ public sealed class DefaultYuGiOhAnswers(YuGiOhInput input) : IYuGiOhAnswers
         var candidates = PlayArea.GetZoneBySelector(selector).Where(input.Narrowing.TakeEach(OwnZones)).ToList();
         if(candidates.Count < minimum) throw new InvalidOperationException($"{OwnZones} needs {minimum} zone(s), only {candidates.Count} can be chosen");
 
+        // Tap zones until the most there can be; once there are enough, tapping a chosen one again finishes (no buttons, for touch)
         List<IYuGiOhZone> chosen = [];
         while(chosen.Count < maximum)
         {
+            bool canFinish = chosen.Count >= minimum;
+            var offered = candidates.Except(chosen, ReferenceEqualityComparer.Instance).Cast<ICardSpace>().ToList();
+            if(canFinish) offered.AddRange(chosen);
             using var scope = input.Board.Scope()
-                .Zones(candidates.Except(chosen, ReferenceEqualityComparer.Instance).Cast<ICardSpace>())
-                .Hint($"{Text.ChooseZones} ({chosen.Count}/{minimum}-{maximum})");
-            if(chosen.Count >= minimum) scope.Button(BoardButton.Confirm);
+                .Zones(offered)
+                .Hint($"{(canFinish ? Text.ChooseZonesOrFinish : Text.ChooseZones)} ({chosen.Count}/{minimum}-{maximum})");
 
-            var gesture = await scope.Next();
-            if(gesture is ButtonPressed) break;
-            chosen.Add((IYuGiOhZone)((ZoneClicked)gesture).Zone);
+            var zone = (IYuGiOhZone)((ZoneClicked)await scope.Next()).Zone;
+            if(chosen.Contains(zone, ReferenceEqualityComparer.Instance)) break;
+            chosen.Add(zone);
         }
         return chosen;
     }

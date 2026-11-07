@@ -40,6 +40,34 @@ public partial class StackZone : CardVerticalStack, IZoneView, IBindable<GroupSp
         highlight = ZoneInput.AddHighlight(this, HighlightColor, HighlightWidth);
     }
 
+    public event Action<IZoneView, CardBase, DropChoice>? CardDropped;
+    public event Action<IZoneView, GestureDetector.SwipeDirection>? Swiped;
+    public event Action<IZoneView, AimStep, Vector2>? Aiming;
+
+    DropChoicesOverlay? drops;
+
+    public void SetDraggable(Func<CardBase, bool>? cards)
+    {
+        if(cards is not null) throw new NotSupportedException($"{GetPath()} ({GetType().Name}) can't have cards dragged out of it yet");
+    }
+
+    public void OfferDrop(DropOffer? offer)
+    {
+        if(offer is null && drops is null) return;
+        if(drops is null)
+        {
+            drops = DropChoicesOverlay.For(this);
+            drops.Dropped += (card, choice) => CardDropped?.Invoke(this, card, choice);
+        }
+        drops.Offer(offer);
+    }
+
+    // Only a zone of one card swipes or is aimed from
+    public void SetGestures(bool swipes, bool aims)
+    {
+        if(swipes || aims) throw new NotSupportedException($"{GetPath()} ({GetType().Name}) doesn't take swipes or aims; only CardSlot and CardBox do");
+    }
+
     public void SetHighlight(bool zone, Func<CardBase, bool>? cards)
     {
         if(highlight is not null) highlight.Visible = zone;

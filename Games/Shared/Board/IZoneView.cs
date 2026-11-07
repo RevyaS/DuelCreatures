@@ -33,6 +33,27 @@ public interface IZoneView : ICardLocation
     /// <paramref name="cards"/> accepts (none when null). Set by input scopes, cleared when they end.
     /// </summary>
     void SetHighlight(bool zone, Func<CardBase, bool>? cards);
+
+    /// <summary>The cards <paramref name="cards"/> accepts can be dragged out of it (none when null).</summary>
+    void SetDraggable(Func<CardBase, bool>? cards);
+
+    /// <summary>Takes dropped cards as <paramref name="offer"/> says, split into its choices while one hovers (none when null).</summary>
+    void OfferDrop(DropOffer? offer);
+
+    /// <summary>
+    /// Whether it reports swipes and drags from it (aims). Only zones holding one card do (CardSlot, CardBox); asking
+    /// another kind of zone fails.
+    /// </summary>
+    void SetGestures(bool swipes, bool aims);
+
+    /// <summary>A card was dropped on it, on <see cref="DropChoice"/>'s region (see <see cref="OfferDrop"/>).</summary>
+    event Action<IZoneView, CardBase, DropChoice>? CardDropped;
+
+    /// <summary>It was swiped (see <see cref="SetGestures"/>).</summary>
+    event Action<IZoneView, GestureDetector.SwipeDirection>? Swiped;
+
+    /// <summary>A drag from it started, moved, ended or was cancelled, at the global pointer position (see <see cref="SetGestures"/>).</summary>
+    event Action<IZoneView, AimStep, Godot.Vector2>? Aiming;
 }
 
 /// <summary>

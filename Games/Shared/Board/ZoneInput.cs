@@ -34,6 +34,13 @@ public static class ZoneInput
         }
     }
 
+    /// <summary>The node and everything in it let the mouse through (e.g. a card in a zone that takes every press itself).</summary>
+    public static void IgnoreMouse(Node node)
+    {
+        if(node is Control control) control.MouseFilter = Control.MouseFilterEnum.Ignore;
+        foreach(var child in node.GetChildren()) IgnoreMouse(child);
+    }
+
     public static bool IsClick(InputEvent input)
         => input is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left } or InputEventScreenTouch { Pressed: true };
 }

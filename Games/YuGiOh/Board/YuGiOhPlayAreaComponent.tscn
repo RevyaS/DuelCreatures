@@ -94,7 +94,7 @@ size_flags_vertical = 3
 unique_name_in_owner = true
 layout_mode = 2
 HideCards = true
-Inspectable = false
+Inspectable = true
 CardScale = 0.38
 ShowCount = true
 

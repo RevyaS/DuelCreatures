@@ -9,21 +9,35 @@ using ArC.Common.Extensions;
 using static YuGiOhQuestions;
 
 /// <summary>
-/// The Main Phase by clicking, for the turn player:
+/// The Main Phase by touch, for the turn player:
 /// <list type="bullet">
-/// <item>a monster in the hand, then an empty monster zone: Normal Summon (or Set) it there (a tribute summon asks for its tributes, then the zone);</item>
-/// <item>a spell or trap in the hand: activate or Set it (the zone, and activate or Set, are asked next);</item>
-/// <item>an effect's button in the card details: activate it (hand, field, or a Set card);</item>
-/// <item>Next Phase, End Phase, or Actions for everything else (Xyz Summon, battle position, Flip Summon) as a list.</item>
+/// <item>drag a monster from the hand onto a monster zone, on Summon or Set: Normal Summon or Set it (a tribute summon asks for its tributes, then the zone);</item>
+/// <item>drag a spell onto a spell &amp; trap zone, on Activate or Set; a trap, on Set;</item>
+/// <item>swipe a monster left for Defense Position, right for Attack Position (a face-down one is Flip Summoned);</item>
+/// <item>tap a card for its details: activate an effect there (hand, field, a Set card, the Extra Deck), or Xyz Summon a monster from the Extra Deck's list;</item>
+/// <item>Next Phase, or End Phase.</item>
 /// </list>
-/// What can be clicked is what YuGiOhGameRules allows now. Everything else is answered by the strategy below.
+/// Only what YuGiOhGameRules allows now can be dragged, dropped, swiped or pressed. Everything else is answered by the strategy below.
 /// </summary>
 public sealed class YuGiOhMainPhaseStrategy(YuGiOhInput input, IYuGiOhAnswers below) : YuGiOhStrategy(input, below)
 {
     public static class Text
     {
-        public static string Play = "Your Main Phase: play a card, activate an effect, or move on";
-        public static string ChooseSummonZone = "Choose a monster zone (or another card)";
+        public static string Play = "Your Main Phase: drag a card to play it, tap a card for its effects, swipe a monster to change its position";
+    }
+
+    /// <summary>The regions a zone splits into while a card from the hand hovers over it.</summary>
+    public static class Choices
+    {
+        public static readonly DropChoice Summon = new("Summon");
+        public static readonly DropChoice Set = new("Set");
+        public static readonly DropChoice Activate = new("Activate");
+    }
+
+    /// <summary>What the card details offer beside effects.</summary>
+    public static class Commands
+    {
+        public static readonly CardCommand XyzSummon = new("Xyz Summon");
     }
 
     IYuGiOhPlayerInputProvider Player => Input.Player;
@@ -31,88 +45,113 @@ public sealed class YuGiOhMainPhaseStrategy(YuGiOhInput input, IYuGiOhAnswers be
 
     public override async Task<IMainPhaseAction> RequestMainPhaseAction(List<IMainPhaseAction> actions)
     {
-        CardBase? picked = null;
-        while(true)
+        using var scope = Input.Board.Scope()
+            .Drag(PlayArea.Hand, CanPlayFromHand)
+            .Activatable(CanActivate)
+            .Commands(CommandsFor)
+            .Button(BoardButton.NextPhase)
+            .Button(BoardButton.EndPhase)
+            .Hint(Text.Play);
+        foreach(var zone in PlayArea.MonsterZones) scope.Drop(zone, card => MonsterChoices(card, zone));
+        foreach(var zone in PlayArea.SpellAndTrapZones) scope.Drop(zone, card => SpellTrapChoices(card, zone));
+        foreach(var zone in PlayArea.ControlledMonsterZones) scope.Swipe(zone, direction => SwipeAction(zone, direction) is not null);
+
+        switch(await scope.Next())
         {
-            // A monster picked last time waits for its zone (or another card)
-            if(picked is YuGiOhNormalMonsterCard pickedMonster && YuGiOhGameRules.TributesNeeded(pickedMonster) == 0)
-            {
-                var placed = await PickSummonZone(pickedMonster);
-                if(placed is MonsterZone zone)
+            case ButtonPressed { Button: BoardButton.NextPhase }:
+                return actions.First(action => action.GetType() == typeof(EndMainPhase));
+            case ButtonPressed { Button: BoardButton.EndPhase }:
+                return actions.FirstOf<SkipToEndPhase>();
+
+            case CardDropped { Card: YuGiOhNormalMonsterCard monster, To: MonsterZone zone } drop:
+                Input.Answers.Set(CardFromHand, monster).Set(SetCard, ReferenceEquals(drop.Choice, Choices.Set));
+                // A tribute summon asks for its zone after the tributes free one
+                if(YuGiOhGameRules.TributesNeeded(monster) == 0) Input.Answers.Set(OwnZone, zone);
+                return actions.FirstOf<NormalSummonMonster>();
+            case CardDropped { Card: YuGiOhSpellCard spell, To: SpellAndTrapZone zone } drop:
+                Input.Answers.Set(CardFromHand, spell).Set(OwnZone, zone).Set(SetCard, ReferenceEquals(drop.Choice, Choices.Set));
+                return actions.FirstOf<ActivateSpellCard>();
+            case CardDropped { Card: YuGiOhTrapCard trap, To: SpellAndTrapZone zone }:
+                Input.Answers.Set(CardFromHand, trap).Set(OwnZone, zone);
+                return actions.FirstOf<SetTrapCard>();
+
+            case ZoneSwiped { Zone: MonsterZone zone } swipe:
+                Input.Answers.Set(OwnZone, zone);
+                return SwipeAction(zone, swipe.Direction) switch
                 {
-                    Input.Answers.Set(CardFromHand, pickedMonster).Set(OwnZone, zone);
-                    return actions.FirstOf<NormalSummonMonster>();
-                }
-                picked = placed is CardBase other ? other : null;
-                if(picked is not null) continue;
-            }
+                    PositionChange.Flip => actions.FirstOf<FlipSummon>(),
+                    _ => actions.FirstOf<ChangeBattlePosition>(),
+                };
 
-            using var scope = Input.Board.Scope()
-                .Cards(PlayArea.Hand, CanPlayFromHand)
-                .Button(BoardButton.NextPhase)
-                .Button(BoardButton.EndPhase)
-                .Button(BoardButton.Actions)
-                .Activatable(CanActivate)
-                .Hint(Text.Play);
+            case CommandPressed { Command: var command, Card: YuGiOhXYZMonsterCard xyz } when ReferenceEquals(command, Commands.XyzSummon):
+                Input.EffectPicker.Hide();
+                Input.Answers.Set(CardFromExtraDeck, xyz);
+                // Its materials: only monsters that can make it together
+                var options = YuGiOhGameRules.XYZMaterialOptions(Player, xyz);
+                Input.Narrowing.NarrowEach(OwnZones, zone => options.Any(option => option.Contains(zone)));
+                return actions.FirstOf<XYZSummon>();
 
-            switch(await scope.Next())
-            {
-                case ButtonPressed { Button: BoardButton.NextPhase }:
-                    return actions.First(action => action.GetType() == typeof(EndMainPhase));
-                case ButtonPressed { Button: BoardButton.EndPhase }:
-                    return actions.FirstOf<SkipToEndPhase>();
-                case ButtonPressed { Button: BoardButton.Actions }:
-                    // Everything, as a list (the answers below narrow what it asks next)
-                    return await Below.RequestMainPhaseAction(actions);
+            case SkillActivated { Card: YuGiOhCard card, Skill: YuGiOhNonPassiveSkill skill } activation:
+                Input.EffectPicker.Hide();
+                return Activate(actions, card, activation.From, skill);
 
-                case CardClicked { Card: YuGiOhNormalMonsterCard monster } when YuGiOhGameRules.TributesNeeded(monster) == 0:
-                    picked = monster;
-                    continue;
-                case CardClicked { Card: YuGiOhNormalMonsterCard monster }:
-                    // A tribute summon: the tributes free the zone, so it's asked after them
-                    Input.Answers.Set(CardFromHand, monster);
-                    return actions.FirstOf<NormalSummonMonster>();
-                case CardClicked { Card: YuGiOhSpellCard spell }:
-                    Input.Answers.Set(CardFromHand, spell);
-                    return actions.FirstOf<ActivateSpellCard>();
-                case CardClicked { Card: YuGiOhTrapCard trap }:
-                    Input.Answers.Set(CardFromHand, trap);
-                    return actions.FirstOf<SetTrapCard>();
-
-                case SkillActivated { Card: YuGiOhCard card, Skill: YuGiOhNonPassiveSkill skill } activation:
-                    return Activate(actions, card, activation.From, skill);
-            }
+            case var other:
+                throw new System.InvalidOperationException($"{nameof(YuGiOhMainPhaseStrategy)} allowed {other} but doesn't handle it");
         }
     }
 
-    // The zone to summon a monster to, or another card in the hand to play instead
-    private async Task<object> PickSummonZone(YuGiOhNormalMonsterCard monster)
+    // What a monster from the hand can be dropped on this zone as: an empty zone, or any zone for a tribute summon
+    private IReadOnlyList<DropChoice> MonsterChoices(CardBase card, MonsterZone zone)
     {
-        using var scope = Input.Board.Scope()
-            .Zones(PlayArea.MonsterZones.Where(zone => zone.IsEmpty))
-            .Cards(PlayArea.Hand, card => !ReferenceEquals(card, monster) && CanPlayFromHand(card))
-            .Hint(Text.ChooseSummonZone);
-        return await scope.Next() switch
+        if(card is not YuGiOhNormalMonsterCard monster || !YuGiOhGameRules.CanNormalSummonNow(Player, monster)) return [];
+        if(YuGiOhGameRules.TributesNeeded(monster) == 0 && !zone.IsEmpty) return [];
+        return [ Choices.Summon, Choices.Set ];
+    }
+
+    // A spell can be activated (when it can be now) or Set; a trap can only be Set from the hand
+    private IReadOnlyList<DropChoice> SpellTrapChoices(CardBase card, SpellAndTrapZone zone)
+    {
+        if(!zone.IsEmpty) return [];
+        return card switch
         {
-            ZoneClicked { Zone: MonsterZone zone } => zone,
-            CardClicked click => click.Card,
-            var other => other,
+            YuGiOhSpellCard spell when YuGiOhGameRules.CanActivateSpellFromHand(Player, PlayArea.Hand, spell) => [ Choices.Activate, Choices.Set ],
+            YuGiOhSpellCard spell when YuGiOhGameRules.CanSetFromHand(Player, spell) => [ Choices.Set ],
+            YuGiOhTrapCard trap when YuGiOhGameRules.CanSetFromHand(Player, trap) => [ Choices.Set ],
+            _ => [],
         };
     }
 
-    // An effect activated from the card details: from the hand, a Set card, or a face-up card on the field
+    enum PositionChange { Change, Flip }
+
+    // Left: to Defense Position. Right: to Attack Position, Flip Summoning a face-down monster
+    private static PositionChange? SwipeAction(MonsterZone zone, GestureDetector.SwipeDirection direction)
+    {
+        if(zone.Card is null) return null;
+        bool attackPosition = zone.Orientation == Orientation.VERTICAL;
+        return direction switch
+        {
+            GestureDetector.SwipeDirection.Left when zone.Card.IsFaceUp && attackPosition && YuGiOhGameRules.CanChangeBattlePosition(zone) => PositionChange.Change,
+            GestureDetector.SwipeDirection.Right when !zone.Card.IsFaceUp && YuGiOhGameRules.CanFlipSummon(zone) => PositionChange.Flip,
+            GestureDetector.SwipeDirection.Right when zone.Card.IsFaceUp && !attackPosition && YuGiOhGameRules.CanChangeBattlePosition(zone) => PositionChange.Change,
+            _ => null,
+        };
+    }
+
+    // An effect activated from the card details: from the hand, a Set card, a face-up card on the field, or the Extra Deck
     private IMainPhaseAction Activate(List<IMainPhaseAction> actions, YuGiOhCard card, ICardSpace? from, YuGiOhNonPassiveSkill skill)
     {
         switch(from)
         {
             case Hand:
                 Input.Answers.Set(CardFromHand, card);
-                // The action only asks which effect when the card has more than one usable from the hand
-                if(YuGiOhGameRules.MainPhaseSkillsOf(card).Count(candidate => candidate.Location.HasFlag(YuGiOhSkillCardLocation.HAND)) > 1)
-                {
-                    Input.Answers.Set(SkillToActivate, skill);
-                }
+                // The action only asks which effect when the card has more than one usable from there
+                if(SkillsUsableFrom(card, YuGiOhSkillCardLocation.HAND) > 1) Input.Answers.Set(SkillToActivate, skill);
                 return actions.FirstOf<ActivateEffectsFromHand>();
+
+            case var extraDeck when ReferenceEquals(extraDeck, PlayArea.ExtraMonsterDeck):
+                Input.Answers.Set(CardFromExtraDeck, card);
+                if(SkillsUsableFrom(card, YuGiOhSkillCardLocation.EXTRA_DECK) > 1) Input.Answers.Set(SkillToActivate, skill);
+                return actions.FirstOf<ActivateEffectsFromExtraDeck>();
 
             case SpellAndTrapZone set when card is YuGiOhSpellOrTrapCard { IsFaceUp: false } setCard:
                 Input.Answers.Set(OwnZone, set);
@@ -129,6 +168,9 @@ public sealed class YuGiOhMainPhaseStrategy(YuGiOhInput input, IYuGiOhAnswers be
         }
     }
 
+    private static int SkillsUsableFrom(YuGiOhCard card, YuGiOhSkillCardLocation location)
+        => YuGiOhGameRules.MainPhaseSkillsOf(card).Count(candidate => candidate.Location.HasFlag(location));
+
     private bool CanPlayFromHand(CardBase card) => card switch
     {
         YuGiOhNormalMonsterCard monster => YuGiOhGameRules.CanNormalSummonNow(Player, monster),
@@ -142,10 +184,21 @@ public sealed class YuGiOhMainPhaseStrategy(YuGiOhInput input, IYuGiOhAnswers be
     {
         (YuGiOhCard skilled, Hand hand, _) when ReferenceEquals(hand, PlayArea.Hand)
             => YuGiOhGameRules.UsableHandSkills(Player, skilled).Contains(skill),
+        (YuGiOhCard skilled, Deck deck, _) when ReferenceEquals(deck, PlayArea.ExtraMonsterDeck)
+            => YuGiOhGameRules.UsableExtraDeckSkills(Player, skilled).Contains(skill),
         (_, SpellAndTrapZone set, _) when Input.IsOwnZone(set) && set.Card is { IsFaceUp: false }
             => YuGiOhGameRules.UsableSetCardActivations(Player, set).Contains(skill),
         (_, IYuGiOhZone zone, _) when Input.IsOwnZone(zone)
             => YuGiOhGameRules.UsableFieldSkills(Player, zone).Contains(skill),
         _ => false,
     };
+
+    // An Xyz monster in the player's Extra Deck that has materials on the field now
+    private IEnumerable<CardCommand> CommandsFor(CardBase card, ICardSpace? from)
+    {
+        if(ReferenceEquals(from, PlayArea.ExtraMonsterDeck) && card is YuGiOhXYZMonsterCard xyz && YuGiOhGameRules.XYZMaterialOptions(Player, xyz).Count > 0)
+        {
+            yield return Commands.XyzSummon;
+        }
+    }
 }

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://Games/YuGiOh/HUD/CardDetails/YuGiOhCardDetails.cs" id="1_root"]
 [ext_resource type="PackedScene" uid="uid://bd1411oyw560d" path="res://addons/rev_godot_core/Scenes/LabelValueContainer.tscn" id="2_value"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://Games/Shared/HUD/CardDetails/SkillTextPart.cs" id="8_skills"]
 [ext_resource type="Script" path="res://Games/Shared/HUD/CardDetails/GrantedSkillsPart.cs" id="9_granted"]
 [ext_resource type="Script" path="res://Games/Shared/HUD/CardDetails/ActivationListPart.cs" id="10_activations"]
+[ext_resource type="Script" path="res://Games/Shared/HUD/CardDetails/CardCommandsPart.cs" id="20_commands"]
 
 [node name="YuGiOhCardDetails" type="PanelContainer"]
 offset_right = 900.0
@@ -89,6 +90,11 @@ size_flags_vertical = 3
 theme_override_font_sizes/normal_font_size = 32
 fit_content = true
 script = ExtResource("9_granted")
+
+[node name="Commands" type="HBoxContainer" parent="MarginContainer/Content"]
+visible = false
+layout_mode = 2
+script = ExtResource("20_commands")
 
 [node name="ActivationSkills" type="VBoxContainer" parent="MarginContainer/Content"]
 layout_mode = 2
