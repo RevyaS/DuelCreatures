@@ -41,14 +41,7 @@ public partial class LayoutWatch : Node
 
     private IEnumerable<Control> Watched() => roots.SelectMany(root => Controls(root).Prepend(root));
 
+    // Cards, and whatever sits in a card slot, move and scale by design
     private static IEnumerable<Control> Controls(Node node)
-    {
-        foreach(var child in node.GetChildren())
-        {
-            // Cards, and whatever sits in a card slot, move and scale by design
-            if(child is CardBaseComponent || node is CardContainer) continue;
-            if(child is Control control) yield return control;
-            foreach(var descendant in Controls(child)) yield return descendant;
-        }
-    }
+        => node.Descendants(child => child is not CardBaseComponent && child.GetParent() is not CardContainer).OfType<Control>();
 }

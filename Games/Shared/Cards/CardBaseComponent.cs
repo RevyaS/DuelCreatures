@@ -88,8 +88,7 @@ public abstract partial class CardBaseComponent : Control
     public override void _Ready()
     {
         CustomMinimumSize = SizeConstants.CardDefaultSize;
-        Front = GetNode<TextureRect>($"%{nameof(Front)}");
-        Back = GetNode<BackgroundRect>($"%{nameof(Back)}");
+        FindNodes();
 
         if(!Engine.IsEditorHint())
         {
@@ -106,14 +105,27 @@ public abstract partial class CardBaseComponent : Control
             gestures.DragEnded += CardDrag.End;
             gestures.DragCancelled += CardDrag.Cancel;
         }
+        Render();
+    }
+
+    // The nodes the card draws with. Found again when they're missing: in the editor, rebuilding the C# project resets
+    // a [Tool] script's fields while the node stays ready, and _Ready doesn't run again
+    bool nodesFound;
+
+    /// <summary>Finds the scene's nodes this card draws with; a subclass finds its own too (calling base first).</summary>
+    protected virtual void FindNodes()
+    {
+        Front = GetNode<TextureRect>($"%{nameof(Front)}");
+        Back = GetNode<BackgroundRect>($"%{nameof(Back)}");
         Border = GetNode<ColorRect>($"%{nameof(Border)}");
         defaultBorderColor = Border.Color;
-        Render();
+        nodesFound = true;
     }
 
     protected void Render()
     {
         if(!IsNodeReady()) return;
+        if(!nodesFound) FindNodes();
         RenderCore();
     }
 

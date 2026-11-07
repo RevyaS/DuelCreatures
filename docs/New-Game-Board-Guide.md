@@ -88,9 +88,35 @@ Copy `Games/YuGiOh/Board/YuGiOhPlayAreaComponent.tscn` or `Games/Vanguard/Board/
 | A pile (deck, drop zone, graveyard) | `StackZone` | `HideCards` for a deck, `ShowCount`, `Inspectable` |
 
 - **A zone that needs its own look** subclasses one of these (`UnitCircleZone : CardBox`, circle art under the card).
-- **Turn things that must read upright on the far side** with a `QuarterTurnContainer`.
-- **A root script is optional and only draws** (`VanguardPlayAreaView`: sleeve, flipped icons). YuGiOh's
-  (`YuGiOhPlayAreaComponent`) is empty.
+- **The scene's root has `PlayAreaView`** (`Games/Shared/Board/PlayAreaView.cs`; any Control root, e.g. a
+  MarginContainer). Vanguard's subclass, `VanguardPlayAreaView`, also flips its circles' icons.
+
+### Placing things in a play area (life points, labels, counters)
+
+A play area scene is used twice: as `%Player1Area` near you, and as `%Player2Area`, which the board turns 180° so it
+faces the other player. Anything you put in the scene appears on both sides, so it must work for both.
+
+1. **Put the node anywhere in the play area scene.** It doesn't need a unique name or a path.
+2. **If it shows something about the play area** (life points, a deck count), give it a script implementing
+   `IBindable<TPlayArea>` (like `LifePointsLabel : IBindable<YuGiOhPlayArea>`). The driver binds every such node in
+   the scene to that side's play area when the board is shown; nothing is wired by hand. If it shows something about
+   the whole game instead (the phase), use `IBindable<GameSession>`; the board's `BindAll` binds it.
+3. **If it must read upright from its own side** (any text, a pile's count), wrap it in a `QuarterTurnContainer` and
+   tick **Faces Owner**. On the far side that container turns half around, so player 2's text reads the right way
+   up for player 2 (and upside down for you, as on a real table). Leave it unticked for things that should turn with
+   the board (cards, circles).
+4. **Mark the far side once, on the board:** select `%Player2Area` in the board scene and tick **Flipped
+   Appearance** on its `PlayAreaView`. Rotate that instance 180° with the pivot at its centre (as now). Player 1's
+   instance stays unticked.
+5. **Only on one player's turn?** `PhaseLabel` with **Only On Its Areas Turn** shows only in the play area of the
+   player whose turn it is.
+
+What not to do: don't bind such nodes by hand in the board script (they'd be bound twice), and don't rotate a label
+yourself (the far side's rotation is set for you).
+
+Example (YuGiOh): `VBoxContainer/FacingOwner` (a `QuarterTurnContainer`, Faces Owner ticked) holds a
+`MarginContainer` with `%LifePoints` (`LifePointsLabel`) and `PlayerPhaseLabel` (`PhaseLabel`, Only On Its Areas
+Turn). `YuGiOhBoard.tscn` ticks Flipped Appearance on `Player2Area`.
 
 ## 3. Board scene and script
 
@@ -129,12 +155,15 @@ These are scripts placed in the scenes. Binding finds them; nothing wires them b
 | Kind | Where | Implements | Example |
 |------|-------|-----------|---------|
 | Zone extension | Child of a zone view | `IBindable<TZone>` | `UnitStats` (power/critical), `GuardianShields` |
-| Play area component | The play area root | `IBindable<TPlayArea>` | (YuGiOh's `LifePointsLabel` is bound by hand in `YuGiOhBoard`) |
+| Play area component | Anywhere in the play area scene | `IBindable<TPlayArea>` | `LifePointsLabel` (see "Placing things in a play area") |
 | Session component | Anywhere under the board or HUD | `IBindable<GameSession>` or `IBindable<MySession>` | `PhaseLabel`, `TurnLabel`, `VanguardBattleLines` |
 
 - Values with no event of their own (stats with continuous effects, life points) are read on `EventBus.Settled`,
   then shown through `presentation.Present(…)`, so they stay in step with the animations.
-- Lines between zones: subclass `ZoneLinesLayer` and draw on your game's events (`VanguardBattleLines`).
+- Lines between zones: subclass `ZoneLinesLayer` and draw on your game's events; `Target(view)` marks a zone
+  (`SetTargeted`) until `Clear()`. `VanguardBattleLines` and `YuGiOhBattleLines` show every attack, the player's and
+  the opponent's (a bot's too), from `AttackDeclared` to `BattleEnded`. A YuGiOh direct attack points at the
+  defender's hand.
 - `PhaseLabel.OnlyOnItsAreasTurn` inside a play area shows the phase only on the side whose turn it is.
 
 ## 5. Watch it before playing it
@@ -252,7 +281,8 @@ These were found by building Vanguard after YuGiOh. They're ordered by how much 
    the per-game script to a few lines.
 6. **`PresentationContext` comes from two places:** in YuGiOh the input provider provides it, in Vanguard the board
    does. Pick one, the board, so a board works the same in the debug scene and the game.
-7. **`Descendants(node)` is written four times:** `ArcDriver`, both input providers and `VanguardPlayAreaView`.
+7. **(Done) `Descendants(node)` was written seven times, `IgnoreMouse` three:** both are now Rev-Godot-Core
+   extensions (`node.Descendants()`, `node.Descendants<T>()`, `node.IgnoreMouse()`).
    It belongs in Rev-Godot-Core next to `UniqueNodes`.
 8. **The "read on `Settled`, then present" pattern is repeated:** `LifePointsLabel`, `UnitStats` and
    `GuardianShields` each write the subscribe/unsubscribe/present plumbing. A small base (`SettledReader<TModel>`

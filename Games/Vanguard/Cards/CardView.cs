@@ -44,7 +44,7 @@ public partial class CardView : Control
         card.Scale = new Vector2(scale, scale);
         GetNode("%CardSlot").AddChild(card);
         // This view takes every press; the card only shows
-        IgnoreMouse(card);
+        card.IgnoreMouse();
 
         var gestures = GetNode<GestureDetector>("%Gestures");
         gestures.Tapped += () => Pressed?.Invoke(this);
@@ -96,14 +96,5 @@ public partial class CardView : Control
     {
         get => card.SleeveInfo;
         set => card.SleeveInfo = value;
-    }
-
-    private static void IgnoreMouse(Node node)
-    {
-        if(node is Control control) control.MouseFilter = MouseFilterEnum.Ignore;
-        foreach(var child in node.GetChildren())
-        {
-            IgnoreMouse(child);
-        }
     }
 }

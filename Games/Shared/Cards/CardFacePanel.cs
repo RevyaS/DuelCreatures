@@ -21,14 +21,5 @@ public partial class CardFacePanel : PanelContainer, ICardFacePart
         Visible = faceUp && Texts.Any(text => text.HasValue);
     }
 
-    private List<CardFaceText> Texts => texts ??= Descendants(this).OfType<CardFaceText>().ToList();
-
-    private static IEnumerable<Node> Descendants(Node node)
-    {
-        foreach(var child in node.GetChildren())
-        {
-            yield return child;
-            foreach(var descendant in Descendants(child)) yield return descendant;
-        }
-    }
+    private List<CardFaceText> Texts => texts ??= this.Descendants<CardFaceText>().ToList();
 }

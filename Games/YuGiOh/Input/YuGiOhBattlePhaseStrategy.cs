@@ -6,15 +6,16 @@ using ArC.CardGames.YuGiOh;
 using static YuGiOhQuestions;
 
 /// <summary>
-/// The Battle Phase by touch, for the turn player: drag from a monster that can attack onto the monster to attack (a
-/// line follows the drag), or anywhere on the opponent's side for a direct attack when they have no monsters. Next
-/// Phase ends the Battle Phase. Everything else is answered by the strategy below.
+/// The Battle Phase by touch, for the turn player: drag from a monster that can attack onto the monster to attack, or,
+/// when the opponent has no monsters, onto the opponent's hand for a direct attack. Only a valid target shows the line
+/// and its marker; let go anywhere else, nothing happens. Next Phase ends the Battle Phase. Everything else is answered
+/// by the strategy below.
 /// </summary>
 public sealed class YuGiOhBattlePhaseStrategy(YuGiOhInput input, IYuGiOhAnswers below) : YuGiOhStrategy(input, below)
 {
     public static class Text
     {
-        public static string Attack = "Battle Phase: drag a monster onto the one to attack, or onto your opponent's side to attack directly";
+        public static string Attack = "Battle Phase: drag a monster onto the one to attack, or onto your opponent's hand to attack directly";
     }
 
     YuGiOhPlayArea PlayArea => Input.PlayArea;
@@ -45,13 +46,12 @@ public sealed class YuGiOhBattlePhaseStrategy(YuGiOhInput input, IYuGiOhAnswers 
         return end;
     }
 
-    // A monster the opponent controls that can be attacked; with none, anywhere on the opponent's side
+    // A monster the opponent controls that can be attacked; with none, the opponent's hand (the player themselves)
     private bool CanTarget(AimTarget target, bool opponentHasMonsters) => target switch
     {
         ZoneTarget { Zone: MonsterZone monster } when opponentHasMonsters
-            => OpponentPlayArea.ControlledMonsterZones.Contains(monster) && YuGiOhGameRules.ValidateTarget(monster) is null,
-        AreaTarget { Area: var area } when !opponentHasMonsters => ReferenceEquals(area, OpponentPlayArea),
-        ZoneTarget { Zone: var zone } when !opponentHasMonsters => OpponentPlayArea.Owns(zone),
+            => OpponentPlayArea.ControlledMonsterZones.Any(zone => ReferenceEquals(zone, monster)) && YuGiOhGameRules.ValidateTarget(monster) is null,
+        ZoneTarget { Zone: var zone } when !opponentHasMonsters => ReferenceEquals(zone, OpponentPlayArea.Hand),
         _ => false,
     };
 }

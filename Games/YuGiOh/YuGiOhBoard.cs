@@ -3,8 +3,8 @@ using ArC.CardGames.YuGiOh;
 using Godot;
 
 // The YuGiOh board. Its zones are bound by name (see ArcDriver): %Player1Area and %Player2Area hold one zone node per
-// YuGiOhPlayArea zone, %ExtraMonsterZone1/2 are shared. Only the hands and life points sit outside the play areas, so
-// they're bound here.
+// YuGiOhPlayArea zone, %ExtraMonsterZone1/2 are shared. Only the hands sit outside the play areas, so they're bound here;
+// the life points in each play area scene are bound to their play area by the driver.
 public partial class YuGiOhBoard : MarginContainer, IProvide<ArcDriver>
 {
     // Everything that wants a sound raises it here (see PresentationConfig for which sides play)

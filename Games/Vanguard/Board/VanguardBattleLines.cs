@@ -4,9 +4,10 @@ using ArC.CardGames.Vanguard;
 using Godot;
 
 /// <summary>
-/// Draws each Vanguard battle on the board: a line from the attacker to its target, and from the booster to the unit
-/// it boosts, until the battle ends. Bound to the session (ArcDriver.BindAll); finds the circles' views through the
-/// ArcDriver an ancestor provides, and draws in step with the board.
+/// Draws each Vanguard battle on the board: a line from the attacker to its target (marked with its arrows), and from
+/// the booster to the unit it boosts, until the battle ends. Both players' attacks, so a bot's are easy to follow.
+/// Bound to the session (ArcDriver.BindAll); finds the circles' views through the ArcDriver an ancestor provides, and
+/// draws in step with the board.
 /// </summary>
 public partial class VanguardBattleLines : ZoneLinesLayer, IBindable<VanguardGameSession>
 {
@@ -36,6 +37,7 @@ public partial class VanguardBattleLines : ZoneLinesLayer, IBindable<VanguardGam
             {
                 presentation.PlaySfx(VanguardSfx.Target);
                 Draw(from, to, AttackSpeed, AttackTextureScale);
+                Target((IZoneView)to);
             });
         }));
         subscriptions.Add(session.EventBus.Subscribe<BattleEnded>(_ => presentation.Present(Clear)));

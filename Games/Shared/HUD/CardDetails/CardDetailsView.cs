@@ -30,16 +30,7 @@ public partial class CardDetailsView : Control, IProvide<ISkillTextInterpreter>,
     public void Show(CardDetail detail)
     {
         Current = detail;
-        foreach(var part in Parts(this)) part.Show(detail);
+        foreach(var part in this.Descendants<ICardDetailPart>()) part.Show(detail);
         Show();
-    }
-
-    private static IEnumerable<ICardDetailPart> Parts(Node node)
-    {
-        foreach(var child in node.GetChildren())
-        {
-            if(child is ICardDetailPart part) yield return part;
-            foreach(var nested in Parts(child)) yield return nested;
-        }
     }
 }

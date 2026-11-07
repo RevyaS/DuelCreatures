@@ -154,8 +154,11 @@ public sealed class ArcDriver : IDisposable
                 continue;
             }
             if(areaNode is Control areaControl) areaViews[area] = areaControl;
-            // A play area's own script may show the play area itself (e.g. its life points)
-            if(Bindings.IsBindable(areaNode)) Bindings.TryBind(areaNode, area, boardPath, areaName, report);
+            // Whatever in the play area scene shows the play area itself (e.g. its life points), wherever it is
+            foreach(var node in areaNode.Descendants().Prepend(areaNode).Where(node => node is not IZoneView && Shows(node, area)))
+            {
+                Bindings.TryBind(node, area, boardPath, $"{areaName}/{node.Name}", report);
+            }
 
             var hiddenZones = new HashSet<ICardSpace>(hidden?.Invoke(area) ?? [], ReferenceEqualityComparer.Instance);
             var zones = area.ZonesByName
@@ -176,7 +179,7 @@ public sealed class ArcDriver : IDisposable
     /// </summary>
     public void BindAll<TModel>(Node root, TModel model) where TModel : notnull
     {
-        foreach(var node in Descendants(root).Where(node => Bindings.ModelTypesOf(node.GetType()).Any(type => type.IsInstanceOfType(model))))
+        foreach(var node in root.Descendants().Where(node => Shows(node, model)))
         {
             Bindings.TryBind(node, model, root.Name, node.Name, report);
         }
@@ -210,7 +213,7 @@ public sealed class ArcDriver : IDisposable
         zoneView.Aiming += (from, step, position) => Aiming?.Invoke(from, step, position);
 
         // Its extensions: the nodes under it that show its zone
-        foreach(var extension in Descendants(view).Where(node => node is not IZoneView && Bindings.IsBindable(node)))
+        foreach(var extension in view.Descendants().Where(node => node is not IZoneView && Bindings.IsBindable(node)))
         {
             Bindings.TryBind(extension, zone, $"{path}/{name}", extension.Name, report);
         }
@@ -243,6 +246,9 @@ public sealed class ArcDriver : IDisposable
         .Where(view => !boundInCode.Contains(view.Value) && ShowsZones(view.Value))
         .ToDictionary();
 
+    // Whether the node binds a model of the kind of model (IBindable of its type or a base type)
+    private static bool Shows(Node node, object model) => Bindings.ModelTypesOf(node.GetType()).Any(type => type.IsInstanceOfType(model));
+
     private static bool ShowsZones(Node node)
         => node is IZoneView || Bindings.ModelTypesOf(node.GetType()).Any(type => typeof(ICardSpace).IsAssignableFrom(type));
 
@@ -253,15 +259,6 @@ public sealed class ArcDriver : IDisposable
         .Select(property => (property.Name, Value: property.GetValue(model) as T))
         .Where(found => found.Value is not null)
         .ToDictionary(found => found.Name, found => found.Value!);
-
-    private static IEnumerable<Node> Descendants(Node node)
-    {
-        foreach(var child in node.GetChildren())
-        {
-            yield return child;
-            foreach(var descendant in Descendants(child)) yield return descendant;
-        }
-    }
     #endregion
 
     #region Moves

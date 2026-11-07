@@ -69,8 +69,8 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
         // Card flights draw above the board and below the HUD (see the scene)
         Presenter.Flights = GetNode<CardFlightLayer>("%CardFlights");
         // The HUD's buttons and hint, wherever they are in the scene
-        inputBoard = new(Activations, Descendants(this).OfType<BoardButtonView>(),
-            Descendants(this).OfType<InputHintLabel>().FirstOrDefault(), Descendants(this).OfType<AimIndicatorLayer>().FirstOrDefault());
+        inputBoard = new(Activations, this.Descendants<BoardButtonView>(),
+            this.Descendants<InputHintLabel>().FirstOrDefault(), this.Descendants<AimIndicatorLayer>().FirstOrDefault());
     }
 
     // For the board's and HUD's components showing the game in step with the board (e.g. the phase label, life points)
@@ -196,14 +196,5 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
     public override void _ExitTree()
     {
         driver?.Dispose();
-    }
-
-    private static IEnumerable<Node> Descendants(Node node)
-    {
-        foreach(var child in node.GetChildren())
-        {
-            yield return child;
-            foreach(var descendant in Descendants(child)) yield return descendant;
-        }
     }
 }

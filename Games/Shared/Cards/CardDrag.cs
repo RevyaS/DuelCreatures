@@ -126,7 +126,7 @@ public static class CardDrag
         copy.PivotOffset = Vector2.Zero;
         copy.Scale = card.GetGlobalTransform().Scale;
         copy.ZIndex = 100;
-        IgnoreMouse(copy);
+        copy.IgnoreMouse();
         return copy;
     }
 
@@ -136,14 +136,5 @@ public static class CardDrag
         if(preview is not null && GodotObject.IsInstanceValid(preview)) preview.QueueFree();
         preview = null;
         dragged = null;
-    }
-
-    private static void IgnoreMouse(Node node)
-    {
-        if(node is Control control) control.MouseFilter = Control.MouseFilterEnum.Ignore;
-        foreach(var child in node.GetChildren())
-        {
-            IgnoreMouse(child);
-        }
     }
 }

@@ -69,8 +69,8 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
         Presenter.Flights = GetNode<CardFlightLayer>("%CardFlights");
         // The HUD's buttons, wherever they are in the scene (the board holds them); the hint is the player's play area's
         // (each play area scene has one under its phase label)
-        inputBoard = new(Activations, Descendants(this).OfType<BoardButtonView>(),
-            Descendants(board.PlayerArea).OfType<InputHintLabel>().FirstOrDefault(), Descendants(this).OfType<AimIndicatorLayer>().FirstOrDefault());
+        inputBoard = new(Activations, this.Descendants<BoardButtonView>(),
+            board.PlayerArea.Descendants<InputHintLabel>().FirstOrDefault(), this.Descendants<AimIndicatorLayer>().FirstOrDefault());
         // A skill activated from the details: they close, the skill goes on on the board
         inputBoard.Gestures.Subscribe<SkillActivated>(_ => CardDetails.Hide());
     }
@@ -220,14 +220,5 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
     public override void _ExitTree()
     {
         driver?.Dispose();
-    }
-
-    private static IEnumerable<Node> Descendants(Node node)
-    {
-        foreach(var child in node.GetChildren())
-        {
-            yield return child;
-            foreach(var descendant in Descendants(child)) yield return descendant;
-        }
     }
 }

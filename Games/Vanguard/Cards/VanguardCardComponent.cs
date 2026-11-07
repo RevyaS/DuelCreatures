@@ -75,8 +75,9 @@ public partial class VanguardCardComponent : Card
         }
     }
     
-    public override void _Ready()
+    protected override void FindNodes()
     {
+        base.FindNodes();
         TriggerRect = GetNode<TextureRect>($"%{nameof(TriggerRect)}");
         PowerLabel = GetNode<Label>($"%{nameof(PowerLabel)}");
         CriticalLabel = GetNode<Label>($"%{nameof(CriticalLabel)}");
@@ -86,7 +87,6 @@ public partial class VanguardCardComponent : Card
         GradePanel = GetNode<PanelContainer>($"%{nameof(GradePanel)}");
         GuardPanel = GetNode<PanelContainer>($"%{nameof(GuardPanel)}");
         TriggerPanel = GetNode<PanelContainer>($"%{nameof(TriggerPanel)}");
-        base._Ready();
     }
 
     protected override void RenderCore()

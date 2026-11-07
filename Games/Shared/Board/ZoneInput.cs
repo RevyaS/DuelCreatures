@@ -1,3 +1,4 @@
+using System.Linq;
 using Godot;
 
 // What every zone view does the same way for input: its highlight, and letting clicks on its own controls reach it
@@ -26,19 +27,26 @@ public static class ZoneInput
     /// </summary>
     public static void PassClicksToZone(Node zone)
     {
-        foreach(var child in zone.GetChildren())
+        foreach(var control in zone.Descendants(node => node is not CardBaseComponent).OfType<Control>())
         {
-            if(child is CardBaseComponent) continue;
-            if(child is Control { MouseFilter: Control.MouseFilterEnum.Stop } control) control.MouseFilter = Control.MouseFilterEnum.Pass;
-            PassClicksToZone(child);
+            if(control.MouseFilter == Control.MouseFilterEnum.Stop) control.MouseFilter = Control.MouseFilterEnum.Pass;
         }
     }
 
-    /// <summary>The node and everything in it let the mouse through (e.g. a card in a zone that takes every press itself).</summary>
-    public static void IgnoreMouse(Node node)
+    /// <summary>
+    /// Shows or hides the block over <paramref name="zone"/> marking it as targeted (e.g. the monster an attack would
+    /// hit), creating it the first time it's shown; it never takes clicks.
+    /// </summary>
+    public static void ShowTargetBlock(Control zone, ref ColorRect? block, Color color, bool targeted)
     {
-        if(node is Control control) control.MouseFilter = Control.MouseFilterEnum.Ignore;
-        foreach(var child in node.GetChildren()) IgnoreMouse(child);
+        if(block is null)
+        {
+            if(!targeted) return;
+            block = new ColorRect { Name = "Target", Color = color, MouseFilter = Control.MouseFilterEnum.Ignore };
+            zone.AddChild(block);
+            block.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+        }
+        block.Visible = targeted;
     }
 
     public static bool IsClick(InputEvent input)

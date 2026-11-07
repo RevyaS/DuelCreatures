@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://bbkqq03vdp4mq"]
+[gd_scene format=3 uid="uid://bbkqq03vdp4mq"]
 
 [ext_resource type="Script" uid="uid://p3ldeqjxb577" path="res://addons/rev_godot_core/Components/VBoxNodeContainer.cs" id="1_1185f"]
-[ext_resource type="Script" uid="uid://crctie0we45uq" path="res://Games/YuGiOh/Board/YuGiOhPlayAreaComponent.cs" id="1_vu3cf"]
+[ext_resource type="Script" path="res://Games/Shared/Board/PlayAreaView.cs" id="1_vu3cf"]
+[ext_resource type="Script" path="res://Games/Shared/Components/QuarterTurnContainer.cs" id="8_turn"]
 [ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/CardSlot.tscn" id="2_slot"]
 [ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/CardBox.tscn" id="3_box"]
 [ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/StackZone.tscn" id="4_stack"]
@@ -194,10 +195,16 @@ CardHighlightColor = Color(1, 0.85, 0.2, 1)
 CardScale = 0.38
 ShowCount = true
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxNodeContainer/VBoxContainer"]
+[node name="FacingOwner" type="Container" parent="VBoxNodeContainer/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("8_turn")
+FacesOwner = true
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxNodeContainer/VBoxContainer/FacingOwner"]
 layout_mode = 2
 
-[node name="LifePoints" type="Label" parent="VBoxNodeContainer/VBoxContainer/MarginContainer"]
+[node name="LifePoints" type="Label" parent="VBoxNodeContainer/VBoxContainer/FacingOwner/MarginContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 56
@@ -206,7 +213,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 script = ExtResource("6_dw4h1")
 
-[node name="PlayerPhaseLabel" type="Label" parent="VBoxNodeContainer/VBoxContainer/MarginContainer"]
+[node name="PlayerPhaseLabel" type="Label" parent="VBoxNodeContainer/VBoxContainer/FacingOwner/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 2
 theme_override_font_sizes/font_size = 45

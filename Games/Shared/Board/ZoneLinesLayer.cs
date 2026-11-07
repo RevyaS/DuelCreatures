@@ -12,6 +12,7 @@ public partial class ZoneLinesLayer : Control
     [Export] public PackedScene? IndicatorScene { get; set; }
 
     readonly List<AttackIndicator> lines = [];
+    readonly List<IZoneView> targets = [];
 
     public override void _Ready()
     {
@@ -37,7 +38,14 @@ public partial class ZoneLinesLayer : Control
         lines.Add(line);
     }
 
-    /// <summary>Removes every line drawn.</summary>
+    /// <summary>Shows <paramref name="zone"/> as targeted (IZoneView.SetTargeted: a block, Vanguard's arrows) until <see cref="Clear"/>.</summary>
+    public void Target(IZoneView zone)
+    {
+        zone.SetTargeted(true);
+        targets.Add(zone);
+    }
+
+    /// <summary>Removes every line drawn, and every target marked.</summary>
     public void Clear()
     {
         foreach(var line in lines)
@@ -45,6 +53,11 @@ public partial class ZoneLinesLayer : Control
             if(IsInstanceValid(line)) line.QueueFree();
         }
         lines.Clear();
+        foreach(var zone in targets)
+        {
+            if(zone is GodotObject node && IsInstanceValid(node)) zone.SetTargeted(false);
+        }
+        targets.Clear();
     }
 
     private static Vector2 CentreOf(Control control) => control.GetGlobalTransform() * (control.Size / 2);

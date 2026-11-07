@@ -49,8 +49,8 @@ public partial class CardSlot : CardArea, IZoneView, IBindable<ISingleSpace>
         ZoneInput.PassClicksToZone(this);
 
         // The slot takes every press (its card only shows): a tap, a swipe, or a drag from it
-        Container.CardAdded += ZoneInput.IgnoreMouse;
-        if(Container.CurrentCard is { } shown) ZoneInput.IgnoreMouse(shown);
+        Container.CardAdded += card => card.IgnoreMouse();
+        Container.CurrentCard?.IgnoreMouse();
         gestures = new GestureDetector
         {
             Name = "Gestures",
@@ -108,17 +108,7 @@ public partial class CardSlot : CardArea, IZoneView, IBindable<ISingleSpace>
     public void UseSleeve(DuelCreatures.Data.SleeveInfo sleeve) => Container.SetSleeveInfo(sleeve);
 
     /// <summary>How the slot shows it's targeted: a yellow block over it. A zone with its own target marks overrides this.</summary>
-    protected virtual void ShowTargeted(bool targeted)
-    {
-        if(targetBlock is null)
-        {
-            if(!targeted) return;
-            targetBlock = new ColorRect { Name = "Target", Color = TargetColor, MouseFilter = MouseFilterEnum.Ignore };
-            AddChild(targetBlock);
-            targetBlock.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-        }
-        targetBlock.Visible = targeted;
-    }
+    protected virtual void ShowTargeted(bool targeted) => ZoneInput.ShowTargetBlock(this, ref targetBlock, TargetColor, targeted);
 
     public void SetGestures(bool swipes, bool aims)
     {

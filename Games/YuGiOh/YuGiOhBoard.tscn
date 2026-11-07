@@ -1,6 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://ca1mvs1wcc75x"]
+[gd_scene format=3 uid="uid://ca1mvs1wcc75x"]
 
 [ext_resource type="Script" uid="uid://0yvuui1e7l76" path="res://Games/YuGiOh/YuGiOhBoard.cs" id="1_phugy"]
+[ext_resource type="Script" path="res://Games/YuGiOh/Board/YuGiOhBattleLines.cs" id="20_lines"]
+[ext_resource type="PackedScene" uid="uid://bj6jrhfey56is" path="res://Games/Shared/Vfx/AttackIndicator.tscn" id="21_indicator"]
 [ext_resource type="PackedScene" uid="uid://bbkqq03vdp4mq" path="res://Games/YuGiOh/Board/YuGiOhPlayAreaComponent.tscn" id="1_xeqle"]
 [ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/HandZone.tscn" id="2_hand"]
 [ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/CardBox.tscn" id="3_box"]
@@ -47,6 +49,7 @@ offset_bottom = 532.0
 grow_horizontal = 2
 rotation = 3.1415927
 pivot_offset = Vector2(540, 306.5)
+FlippedAppearance = true
 
 [node name="MarginContainer" type="MarginContainer" parent="Board"]
 layout_mode = 2
@@ -98,3 +101,9 @@ CardHighlightColor = Color(1, 0.85, 0.2, 1)
 EmptyHeightPadding = 4.0
 CardScale = 0.55
 Alignment = 1
+
+[node name="BattleLines" type="Control" parent="."]
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("20_lines")
+IndicatorScene = ExtResource("21_indicator")

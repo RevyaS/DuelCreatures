@@ -45,16 +45,7 @@ public partial class Card : CardBaseComponent
     }
 
     // Found once: the scene doesn't add parts after it's built
-    private List<ICardFacePart> FaceParts => faceParts ??= Descendants(this).OfType<ICardFacePart>().ToList();
-
-    private static IEnumerable<Node> Descendants(Node node)
-    {
-        foreach(var child in node.GetChildren())
-        {
-            yield return child;
-            foreach(var descendant in Descendants(child)) yield return descendant;
-        }
-    }
+    private List<ICardFacePart> FaceParts => faceParts ??= this.Descendants<ICardFacePart>().ToList();
 
     public event Action<Card>? CardPressed;
     public event Action<Card>? CardLongPressed;

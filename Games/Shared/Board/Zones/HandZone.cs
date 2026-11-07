@@ -24,6 +24,12 @@ public partial class HandZone : CardLineDynamic, IZoneView, IBindable<GroupSpace
     [Export] public Color HighlightColor { get; set; } = new(1f, 0.85f, 0.2f);
     [Export] public float HighlightWidth { get; set; } = 4;
     [Export] public Color CardHighlightColor { get; set; } = new(1f, 0.85f, 0.2f);
+    /// <summary>The block over the hand while it's targeted (e.g. a YuGiOh direct attack on its player).</summary>
+    [Export] public Color TargetColor { get; set; } = new(1f, 0.85f, 0.2f, 0.35f);
+
+    ColorRect? targetBlock;
+
+    public void SetTargeted(bool targeted) => ZoneInput.ShowTargetBlock(this, ref targetBlock, TargetColor, targeted);
 
     ReferenceRect? highlight;
 
