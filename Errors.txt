@@ -1,47 +1,102 @@
 Editor errors when opening Sessions:
 
-  ERROR:    at CardBaseComponent.set_SleeveInfo(SleeveInfo value) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 69
-  ERROR:    at CardContainer.Render() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Components/CardContainer.cs:line 143
-  ERROR:    at CardContainer.set_CardScale(Single value) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Components/CardContainer.cs:line 31
-  ERROR:    at CardLine.ConfigureContainer(CardContainer container) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Zones/CardLine.cs:line 230
-  ERROR:    at CardLine.OnContainerChildEntered(Node node) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Zones/CardLine.cs:line 202
-  ERROR:    at Godot.Node.ChildEnteredTreeTrampoline(Object delegateObj, NativeVariantPtrArgs args, godot_variant& ret) in /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Generated/GodotObjects/Node.cs:line 2380
-  ERROR:    at Godot.DelegateUtils.InvokeWithVariantArgs(IntPtr delegateGCHandle, Void* trampoline, godot_variant** args, Int32 argc, godot_variant* outRet) in /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/DelegateUtils.cs:line 86
-  ERROR: /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/NativeInterop/ExceptionUtils.cs:113 - System.NullReferenceException: Object reference not set to an instance of an object.
-  ERROR:    at CardBaseComponent.RenderCore() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 122
-  ERROR:    at Card.RenderCore() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/Card.cs:line 43
-  ERROR:    at CardBaseComponent.Render() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 117
-  ERROR:    at CardBaseComponent.set_SleeveInfo(SleeveInfo value) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 69
-  ERROR:    at CardContainer.Render() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Components/CardContainer.cs:line 143
-  ERROR:    at CardContainer.OnChildEnteredTree(Node node) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Components/CardContainer.cs:line 216
-  ERROR:    at Godot.Node.ChildEnteredTreeTrampoline(Object delegateObj, NativeVariantPtrArgs args, godot_variant& ret) in /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Generated/GodotObjects/Node.cs:line 2380
-  ERROR:    at Godot.DelegateUtils.InvokeWithVariantArgs(IntPtr delegateGCHandle, Void* trampoline, godot_variant** args, Int32 argc, godot_variant* outRet) in /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/DelegateUtils.cs:line 86
-  ERROR: /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/NativeInterop/ExceptionUtils.cs:113 - System.NullReferenceException: Object reference not set to an instance of an object.
-  ERROR:    at CardBaseComponent.RenderCore() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 122
-  ERROR:    at Card.RenderCore() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/Card.cs:line 43
-  ERROR:    at CardBaseComponent.Render() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 117
-  ERROR:    at CardBaseComponent.set_SleeveInfo(SleeveInfo value) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 69
-  ERROR:    at CardContainer.Render() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Components/CardContainer.cs:line 143
-  ERROR:    at CardContainer.set_CardScale(Single value) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Components/CardContainer.cs:line 31
-  ERROR:    at CardLine.ConfigureContainer(CardContainer container) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Zones/CardLine.cs:line 230
-  ERROR:    at CardLine.OnContainerChildEntered(Node node) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Zones/CardLine.cs:line 202
-  ERROR:    at Godot.Node.ChildEnteredTreeTrampoline(Object delegateObj, NativeVariantPtrArgs args, godot_variant& ret) in /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Generated/GodotObjects/Node.cs:line 2380
-  ERROR:    at Godot.DelegateUtils.InvokeWithVariantArgs(IntPtr delegateGCHandle, Void* trampoline, godot_variant** args, Int32 argc, godot_variant* outRet) in /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/DelegateUtils.cs:line 86
-  ERROR: /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/NativeInterop/ExceptionUtils.cs:113 - System.NullReferenceException: Object reference not set to an instance of an object.
-  ERROR:    at CardBaseComponent.RenderCore() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 122
-  ERROR:    at Card.RenderCore() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/Card.cs:line 43
-  ERROR:    at CardBaseComponent.Render() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 117
-  ERROR:    at CardBaseComponent.set_SleeveInfo(SleeveInfo value) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 69
-  ERROR:    at CardContainer.Render() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Components/CardContainer.cs:line 143
-  ERROR:    at CardContainer.OnChildEnteredTree(Node node) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Components/CardContainer.cs:line 216
-  ERROR:    at Godot.Node.ChildEnteredTreeTrampoline(Object delegateObj, NativeVariantPtrArgs args, godot_variant& ret) in /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Generated/GodotObjects/Node.cs:line 2380
-  ERROR:    at Godot.DelegateUtils.InvokeWithVariantArgs(IntPtr delegateGCHandle, Void* trampoline, godot_variant** args, Int32 argc, godot_variant* outRet) in /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/DelegateUtils.cs:line 86
-  ERROR: /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/NativeInterop/ExceptionUtils.cs:113 - System.NullReferenceException: Object reference not set to an instance of an object.
-  ERROR:    at CardBaseComponent.RenderCore() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 122
-  ERROR:    at Card.RenderCore() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/Card.cs:line 43
-  ERROR:    at CardBaseComponent.Render() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 117
-  ERROR:    at CardBaseComponent.set_SleeveInfo(SleeveInfo value) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 69
-  ERROR:    at CardContainer.Render() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Components/CardContainer.cs:line 143
-  ERROR:    at CardContainer.OnChildEnteredTree(Node node) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Components/CardContainer.cs:line 216
-  ERROR:    at Godot.Node.ChildEnteredTreeTrampoline(Object delegateObj, NativeVariantPtrArgs args, godot_variant& ret) in /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Generated/GodotObjects/Node.cs:line 2380
-  ERROR:    at Godot.DelegateUtils.InvokeWithVariantArgs(IntPtr delegateGCHandle, Void* trampoline, godot_variant** args, Int32 argc, godot_variant* outRet) in /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/DelegateUtils.cs:line 86
+E 0:10:08:078   void SessionLoop+<Run>d__0.MoveNext(): The game stopped in YuGiOhBattlePhase, turn 3: ArC.CardGames.Predefined.Common.SkillOptionCannotBeActivatedException: The chosen option Composite cannot be activated
+   at ArC.CardGames.Rules.SkillParts`3.ChooseOne.Execute(TContext context) in /media/rev/DATA/Users/Files/Works/Revya/ArC/ArC.CardGames/Base/Rules/SkillParts.cs:line 313
+   at ArC.CardGames.Rules.SkillParts`3.Discrete.Execute(TContext context) in /media/rev/DATA/Users/Files/Works/Revya/ArC/ArC.CardGames/Base/Rules/SkillParts.cs:line 132
+   at ArC.CardGames.YuGiOh.YuGiOhSkillService.Resolve(YuGiOhChain chain) in /media/rev/DATA/Users/Files/Works/Revya/ArC/ArC.CardGames.YuGiOh/Flow/YuGiOhSkillService.cs:line 252
+   at ArC.CardGames.YuGiOh.YuGiOhSkillService.OpenPriorityWindow(IYuGiOhPlayerInputProvider turnPlayer) in /media/rev/DATA/Users/Files/Works/Revya/ArC/ArC.CardGames.YuGiOh/Flow/YuGiOhSkillService.cs:line 62
+   at ArC.CardGames.YuGiOh.YuGiOhSkillService.OpenPriorityWindow(IYuGiOhPlayerInputProvider turnPlayer) in /media/rev/DATA/Users/Files/Works/Revya/ArC/ArC.CardGames.YuGiOh/Flow/YuGiOhSkillService.cs:line 68
+   at ArC.CardGames.YuGiOh.YuGiOhGameSession.ExecutePhaseCore() in /media/rev/DATA/Users/Files/Works/Revya/ArC/ArC.CardGames.YuGiOh/Rules/YuGiOhGameSession.cs:line 40
+   at ArC.CardGames.Rules.GameSession.ExecutePhase() in /media/rev/DATA/Users/Files/Works/Revya/ArC/ArC.CardGames/Base/Rules/GameSession.cs:line 130
+   at SessionLoop.Run(GameSession session, Presenter presenter) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Board/SessionLoop.cs:line 19
+  <C# Source>   SessionLoop.cs:19 @ void SessionLoop+<Run>d__0.MoveNext()
+  <Stack Trace> GD.cs:366 @ void Godot.GD.PushError(string)
+                SessionLoop.cs:19 @ void SessionLoop+<Run>d__0.MoveNext()
+                :0 @ void System.Threading.ExecutionContext.RunInternal(System.Threading.ExecutionContext, System.Threading.ContextCallback, object)
+                :0 @ void System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1+AsyncStateMachineBox`1.MoveNext(System.Threading.Thread)
+                :0 @ void System.Threading.Tasks.AwaitTaskContinuation.RunCallback(System.Threading.ContextCallback, object, System.Threading.Tasks.Task&)
+                :0 @ void System.Threading.Tasks.Task.RunContinuations(object)
+                :0 @ void System.Threading.Tasks.Task.FinishSlow(bool)
+                :0 @ bool System.Threading.Tasks.Task.TrySetException(object)
+                :0 @ void System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.SetException(System.Exception, System.Threading.Tasks.Task`1[TResult]&)
+                GameSession.cs:130 @ void ArC.CardGames.Rules.GameSession+<ExecutePhase>d__47.MoveNext()
+                :0 @ void System.Threading.ExecutionContext.RunInternal(System.Threading.ExecutionContext, System.Threading.ContextCallback, object)
+                :0 @ void System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1+AsyncStateMachineBox`1.MoveNext(System.Threading.Thread)
+                :0 @ void System.Threading.Tasks.AwaitTaskContinuation.RunCallback(System.Threading.ContextCallback, object, System.Threading.Tasks.Task&)
+                :0 @ void System.Threading.Tasks.Task.RunContinuations(object)
+                :0 @ void System.Threading.Tasks.Task.FinishSlow(bool)
+                :0 @ bool System.Threading.Tasks.Task.TrySetException(object)
+                :0 @ void System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.SetException(System.Exception, System.Threading.Tasks.Task`1[TResult]&)
+                YuGiOhGameSession.cs:40 @ void ArC.CardGames.YuGiOh.YuGiOhGameSession+<ExecutePhaseCore>d__9.MoveNext()
+                :0 @ void System.Threading.ExecutionContext.RunInternal(System.Threading.ExecutionContext, System.Threading.ContextCallback, object)
+                :0 @ void System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1+AsyncStateMachineBox`1.MoveNext(System.Threading.Thread)
+                :0 @ void System.Threading.Tasks.AwaitTaskContinuation.RunCallback(System.Threading.ContextCallback, object, System.Threading.Tasks.Task&)
+                :0 @ void System.Threading.Tasks.Task.RunContinuations(object)
+                :0 @ void System.Threading.Tasks.Task.FinishSlow(bool)
+                :0 @ bool System.Threading.Tasks.Task.TrySetException(object)
+                :0 @ void System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.SetException(System.Exception, System.Threading.Tasks.Task`1[TResult]&)
+                YuGiOhSkillService.cs:68 @ void ArC.CardGames.YuGiOh.YuGiOhSkillService+<OpenPriorityWindow>d__13.MoveNext()
+                :0 @ void System.Threading.ExecutionContext.RunInternal(System.Threading.ExecutionContext, System.Threading.ContextCallback, object)
+                :0 @ void System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1+AsyncStateMachineBox`1.MoveNext(System.Threading.Thread)
+                :0 @ void System.Threading.Tasks.AwaitTaskContinuation.RunCallback(System.Threading.ContextCallback, object, System.Threading.Tasks.Task&)
+                :0 @ void System.Threading.Tasks.Task.RunContinuations(object)
+                :0 @ void System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.SetExistingTaskResult(System.Threading.Tasks.Task`1[TResult], TResult)
+                :0 @ void System.Runtime.CompilerServices.AsyncValueTaskMethodBuilder.SetResult()
+                EventBus.cs:117 @ void ArC.CardGames.Flow.EventBus+HoldScope+<DisposeAsync>d__3.MoveNext()
+                :0 @ void System.Threading.ExecutionContext.RunInternal(System.Threading.ExecutionContext, System.Threading.ContextCallback, object)
+                :0 @ void System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1+AsyncStateMachineBox`1.MoveNext(System.Threading.Thread)
+                :0 @ void System.Threading.Tasks.AwaitTaskContinuation.RunCallback(System.Threading.ContextCallback, object, System.Threading.Tasks.Task&)
+                :0 @ void System.Threading.Tasks.Task.RunContinuations(object)
+                :0 @ void System.Runtime.CompilerServices.AsyncTaskMethodBuilder.SetResult()
+                EventBus.cs:132 @ void ArC.CardGames.Flow.EventBus+<InvokeSequentially>d__33.MoveNext()
+                :0 @ void System.Threading.ExecutionContext.RunInternal(System.Threading.ExecutionContext, System.Threading.ContextCallback, object)
+                :0 @ void System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1+AsyncStateMachineBox`1.MoveNext(System.Threading.Thread)
+                :0 @ void System.Threading.Tasks.AwaitTaskContinuation.RunCallback(System.Threading.ContextCallback, object, System.Threading.Tasks.Task&)
+                :0 @ void System.Threading.Tasks.Task.RunContinuations(object)
+                :0 @ void System.Runtime.CompilerServices.AsyncTaskMethodBuilder.SetResult()
+                YuGiOhSkillService.cs:325 @ void ArC.CardGames.YuGiOh.YuGiOhSkillService+<ResolveTriggers>d__22.MoveNext()
+                :0 @ void System.Threading.ExecutionContext.RunInternal(System.Threading.ExecutionContext, System.Threading.ContextCallback, object)
+                :0 @ void System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1+AsyncStateMachineBox`1.MoveNext(System.Threading.Thread)
+                :0 @ void System.Threading.Tasks.AwaitTaskContinuation.RunCallback(System.Threading.ContextCallback, object, System.Threading.Tasks.Task&)
+                :0 @ void System.Threading.Tasks.Task.RunContinuations(object)
+                :0 @ void System.Runtime.CompilerServices.AsyncTaskMethodBuilder.SetResult()
+                YuGiOhSkillService.cs:235 @ void ArC.CardGames.YuGiOh.YuGiOhSkillService+<OpenResponseWindow>d__19.MoveNext()
+                :0 @ void System.Threading.ExecutionContext.RunInternal(System.Threading.ExecutionContext, System.Threading.ContextCallback, object)
+                :0 @ void System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1+AsyncStateMachineBox`1.MoveNext(System.Threading.Thread)
+                :0 @ void System.Threading.Tasks.AwaitTaskContinuation.RunCallback(System.Threading.ContextCallback, object, System.Threading.Tasks.Task&)
+                :0 @ void System.Threading.Tasks.Task.RunContinuations(object)
+                :0 @ void System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.SetResult(TResult)
+                YuGiOhInputProvider.cs:131 @ void YuGiOhInputProvider+<Ask>d__42`1.MoveNext()
+                :0 @ void System.Threading.ExecutionContext.RunInternal(System.Threading.ExecutionContext, System.Threading.ContextCallback, object)
+                :0 @ void System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1+AsyncStateMachineBox`1.MoveNext(System.Threading.Thread)
+                :0 @ void System.Threading.Tasks.AwaitTaskContinuation.RunCallback(System.Threading.ContextCallback, object, System.Threading.Tasks.Task&)
+                :0 @ void System.Threading.Tasks.Task.RunContinuations(object)
+                :0 @ void System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.SetResult(TResult)
+                DefaultYuGiOhAnswers.cs:266 @ void DefaultYuGiOhAnswers+<SelectChainResponse>d__31.MoveNext()
+                :0 @ void System.Threading.ExecutionContext.RunInternal(System.Threading.ExecutionContext, System.Threading.ContextCallback, object)
+                :0 @ void System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1+AsyncStateMachineBox`1.MoveNext(System.Threading.Thread)
+                :0 @ void System.Threading.Tasks.AwaitTaskContinuation.RunCallback(System.Threading.ContextCallback, object, System.Threading.Tasks.Task&)
+                :0 @ void System.Threading.Tasks.Task.RunContinuations(object)
+                :0 @ bool System.Threading.Tasks.Task`1.TrySetResult(TResult)
+                :0 @ void System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.SetExistingTaskResult(System.Threading.Tasks.Task`1[TResult], TResult)
+                :0 @ void System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.SetResult(TResult)
+                Prompts.cs:103 @ void Prompts+<DragOutOfCardList>d__3`1.MoveNext()
+                :0 @ void System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1+AsyncStateMachineBox`1.ExecutionContextCallback(object)
+                :0 @ void System.Threading.ExecutionContext.RunInternal(System.Threading.ExecutionContext, System.Threading.ContextCallback, object)
+                :0 @ void System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1+AsyncStateMachineBox`1.MoveNext(System.Threading.Thread)
+                :0 @ void System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1+AsyncStateMachineBox`1.MoveNext()
+                :0 @ void System.Threading.Tasks.AwaitTaskContinuation.RunCallback(System.Threading.ContextCallback, object, System.Threading.Tasks.Task&)
+                :0 @ void System.Threading.Tasks.Task.RunContinuations(object)
+                :0 @ bool System.Threading.Tasks.Task`1.TrySetResult(TResult)
+                :0 @ bool System.Threading.Tasks.TaskCompletionSource`1.TrySetResult(TResult)
+                Prompts.cs:80 @ void Prompts+<>c__DisplayClass3_0`1.<DragOutOfCardList>b__3()
+                CardList.cs:66 @ void CardList.OnVisibilityChanged()
+                Callable.generics.cs:39 @ void Godot.Callable.<From>g__Trampoline|1_0(object, Godot.NativeInterop.NativeVariantPtrArgs, Godot.NativeInterop.godot_variant&)
+                DelegateUtils.cs:86 @ void Godot.DelegateUtils.InvokeWithVariantArgs(nint, System.Void*, Godot.NativeInterop.godot_variant**, int, Godot.NativeInterop.godot_variant*)
+                Godot.NativeInterop.NativeFuncs.generated.cs:380 @ void Godot.NativeInterop.NativeFuncs.godotsharp_method_bind_ptrcall(nint, nint, System.Void**, System.Void*)
+                NativeCalls.cs:51 @ void Godot.NativeCalls.godot_icall_0_3(nint, nint)
+                CanvasItem.cs:460 @ void Godot.CanvasItem.Hide()
+                CardList.cs:127 @ void CardList._GuiInput(Godot.InputEvent)
+                Control.cs:3411 @ bool Godot.Control.InvokeGodotClassMethod(Godot.NativeInterop.godot_string_name&, Godot.NativeInterop.NativeVariantPtrArgs, Godot.NativeInterop.godot_variant&)
+                CardList_ScriptMethods.generated.cs:168 @ bool CardList.InvokeGodotClassMethod(Godot.NativeInterop.godot_string_name&, Godot.NativeInterop.NativeVariantPtrArgs, Godot.NativeInterop.godot_variant&)
+                CSharpInstanceBridge.cs:24 @ Godot.NativeInterop.godot_bool Godot.Bridge.CSharpInstanceBridge.Call(nint, Godot.NativeInterop.godot_string_name*, Godot.NativeInterop.godot_variant**, int, Godot.NativeInterop.godot_variant_call_error*, Godot.NativeInterop.godot_variant*)
