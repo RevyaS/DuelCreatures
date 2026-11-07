@@ -10,7 +10,7 @@ public static class VanguardPresentationConfig
     public static BoardSide CheckReveal = BoardSide.Both;
     public static float CheckRevealHold = 0.4f;
 
-    // How long guards stay readable in the guard zone before the battle goes on
+    // How long each guard stays readable on the guardian circle before the battle goes on
     // (your own are placed by you, so by default only the opponent's hold)
     public static BoardSide GuardReveal = BoardSide.Opponent;
     public static float GuardRevealHold = 0.8f;
@@ -39,11 +39,7 @@ public static class VanguardPresentationConfig
         // [VanguardSfx.CriticalUp] = "res://Assets/Sfx/critical_up.ogg",
     };
 
-    // Border of intercepting units in the guard zone (they go back through Deselect, not to the hand)
-    public static Color InterceptOutline = new(0.25f, 0.85f, 0.35f);
 
-    // Card info: skills a unit got from effects, shown under its printed ones
-    public static Color GrantedSkillColor = new(0.55f, 0.8f, 1f);
 
     /// <summary>How each kind of Vanguard move looks and sounds on a board shown by <paramref name="driver"/>.</summary>
     public static ArcDriver ShowVanguardMoves(this ArcDriver driver) => driver
@@ -69,7 +65,12 @@ public static class VanguardPresentationConfig
         .Animate<RetiredBySkill>(VanguardMoves.ToDropZone)
         .Animate<PaidAsCost>(VanguardMoves.ToDropZone)
         .Animate<DiscardedBySkill>(VanguardMoves.ToDropZone)
-        .Animate<Healed>(VanguardMoves.ToDropZone);
+        .Animate<Healed>(VanguardMoves.ToDropZone)
+        // Held to be read: drive and damage checks, and the opponent's guards
+        .Hold<DriveChecked>(CheckRevealHold, CheckReveal)
+        .Hold<DamageChecked>(CheckRevealHold, CheckReveal)
+        .Hold<Guarded>(GuardRevealHold, GuardReveal)
+        .Hold<Intercepted>(GuardRevealHold, GuardReveal);
     // Drive checks into the hand, cards returned to the hand or deck: the shared hand and deck moves (ArcDriver's defaults)
 
     // Once, when a Vanguard board starts: its moves, sounds, and the card scene shared components use

@@ -45,8 +45,8 @@ Copy `Games/Vanguard/VanguardPresentationConfig.cs`.
   their own scene (Vanguard's show power and critical; YuGiOh uses the base `Card.tscn`).
 - `CardMove`s with their `Transition`s, and `SfxCue`s with their streams.
 - An extension like `ShowVanguardMoves(this ArcDriver driver)`: `driver.Animate<Called>(Moves.ToUnitCircle)
-  .Sound<Called>(Sfx.Call)` for each move reason. The most specific registered reason type wins. Moves to the hand
-  and the deck have defaults.
+  .Sound<Called>(Sfx.Call)` for each move reason, and `.Hold<DriveChecked>(seconds, sides)` for moves to read before
+  the game goes on. The most specific registered reason type wins. Moves to the hand and the deck have defaults.
 
 ## 2. Play area scene
 
@@ -246,15 +246,7 @@ These were found by building Vanguard after YuGiOh. They're ordered by how much 
 12. **Card details placement** differs (in the HUD for YuGiOh, an overlay for Vanguard). It's a layout choice, but
     `CardDetailsOverlay` could be the default so a game needs no decision.
 
-### Left over (step 8e and the plan's known issues)
+### Removed in step 8e
 
-- **Old Vanguard board (step 8e):**
-  - `VanguardBoard` (`.cs`, `.Components.cs`, `.StateHandling.cs`, `.tscn`);
-  - `VanguardPlayAreaComponent`, `UnitCircleComponent`, `DamageZoneComponent`, `DropZoneComponent`,
-    `TriggerZoneComponent`, `Board/Hand.tscn`, `VanguardHandComponent`, `IPlayAreaBindable`;
-  - `HUD/CardInfo`, the old `HUD/CardDetails`, and `DebugBoardRunner/Game.tscn` (still points at the old board).
-- **Shared code only the old board uses:** `IEventBusUtilizer`, `ICardSpaceBindable`, `HandComponent`,
-  `DeckComponent`.
-- **`SceneFactory`:** still used by `VanguardPresentationConfig` and the cards, so it isn't dead; check whether
-  `CardScenes.Create` can replace it.
-- **YuGiOh:** `YuGiOhFieldComponent.tscn` is no longer used.
+The old Vanguard board and the shared classes only it used are gone. The old board's reveal holds came back as
+`ArcDriver.Hold<TReason>(seconds, sides)`. `SceneFactory` stays: Vanguard's cards and `CardScenes.Create` use it.

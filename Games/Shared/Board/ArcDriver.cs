@@ -48,6 +48,7 @@ public sealed class ArcDriver : IDisposable
     readonly HashSet<Node> boundInCode = [];
     readonly Dictionary<Type, CardMove> moveAnimations = [];
     readonly Dictionary<Type, SfxCue> moveSounds = [];
+    readonly Dictionary<Type, (float Seconds, BoardSide Sides)> moveHolds = [];
     readonly Dictionary<BoardSide, PresentationContext> contexts = [];
     readonly BindingReport report = new();
     readonly List<IDisposable> subscriptions = [];
@@ -284,6 +285,18 @@ public sealed class ArcDriver : IDisposable
         return this;
     }
 
+    /// <summary>
+    /// Holds the board for <paramref name="seconds"/> once cards moved for <typeparamref name="TReason"/> have arrived,
+    /// so they can be read before the game goes on (e.g. a drive check), when the side that moved them is one of
+    /// <paramref name="sides"/> (e.g. only the opponent's guards: the player placed their own). Not an animation: it
+    /// holds even when animations are off.
+    /// </summary>
+    public ArcDriver Hold<TReason>(float seconds, BoardSide sides = BoardSide.Both) where TReason : IMoveReason
+    {
+        moveHolds[typeof(TReason)] = (seconds, sides);
+        return this;
+    }
+
     // The reason's own type, then its base types, then its interfaces
     private static bool TryFind<T>(Dictionary<Type, T> byReason, IMoveReason reason, out T found)
     {
@@ -343,6 +356,11 @@ public sealed class ArcDriver : IDisposable
         {
             var context = ContextFor(to?.Side ?? from?.Side ?? BoardSide.Both);
             context.Present(() => context.PlaySfx(cue));
+        }
+        if(TryFind(moveHolds, moved.Reason, out var hold) && hold.Seconds > 0
+            && areaSides.TryGetValue(moved.PlayArea, out var mover) && hold.Sides.Includes(mover))
+        {
+            ContextFor(mover).Present(() => Task.Delay(TimeSpan.FromSeconds(hold.Seconds)));
         }
     }
 
