@@ -80,6 +80,15 @@ public sealed class ArcDriver : IDisposable
     /// <summary>The node showing each play area (its scene instance on the board), e.g. to aim at a play area itself.</summary>
     public IReadOnlyDictionary<PlayAreaBase, Control> AreaViews => areaViews;
 
+    readonly Dictionary<PlayAreaBase, BoardSide> areaSides = new(ReferenceEqualityComparer.Instance);
+    /// <summary>Which side of the screen <paramref name="area"/> is on: player 1's is the Player side.</summary>
+    public BoardSide SideOf(PlayAreaBase area) => areaSides.TryGetValue(area, out var side)
+        ? side
+        : throw new InvalidOperationException($"No play area view shows this {area.GetType().Name}");
+
+    /// <summary>The play area whose view holds <paramref name="node"/>, if any (e.g. a label inside a play area scene).</summary>
+    public PlayAreaBase? AreaHolding(Node node) => areaViews.FirstOrDefault(view => view.Value.IsAncestorOf(node)).Key;
+
     /// <summary>The views shown, by zone.</summary>
     public IEnumerable<IZoneView> Views => shown.Values.Select(entry => entry.View);
 
@@ -135,6 +144,7 @@ public sealed class ArcDriver : IDisposable
         foreach(var (areaName, area) in PropertiesOf<TPlayArea>(board))
         {
             var side = ReferenceEquals(area, board.Player1Area) ? BoardSide.Player : BoardSide.Opponent;
+            areaSides[area] = side;
             if(!boardNodes.TryGetValue(areaName, out var areaNode))
             {
                 report.Add(new MissingView(boardPath, areaName, area.GetType()));

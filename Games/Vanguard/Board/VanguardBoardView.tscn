@@ -11,8 +11,7 @@
 [ext_resource type="PackedScene" path="res://Games/Shared/Audio/SfxPlayer.tscn" id="9_sfx"]
 [ext_resource type="Script" path="res://Games/Vanguard/Board/VanguardBattleLines.cs" id="10_lines"]
 [ext_resource type="Script" path="res://Games/Vanguard/Board/Zones/GuardianShields.cs" id="11_shields"]
-[ext_resource type="Script" uid="uid://b3srrk0amiv8t" path="res://Games/Shared/HUD/PhaseLabel.cs" id="12_phase"]
-[ext_resource type="Script" uid="uid://bkbpnqxh1mba7" path="res://Games/Shared/HUD/TurnLabel.cs" id="13_turn"]
+[ext_resource type="Script" uid="uid://wpkwmk8pl57r" path="res://Games/Shared/Input/BoardButtonView.cs" id="13_button"]
 
 [node name="VanguardBoardView" type="Control"]
 layout_mode = 3
@@ -78,27 +77,6 @@ theme_override_constants/margin_bottom = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/CenterArea/MarginContainer"]
 layout_mode = 2
-
-[node name="TurnLabel" type="Label" parent="VBoxContainer/CenterArea/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-mouse_filter = 2
-theme_override_font_sizes/font_size = 32
-text = "Opponent Turn"
-clip_text = true
-script = ExtResource("13_turn")
-
-[node name="PhaseLabel" type="Label" parent="VBoxContainer/CenterArea/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-mouse_filter = 2
-theme_override_font_sizes/font_size = 32
-text = "Current phase"
-horizontal_alignment = 2
-clip_text = true
-script = ExtResource("12_phase")
 
 [node name="Player1Area" parent="VBoxContainer" instance=ExtResource("2_d5ajh")]
 unique_name_in_owner = true
@@ -187,6 +165,21 @@ pivot_offset = Vector2(375, 75)
 size_flags_vertical = 3
 texture = ExtResource("5_te0hm")
 expand_mode = 2
+
+[node name="NextPhase" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 15.0
+offset_top = -40.0
+offset_right = 185.0
+offset_bottom = 40.0
+grow_vertical = 2
+theme_override_font_sizes/font_size = 28
+disabled = true
+text = "Next Phase"
+script = ExtResource("13_button")
 
 [node name="GuardZone" parent="." instance=ExtResource("7_nmdui")]
 unique_name_in_owner = true
