@@ -61,6 +61,12 @@ public interface IZoneView : ICardLocation
     /// </summary>
     void Resync();
 
+    /// <summary>
+    /// Shows it's the target a drag would be let go on (e.g. the unit an attack would hit), while that drag lasts. Zones
+    /// that are never aimed at show nothing.
+    /// </summary>
+    void SetTargeted(bool targeted) {}
+
     /// <summary>A drag from it started, moved, ended or was cancelled, at the global pointer position (see <see cref="SetGestures"/>).</summary>
     event Action<IZoneView, AimStep, Godot.Vector2>? Aiming;
 }

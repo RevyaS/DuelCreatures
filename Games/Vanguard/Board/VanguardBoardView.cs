@@ -18,6 +18,9 @@ public partial class VanguardBoardView : Control, IProvide<VanguardGameSession>,
     VanguardPlayAreaView Player1Area = null!;
     VanguardPlayAreaView Player2Area = null!;
 
+    /// <summary>The player's play area scene (e.g. where the input hint is: under its phase label).</summary>
+    public VanguardPlayAreaView PlayerArea => Player1Area;
+
     VanguardGameSession? session;
     PresentationContext? presentation;
     ArcDriver? driver;

@@ -24,11 +24,14 @@ public partial class CardSlot : CardArea, IZoneView, IBindable<ISingleSpace>
     [Export] public Color HighlightColor { get; set; } = new(1f, 0.85f, 0.2f);
     [Export] public float HighlightWidth { get; set; } = 4;
     [Export] public Color CardHighlightColor { get; set; } = new(1f, 0.85f, 0.2f);
+    /// <summary>The block over the slot while a drag would be let go on it (SetTargeted).</summary>
+    [Export] public Color TargetColor { get; set; } = new(1f, 0.85f, 0.2f, 0.45f);
     /// <summary>How far and how fast a flick must be to count as a swipe (GestureDetector).</summary>
     [Export] public float SwipeDistance { get; set; } = 60;
     [Export] public float SwipeMaxTime { get; set; } = 0.35f;
 
     ReferenceRect? highlight;
+    ColorRect? targetBlock;
     Func<CardBase, bool>? highlightedCards;
     GestureDetector? gestures;
     DropChoicesOverlay? drops;
@@ -98,6 +101,21 @@ public partial class CardSlot : CardArea, IZoneView, IBindable<ISingleSpace>
     {
         movingCard = null;
         end();
+    }
+
+    public void SetTargeted(bool targeted) => ShowTargeted(targeted);
+
+    /// <summary>How the slot shows it's targeted: a yellow block over it. A zone with its own target marks overrides this.</summary>
+    protected virtual void ShowTargeted(bool targeted)
+    {
+        if(targetBlock is null)
+        {
+            if(!targeted) return;
+            targetBlock = new ColorRect { Name = "Target", Color = TargetColor, MouseFilter = MouseFilterEnum.Ignore };
+            AddChild(targetBlock);
+            targetBlock.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+        }
+        targetBlock.Visible = targeted;
     }
 
     public void SetGestures(bool swipes, bool aims)

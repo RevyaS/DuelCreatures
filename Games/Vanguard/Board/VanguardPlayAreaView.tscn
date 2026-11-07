@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/StackZone.tscn" id="9_q3sux"]
 [ext_resource type="Script" path="res://Games/Shared/Components/QuarterTurnContainer.cs" id="11_qtcnt"]
 [ext_resource type="Script" uid="uid://b3srrk0amiv8t" path="res://Games/Shared/HUD/PhaseLabel.cs" id="12_phase"]
+[ext_resource type="Script" uid="uid://bdhn0i6xtl5f6" path="res://Games/Shared/Input/InputHintLabel.cs" id="13_hint"]
 
 [node name="VanguardPlayAreaView" type="Control" node_paths=PackedStringArray("TurnedWithArea")]
 custom_minimum_size = Vector2(1080, 860)
@@ -66,13 +67,18 @@ Circle = ExtResource("3_45uic")
 
 [node name="PhaseTurn" type="Container" parent="Sections/MarginContainer2/ExtraCircles"]
 layout_mode = 2
-custom_minimum_size = Vector2(400, 50)
+custom_minimum_size = Vector2(720, 150)
 size_flags_horizontal = 4
 size_flags_vertical = 4
 mouse_filter = 2
 script = ExtResource("11_qtcnt")
 
-[node name="PhaseLabel" type="Label" parent="Sections/MarginContainer2/ExtraCircles/PhaseTurn"]
+[node name="PhaseAndHint" type="VBoxContainer" parent="Sections/MarginContainer2/ExtraCircles/PhaseTurn"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="PhaseLabel" type="Label" parent="Sections/MarginContainer2/ExtraCircles/PhaseTurn/PhaseAndHint"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_font_sizes/font_size = 32
@@ -81,6 +87,16 @@ horizontal_alignment = 1
 clip_text = true
 script = ExtResource("12_phase")
 OnlyOnItsAreasTurn = true
+
+[node name="InputHint" type="Label" parent="Sections/MarginContainer2/ExtraCircles/PhaseTurn/PhaseAndHint"]
+custom_minimum_size = Vector2(720, 90)
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 26
+horizontal_alignment = 1
+autowrap_mode = 3
+max_lines_visible = 3
+script = ExtResource("13_hint")
 
 [node name="Right" type="HBoxContainer" parent="Sections/MarginContainer2/ExtraCircles"]
 layout_mode = 2

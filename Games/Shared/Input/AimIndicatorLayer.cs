@@ -2,13 +2,17 @@ using Godot;
 
 /// <summary>
 /// Where the line of a drag from a zone is drawn (e.g. an attack): an <see cref="IndicatorScene"/> (an AttackIndicator)
-/// stretched from the zone to the pointer, or to the target it would be let go on. Put it over the board in the HUD,
-/// full size; it never takes the mouse.
+/// from the zone to the target it would be let go on, once there is one. Put it over the board in the HUD, full size;
+/// it never takes the mouse.
 /// </summary>
 public partial class AimIndicatorLayer : Control
 {
     /// <summary>The line drawn: an AttackIndicator scene (a Path2D whose curve is set from start to end).</summary>
     [Export] public PackedScene? IndicatorScene { get; set; }
+    /// <summary>The size of the line's arrows (the scene's own is too big to see the cards under it).</summary>
+    [Export] public float TextureScale { get; set; } = 0.4f;
+    /// <summary>How fast the line's arrows move along it (progress per second).</summary>
+    [Export] public float Speed { get; set; } = 1.6f;
 
     AttackIndicator? line;
     AttackIndicator? secondLine;
@@ -48,6 +52,8 @@ public partial class AimIndicatorLayer : Control
             indicator.Position = Vector2.Zero;
             // Its own curve, not the scene's shared one
             indicator.Curve = (Curve2D)indicator.Curve.Duplicate();
+            indicator.TextureScale = TextureScale;
+            indicator.Speed = Speed;
         }
         var toLocal = GetGlobalTransform().AffineInverse();
         indicator.Curve.ClearPoints();

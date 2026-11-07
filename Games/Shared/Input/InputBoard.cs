@@ -87,15 +87,19 @@ public sealed class InputBoard
     #region Aiming
     // Whether the drag in progress passed over the zone the scope aims through (InputScope.Aim's via)
     bool passedVia;
+    // The zone the drag in progress would be let go on, shown as targeted
+    IZoneView? targeted;
 
-    // A drag from a zone: a line from it to the pointer, snapping to a target the current scope accepts; let go on one,
-    // it's an Aimed. Aiming through another zone (a boost): the line first reaches for that zone, and only once the
-    // pointer passed over it does a second line reach for the targets.
+    // A drag from a zone, toward a target the current scope accepts: only once the pointer is over one does a line join
+    // them and the target show it's targeted (SetTargeted); let go there, it's an Aimed. Let go anywhere else (nothing
+    // targeted), nothing happens. Aiming through another zone (a boost): once the pointer passed over that zone, a
+    // line joins the two, and a second one joins it to the target.
     private void OnAiming(IZoneView from, AimStep step, Vector2 pointer)
     {
         if(from.Space is not { } fromZone || Current is not { } scope || !scope.CanAimFrom(fromZone))
         {
             AimLine?.HideLine();
+            Target(null);
             return;
         }
 
@@ -107,27 +111,43 @@ public sealed class InputBoard
         var target = aimingTargets ? TargetAt(fromZone, pointer, via) : null;
         var accepted = target is not null && scope.CanAim(fromZone, target) ? target : null;
         var start = CenterOf((Control)from);
-        var end = accepted is null ? pointer : CenterOf(ControlOf(accepted));
         switch(step)
         {
             case AimStep.Start:
             case AimStep.Move:
-                if(via is null) AimLine?.ShowLine(start, end);
-                else if(!passedVia) AimLine?.ShowLine(start, pointer);
+                Target(accepted is ZoneTarget zone ? ViewOf(zone.Zone) : null);
+                var end = accepted is null ? (Vector2?)null : CenterOf(ControlOf(accepted));
+                if(via is null)
+                {
+                    if(end is { } at) AimLine?.ShowLine(start, at);
+                    else AimLine?.HideLine();
+                }
+                else if(!passedVia) AimLine?.HideLine();
                 else
                 {
                     var through = CenterOf((Control)ViewOf(via));
-                    AimLine?.ShowLines((start, through), (through, end));
+                    if(end is { } at) AimLine?.ShowLines((start, through), (through, at));
+                    else AimLine?.ShowLine(start, through);
                 }
                 break;
             case AimStep.End:
                 AimLine?.HideLine();
+                Target(null);
                 if(accepted is not null) Gestures.Publish(new Aimed(fromZone, accepted, via));
                 break;
             case AimStep.Cancel:
                 AimLine?.HideLine();
+                Target(null);
                 break;
         }
+    }
+
+    private void Target(IZoneView? view)
+    {
+        if(ReferenceEquals(view, targeted)) return;
+        targeted?.SetTargeted(false);
+        targeted = view;
+        targeted?.SetTargeted(true);
     }
 
     // A zone under the pointer first (not the ones aimed from or through), else a play area

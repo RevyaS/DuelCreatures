@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://Games/Vanguard/Board/Zones/UnitCircleZone.cs" id="1_zone"]
 [ext_resource type="Script" uid="uid://d0xdsvmtayatq" path="res://Games/Shared/Components/CardRotationContainer.cs" id="2_rotation"]
 [ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Games/Shared/Cards/Card.tscn" id="3_card"]
 [ext_resource type="Script" path="res://Games/Vanguard/Board/Zones/UnitStats.cs" id="4_stats"]
+[ext_resource type="Texture2D" uid="uid://5xkkafu44j3" path="res://Assets/Board/UnitCircle/fight@card_effect_arrow.png" id="5_arrow"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_circle"]
 
@@ -43,3 +44,54 @@ scale = Vector2(0.45, 0.45)
 
 [node name="Stats" type="Node" parent="."]
 script = ExtResource("4_stats")
+
+[node name="TargetArrows" type="Control" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+mouse_filter = 2
+
+[node name="TopArrow" type="TextureRect" parent="TargetArrows"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -29.0
+offset_top = -41.0
+offset_right = 29.0
+grow_horizontal = 2
+mouse_filter = 2
+texture = ExtResource("5_arrow")
+
+[node name="LeftArrow" type="TextureRect" parent="TargetArrows"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -19.5
+offset_right = 8.0
+offset_bottom = 21.5
+grow_vertical = 2
+rotation = -1.5707964
+pivot_offset = Vector2(29, 20.5)
+mouse_filter = 2
+texture = ExtResource("5_arrow")
+
+[node name="RightArrow" type="TextureRect" parent="TargetArrows"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -8.0
+offset_top = -20.5
+offset_right = 50.0
+offset_bottom = 20.5
+grow_horizontal = 0
+grow_vertical = 2
+rotation = 1.5707964
+pivot_offset = Vector2(29, 20.5)
+mouse_filter = 2
+texture = ExtResource("5_arrow")

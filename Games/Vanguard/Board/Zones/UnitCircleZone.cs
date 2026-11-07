@@ -8,6 +8,7 @@ using Godot;
 public partial class UnitCircleZone : CardBox
 {
     TextureRect? circleTexture, iconTexture;
+    Control? targetArrows;
 
     private Texture2D? _circle;
     [Export]
@@ -49,7 +50,14 @@ public partial class UnitCircleZone : CardBox
     {
         circleTexture = GetNode<TextureRect>("%CircleTexture");
         iconTexture = GetNode<TextureRect>("%IconTexture");
+        targetArrows = GetNode<Control>("%TargetArrows");
         base._Ready();
+    }
+
+    // Three arrows pointing at the unit: the attack would hit it
+    protected override void ShowTargeted(bool targeted)
+    {
+        if(targetArrows is not null) targetArrows.Visible = targeted;
     }
 
     protected override void AppearanceChanged()

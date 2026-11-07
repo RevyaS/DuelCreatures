@@ -67,9 +67,10 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
         CardListComponent.LetThrough(CardDetails.Details);
         // Card flights draw above the board and below the HUD (see the scene)
         Presenter.Flights = GetNode<CardFlightLayer>("%CardFlights");
-        // The HUD's buttons and hint, wherever they are in the scene (the board holds them)
+        // The HUD's buttons, wherever they are in the scene (the board holds them); the hint is the player's play area's
+        // (each play area scene has one under its phase label)
         inputBoard = new(Activations, Descendants(this).OfType<BoardButtonView>(),
-            Descendants(this).OfType<InputHintLabel>().FirstOrDefault(), Descendants(this).OfType<AimIndicatorLayer>().FirstOrDefault());
+            Descendants(board.PlayerArea).OfType<InputHintLabel>().FirstOrDefault(), Descendants(this).OfType<AimIndicatorLayer>().FirstOrDefault());
         // A skill activated from the details: they close, the skill goes on on the board
         inputBoard.Gestures.Subscribe<SkillActivated>(_ => CardDetails.Hide());
     }
