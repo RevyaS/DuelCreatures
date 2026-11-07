@@ -1,0 +1,47 @@
+Editor errors when opening Sessions:
+
+  ERROR:    at CardBaseComponent.set_SleeveInfo(SleeveInfo value) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 69
+  ERROR:    at CardContainer.Render() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Components/CardContainer.cs:line 143
+  ERROR:    at CardContainer.set_CardScale(Single value) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Components/CardContainer.cs:line 31
+  ERROR:    at CardLine.ConfigureContainer(CardContainer container) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Zones/CardLine.cs:line 230
+  ERROR:    at CardLine.OnContainerChildEntered(Node node) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Zones/CardLine.cs:line 202
+  ERROR:    at Godot.Node.ChildEnteredTreeTrampoline(Object delegateObj, NativeVariantPtrArgs args, godot_variant& ret) in /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Generated/GodotObjects/Node.cs:line 2380
+  ERROR:    at Godot.DelegateUtils.InvokeWithVariantArgs(IntPtr delegateGCHandle, Void* trampoline, godot_variant** args, Int32 argc, godot_variant* outRet) in /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/DelegateUtils.cs:line 86
+  ERROR: /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/NativeInterop/ExceptionUtils.cs:113 - System.NullReferenceException: Object reference not set to an instance of an object.
+  ERROR:    at CardBaseComponent.RenderCore() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 122
+  ERROR:    at Card.RenderCore() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/Card.cs:line 43
+  ERROR:    at CardBaseComponent.Render() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 117
+  ERROR:    at CardBaseComponent.set_SleeveInfo(SleeveInfo value) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 69
+  ERROR:    at CardContainer.Render() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Components/CardContainer.cs:line 143
+  ERROR:    at CardContainer.OnChildEnteredTree(Node node) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Components/CardContainer.cs:line 216
+  ERROR:    at Godot.Node.ChildEnteredTreeTrampoline(Object delegateObj, NativeVariantPtrArgs args, godot_variant& ret) in /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Generated/GodotObjects/Node.cs:line 2380
+  ERROR:    at Godot.DelegateUtils.InvokeWithVariantArgs(IntPtr delegateGCHandle, Void* trampoline, godot_variant** args, Int32 argc, godot_variant* outRet) in /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/DelegateUtils.cs:line 86
+  ERROR: /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/NativeInterop/ExceptionUtils.cs:113 - System.NullReferenceException: Object reference not set to an instance of an object.
+  ERROR:    at CardBaseComponent.RenderCore() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 122
+  ERROR:    at Card.RenderCore() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/Card.cs:line 43
+  ERROR:    at CardBaseComponent.Render() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 117
+  ERROR:    at CardBaseComponent.set_SleeveInfo(SleeveInfo value) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 69
+  ERROR:    at CardContainer.Render() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Components/CardContainer.cs:line 143
+  ERROR:    at CardContainer.set_CardScale(Single value) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Components/CardContainer.cs:line 31
+  ERROR:    at CardLine.ConfigureContainer(CardContainer container) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Zones/CardLine.cs:line 230
+  ERROR:    at CardLine.OnContainerChildEntered(Node node) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Zones/CardLine.cs:line 202
+  ERROR:    at Godot.Node.ChildEnteredTreeTrampoline(Object delegateObj, NativeVariantPtrArgs args, godot_variant& ret) in /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Generated/GodotObjects/Node.cs:line 2380
+  ERROR:    at Godot.DelegateUtils.InvokeWithVariantArgs(IntPtr delegateGCHandle, Void* trampoline, godot_variant** args, Int32 argc, godot_variant* outRet) in /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/DelegateUtils.cs:line 86
+  ERROR: /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/NativeInterop/ExceptionUtils.cs:113 - System.NullReferenceException: Object reference not set to an instance of an object.
+  ERROR:    at CardBaseComponent.RenderCore() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 122
+  ERROR:    at Card.RenderCore() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/Card.cs:line 43
+  ERROR:    at CardBaseComponent.Render() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 117
+  ERROR:    at CardBaseComponent.set_SleeveInfo(SleeveInfo value) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 69
+  ERROR:    at CardContainer.Render() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Components/CardContainer.cs:line 143
+  ERROR:    at CardContainer.OnChildEnteredTree(Node node) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Components/CardContainer.cs:line 216
+  ERROR:    at Godot.Node.ChildEnteredTreeTrampoline(Object delegateObj, NativeVariantPtrArgs args, godot_variant& ret) in /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Generated/GodotObjects/Node.cs:line 2380
+  ERROR:    at Godot.DelegateUtils.InvokeWithVariantArgs(IntPtr delegateGCHandle, Void* trampoline, godot_variant** args, Int32 argc, godot_variant* outRet) in /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/DelegateUtils.cs:line 86
+  ERROR: /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/NativeInterop/ExceptionUtils.cs:113 - System.NullReferenceException: Object reference not set to an instance of an object.
+  ERROR:    at CardBaseComponent.RenderCore() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 122
+  ERROR:    at Card.RenderCore() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/Card.cs:line 43
+  ERROR:    at CardBaseComponent.Render() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 117
+  ERROR:    at CardBaseComponent.set_SleeveInfo(SleeveInfo value) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Cards/CardBaseComponent.cs:line 69
+  ERROR:    at CardContainer.Render() in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Components/CardContainer.cs:line 143
+  ERROR:    at CardContainer.OnChildEnteredTree(Node node) in /media/rev/DATA/Users/Files/Works/Revya/() H/Duel Maidens/Arc Engine based/DuelCreatures/Games/Shared/Components/CardContainer.cs:line 216
+  ERROR:    at Godot.Node.ChildEnteredTreeTrampoline(Object delegateObj, NativeVariantPtrArgs args, godot_variant& ret) in /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Generated/GodotObjects/Node.cs:line 2380
+  ERROR:    at Godot.DelegateUtils.InvokeWithVariantArgs(IntPtr delegateGCHandle, Void* trampoline, godot_variant** args, Int32 argc, godot_variant* outRet) in /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/DelegateUtils.cs:line 86
