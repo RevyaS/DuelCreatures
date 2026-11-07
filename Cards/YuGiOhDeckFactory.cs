@@ -39,7 +39,7 @@ public static class YuGiOhDeckFactory
         .AddCards(Generic.GhostOgreAndSnowRabbit, 1)
         
         // XYZ Monsters
-        .AddCards(Exosister.ExosisterMagnifica, 2)
+        .AddCards(Exosister.ExosistersMagnifica, 2)
         .AddCards(Exosister.ExosisterMikailis, 3)
         .AddCards(Exosister.ExosisterKaspitell, 2)
         .AddCards(Exosister.ExosisterAsophiel, 1)

@@ -53,5 +53,8 @@ public partial class CardGameStyle : Resource
     public static string ArtFileName(string cardName) => cardName.Replace(" ", "")
         .Replace(",", "")
         .Replace(".", "")
+        .Replace("&", "")
+        .Replace("-", "")
+        .Replace("\"", "")
         .Replace("'", "");
 }
