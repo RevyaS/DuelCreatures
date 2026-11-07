@@ -45,6 +45,33 @@ public static class VanguardPresentationConfig
     // Card info: skills a unit got from effects, shown under its printed ones
     public static Color GrantedSkillColor = new(0.55f, 0.8f, 1f);
 
+    /// <summary>How each kind of Vanguard move looks and sounds on a board shown by <paramref name="driver"/>.</summary>
+    public static ArcDriver ShowVanguardMoves(this ArcDriver driver) => driver
+        // Onto the circles
+        .Animate<Rode>(VanguardMoves.ToUnitCircle).Sound<Rode>(VanguardSfx.Ride)
+        .Animate<SuperiorRode>(VanguardMoves.ToUnitCircle).Sound<SuperiorRode>(VanguardSfx.Ride)
+        .Animate<Called>(VanguardMoves.ToUnitCircle).Sound<Called>(VanguardSfx.Call)
+        .Animate<SuperiorCalled>(VanguardMoves.ToUnitCircle).Sound<SuperiorCalled>(VanguardSfx.Call)
+        .Animate<Swapped>(VanguardMoves.ToUnitCircle)
+        // Into the soul
+        .Animate<RodeUpon>(VanguardMoves.ToSoul)
+        .Animate<SoulCharged>(VanguardMoves.ToSoul)
+        // Battle
+        .Animate<Guarded>(VanguardMoves.ToGuardZone)
+        .Animate<Intercepted>(VanguardMoves.ToGuardZone)
+        .Animate<GuardFinished>(VanguardMoves.GuardToDropZone)
+        .Animate<DriveChecked>(VanguardMoves.DeckToTriggerZone)
+        .Animate<DamageChecked>(VanguardMoves.DeckToTriggerZone)
+        .Animate<TookDamage>(VanguardMoves.TriggerToDamage)
+        // Into the drop zone
+        .Animate<Overcalled>(VanguardMoves.ToDropZone)
+        .Animate<DefeatedInBattle>(VanguardMoves.ToDropZone)
+        .Animate<RetiredBySkill>(VanguardMoves.ToDropZone)
+        .Animate<PaidAsCost>(VanguardMoves.ToDropZone)
+        .Animate<DiscardedBySkill>(VanguardMoves.ToDropZone)
+        .Animate<Healed>(VanguardMoves.ToDropZone);
+    // Drive checks into the hand, cards returned to the hand or deck: the shared hand and deck moves (ArcDriver's defaults)
+
     // Once, when a Vanguard board starts: its moves, sounds, and the card scene shared components use
     public static void Register()
     {

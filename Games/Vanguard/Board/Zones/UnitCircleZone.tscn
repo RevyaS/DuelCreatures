@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://Games/Vanguard/Board/Zones/UnitCircleZone.cs" id="1_zone"]
+[ext_resource type="Script" uid="uid://d0xdsvmtayatq" path="res://Games/Shared/Components/CardRotationContainer.cs" id="2_rotation"]
+[ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Games/Shared/Cards/Card.tscn" id="3_card"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_circle"]
+
+[node name="UnitCircleZone" type="PanelContainer"]
+theme_override_styles/panel = SubResource("StyleBoxEmpty_circle")
+script = ExtResource("1_zone")
+
+[node name="CircleTexture" type="TextureRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+
+[node name="IconTexture" type="TextureRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="Container" type="Control" parent="MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("2_rotation")
+metadata/_custom_type_script = "uid://d0xdsvmtayatq"
+
+[node name="Card" parent="MarginContainer/Container" instance=ExtResource("3_card")]
+layout_mode = 1
+scale = Vector2(0.45, 0.45)

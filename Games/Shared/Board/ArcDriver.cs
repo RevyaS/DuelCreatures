@@ -28,6 +28,7 @@ public sealed record ZoneBoundTwice(string Path, string Name, Type ZoneType) : B
 /// var driver = new ArcDriver(session.EventBus, presenter, sfx);
 /// driver.Bind(PlayerHand, board.Player1Area.Hand, BoardSide.Player);   // views outside the naming convention
 /// driver.BindBoard(this, board, area => [ area.PendingMaterials ]);   // everything else, by name; hidden zones listed
+/// driver.Animate&lt;Called&gt;(MyMoves.ToCircle).Sound&lt;Called&gt;(MySfx.Call);  // how moves look and sound, by reason
 /// driver.Start();                                                      // fails listing every binding problem
 /// </code>
 /// Naming: the board scene's unique nodes Player1Area and Player2Area are the play areas (their scene instances hold
@@ -46,6 +47,7 @@ public sealed class ArcDriver : IDisposable
     readonly Dictionary<ICardSpace, Shown> shown = new(ReferenceEqualityComparer.Instance);
     readonly HashSet<Node> boundInCode = [];
     readonly Dictionary<Type, CardMove> moveAnimations = [];
+    readonly Dictionary<Type, SfxCue> moveSounds = [];
     readonly Dictionary<BoardSide, PresentationContext> contexts = [];
     readonly BindingReport report = new();
     readonly List<IDisposable> subscriptions = [];
@@ -256,17 +258,34 @@ public sealed class ArcDriver : IDisposable
         return this;
     }
 
-    private CardMove MoveFor(IMoveReason reason, ICardSpace to)
+    /// <summary>
+    /// Plays <paramref name="cue"/> when cards moved for <typeparamref name="TReason"/> (or a reason deriving from it)
+    /// have arrived, e.g. a ride's sound once the new vanguard is on its circle. The most specific registered reason wins.
+    /// </summary>
+    public ArcDriver Sound<TReason>(SfxCue cue) where TReason : IMoveReason
     {
-        // The reason's own type, then its base types, then its interfaces
+        moveSounds[typeof(TReason)] = cue;
+        return this;
+    }
+
+    // The reason's own type, then its base types, then its interfaces
+    private static bool TryFind<T>(Dictionary<Type, T> byReason, IMoveReason reason, out T found)
+    {
         for(var type = reason.GetType(); type is not null; type = type.BaseType)
         {
-            if(moveAnimations.TryGetValue(type, out var move)) return move;
+            if(byReason.TryGetValue(type, out found!)) return true;
         }
         foreach(var type in reason.GetType().GetInterfaces())
         {
-            if(moveAnimations.TryGetValue(type, out var move)) return move;
+            if(byReason.TryGetValue(type, out found!)) return true;
         }
+        found = default!;
+        return false;
+    }
+
+    private CardMove MoveFor(IMoveReason reason, ICardSpace to)
+    {
+        if(TryFind(moveAnimations, reason, out var move)) return move;
         return to switch
         {
             Hand => CardMoves.ToHand,
@@ -304,6 +323,11 @@ public sealed class ArcDriver : IDisposable
         var to = shown.GetValueOrDefault(moved.To);
         if(from is not null) Apply(from, new ZoneCardsLeft(moved.Cards, to?.View, ZoneSnapshot.Of(moved.From)));
         if(to is not null) Apply(to, new ZoneCardsArrived(moved.Cards, from?.View, MoveFor(moved.Reason, moved.To), ZoneSnapshot.Of(moved.To)));
+        if(TryFind(moveSounds, moved.Reason, out var cue))
+        {
+            var context = ContextFor(to?.Side ?? from?.Side ?? BoardSide.Both);
+            context.Present(() => context.PlaySfx(cue));
+        }
     }
 
     private void OnCardTurned(CardTurned turned)

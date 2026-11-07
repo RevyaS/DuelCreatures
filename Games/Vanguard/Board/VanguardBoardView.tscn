@@ -1,0 +1,451 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Games/Vanguard/Board/VanguardBoardView.cs" id="1_024yw"]
+[ext_resource type="PackedScene" path="res://Games/Vanguard/Board/VanguardPlayAreaView.tscn" id="2_d5ajh"]
+[ext_resource type="Resource" uid="uid://cprca6flaorhc" path="res://Sleeves/VanguardDefaultSleeve.tres" id="3_8v54s"]
+[ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/HandZone.tscn" id="4_0sx56"]
+[ext_resource type="Texture2D" uid="uid://o1c8663jut1n" path="res://Assets/Board/fight_field@guardiancircle_base.png" id="5_te0hm"]
+[ext_resource type="Texture2D" uid="uid://dtsomuwryke03" path="res://Assets/Board/icon_GC.png" id="6_4us7w"]
+[ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/LineZone.tscn" id="7_nmdui"]
+[ext_resource type="PackedScene" uid="uid://bj6jrhfey56is" path="res://Games/Shared/Vfx/AttackIndicator.tscn" id="8_0i5bu"]
+[ext_resource type="PackedScene" path="res://Games/Shared/Audio/SfxPlayer.tscn" id="9_sfx"]
+
+[sub_resource type="Curve2D" id="Curve2D_6kkbp"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 327, 1561, 0, 0, 0, 0, 327, 594)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_rkmjv"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 231, 1440, 0, 0, 0, 0, 444, 473)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_i0c0l"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 260, 1443, 0, 0, 0, 0, 686, 476)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_y64o3"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 444, 1440, 0, 0, 0, 0, 231, 473)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_641ut"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 444, 1440, 0, 0, 0, 0, 444, 473)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_4phcx"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 657, 1440, 0, 0, 0, 0, 231, 473)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_qjlpy"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 657, 1440, 0, 0, 0, 0, 444, 473)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_wn2yo"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 657, 1440, 0, 0, 0, 0, 657, 473)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_x01yn"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 657, 473, 0, 0, 0, 0, 657, 1440)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_y2dlb"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 657, 473, 0, 0, 0, 0, 444, 1440)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_fvkba"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 686, 476, 0, 0, 0, 0, 260, 1443)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_k5obr"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 444, 473, 0, 0, 0, 0, 657, 1440)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_opmtm"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 444, 473, 0, 0, 0, 0, 444, 1440)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_0vgfe"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 444, 473, 0, 0, 0, 0, 231, 1440)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_y4gjc"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 231, 473, 0, 0, 0, 0, 657, 1440)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_wofod"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 231, 473, 0, 0, 0, 0, 444, 1440)
+}
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_bjcxn"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 327, 594, 0, 0, 0, 0, 327, 1561)
+}
+point_count = 2
+
+[node name="VanguardBoardView" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_024yw")
+metadata/_edit_vertical_guides_ = [263.0, 193.0, 444.0, 637.0, 327.0, 753.0, 540.0]
+metadata/_edit_horizontal_guides_ = [1465.0, 691.0, 594.0, 1561.0, 1768.0]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="Open" type="Control" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Control" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(1080, 860)
+layout_mode = 2
+
+[node name="Player2Area" parent="VBoxContainer/Control" instance=ExtResource("2_d5ajh")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -540.0
+offset_top = -430.0
+offset_right = 540.0
+offset_bottom = 430.0
+grow_horizontal = 2
+grow_vertical = 2
+rotation = 3.1415927
+pivot_offset = Vector2(540, 430)
+FlippedAppearance = true
+
+[node name="CenterArea" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/CenterArea"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/CenterArea/MarginContainer"]
+layout_mode = 2
+
+[node name="Player1Area" parent="VBoxContainer" instance=ExtResource("2_d5ajh")]
+unique_name_in_owner = true
+layout_mode = 2
+SleeveInfo = ExtResource("3_8v54s")
+
+[node name="Open2" type="Control" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Opp Hand" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 189.0
+grow_horizontal = 2
+
+[node name="OppHand" parent="Opp Hand" instance=ExtResource("4_0sx56")]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(1080, 0)
+HideCards = true
+Alignment = 1
+ShowBackground = false
+
+[node name="Control" type="Control" parent="."]
+custom_minimum_size = Vector2(700, 300)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -350.0
+offset_top = -150.0
+offset_right = 350.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GuardCircle" type="TextureRect" parent="Control"]
+custom_minimum_size = Vector2(700, 150)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -75.0
+offset_right = 75.0
+offset_bottom = 150.0
+grow_horizontal = 2
+rotation = 3.1415927
+pivot_offset = Vector2(350, 75)
+size_flags_vertical = 3
+texture = ExtResource("5_te0hm")
+expand_mode = 2
+
+[node name="Icon" type="TextureRect" parent="Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 32.0
+offset_bottom = 32.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("6_4us7w")
+
+[node name="GuardCircle2" type="TextureRect" parent="Control"]
+custom_minimum_size = Vector2(700, 150)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -350.0
+offset_top = -150.0
+offset_right = 350.0
+grow_horizontal = 2
+grow_vertical = 0
+pivot_offset = Vector2(375, 75)
+size_flags_vertical = 3
+texture = ExtResource("5_te0hm")
+expand_mode = 2
+
+[node name="GuardZone" parent="." instance=ExtResource("7_nmdui")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -279.5
+offset_top = -96.5
+offset_right = 279.5
+offset_bottom = 96.5
+grow_horizontal = 2
+grow_vertical = 2
+CardScale = 0.4
+Alignment = 1
+ShowBackground = false
+
+[node name="PlayerHand" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -189.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="PlayerHand" parent="PlayerHand" instance=ExtResource("4_0sx56")]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(1080, 0)
+Alignment = 1
+ShowBackground = false
+
+[node name="AttackLines" type="Control" parent="."]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PlayerLeftAttackRightLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
+unique_name_in_owner = true
+visible = false
+curve = SubResource("Curve2D_6kkbp")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="PlayerLeftAttackCenterLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(96, 121)
+curve = SubResource("Curve2D_rkmjv")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="PlayerLeftAttackLeftLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(67, 118)
+curve = SubResource("Curve2D_i0c0l")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="PlayerCenterAttackRightLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(96, 121)
+curve = SubResource("Curve2D_y64o3")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="PlayerCenterAttackCenterLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(96, 121)
+curve = SubResource("Curve2D_641ut")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="PlayerCenterAttackLeftLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(96, 121)
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="PlayerRightAttackRightLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(96, 121)
+curve = SubResource("Curve2D_4phcx")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="PlayerRightAttackCenterLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(96, 121)
+curve = SubResource("Curve2D_qjlpy")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="PlayerRightAttackLeftLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(96, 121)
+curve = SubResource("Curve2D_wn2yo")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="OppLeftAttackRightLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(96, 121)
+curve = SubResource("Curve2D_x01yn")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="OppLeftAttackCenterLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(96, 121)
+curve = SubResource("Curve2D_y2dlb")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="OppLeftAttackLeftLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(67, 118)
+curve = SubResource("Curve2D_fvkba")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="OppCenterAttackRightLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(96, 121)
+curve = SubResource("Curve2D_k5obr")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="OppCenterAttackCenterLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(96, 121)
+curve = SubResource("Curve2D_opmtm")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="OppCenterAttackLeftLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(96, 121)
+curve = SubResource("Curve2D_0vgfe")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="OppRightAttackRightLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(96, 121)
+curve = SubResource("Curve2D_y4gjc")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="OppRightAttackCenterLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
+unique_name_in_owner = true
+visible = false
+position = Vector2(96, 121)
+curve = SubResource("Curve2D_wofod")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="OppRightAttackLeftLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
+unique_name_in_owner = true
+visible = false
+curve = SubResource("Curve2D_bjcxn")
+Speed = 1.6
+TextureScale = 0.4
+
+[node name="SfxPlayer" parent="." instance=ExtResource("9_sfx")]
+unique_name_in_owner = true

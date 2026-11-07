@@ -47,7 +47,11 @@ public partial class CardArea : PanelContainer, ICardLocation
             Container.FlippedAppearance = FlippedAppearance;
             Container.CardScale = CardScale;
         }
+        AppearanceChanged();
     }
+
+    /// <summary>The card scale or flipped appearance changed (or the area got ready): for subclasses drawing more around the card.</summary>
+    protected virtual void AppearanceChanged() {}
 
     public Card? FindCardNode(CardBase card)
     {
