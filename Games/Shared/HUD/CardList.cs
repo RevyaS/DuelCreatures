@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ArC.CardGames.Components;
 using Godot;
 
@@ -73,6 +74,25 @@ public partial class CardList : Control, ICardDropTarget
 
     public void SetCardHovering(bool hovering)
     {
+    }
+
+    readonly List<Control> letThrough = [];
+
+    /// <summary>
+    /// Clicks on <paramref name="control"/> reach it while the list is open (e.g. the card details, to read and use
+    /// them), and don't count as a click outside the list (which closes it).
+    /// </summary>
+    public void LetThrough(Control control)
+    {
+        if(!letThrough.Contains(control)) letThrough.Add(control);
+    }
+
+    // The list covers the screen to catch clicks outside it, except over the controls it lets through
+    public override bool _HasPoint(Vector2 point)
+    {
+        var global = GetGlobalTransform() * point;
+        if(letThrough.Any(control => IsInstanceValid(control) && UnderPointer.Contains(control, global))) return false;
+        return new Rect2(Vector2.Zero, Size).HasPoint(point);
     }
 
     public override void _GuiInput(InputEvent e)

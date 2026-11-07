@@ -32,6 +32,7 @@ public sealed class DefaultYuGiOhAnswers(YuGiOhInput input) : IYuGiOhAnswers
         public static string Set = "Set";
         public static string Pass = "Don't respond";
         public static string Respond = "Respond to the chain? Drag an effect out, or close to pass";
+        public static string Chain = "The chain so far (resolves from the last)";
         public static string ActivateTrigger = "Activate this effect? Drag the card out, or close not to";
         public static string Yes = "Yes";
         public static string No = "No";
@@ -250,10 +251,15 @@ public sealed class DefaultYuGiOhAnswers(YuGiOhInput input) : IYuGiOhAnswers
         _ => Task.FromResult(true),
     };
 
-    // Drag a response out to activate it; close the list to pass
+    // Drag a response out to activate it; close the list to pass. The chain so far is shown above, card by card: pressing
+    // one shows the effect that link activated (reading it never closes the responses)
     public async Task<YuGiOhChainResponse?> SelectChainResponse(YuGiOhChain chain)
     {
         var responses = YuGiOhGameRules.ChainResponses(Player, chain);
+        using var shownChain = chain.Links.Count == 0
+            ? null
+            : Prompts.ShowToInspect(input.ChainView, Text.Chain, chain.Links.Select(link => ((CardBase)link.Card, link)).ToList(),
+                (card, link) => input.ShowDetails(new CardDetail(card) { Focus = link.Skill }));
         var (picked, response) = await PickEffect(Text.Respond, responses.Select(response => ((CardBase)response.Card, response)).ToList(), canDecline: true,
             focusOf: response => response.Skill);
         return picked ? response : null;

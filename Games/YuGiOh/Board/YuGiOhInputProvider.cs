@@ -26,6 +26,8 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
     CardList CardListComponent = null!;
     SelectFromCardList SelectFromCardListComponent = null!;
     CardDetailsView CardDetails = null!;
+    // The chain being responded to, shown beside the responses
+    CardListPanel ChainView = null!;
     ArcDriver? driver;
     // The zone whose cards CardListComponent is showing
     IZoneView? listedZone;
@@ -59,6 +61,11 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
             if(node.CurrentCard is { } card) CardDetails.Show(new CardDetail(card));
         };
         CardDetails = GetNode<CardDetailsView>($"%{nameof(CardDetails)}");
+        ChainView = GetNode<CardListPanel>($"%{nameof(ChainView)}");
+        ChainView.Hide();
+        // The details and the chain stay usable while a card list is open (reading them doesn't close it)
+        CardListComponent.LetThrough(CardDetails);
+        CardListComponent.LetThrough(ChainView);
         // Card flights draw above the board and below the HUD (see the scene)
         Presenter.Flights = GetNode<CardFlightLayer>("%CardFlights");
         // The HUD's buttons and hint, wherever they are in the scene
@@ -87,7 +94,7 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
         PlayArea = playArea;
         OpponentPlayArea = opponentPlayArea;
         SkillService = skillService;
-        input = new(this, inputBoard, this, SelectFromCardListComponent, CardListComponent, CardDetails.Show, CardDetails.SkillTextInterpreter());
+        input = new(this, inputBoard, this, SelectFromCardListComponent, CardListComponent, ChainView, CardDetails.Show, CardDetails.SkillTextInterpreter());
         answers = defaults = new(input);
     }
 

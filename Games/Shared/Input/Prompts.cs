@@ -102,6 +102,32 @@ public static class Prompts
         }
     }
 
+    /// <summary>
+    /// Shows <paramref name="items"/> as cards in <paramref name="panel"/>, only to read (e.g. the chain being
+    /// responded to beside the responses): pressing a card calls <paramref name="inspect"/> with its item. Dispose the
+    /// result to hide the panel again.
+    /// </summary>
+    public static IDisposable ShowToInspect<T>(CardListPanel panel, string title, IReadOnlyList<(CardBase Card, T Value)> items, Action<CardBase, T> inspect)
+    {
+        panel.CardsDraggable = false;
+        panel.Setup(title, items.Select(item => item.Card));
+        var shown = panel.ShownCards;
+        var itemOf = new Dictionary<Card, T>(ReferenceEqualityComparer.Instance);
+        for(int i = 0; i < shown.Count && i < items.Count; i++) itemOf[shown[i]] = items[i].Value;
+
+        Action<Card> onPressed = node =>
+        {
+            if(itemOf.TryGetValue(node, out var value)) inspect(node.CurrentCard, value);
+        };
+        panel.CardPressed += onPressed;
+        panel.Show();
+        return new Disposable(() =>
+        {
+            panel.CardPressed -= onPressed;
+            panel.Hide();
+        });
+    }
+
     /// <summary>A type or enum name in words: "ActivateEffectsOnField" -> "Activate Effects On Field".</summary>
     public static string Words(string name) => System.Text.RegularExpressions.Regex.Replace(name, "(?<=[a-z0-9])(?=[A-Z])", " ");
 }

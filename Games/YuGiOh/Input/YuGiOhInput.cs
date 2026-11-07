@@ -13,11 +13,14 @@ public sealed class YuGiOhInput(
     Node dialogParent,
     SelectFromCardList cardPicker,
     CardList effectPicker,
+    CardListPanel chainView,
     System.Action<CardDetail> showDetails,
     ISkillTextInterpreter skillText)
 {
     /// <summary>Where effects are picked: one card per effect, pressed to read it, dragged out to pick it (Prompts.DragOutOfCardList).</summary>
     public CardList EffectPicker { get; } = effectPicker;
+    /// <summary>Where the chain being responded to is shown, card by card, to read beside the responses.</summary>
+    public CardListPanel ChainView { get; } = chainView;
     /// <summary>Shows a card's details (e.g. the effect a card stands for in the effect picker).</summary>
     public System.Action<CardDetail> ShowDetails { get; } = showDetails;
 
