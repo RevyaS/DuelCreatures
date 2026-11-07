@@ -21,13 +21,27 @@ public partial class CardList : Control, ICardDropTarget
         }
     }
 
-    public bool BaseDroppable { get; set; }
+    private bool _baseDroppable = false;
+    /// <summary>
+    /// A card dragged out of the list and let go outside it is <see cref="CardDroppedOutside"/>; let go back over the
+    /// list's panel, it returns to the list (a drag out started by accident can be undone).
+    /// </summary>
+    public bool BaseDroppable
+    {
+        get => _baseDroppable;
+        set
+        {
+            _baseDroppable = value;
+            if(IsNodeReady()) CardListPanel.Droppable = value;
+        }
+    }
 
     public override void _Ready()
     {
         CardListPanel = GetNode<CardListPanel>($"%{nameof(CardListPanel)}");
         CardListPanel.CardPressed += OnCardPressed;
         CardListPanel.CardDragging += OnCardDragging;
+        CardListPanel.CardDropped += OnCardReturned;
 
         VisibilityChanged += OnVisibilityChanged;
     }
@@ -35,6 +49,14 @@ public partial class CardList : Control, ICardDropTarget
     private void OnCardDragging(CardBaseComponent component)
     {
         draggedCard = component;
+    }
+
+    // Let go back over the panel (its drop area wins over the list's, being later in the tree): nothing is picked
+    private void OnCardReturned(Card card)
+    {
+        draggedCard = null;
+        card.CurrentlyDragged = false;
+        card.NotifyDragCancelled();
     }
 
     private void OnVisibilityChanged()
@@ -61,7 +83,7 @@ public partial class CardList : Control, ICardDropTarget
     }
 
     // The whole screen behind the list: a card dragged out of the list and let go anywhere
-    // else counts (the list's own drop area wins over its panel, being later in the tree)
+    // else counts; over the panel, the panel's own drop area takes it back (OnCardReturned)
     public Control DropRegion => this;
 
     public bool AcceptsCard(Card card) => BaseDroppable && IsVisibleInTree() && ReferenceEquals(draggedCard, card);
