@@ -9,108 +9,10 @@
 [ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/LineZone.tscn" id="7_nmdui"]
 [ext_resource type="PackedScene" uid="uid://bj6jrhfey56is" path="res://Games/Shared/Vfx/AttackIndicator.tscn" id="8_0i5bu"]
 [ext_resource type="PackedScene" path="res://Games/Shared/Audio/SfxPlayer.tscn" id="9_sfx"]
-
-[sub_resource type="Curve2D" id="Curve2D_6kkbp"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 327, 1561, 0, 0, 0, 0, 327, 594)
-}
-point_count = 2
-
-[sub_resource type="Curve2D" id="Curve2D_rkmjv"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 231, 1440, 0, 0, 0, 0, 444, 473)
-}
-point_count = 2
-
-[sub_resource type="Curve2D" id="Curve2D_i0c0l"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 260, 1443, 0, 0, 0, 0, 686, 476)
-}
-point_count = 2
-
-[sub_resource type="Curve2D" id="Curve2D_y64o3"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 444, 1440, 0, 0, 0, 0, 231, 473)
-}
-point_count = 2
-
-[sub_resource type="Curve2D" id="Curve2D_641ut"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 444, 1440, 0, 0, 0, 0, 444, 473)
-}
-point_count = 2
-
-[sub_resource type="Curve2D" id="Curve2D_4phcx"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 657, 1440, 0, 0, 0, 0, 231, 473)
-}
-point_count = 2
-
-[sub_resource type="Curve2D" id="Curve2D_qjlpy"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 657, 1440, 0, 0, 0, 0, 444, 473)
-}
-point_count = 2
-
-[sub_resource type="Curve2D" id="Curve2D_wn2yo"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 657, 1440, 0, 0, 0, 0, 657, 473)
-}
-point_count = 2
-
-[sub_resource type="Curve2D" id="Curve2D_x01yn"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 657, 473, 0, 0, 0, 0, 657, 1440)
-}
-point_count = 2
-
-[sub_resource type="Curve2D" id="Curve2D_y2dlb"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 657, 473, 0, 0, 0, 0, 444, 1440)
-}
-point_count = 2
-
-[sub_resource type="Curve2D" id="Curve2D_fvkba"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 686, 476, 0, 0, 0, 0, 260, 1443)
-}
-point_count = 2
-
-[sub_resource type="Curve2D" id="Curve2D_k5obr"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 444, 473, 0, 0, 0, 0, 657, 1440)
-}
-point_count = 2
-
-[sub_resource type="Curve2D" id="Curve2D_opmtm"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 444, 473, 0, 0, 0, 0, 444, 1440)
-}
-point_count = 2
-
-[sub_resource type="Curve2D" id="Curve2D_0vgfe"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 444, 473, 0, 0, 0, 0, 231, 1440)
-}
-point_count = 2
-
-[sub_resource type="Curve2D" id="Curve2D_y4gjc"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 231, 473, 0, 0, 0, 0, 657, 1440)
-}
-point_count = 2
-
-[sub_resource type="Curve2D" id="Curve2D_wofod"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 231, 473, 0, 0, 0, 0, 444, 1440)
-}
-point_count = 2
-
-[sub_resource type="Curve2D" id="Curve2D_bjcxn"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 327, 594, 0, 0, 0, 0, 327, 1561)
-}
-point_count = 2
+[ext_resource type="Script" path="res://Games/Vanguard/Board/VanguardBattleLines.cs" id="10_lines"]
+[ext_resource type="Script" path="res://Games/Vanguard/Board/Zones/GuardianShields.cs" id="11_shields"]
+[ext_resource type="Script" uid="uid://b3srrk0amiv8t" path="res://Games/Shared/HUD/PhaseLabel.cs" id="12_phase"]
+[ext_resource type="Script" uid="uid://bkbpnqxh1mba7" path="res://Games/Shared/HUD/TurnLabel.cs" id="13_turn"]
 
 [node name="VanguardBoardView" type="Control"]
 layout_mode = 3
@@ -176,6 +78,27 @@ theme_override_constants/margin_bottom = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/CenterArea/MarginContainer"]
 layout_mode = 2
+
+[node name="TurnLabel" type="Label" parent="VBoxContainer/CenterArea/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_font_sizes/font_size = 32
+text = "Opponent Turn"
+clip_text = true
+script = ExtResource("13_turn")
+
+[node name="PhaseLabel" type="Label" parent="VBoxContainer/CenterArea/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_font_sizes/font_size = 32
+text = "Current phase"
+horizontal_alignment = 2
+clip_text = true
+script = ExtResource("12_phase")
 
 [node name="Player1Area" parent="VBoxContainer" instance=ExtResource("2_d5ajh")]
 unique_name_in_owner = true
@@ -283,6 +206,9 @@ CardScale = 0.4
 Alignment = 1
 ShowBackground = false
 
+[node name="GuardianShields" type="Node" parent="GuardZone"]
+script = ExtResource("11_shields")
+
 [node name="PlayerHand" type="PanelContainer" parent="."]
 layout_mode = 1
 anchors_preset = 12
@@ -300,152 +226,16 @@ custom_minimum_size = Vector2(1080, 0)
 Alignment = 1
 ShowBackground = false
 
-[node name="AttackLines" type="Control" parent="."]
-unique_name_in_owner = true
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="PlayerLeftAttackRightLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
-unique_name_in_owner = true
-visible = false
-curve = SubResource("Curve2D_6kkbp")
-Speed = 1.6
-TextureScale = 0.4
-
-[node name="PlayerLeftAttackCenterLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
-unique_name_in_owner = true
-visible = false
-position = Vector2(96, 121)
-curve = SubResource("Curve2D_rkmjv")
-Speed = 1.6
-TextureScale = 0.4
-
-[node name="PlayerLeftAttackLeftLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
-unique_name_in_owner = true
-visible = false
-position = Vector2(67, 118)
-curve = SubResource("Curve2D_i0c0l")
-Speed = 1.6
-TextureScale = 0.4
-
-[node name="PlayerCenterAttackRightLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
-unique_name_in_owner = true
-visible = false
-position = Vector2(96, 121)
-curve = SubResource("Curve2D_y64o3")
-Speed = 1.6
-TextureScale = 0.4
-
-[node name="PlayerCenterAttackCenterLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
-unique_name_in_owner = true
-visible = false
-position = Vector2(96, 121)
-curve = SubResource("Curve2D_641ut")
-Speed = 1.6
-TextureScale = 0.4
-
-[node name="PlayerCenterAttackLeftLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
-unique_name_in_owner = true
-visible = false
-position = Vector2(96, 121)
-Speed = 1.6
-TextureScale = 0.4
-
-[node name="PlayerRightAttackRightLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
-unique_name_in_owner = true
-visible = false
-position = Vector2(96, 121)
-curve = SubResource("Curve2D_4phcx")
-Speed = 1.6
-TextureScale = 0.4
-
-[node name="PlayerRightAttackCenterLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
-unique_name_in_owner = true
-visible = false
-position = Vector2(96, 121)
-curve = SubResource("Curve2D_qjlpy")
-Speed = 1.6
-TextureScale = 0.4
-
-[node name="PlayerRightAttackLeftLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
-unique_name_in_owner = true
-visible = false
-position = Vector2(96, 121)
-curve = SubResource("Curve2D_wn2yo")
-Speed = 1.6
-TextureScale = 0.4
-
-[node name="OppLeftAttackRightLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
-unique_name_in_owner = true
-visible = false
-position = Vector2(96, 121)
-curve = SubResource("Curve2D_x01yn")
-Speed = 1.6
-TextureScale = 0.4
-
-[node name="OppLeftAttackCenterLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
-unique_name_in_owner = true
-visible = false
-position = Vector2(96, 121)
-curve = SubResource("Curve2D_y2dlb")
-Speed = 1.6
-TextureScale = 0.4
-
-[node name="OppLeftAttackLeftLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
-unique_name_in_owner = true
-visible = false
-position = Vector2(67, 118)
-curve = SubResource("Curve2D_fvkba")
-Speed = 1.6
-TextureScale = 0.4
-
-[node name="OppCenterAttackRightLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
-unique_name_in_owner = true
-visible = false
-position = Vector2(96, 121)
-curve = SubResource("Curve2D_k5obr")
-Speed = 1.6
-TextureScale = 0.4
-
-[node name="OppCenterAttackCenterLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
-unique_name_in_owner = true
-visible = false
-position = Vector2(96, 121)
-curve = SubResource("Curve2D_opmtm")
-Speed = 1.6
-TextureScale = 0.4
-
-[node name="OppCenterAttackLeftLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
-unique_name_in_owner = true
-visible = false
-position = Vector2(96, 121)
-curve = SubResource("Curve2D_0vgfe")
-Speed = 1.6
-TextureScale = 0.4
-
-[node name="OppRightAttackRightLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
-unique_name_in_owner = true
-visible = false
-position = Vector2(96, 121)
-curve = SubResource("Curve2D_y4gjc")
-Speed = 1.6
-TextureScale = 0.4
-
-[node name="OppRightAttackCenterLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
-unique_name_in_owner = true
-visible = false
-position = Vector2(96, 121)
-curve = SubResource("Curve2D_wofod")
-Speed = 1.6
-TextureScale = 0.4
-
-[node name="OppRightAttackLeftLine" parent="AttackLines" instance=ExtResource("8_0i5bu")]
-unique_name_in_owner = true
-visible = false
-curve = SubResource("Curve2D_bjcxn")
-Speed = 1.6
-TextureScale = 0.4
+[node name="BattleLines" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("10_lines")
+IndicatorScene = ExtResource("8_0i5bu")
 
 [node name="SfxPlayer" parent="." instance=ExtResource("9_sfx")]
 unique_name_in_owner = true

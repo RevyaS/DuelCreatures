@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://Games/Vanguard/Board/Zones/UnitCircleZone.cs" id="1_zone"]
 [ext_resource type="Script" uid="uid://d0xdsvmtayatq" path="res://Games/Shared/Components/CardRotationContainer.cs" id="2_rotation"]
 [ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Games/Shared/Cards/Card.tscn" id="3_card"]
+[ext_resource type="Script" path="res://Games/Vanguard/Board/Zones/UnitStats.cs" id="4_stats"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_circle"]
 
@@ -39,3 +40,6 @@ metadata/_custom_type_script = "uid://d0xdsvmtayatq"
 [node name="Card" parent="MarginContainer/Container" instance=ExtResource("3_card")]
 layout_mode = 1
 scale = Vector2(0.45, 0.45)
+
+[node name="Stats" type="Node" parent="."]
+script = ExtResource("4_stats")
