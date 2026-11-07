@@ -17,7 +17,7 @@ public partial class CardCommandsPart : HBoxContainer, ICardDetailPart
     public void Show(CardDetail detail)
     {
         this.detail = detail;
-        UseGate(detail.Focus is null ? ActivationGates.ProvidedTo(this) : null);
+        UseGate(detail.IsFocused ? null : ActivationGates.ProvidedTo(this));
         Refresh();
     }
 

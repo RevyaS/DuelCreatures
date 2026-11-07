@@ -104,7 +104,34 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
         phaseSubscription?.Dispose();
         // Published before each phase runs (pre-phases too), so the strategy is set before the phase asks anything
         phaseSubscription = eventBus.Subscribe<PhaseStarted>(started => OnPhaseStarted(started.Phase));
+
+        // The player's own skill, pinned while it's used (what they're asked meanwhile is for it: its cost, its targets)
+        foreach(var subscription in skillSubscriptions) subscription.Dispose();
+        var resolving = GetNode<ResolvingSkillDetails>("%ResolvingSkill");
+        skillSubscriptions =
+        [
+            eventBus.Subscribe<SkillStarting>(started =>
+            {
+                if(IsOwnSkill(started.Source)) resolving.Started(started.Source.Card, started.Skill);
+            }),
+            eventBus.Subscribe<SkillFinished>(finished =>
+            {
+                if(IsOwnSkill(finished.Source)) resolving.Finished(finished.Skill);
+            }),
+        ];
     }
+
+    List<IDisposable> skillSubscriptions = [];
+
+    // Skills come from a circle, the hand, the soul or the (shared) guardian circle, whose skills are the defender's
+    private bool IsOwnSkill(VanguardSkillInvocationSource source) => PlayArea is not null && source switch
+    {
+        VanguardUnitCircleInvocationSource unitCircle => PlayArea.OwnsUnitCircle(unitCircle.UnitCircle),
+        VanguardHandInvocationSource hand => ReferenceEquals(hand.Hand, PlayArea.Hand),
+        VanguardSoulInvocationSource soul => ReferenceEquals(soul.Soul, PlayArea.Soul),
+        VanguardGuardianCircleInvocationSource => input?.State<GuardState>() is { } guard && PlayArea.OwnsUnitCircle(guard.TargetCircle),
+        _ => false,
+    };
 
     // Each phase's strategy on top of the default answers (guarding, skills and triggers are the defaults' prompts)
     private Task OnPhaseStarted(IPhase phase)

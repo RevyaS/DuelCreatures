@@ -23,10 +23,10 @@ public sealed class DefaultYuGiOhAnswers(YuGiOhInput input) : IYuGiOhAnswers
         public static string ChooseFromHand = "Choose a card from your hand";
         public static string ChooseZone = "Choose a zone";
         public static string ChooseOpponentZone = "Choose one of your opponent's zones";
-        public static string ChooseZones = "Choose zones";
-        public static string ChooseZonesOrFinish = "Choose more zones, or tap a chosen one to finish";
+        public static string ChooseZones = "Tap the zones to pick (tap a picked one to drop it)";
+        public static string ChooseZonesOrFinish = "Tap a zone to pick it or drop it, then Confirm";
         public static string ChooseSkill = "Which effect? Drag it out of the list";
-        public static string ChooseOption = "Choose an option";
+        public static string ChooseOption(string card) => $"{card}: choose one (drag it out)";
         public static string Summon = "Summon";
         public static string Activate = "Activate";
         public static string Set = "Set";
@@ -175,22 +175,28 @@ public sealed class DefaultYuGiOhAnswers(YuGiOhInput input) : IYuGiOhAnswers
         var candidates = PlayArea.GetZoneBySelector(selector).Where(input.Narrowing.TakeEach(OwnZones)).ToList();
         if(candidates.Count < minimum) throw new InvalidOperationException($"{OwnZones} needs {minimum} zone(s), only {candidates.Count} can be chosen");
 
-        // Tap zones until the most there can be; once there are enough, tapping a chosen one again finishes (no buttons, for touch)
+        // Tap a zone to pick it (it shows its number), tap a picked one to drop it; Confirm once there are enough
         List<IYuGiOhZone> chosen = [];
-        while(chosen.Count < maximum)
+        while(true)
         {
-            bool canFinish = chosen.Count >= minimum;
-            var offered = candidates.Except(chosen, ReferenceEqualityComparer.Instance).Cast<ICardSpace>().ToList();
-            if(canFinish) offered.AddRange(chosen);
+            var offered = candidates.Where(zone => chosen.Count < maximum || chosen.Contains(zone, ReferenceEqualityComparer.Instance)).Cast<ICardSpace>();
             using var scope = input.Board.Scope()
                 .Zones(offered)
-                .Hint($"{(canFinish ? Text.ChooseZonesOrFinish : Text.ChooseZones)} ({chosen.Count}/{minimum}-{maximum})");
+                .Numbered(chosen.Cast<ICardSpace>())
+                .Hint($"{(chosen.Count >= minimum ? Text.ChooseZonesOrFinish : Text.ChooseZones)} ({chosen.Count}/{(minimum == maximum ? $"{maximum}" : $"{minimum}-{maximum}")})");
+            if(chosen.Count >= minimum) scope.Button(BoardButton.Confirm);
 
-            var zone = (IYuGiOhZone)((ZoneClicked)await scope.Next()).Zone;
-            if(chosen.Contains(zone, ReferenceEqualityComparer.Instance)) break;
-            chosen.Add(zone);
+            switch(await scope.Next())
+            {
+                case ButtonPressed:
+                    return chosen;
+                case ZoneClicked { Zone: IYuGiOhZone zone }:
+                    var index = chosen.FindIndex(picked => ReferenceEquals(picked, zone));
+                    if(index >= 0) chosen.RemoveAt(index);
+                    else chosen.Add(zone);
+                    break;
+            }
         }
-        return chosen;
     }
 
     private async Task<IYuGiOhZone> PickZone(List<IYuGiOhZone> candidates, string hint, object question)
@@ -285,8 +291,18 @@ public sealed class DefaultYuGiOhAnswers(YuGiOhInput input) : IYuGiOhAnswers
             .FirstOrDefault(card => card.Skills.Contains(skill))
             ?? throw new InvalidOperationException($"No card has the skill \"{input.SkillText.Describe(skill)}\"");
 
-    public Task<YuGiOhSkills.SkillAction> SelectSkillOption(IReadOnlyList<YuGiOhSkills.SkillAction> options, YuGiOhSkillContextObject context)
-        => Prompts.Choose(input.DialogParent, Text.ChooseOption, options.Select(option => new Prompts.Option<YuGiOhSkills.SkillAction>(Prompts.Words(option.GetType().Name), option)).ToList());
+    // "Choose one of": the options usable now (ArC rejects the others), each as the skill's card in the skill list; press
+    // one to read it, drag it out to choose it
+    public async Task<YuGiOhSkills.SkillAction> SelectSkillOption(IReadOnlyList<YuGiOhSkills.SkillAction> options, YuGiOhSkillContextObject context)
+    {
+        var choosable = options.Where(option => YuGiOhSkills.SkillRules.CanChooseSkillOption(option, context)).ToList();
+        if(choosable.Count == 0) throw new InvalidOperationException($"{context.Invoker.Card.Name}: none of its options can be chosen");
+        if(choosable.Count == 1) return choosable[0];
+        var (_, option) = await Prompts.DragOutOfCardList(input.EffectPicker, Text.ChooseOption(context.Invoker.Card.Name),
+            choosable.Select(option => ((CardBase)context.Invoker.Card, option)).ToList(), canDecline: false,
+            (card, option) => input.ShowDetails(new CardDetail(card) { FocusText = YuGiOhSkillTextInterpreter.ExtractSkillAction(option) }));
+        return option;
+    }
 
     public Task<string> DeclareCardName()
     {

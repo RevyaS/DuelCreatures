@@ -12,7 +12,7 @@ public partial class GrantedSkillsPart : RichTextLabel, ICardDetailPart
     public void Show(CardDetail detail)
     {
         Clear();
-        Visible = detail.Focus is null && detail.GrantedSkills.Count > 0;
+        Visible = !detail.IsFocused && detail.GrantedSkills.Count > 0;
         if(!Visible) return;
 
         var interpreter = this.DependOn<ISkillTextInterpreter>(SkillKindInterpreter.Instance);

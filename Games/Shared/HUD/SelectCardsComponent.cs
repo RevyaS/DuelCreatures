@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class SelectCardsComponent : PanelContainer
+public partial class SelectCardsComponent : PanelContainer, ICollapsiblePrompt
 {
+    public Control SwipeArea => this;
+    public bool IsShowing => IsVisibleInTree();
+
     int minCards = 0, maxCards = 0;
 
     Label Title = null!;

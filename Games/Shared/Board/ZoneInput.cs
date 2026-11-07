@@ -49,6 +49,34 @@ public static class ZoneInput
         block.Visible = targeted;
     }
 
+    /// <summary>
+    /// Shows <paramref name="number"/> in a round badge at the top of <paramref name="zone"/> (which pick it was), or hides
+    /// it when null, creating it the first time; it never takes clicks.
+    /// </summary>
+    public static void ShowPickNumber(Control zone, ref PanelContainer? badge, int? number, Color color, Color fontColor, int fontSize)
+    {
+        if(badge is null)
+        {
+            if(number is null) return;
+            badge = new PanelContainer { Name = "PickNumber", MouseFilter = Control.MouseFilterEnum.Ignore };
+            badge.AddThemeStyleboxOverride("panel", new StyleBoxFlat
+            {
+                BgColor = color,
+                CornerRadiusTopLeft = 100, CornerRadiusTopRight = 100, CornerRadiusBottomLeft = 100, CornerRadiusBottomRight = 100,
+                ContentMarginLeft = 14, ContentMarginRight = 14, ContentMarginTop = 2, ContentMarginBottom = 2,
+            });
+            var label = new Label { Name = "Number", HorizontalAlignment = HorizontalAlignment.Center, MouseFilter = Control.MouseFilterEnum.Ignore };
+            label.AddThemeColorOverride("font_color", fontColor);
+            label.AddThemeFontSizeOverride("font_size", fontSize);
+            badge.AddChild(label);
+            zone.AddChild(badge);
+            badge.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.CenterTop, Control.LayoutPresetMode.Minsize);
+            badge.GrowHorizontal = Control.GrowDirection.Both;
+        }
+        badge.GetNode<Label>("Number").Text = number?.ToString() ?? string.Empty;
+        badge.Visible = number is not null;
+    }
+
     public static bool IsClick(InputEvent input)
         => input is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left } or InputEventScreenTouch { Pressed: true };
 }

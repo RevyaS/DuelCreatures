@@ -65,6 +65,12 @@ public interface IZoneView : ICardLocation
     void UseSleeve(DuelCreatures.Data.SleeveInfo sleeve);
 
     /// <summary>
+    /// Shows <paramref name="number"/> on it (which pick it was, e.g. the 1st of 2 Xyz materials), or nothing when null.
+    /// Zones that are never picked several at a time show nothing.
+    /// </summary>
+    void SetPickNumber(int? number) {}
+
+    /// <summary>
     /// Shows it's the target a drag would be let go on (e.g. the unit an attack would hit), while that drag lasts. Zones
     /// that are never aimed at show nothing.
     /// </summary>

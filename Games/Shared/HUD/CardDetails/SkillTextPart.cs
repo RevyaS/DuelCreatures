@@ -17,6 +17,14 @@ public partial class SkillTextPart : RichTextLabel, ICardDetailPart
     public void Show(CardDetail detail)
     {
         var interpreter = this.DependOn<ISkillTextInterpreter>(SkillKindInterpreter.Instance);
+        if(detail.FocusText is { } text)
+        {
+            // One part of a skill (e.g. a "Choose one of" option)
+            Clear();
+            AddText(text);
+            Visible = true;
+            return;
+        }
         if(detail.Focus is { } focus)
         {
             // One effect, whatever its kind (e.g. the effect a card stands for in a list to pick from)

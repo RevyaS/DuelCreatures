@@ -214,7 +214,12 @@ Copy `Games/Vanguard/Input/` (or `Games/YuGiOh/Input/`) and the input provider.
    - swaps strategies on `PhaseStarted` (`EventBus.Subscribe<PhaseStarted>`, published before each phase runs);
    - attaches the `InputBoard` to the driver;
    - handles inspecting (details on tap unless the tap answers something, zone lists, the soul on long press).
-7. **The HUD scene:**
+7. **Prompts that collapse, and the pinned skill:** put the prompt panels (card lists, pick lists, the chain view)
+   under a `PromptLayer`, with a `ResolvingSkillDetails` holding a second copy of the game's details scene. Feed it
+   the player's own skills from the game's `SkillStarting`/`SkillFinished` events (`Started(card, skill)`,
+   `Finished(skill)`). A panel of your own joins by implementing `ICollapsiblePrompt` (where a swipe down collapses
+   the layer, and whether it's showing).
+8. **The HUD scene:**
    - **Required:** a `CardFlightLayer` (`%CardFlights`).
    - **For the strategies:** an `AimIndicatorLayer`, a `BoardButtonView` per `BoardButton` they offer (set
 	 `HideWhenUnavailable` to share a spot), and an `InputHintLabel` (Vanguard's is in the player's play area,

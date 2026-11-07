@@ -75,6 +75,23 @@ public sealed class InputScope : InteractionScope
         return this;
     }
 
+    /// <summary>
+    /// Numbers <paramref name="picked"/> 1, 2, … on the board (IZoneView.SetPickNumber), in that order, for as long as
+    /// the scope lasts (e.g. the Xyz materials picked so far, which can be tapped again to drop them).
+    /// </summary>
+    public InputScope Numbered(IEnumerable<ICardSpace> picked)
+    {
+        EnsureOpen();
+        int number = 1;
+        foreach(var zone in picked)
+        {
+            var view = board.ViewOf(zone);
+            view.SetPickNumber(number++);
+            OnDispose(() => view.SetPickNumber(null));
+        }
+        return this;
+    }
+
     /// <summary>Says what is asked, on the HUD's InputHintLabel (if it has one), for as long as the scope lasts.</summary>
     public InputScope Hint(string text)
     {

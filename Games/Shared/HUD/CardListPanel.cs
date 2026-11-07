@@ -4,8 +4,11 @@ using System.Linq;
 using ArC.CardGames.Components;
 using Godot;
 
-public partial class CardListPanel : PanelContainer
+public partial class CardListPanel : PanelContainer, ICollapsiblePrompt
 {
+    public Control SwipeArea => this;
+    public bool IsShowing => IsVisibleInTree();
+
     DropArea DropArea = null!;
     Label Title = null!, Amount = null!;
     HFlowNodeContainer CardContainerList = null!;

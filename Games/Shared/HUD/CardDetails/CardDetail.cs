@@ -16,6 +16,15 @@ public sealed record CardDetail(CardBase Card, ICardSpace? From, IReadOnlyList<I
     /// </summary>
     public ISkill? Focus { get; init; }
 
+    /// <summary>
+    /// One part of a skill to show alone, as text (e.g. one option of a "Choose one of"): like <see cref="Focus"/>, the
+    /// skill text shows only it, and nothing offers to activate anything.
+    /// </summary>
+    public string? FocusText { get; init; }
+
+    /// <summary>Whether one skill, or one part of one, is shown alone (<see cref="Focus"/> or <see cref="FocusText"/>).</summary>
+    public bool IsFocused => Focus is not null || FocusText is not null;
+
     /// <summary>The card's own skills, then the granted ones.</summary>
     public IEnumerable<ISkill> AllSkills => (Card is SkilledCard skilled ? skilled.Skills : []).Concat(GrantedSkills);
 }

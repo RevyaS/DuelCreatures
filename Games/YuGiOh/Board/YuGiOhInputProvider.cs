@@ -105,7 +105,24 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
         phaseSubscription?.Dispose();
         // Published before each phase runs (pre-phases too), so the strategy is set before the phase asks anything
         phaseSubscription = eventBus.Subscribe<ArC.CardGames.Rules.PhaseStarted>(started => OnPhaseStarted(started.Phase));
+
+        // The player's own skill, pinned while it's activated or resolved (what they're asked meanwhile is for it)
+        foreach(var subscription in skillSubscriptions) subscription.Dispose();
+        var resolving = GetNode<ResolvingSkillDetails>("%ResolvingSkill");
+        skillSubscriptions =
+        [
+            eventBus.Subscribe<SkillStarting>(started =>
+            {
+                if(ReferenceEquals(started.Owner, PlayArea)) resolving.Started(started.Source.Card, started.Skill);
+            }),
+            eventBus.Subscribe<SkillFinished>(finished =>
+            {
+                if(ReferenceEquals(finished.Owner, PlayArea)) resolving.Finished(finished.Skill);
+            }),
+        ];
     }
+
+    List<IDisposable> skillSubscriptions = [];
 
     // Each phase's strategy on top of the default answers (main and battle by touch gestures; the rest by the defaults)
     private Task OnPhaseStarted(IPhase phase)

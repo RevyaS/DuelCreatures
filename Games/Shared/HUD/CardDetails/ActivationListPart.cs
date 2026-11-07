@@ -24,7 +24,7 @@ public partial class ActivationListPart : VBoxContainer, ICardDetailPart
         buttons.Clear();
 
         // Read-only (no gate provided, e.g. the deck builder) or one effect in focus: no buttons, the skill text shows it
-        if(detail.Focus is not null || ActivationGates.ProvidedTo(this) is not { } provided)
+        if(detail.IsFocused || ActivationGates.ProvidedTo(this) is not { } provided)
         {
             UseGate(null);
             Visible = false;

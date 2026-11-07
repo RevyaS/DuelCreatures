@@ -4,8 +4,12 @@ using System.Linq;
 using ArC.CardGames.Components;
 using Godot;
 
-public partial class CardList : Control, ICardDropTarget
+public partial class CardList : Control, ICardDropTarget, ICollapsiblePrompt
 {
+    // A swipe down on the list's panel (not the screen behind it, whose press closes the list) collapses its PromptLayer
+    public Control SwipeArea => CardListPanel;
+    public bool IsShowing => IsVisibleInTree();
+
     CardListPanel CardListPanel = null!;
     CardBaseComponent? draggedCard = null;
     

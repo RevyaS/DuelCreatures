@@ -26,12 +26,17 @@ public partial class CardSlot : CardArea, IZoneView, IBindable<ISingleSpace>
     [Export] public Color CardHighlightColor { get; set; } = new(1f, 0.85f, 0.2f);
     /// <summary>The block over the slot while a drag would be let go on it (SetTargeted).</summary>
     [Export] public Color TargetColor { get; set; } = new(1f, 0.85f, 0.2f, 0.45f);
+    /// <summary>The badge showing which pick the slot was (SetPickNumber).</summary>
+    [Export] public Color PickNumberColor { get; set; } = new(1f, 0.85f, 0.2f);
+    [Export] public Color PickNumberFontColor { get; set; } = Colors.Black;
+    [Export] public int PickNumberFontSize { get; set; } = 40;
     /// <summary>How far and how fast a flick must be to count as a swipe (GestureDetector).</summary>
     [Export] public float SwipeDistance { get; set; } = 60;
     [Export] public float SwipeMaxTime { get; set; } = 0.35f;
 
     ReferenceRect? highlight;
     ColorRect? targetBlock;
+    PanelContainer? pickNumber;
     Func<CardBase, bool>? highlightedCards;
     GestureDetector? gestures;
     DropChoicesOverlay? drops;
@@ -104,6 +109,9 @@ public partial class CardSlot : CardArea, IZoneView, IBindable<ISingleSpace>
     }
 
     public void SetTargeted(bool targeted) => ShowTargeted(targeted);
+
+    public void SetPickNumber(int? number)
+        => ZoneInput.ShowPickNumber(this, ref pickNumber, number, PickNumberColor, PickNumberFontColor, PickNumberFontSize);
 
     public void UseSleeve(DuelCreatures.Data.SleeveInfo sleeve) => Container.SetSleeveInfo(sleeve);
 

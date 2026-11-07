@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://cdr3i0iyowbxf"]
+[gd_scene format=3 uid="uid://cdr3i0iyowbxf"]
 
 [ext_resource type="PackedScene" path="res://Games/YuGiOh/HUD/CardDetails/YuGiOhCardDetails.tscn" id="1_nh885"]
 [ext_resource type="Script" uid="uid://bhfky186db8q7" path="res://Games/YuGiOh/Board/YuGiOhInputProvider.cs" id="1_qtv2h"]
@@ -12,6 +12,8 @@
 [ext_resource type="Script" uid="uid://dy0qllpcj4gug" path="res://Games/Shared/Input/AimIndicatorLayer.cs" id="11_aim"]
 [ext_resource type="PackedScene" uid="uid://bj6jrhfey56is" path="res://Games/Shared/Vfx/AttackIndicator.tscn" id="12_indicator"]
 [ext_resource type="PackedScene" uid="uid://cx38wvfuj0nja" path="res://Games/Shared/HUD/CardListPanel.tscn" id="13_chain"]
+[ext_resource type="Script" path="res://Games/Shared/HUD/PromptLayer.cs" id="30_prompts"]
+[ext_resource type="Script" path="res://Games/Shared/HUD/ResolvingSkillDetails.cs" id="31_resolving"]
 
 [node name="YuGiOhInputProvider" type="Control"]
 layout_mode = 3
@@ -56,6 +58,15 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 45
 text = "Next Phase"
 script = ExtResource("9_button")
+
+[node name="Confirm" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 45
+text = "Confirm"
+script = ExtResource("9_button")
+Kind = 2
+HideWhenUnavailable = true
 
 [node name="SkipToEndPhase" type="Button" parent="VBoxContainer/MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -120,7 +131,17 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="SelectCardsComponent" parent="HUD" instance=ExtResource("3_mrbjy")]
+[node name="Prompts" type="Control" parent="HUD"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("30_prompts")
+
+[node name="SelectCardsComponent" parent="HUD/Prompts" instance=ExtResource("3_mrbjy")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -129,12 +150,12 @@ offset_top = -214.5
 offset_right = 455.0
 offset_bottom = 134.5
 
-[node name="CardListComponent" parent="HUD" instance=ExtResource("4_qtv2h")]
+[node name="CardListComponent" parent="HUD/Prompts" instance=ExtResource("4_qtv2h")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
 
-[node name="ChainView" parent="HUD" instance=ExtResource("13_chain")]
+[node name="ChainView" parent="HUD/Prompts" instance=ExtResource("13_chain")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -143,7 +164,7 @@ offset_top = -420.0
 offset_right = 450.0
 offset_bottom = -140.0
 
-[node name="SelectFromCardListComponent" parent="HUD" instance=ExtResource("5_srywf")]
+[node name="SelectFromCardListComponent" parent="HUD/Prompts" instance=ExtResource("5_srywf")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -158,3 +179,28 @@ offset_right = 455.0
 offset_bottom = 375.0
 grow_horizontal = 2
 grow_vertical = 2
+[node name="ResolvingSkill" type="Control" parent="HUD/Prompts"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -450.0
+offset_top = -640.0
+offset_right = 450.0
+offset_bottom = -220.0
+grow_horizontal = 2
+grow_vertical = 0
+script = ExtResource("31_resolving")
+
+[node name="Details" parent="HUD/Prompts/ResolvingSkill" instance=ExtResource("1_nh885")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+

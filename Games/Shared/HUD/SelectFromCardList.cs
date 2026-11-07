@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using ArC.CardGames.Components;
 using Godot;
 
-public partial class SelectFromCardList : VBoxContainer
+public partial class SelectFromCardList : VBoxContainer, ICollapsiblePrompt
 {
+    public Control SwipeArea => this;
+    public bool IsShowing => IsVisibleInTree();
+
     SelectCardsComponent SelectCardsComponent = null!;
     CardListPanel CardListPanel = null!;
 

@@ -41,7 +41,7 @@ public sealed class DefaultVanguardAnswers(VanguardInput input) : IVanguardAnswe
         public static string FromDeck = "Select card from deck";
         public static string CounterBlast(int amount) => $"Counter Blast ({amount}): long press face-up damage, then Confirm";
         public static string CounterCharge(int amount) => $"Counter Charge ({amount}): long press face-down damage, then Confirm";
-        public static string ChooseOption(string card) => $"{card}: choose one";
+        public static string ChooseOption(string card) => $"{card}: choose one (drag it out)";
         public static string Guard = "Guard: drag cards onto the guardian circle, tap a front rear-guard to intercept, then Confirm";
     }
 
@@ -137,6 +137,7 @@ public sealed class DefaultVanguardAnswers(VanguardInput input) : IVanguardAnswe
             using var scope = input.Board.Scope().Hint(Text.ChooseCircles(minimum, maximum));
             if(chosen.Count < maximum) scope.Zones(candidates.Where(circle => !Refs.Has(chosen, circle)));
             foreach(var circle in chosen) scope.Cards(circle);
+            scope.Numbered(chosen);
             if(chosen.Count >= minimum) scope.Button(BoardButton.Confirm);
 
             switch(await scope.Next())
@@ -179,13 +180,17 @@ public sealed class DefaultVanguardAnswers(VanguardInput input) : IVanguardAnswe
         return picked;
     }
 
-    // "Choose one of": the options that can be used now, each described as text; closing the dialog asks again
-    public Task<VanguardSkills.SkillAction> SelectSkillOption(IReadOnlyList<VanguardSkills.SkillAction> options, VanguardSkillContextObject context)
+    // "Choose one of": the options usable now (ArC rejects the others), each as the skill's card in the skill list; press
+    // one to read it, drag it out to choose it
+    public async Task<VanguardSkills.SkillAction> SelectSkillOption(IReadOnlyList<VanguardSkills.SkillAction> options, VanguardSkillContextObject context)
     {
         var choosable = options.Where(option => VanguardSkills.SkillRules.CanChooseSkillOption(option, context)).ToList();
-        if(choosable.Count == 1) return Task.FromResult(choosable[0]);
-        return Prompts.Choose(input.DialogParent, Text.ChooseOption(context.Invoker.Card.Name),
-            choosable.Select(option => new Prompts.Option<VanguardSkills.SkillAction>(VanguardSkillToStringInterpreter.ExtractSkillAction(option), option)).ToList());
+        if(choosable.Count == 0) throw new InvalidOperationException($"{context.Invoker.Card.Name}: none of its options can be chosen");
+        if(choosable.Count == 1) return choosable[0];
+        var (_, option) = await Prompts.DragOutOfCardList(input.EffectPicker, Text.ChooseOption(context.Invoker.Card.Name),
+            choosable.Select(option => ((CardBase)context.Invoker.Card, option)).ToList(), canDecline: false,
+            (card, option) => input.ShowDetails(new CardDetail(card) { FocusText = VanguardSkillToStringInterpreter.ExtractSkillAction(option) }));
+        return option;
     }
 
     private Task<(bool Picked, T Value)> PickEffect<T>(string title, IReadOnlyList<(CardBase Card, T Value)> options, bool canDecline) where T : ISkill
