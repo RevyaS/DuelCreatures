@@ -31,6 +31,8 @@ public sealed class InputScope : InteractionScope
     readonly Dictionary<ICardSpace, Func<CardBase, IReadOnlyList<DropChoice>>> drops = new(ReferenceEqualityComparer.Instance);
     readonly Dictionary<ICardSpace, Func<GestureDetector.SwipeDirection, bool>> swipes = new(ReferenceEqualityComparer.Instance);
     readonly Dictionary<ICardSpace, Func<AimTarget, bool>> aims = new(ReferenceEqualityComparer.Instance);
+    readonly Dictionary<ICardSpace, ICardSpace> aimVias = new(ReferenceEqualityComparer.Instance);
+    readonly List<(ICardSpace Zone, Func<CardBase, bool> Allowed)> longPresses = [];
     Func<CardBase, ICardSpace?, ISkill, bool>? activatable;
     Func<CardBase, ICardSpace?, IEnumerable<CardCommand>>? commands;
     bool gateInUse;
@@ -68,7 +70,7 @@ public sealed class InputScope : InteractionScope
     {
         EnsureOpen();
         var view = board.Button(button);
-        Set(() => view.Disabled, disabled => view.Disabled = disabled, false);
+        Set(() => view.Available, available => view.Available = available, true);
         buttons.Add(button);
         return this;
     }
@@ -78,6 +80,14 @@ public sealed class InputScope : InteractionScope
     {
         EnsureOpen();
         if(board.Hint is { } label) Set(() => label.Text, value => label.Text = value, text);
+        return this;
+    }
+
+    /// <summary>The cards of <paramref name="zone"/> that <paramref name="allowed"/> accepts can be long pressed (a CardLongPressed).</summary>
+    public InputScope LongPress(ICardSpace zone, Func<CardBase, bool> allowed)
+    {
+        EnsureOpen();
+        longPresses.Add((zone, allowed));
         return this;
     }
     #endregion
@@ -135,7 +145,20 @@ public sealed class InputScope : InteractionScope
         return this;
     }
 
+    /// <summary>
+    /// A drag from <paramref name="zone"/> that first passes over <paramref name="via"/> can be let go on the targets
+    /// <paramref name="canTarget"/> accepts (an Aimed with Via, e.g. a boost: from the booster, over the unit it boosts,
+    /// to the target). Until it passes over <paramref name="via"/>, the line only reaches for it.
+    /// </summary>
+    public InputScope Aim(ICardSpace zone, ICardSpace via, Func<AimTarget, bool> canTarget)
+    {
+        Aim(zone, canTarget);
+        aimVias[zone] = via;
+        return this;
+    }
+
     internal bool CanAimFrom(ICardSpace zone) => aims.ContainsKey(zone);
+    internal ICardSpace? ViaOf(ICardSpace zone) => aimVias.GetValueOrDefault(zone);
     internal bool CanAim(ICardSpace from, AimTarget target) => aims.TryGetValue(from, out var canTarget) && canTarget(target);
 
     private void UpdateGestures(ICardSpace zone)
@@ -181,16 +204,19 @@ public sealed class InputScope : InteractionScope
         return Interpret(gesture)!;
     }
 
+    internal bool Takes(IGesture gesture) => !IsDisposed && Interpret(gesture) is not null;
+
     // The gesture as this scope takes it, or null when it doesn't allow it
     private IGesture? Interpret(IGesture gesture) => gesture switch
     {
+        CardLongPressed press when longPresses.Any(rule => ReferenceEquals(rule.Zone, press.Zone) && rule.Allowed(press.Card)) => press,
         CardClicked click when cards.Any(rule => ReferenceEquals(rule.Zone, click.Zone) && rule.Allowed(click.Card)) => click,
         CardClicked click when zones.Contains(click.Zone) => new ZoneClicked(click.Zone),
         ZoneClicked click when zones.Contains(click.Zone) => click,
         ButtonPressed press when buttons.Contains(press.Button) => press,
         CardDropped drop when drops.TryGetValue(drop.To, out var choicesFor) && choicesFor(drop.Card).Contains(drop.Choice) => drop,
         ZoneSwiped swipe when swipes.TryGetValue(swipe.Zone, out var allowed) && allowed(swipe.Direction) => swipe,
-        Aimed aim when CanAim(aim.From, aim.Target) => aim,
+        Aimed aim when CanAim(aim.From, aim.Target) && ReferenceEquals(aim.Via, ViaOf(aim.From)) => aim,
         SkillActivated activation when activatable?.Invoke(activation.Card, activation.From, activation.Skill) == true => activation,
         CommandPressed command when commands?.Invoke(command.Card, command.From).Contains(command.Command) == true => command,
         _ => null,

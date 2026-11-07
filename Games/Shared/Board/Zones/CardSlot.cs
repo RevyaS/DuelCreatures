@@ -16,6 +16,7 @@ public partial class CardSlot : CardArea, IZoneView, IBindable<ISingleSpace>
 
     public event Action<ZoneSnapshot>? Presented;
     public event Action<IZoneView, CardBase?>? Clicked;
+    public event Action<IZoneView, CardBase?>? LongPressed;
     public event Action<IZoneView, CardBase, DropChoice>? CardDropped;
     public event Action<IZoneView, GestureDetector.SwipeDirection>? Swiped;
     public event Action<IZoneView, AimStep, Vector2>? Aiming;
@@ -31,6 +32,11 @@ public partial class CardSlot : CardArea, IZoneView, IBindable<ISingleSpace>
     Func<CardBase, bool>? highlightedCards;
     GestureDetector? gestures;
     DropChoicesOverlay? drops;
+    // Which cards a drag from the slot moves out (SetDraggable), and whether drags aim (SetGestures)
+    Func<CardBase, bool>? draggableCards;
+    bool aims;
+    // The card a drag from the slot is moving, until it ends
+    Card? movingCard;
 
     public override void _Ready()
     {
@@ -55,24 +61,72 @@ public partial class CardSlot : CardArea, IZoneView, IBindable<ISingleSpace>
         };
         AddChild(gestures);
         gestures.Tapped += () => Clicked?.Invoke(this, Container.CurrentCard?.CurrentCard);
+        gestures.LongPressed += () => LongPressed?.Invoke(this, Container.CurrentCard?.CurrentCard);
         gestures.Swiped += direction => Swiped?.Invoke(this, direction);
-        gestures.DragStarted += position => Aiming?.Invoke(this, AimStep.Start, position);
-        gestures.DragMoved += position => Aiming?.Invoke(this, AimStep.Move, position);
-        gestures.DragEnded += position => Aiming?.Invoke(this, AimStep.End, position);
-        gestures.DragCancelled += () => Aiming?.Invoke(this, AimStep.Cancel, GetGlobalMousePosition());
+        gestures.DragStarted += OnDragStarted;
+        gestures.DragMoved += position =>
+        {
+            if(movingCard is not null) CardDrag.Move(position);
+            else Aiming?.Invoke(this, AimStep.Move, position);
+        };
+        gestures.DragEnded += position =>
+        {
+            if(movingCard is not null) EndMove(() => CardDrag.End(position));
+            else Aiming?.Invoke(this, AimStep.End, position);
+        };
+        gestures.DragCancelled += () =>
+        {
+            if(movingCard is not null) EndMove(CardDrag.Cancel);
+            else Aiming?.Invoke(this, AimStep.Cancel, GetGlobalMousePosition());
+        };
+    }
+
+    // A drag from the slot moves its card out when it may be dragged (e.g. a unit to another circle), else it aims
+    private void OnDragStarted(Vector2 position)
+    {
+        if(Container.CurrentCard is { CurrentCard: { } card } node && draggableCards?.Invoke(card) == true)
+        {
+            movingCard = node;
+            CardDrag.Begin(node, position);
+            return;
+        }
+        if(aims) Aiming?.Invoke(this, AimStep.Start, position);
+        else gestures?.Cancel();
+    }
+
+    private void EndMove(Action end)
+    {
+        movingCard = null;
+        end();
     }
 
     public void SetGestures(bool swipes, bool aims)
     {
+        this.aims = aims;
         if(gestures is null) return;
         gestures.Swipes = swipes;
-        gestures.Drags = aims;
+        UpdateDrags();
     }
 
+    /// <summary>
+    /// A drag from the slot moves its card out when <paramref name="cards"/> accepts it (e.g. a rear-guard to the
+    /// opposite circle), shown as the card following the pointer; dropping it is the target's CardDropped. Let go
+    /// anywhere else, it stays. Takes precedence over aiming for the cards it accepts.
+    /// </summary>
     public void SetDraggable(Func<CardBase, bool>? cards)
     {
-        // Its card is moved by the game, not dragged out: a drag from it is an aim (SetGestures)
-        if(cards is not null) throw new NotSupportedException($"{GetPath()} ({GetType().Name}) can't have its card dragged out; use SetGestures to aim from it");
+        draggableCards = cards;
+        UpdateDrags();
+    }
+
+    private void UpdateDrags()
+    {
+        if(gestures is not null) gestures.Drags = aims || draggableCards is not null;
+    }
+
+    public void Resync()
+    {
+        if(Space is ISingleSpace space) Bind(space);
     }
 
     public void OfferDrop(DropOffer? offer)

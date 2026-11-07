@@ -1,13 +1,14 @@
-[gd_scene load_steps=9 format=3 uid="uid://54vx7214u53f"]
+[gd_scene format=3 uid="uid://54vx7214u53f"]
 
 [ext_resource type="Script" uid="uid://dg7uwa2tvdn5o" path="res://Games/Vanguard/Board/VanguardInputProvider.cs" id="1_mnfo1"]
-[ext_resource type="PackedScene" uid="uid://cuqm30mdbu41k" path="res://Games/Vanguard/VanguardBoard.tscn" id="2_g4tnu"]
+[ext_resource type="PackedScene" path="res://Games/Vanguard/Board/VanguardBoardView.tscn" id="2_board"]
 [ext_resource type="PackedScene" uid="uid://dt60jvmuuttc0" path="res://Games/Shared/HUD/SelectCards.tscn" id="3_g4tnu"]
 [ext_resource type="PackedScene" uid="uid://cl0t7q61is3ro" path="res://Games/Shared/HUD/CardList.tscn" id="4_3v0st"]
-[ext_resource type="PackedScene" uid="uid://bl86gfg2luf5o" path="res://Games/Vanguard/HUD/CardInfo.tscn" id="5_jf7tj"]
+[ext_resource type="PackedScene" path="res://Games/Vanguard/HUD/VanguardCardDetailsOverlay.tscn" id="5_details"]
 [ext_resource type="PackedScene" uid="uid://csdff6we3cpjo" path="res://Games/Shared/HUD/SelectFromCardList.tscn" id="6_c2rk7"]
-[ext_resource type="PackedScene" uid="uid://b2lfbpkxmm57c" path="res://Games/Vanguard/HUD/CardDetails.tscn" id="6_f2yvh"]
 [ext_resource type="Script" uid="uid://oevhg1o84cdb" path="res://Games/Shared/Presentation/CardFlightLayer.cs" id="7_flights"]
+[ext_resource type="Script" uid="uid://dy0qllpcj4gug" path="res://Games/Shared/Input/AimIndicatorLayer.cs" id="8_aim"]
+[ext_resource type="PackedScene" uid="uid://bj6jrhfey56is" path="res://Games/Shared/Vfx/AttackIndicator.tscn" id="9_indicator"]
 
 [node name="InputProviderComponent" type="Control"]
 layout_mode = 3
@@ -18,7 +19,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_mnfo1")
 
-[node name="VanguardBoard" parent="." instance=ExtResource("2_g4tnu")]
+[node name="VanguardBoard" parent="." instance=ExtResource("2_board")]
 unique_name_in_owner = true
 layout_mode = 1
 
@@ -32,6 +33,17 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("7_flights")
+
+[node name="AimLine" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("8_aim")
+IndicatorScene = ExtResource("9_indicator")
 
 [node name="HUD" type="Control" parent="."]
 layout_mode = 1
@@ -56,19 +68,6 @@ unique_name_in_owner = true
 visible = false
 layout_mode = 1
 
-[node name="CardInfoComponent_new_attempt" parent="HUD" instance=ExtResource("6_f2yvh")]
-visible = false
-layout_mode = 0
-offset_left = 90.0
-offset_top = 200.0
-offset_right = 990.0
-offset_bottom = 668.0
-
-[node name="CardInfoComponent" parent="HUD" instance=ExtResource("5_jf7tj")]
-unique_name_in_owner = true
-visible = false
-layout_mode = 1
-
 [node name="SelectFromCardListComponent" parent="HUD" instance=ExtResource("6_c2rk7")]
 unique_name_in_owner = true
 visible = false
@@ -84,3 +83,8 @@ offset_right = 455.0
 offset_bottom = 375.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="CardDetails" parent="HUD" instance=ExtResource("5_details")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1

@@ -22,7 +22,6 @@ public partial class VanguardSession : Control
     BotDifficulty Difficulty = BotDifficulty.MASTER;
 
     VanguardInputProvider InputProviderComponent = null!;
-    VanguardBoard Board => InputProviderComponent.Board;
     
     PanelContainer HUD = null!;
     GameOverDialog GameOverDialog = null!;
@@ -68,7 +67,8 @@ public partial class VanguardSession : Control
     private async Task StartGame(VanguardGameSession session, VanguardGameDataQuery dataQuery)
     {
         session.StartGame();
-        Board.ApplySession(session, InputProviderComponent.Presenter);
+        // After StartGame: the game's board and decks exist from here on
+        InputProviderComponent.Show(session);
 
         #region DEBUG
         // session.Game.Board.Player1Area.Vanguard.Assign(RoyalPaladin.LittleSageMarron);

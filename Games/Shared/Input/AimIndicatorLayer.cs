@@ -11,6 +11,7 @@ public partial class AimIndicatorLayer : Control
     [Export] public PackedScene? IndicatorScene { get; set; }
 
     AttackIndicator? line;
+    AttackIndicator? secondLine;
 
     public override void _Ready()
     {
@@ -19,22 +20,39 @@ public partial class AimIndicatorLayer : Control
 
     public void ShowLine(Vector2 fromGlobal, Vector2 toGlobal)
     {
-        if(IndicatorScene is null) return;
-        if(line is null)
-        {
-            line = IndicatorScene.Instantiate<AttackIndicator>();
-            AddChild(line);
-            // Its curve is in this layer's coordinates
-            line.Position = Vector2.Zero;
-            // Its own curve, not the scene's shared one
-            line.Curve = (Curve2D)line.Curve.Duplicate();
-        }
-        var toLocal = GetGlobalTransform().AffineInverse();
-        line.Curve.ClearPoints();
-        line.Curve.AddPoint(toLocal * fromGlobal);
-        line.Curve.AddPoint(toLocal * toGlobal);
-        line.Show();
+        Place(ref line, fromGlobal, toGlobal);
+        secondLine?.Hide();
     }
 
-    public void HideLine() => line?.Hide();
+    /// <summary>Two lines, one after the other (e.g. from a booster to the unit it boosts, then on to the target).</summary>
+    public void ShowLines((Vector2 From, Vector2 To) first, (Vector2 From, Vector2 To) second)
+    {
+        Place(ref line, first.From, first.To);
+        Place(ref secondLine, second.From, second.To);
+    }
+
+    public void HideLine()
+    {
+        line?.Hide();
+        secondLine?.Hide();
+    }
+
+    private void Place(ref AttackIndicator? indicator, Vector2 fromGlobal, Vector2 toGlobal)
+    {
+        if(IndicatorScene is null) return;
+        if(indicator is null)
+        {
+            indicator = IndicatorScene.Instantiate<AttackIndicator>();
+            AddChild(indicator);
+            // Its curve is in this layer's coordinates
+            indicator.Position = Vector2.Zero;
+            // Its own curve, not the scene's shared one
+            indicator.Curve = (Curve2D)indicator.Curve.Duplicate();
+        }
+        var toLocal = GetGlobalTransform().AffineInverse();
+        indicator.Curve.ClearPoints();
+        indicator.Curve.AddPoint(toLocal * fromGlobal);
+        indicator.Curve.AddPoint(toLocal * toGlobal);
+        indicator.Show();
+    }
 }

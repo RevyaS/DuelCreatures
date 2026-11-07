@@ -12,6 +12,9 @@ public interface IGesture;
 /// <summary>A card shown in <see cref="Zone"/> was clicked (tapped).</summary>
 public sealed record CardClicked(CardBase Card, ICardSpace Zone) : IGesture;
 
+/// <summary>A card shown in <see cref="Zone"/> was long pressed (e.g. turning damage face down to pay a cost).</summary>
+public sealed record CardLongPressed(CardBase Card, ICardSpace Zone) : IGesture;
+
 /// <summary><see cref="Zone"/> itself was clicked (or a card in it, when the scope asked for the zone).</summary>
 public sealed record ZoneClicked(ICardSpace Zone) : IGesture;
 
@@ -30,8 +33,11 @@ public sealed record CardDropped(CardBase Card, ICardSpace? From, ICardSpace To,
 /// <summary><see cref="Zone"/> was swiped (a quick flick) in <see cref="Direction"/>.</summary>
 public sealed record ZoneSwiped(ICardSpace Zone, GestureDetector.SwipeDirection Direction) : IGesture;
 
-/// <summary>A drag from <see cref="From"/> was let go on <see cref="Target"/> (e.g. an attack).</summary>
-public sealed record Aimed(ICardSpace From, AimTarget Target) : IGesture;
+/// <summary>
+/// A drag from <see cref="From"/> was let go on <see cref="Target"/> (e.g. an attack), passing first over
+/// <see cref="Via"/> when the scope asked for that (e.g. a boost: from the booster, over the unit it boosts).
+/// </summary>
+public sealed record Aimed(ICardSpace From, AimTarget Target, ICardSpace? Via = null) : IGesture;
 
 /// <summary>What a drag from a zone was let go on (<see cref="Aimed"/>).</summary>
 public abstract record AimTarget;
@@ -50,6 +56,8 @@ public enum BoardButton
     NextPhase,
     /// <summary>Skip straight to the end phase.</summary>
     EndPhase,
+    /// <summary>Done choosing (e.g. the guards, the damage to pay with).</summary>
+    Confirm,
 }
 
 /// <summary>

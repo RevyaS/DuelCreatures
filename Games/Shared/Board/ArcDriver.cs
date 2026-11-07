@@ -69,6 +69,8 @@ public sealed class ArcDriver : IDisposable
 
     /// <summary>Any zone or card on the board was clicked (the card, or null for the zone itself), for input scopes.</summary>
     public event Action<IZoneView, CardBase?>? Clicked;
+    /// <summary>Any zone or card on the board was long pressed (the card, or null for the zone itself), e.g. to list what a zone hides under it.</summary>
+    public event Action<IZoneView, CardBase?>? LongPressed;
     /// <summary>A card was dropped on a zone (IZoneView.OfferDrop), for input scopes.</summary>
     public event Action<IZoneView, CardBase, DropChoice>? CardDropped;
     /// <summary>A zone was swiped (IZoneView.SetGestures), for input scopes.</summary>
@@ -201,6 +203,7 @@ public sealed class ArcDriver : IDisposable
             if(!stack.HideCards || side == BoardSide.Player) OnInspectRequested(inspected);
         };
         zoneView.Clicked += (clicked, card) => OnClicked(clicked, card, side);
+        zoneView.LongPressed += (pressed, card) => LongPressed?.Invoke(pressed, card);
         zoneView.CardDropped += (target, card, choice) => CardDropped?.Invoke(target, card, choice);
         zoneView.Swiped += (swiped, direction) => Swiped?.Invoke(swiped, direction);
         zoneView.Aiming += (from, step, position) => Aiming?.Invoke(from, step, position);
@@ -214,12 +217,15 @@ public sealed class ArcDriver : IDisposable
 
     private void OnInspectRequested(IZoneView view) => ZoneInspected?.Invoke(view);
 
+    // Inspected first, while whatever the click answers is still asking (so a listener can tell the click was an answer)
     private void OnClicked(IZoneView view, CardBase? card, BoardSide side)
     {
-        Clicked?.Invoke(view, card);
         // Zones that list their cards when pressed show the list instead
-        if(card is null || view is LineZone { Inspectable: true } or StackZone { Inspectable: true }) return;
-        if(MaySee(view, card, side)) CardInspected?.Invoke(view, card);
+        if(card is not null && view is not (LineZone { Inspectable: true } or StackZone { Inspectable: true }) && MaySee(view, card, side))
+        {
+            CardInspected?.Invoke(view, card);
+        }
+        Clicked?.Invoke(view, card);
     }
 
     // A face-up card, or the player's own card outside a hidden pile or hand (e.g. their Set cards)

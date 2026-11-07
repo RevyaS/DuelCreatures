@@ -52,6 +52,15 @@ public interface IZoneView : ICardLocation
     /// <summary>It was swiped (see <see cref="SetGestures"/>).</summary>
     event Action<IZoneView, GestureDetector.SwipeDirection>? Swiped;
 
+    /// <summary>The player long pressed a card it shows (the card), or the zone itself (null).</summary>
+    event Action<IZoneView, CardBase?>? LongPressed;
+
+    /// <summary>
+    /// Shows its zone as it is now, dropping whatever a prompt staged on it to preview an answer (e.g. guards placed
+    /// on the guardian circle before they're confirmed). Only while nothing is being presented.
+    /// </summary>
+    void Resync();
+
     /// <summary>A drag from it started, moved, ended or was cancelled, at the global pointer position (see <see cref="SetGestures"/>).</summary>
     event Action<IZoneView, AimStep, Godot.Vector2>? Aiming;
 }

@@ -25,6 +25,8 @@ public partial class StackZone : CardVerticalStack, IZoneView, IBindable<GroupSp
     public event Action<ZoneSnapshot>? Presented;
     public event Action<IZoneView>? InspectRequested;
     public event Action<IZoneView, CardBase?>? Clicked;
+    // A pile isn't long pressed: it lists its cards when pressed (Inspectable)
+    public event Action<IZoneView, CardBase?>? LongPressed { add {} remove {} }
 
     [Export] public Color HighlightColor { get; set; } = new(1f, 0.85f, 0.2f);
     [Export] public float HighlightWidth { get; set; } = 4;
@@ -87,6 +89,11 @@ public partial class StackZone : CardVerticalStack, IZoneView, IBindable<GroupSp
     {
         Space = space;
         Render(ZoneSnapshot.Of(space));
+    }
+
+    public void Resync()
+    {
+        if(Space is GroupSpace space) Bind(space);
     }
 
     public ZoneSnapshot Displayed

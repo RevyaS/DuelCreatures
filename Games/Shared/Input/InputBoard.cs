@@ -23,7 +23,7 @@ public sealed class InputBoard
         foreach(var view in buttonViews)
         {
             if(!buttons.TryAdd(view.Kind, view)) throw new InvalidOperationException($"Two HUD buttons are {view.Kind} ({buttons[view.Kind].Name} and {view.Name})");
-            view.Disabled = true;
+            view.Available = false;
             view.Pressed += () => Gestures.Publish(new ButtonPressed(view.Kind));
         }
     }
@@ -45,6 +45,10 @@ public sealed class InputBoard
             if(card is null) Gestures.Publish(new ZoneClicked(zone));
             else Gestures.Publish(new CardClicked(card, zone));
         };
+        driver.LongPressed += (view, card) =>
+        {
+            if(view.Space is { } zone && card is not null) Gestures.Publish(new CardLongPressed(card, zone));
+        };
         driver.CardDropped += (view, card, choice) =>
         {
             if(view.Space is { } zone) Gestures.Publish(new CardDropped(card, ZoneShowing(card), zone, choice));
@@ -64,6 +68,12 @@ public sealed class InputBoard
 
     public InputScope Scope() => new(this);
 
+    /// <summary>
+    /// Whether the innermost open scope takes <paramref name="gesture"/> (e.g. a tap that selects a circle shouldn't
+    /// also open its card's details).
+    /// </summary>
+    public bool Takes(IGesture gesture) => Current?.Takes(gesture) == true;
+
     ArcDriver Driver => driver ?? throw new InvalidOperationException($"{nameof(InputBoard)} has no board yet ({nameof(Attach)})");
 
     // The innermost open scope decides what a gesture in progress (an aim) may do
@@ -75,7 +85,12 @@ public sealed class InputBoard
     private ICardSpace? ZoneShowing(CardBase card) => Driver.Views.FirstOrDefault(view => view.FindCardNode(card) is not null)?.Space;
 
     #region Aiming
-    // A drag from a zone: a line from it to the pointer, snapping to a target the current scope accepts; let go on one, it's an Aimed
+    // Whether the drag in progress passed over the zone the scope aims through (InputScope.Aim's via)
+    bool passedVia;
+
+    // A drag from a zone: a line from it to the pointer, snapping to a target the current scope accepts; let go on one,
+    // it's an Aimed. Aiming through another zone (a boost): the line first reaches for that zone, and only once the
+    // pointer passed over it does a second line reach for the targets.
     private void OnAiming(IZoneView from, AimStep step, Vector2 pointer)
     {
         if(from.Space is not { } fromZone || Current is not { } scope || !scope.CanAimFrom(fromZone))
@@ -84,17 +99,30 @@ public sealed class InputBoard
             return;
         }
 
-        var target = TargetAt(fromZone, pointer);
+        if(step == AimStep.Start) passedVia = false;
+        var via = scope.ViaOf(fromZone);
+        if(via is not null && !passedVia && UnderPointer.Contains((Control)ViewOf(via), pointer)) passedVia = true;
+        bool aimingTargets = via is null || passedVia;
+
+        var target = aimingTargets ? TargetAt(fromZone, pointer, via) : null;
         var accepted = target is not null && scope.CanAim(fromZone, target) ? target : null;
+        var start = CenterOf((Control)from);
+        var end = accepted is null ? pointer : CenterOf(ControlOf(accepted));
         switch(step)
         {
             case AimStep.Start:
             case AimStep.Move:
-                AimLine?.ShowLine(CenterOf((Control)from), accepted is null ? pointer : CenterOf(ControlOf(accepted)));
+                if(via is null) AimLine?.ShowLine(start, end);
+                else if(!passedVia) AimLine?.ShowLine(start, pointer);
+                else
+                {
+                    var through = CenterOf((Control)ViewOf(via));
+                    AimLine?.ShowLines((start, through), (through, end));
+                }
                 break;
             case AimStep.End:
                 AimLine?.HideLine();
-                if(accepted is not null) Gestures.Publish(new Aimed(fromZone, accepted));
+                if(accepted is not null) Gestures.Publish(new Aimed(fromZone, accepted, via));
                 break;
             case AimStep.Cancel:
                 AimLine?.HideLine();
@@ -102,11 +130,11 @@ public sealed class InputBoard
         }
     }
 
-    // A zone under the pointer first, else a play area
-    private AimTarget? TargetAt(ICardSpace from, Vector2 pointer)
+    // A zone under the pointer first (not the ones aimed from or through), else a play area
+    private AimTarget? TargetAt(ICardSpace from, Vector2 pointer, ICardSpace? via)
     {
         var zone = Driver.Views
-            .Where(view => view.Space is not null && !ReferenceEquals(view.Space, from) && UnderPointer.Contains((Control)view, pointer))
+            .Where(view => view.Space is not null && !ReferenceEquals(view.Space, from) && !ReferenceEquals(view.Space, via) && UnderPointer.Contains((Control)view, pointer))
             .Select(view => view.Space!)
             .FirstOrDefault();
         if(zone is not null) return new ZoneTarget(zone);

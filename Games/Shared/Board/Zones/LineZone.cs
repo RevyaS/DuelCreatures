@@ -18,6 +18,7 @@ public partial class LineZone : CardLineStatic, IZoneView, IBindable<GroupSpace>
     public event Action<ZoneSnapshot>? Presented;
     public event Action<IZoneView>? InspectRequested;
     public event Action<IZoneView, CardBase?>? Clicked;
+    public event Action<IZoneView, CardBase?>? LongPressed;
 
     [Export] public Color HighlightColor { get; set; } = new(1f, 0.85f, 0.2f);
     [Export] public float HighlightWidth { get; set; } = 4;
@@ -35,6 +36,10 @@ public partial class LineZone : CardLineStatic, IZoneView, IBindable<GroupSpace>
         {
             if(node.CurrentCard is { } card) Clicked?.Invoke(this, card);
             if(Inspectable && Space is not null) InspectRequested?.Invoke(this);
+        };
+        CardLongPressed += node =>
+        {
+            if(node.CurrentCard is { } card) LongPressed?.Invoke(this, card);
         };
     }
 
@@ -72,6 +77,11 @@ public partial class LineZone : CardLineStatic, IZoneView, IBindable<GroupSpace>
         if(highlight is not null) highlight.Visible = zone;
         OutlineCard = cards is null ? null : node => node.CurrentCard is { } card && cards(card) ? CardHighlightColor : null;
         Refresh();
+    }
+
+    public void Resync()
+    {
+        if(Space is GroupSpace space) Bind(space);
     }
 
     public void Bind(GroupSpace space)

@@ -6,477 +6,223 @@ using ArC.CardGames;
 using ArC.CardGames.Components;
 using ArC.CardGames.Flow;
 using ArC.CardGames.Predefined.Common;
-using ArC.CardGames.Vanguard;
 using ArC.CardGames.Rules;
 using ArC.CardGames.Setup;
+using ArC.CardGames.Vanguard;
 using Godot;
+using static VanguardQuestions;
 
-public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvider
+/// <summary>
+/// The human player of Vanguard, and the screen showing the game. Every question ArC asks goes, in order, to:
+/// <list type="number">
+/// <item>the answer a strategy already gave for it (a gesture that answered several questions at once);</item>
+/// <item>the current phase's strategy (mulligan, ride, main, attack), which passes what it doesn't answer to</item>
+/// <item>DefaultVanguardAnswers, which answers every question with the old board's mobile prompts (guarding too).</item>
+/// </list>
+/// Questions wait for the board to finish showing what happened first. Tapping a card shows its details (unless the tap
+/// answers what is being asked), long pressing a vanguard lists its soul, pressing the drop zone lists it.
+/// </summary>
+public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvider, IProvide<IActivationGate>
 {
-    VanguardBoard board = null!;
-    public VanguardBoard Board => board;
+    VanguardBoardView board = null!;
+    public VanguardBoardView Board => board;
+    CardList CardListComponent = null!;
+    SelectFromCardList SelectFromCardListComponent = null!;
+    SelectCardsComponent SelectCardsComponent = null!;
+    CardDetailsOverlay CardDetails = null!;
+    ArcDriver? driver;
+    // The zone whose cards CardListComponent is showing
+    ICardSpace? listedZone;
+
+    InputBoard inputBoard = null!;
+    VanguardInput? input;
+    DefaultVanguardAnswers? defaults;
+    // Who answers now: the phase's strategy, on top of the default answers
+    IVanguardAnswers? answers;
+
+    /// <summary>What the card details may activate: nothing, unless the current scope puts its gate in (InputScope.Activatable).</summary>
+    public ActivationGateSlot Activations { get; } = new();
+    IActivationGate IProvide<IActivationGate>.Value() => Activations;
 
     public VanguardPlayArea PlayArea { get; private set; } = null!;
-
     public VanguardPlayArea OpponentPlayArea { get; private set; } = null!;
-
     public VanguardSkillService SkillService { get; private set; } = null!;
+    PlayAreaBase IPlayerInputProvider.PlayArea => PlayArea;
 
     // Board animations play from this queue; prompts wait until it's done
     public Presenter Presenter { get; } = new();
 
-    VanguardCard CurrentVanguard => PlayArea.Vanguard.Card!;
-    PlayAreaBase IPlayerInputProvider.PlayArea => PlayArea;
-    GameContext GameContext = null!;
-
-    private bool Active = false;
-
-    IInputProviderStrategy strategy = null!;
-
-    SelectCardsComponent SelectCardsComponent = null!;
-    SelectFromCardList SelectFromCardListComponent = null!;
-    CardList CardListComponent = null!;
-    CardInfo CardInfoComponent = null!;
-
-    Stack<IInputProviderStrategy> strategyStack = new();
-
     public override void _Ready()
     {
-        board = GetNode<VanguardBoard>($"%{nameof(VanguardBoard)}");
-
+        board = GetNode<VanguardBoardView>($"%{nameof(VanguardBoard)}");
+        CardListComponent = GetNode<CardList>($"%{nameof(CardListComponent)}");
+        CardListComponent.CardPressed += OnListedCardPressed;
+        SelectFromCardListComponent = GetNode<SelectFromCardList>($"%{nameof(SelectFromCardListComponent)}");
+        SelectCardsComponent = GetNode<SelectCardsComponent>($"%{nameof(SelectCardsComponent)}");
+        CardDetails = GetNode<CardDetailsOverlay>($"%{nameof(CardDetails)}");
+        // A card offered to pick (a heal, a soul blast, the mulligan): its details, to read before picking
+        SelectFromCardListComponent.CardPressed += node => ShowDetails(node);
+        SelectCardsComponent.CardPressed += node => ShowDetails(node);
+        // The details stay usable while a card list is open (reading them doesn't close it)
+        CardListComponent.LetThrough(CardDetails.Details);
         // Card flights draw above the board and below the HUD (see the scene)
         Presenter.Flights = GetNode<CardFlightLayer>("%CardFlights");
-        SelectCardsComponent = GetNode<SelectCardsComponent>($"%{nameof(SelectCardsComponent)}");
-        SelectFromCardListComponent = GetNode<SelectFromCardList>($"%{nameof(SelectFromCardListComponent)}");
-        CardListComponent = GetNode<CardList>($"%{nameof(CardListComponent)}");
-        CardListComponent.CardPressed += OnCardListCardPressed;
-
-
-        board.PlayerArea.DropZone.SetCardList(CardListComponent);
-        board.OppArea.DropZone.SetCardList(CardListComponent);
-
-        Board.PlayerSoulPressed += OnPlayerSoulPressed;
-        Board.OppSoulPressed += OnOppSoulPressed;
-        Board.HandCardPressed += OnHandCardPressed;
-        Board.UnitCircleCardPressed += OnUnitCircleCardPressed;
-        Board.PlayerUnitCircleCardPressed += OnPlayerUnitCircleCardPressed;
-        Board.DamageZoneCardPressed += OnDamageZoneCardPressed;
-        Board.PublicCardPressed += OnPublicCardPressed;
-        SelectCardsComponent.CardPressed += OnPublicCardPressed;
-        SelectFromCardListComponent.CardPressed += OnPublicCardPressed;
-
-        CardInfoComponent = GetNode<CardInfo>($"%{nameof(CardInfoComponent)}");
-        CardInfoComponent.Init(board, this);
+        // The HUD's buttons and hint, wherever they are in the scene (the board holds them)
+        inputBoard = new(Activations, Descendants(this).OfType<BoardButtonView>(),
+            Descendants(this).OfType<InputHintLabel>().FirstOrDefault(), Descendants(this).OfType<AimIndicatorLayer>().FirstOrDefault());
+        // A skill activated from the details: they close, the skill goes on on the board
+        inputBoard.Gestures.Subscribe<SkillActivated>(_ => CardDetails.Hide());
     }
 
-    private void OnPlayerUnitCircleCardPressed(UnitCircleComponent unitCircle, Card card)
+    /// <summary>Shows <paramref name="session"/> on the board and the HUD. Call once its game has started.</summary>
+    public void Show(VanguardGameSession session)
     {
-        ShowCardInfo(card, true, GrantedSkills(unitCircle));
+        driver?.Dispose();
+        driver = board.Show(session, Presenter);
+        driver.ZoneInspected += OnZoneInspected;
+        driver.CardInspected += OnCardInspected;
+        driver.LongPressed += OnLongPressed;
+        inputBoard.Attach(driver);
     }
 
-    // Skills a unit got from effects (e.g. "this unit gets '[AUTO] ...' until end of turn")
-    private VanguardSkill[] GrantedSkills(UnitCircleComponent? unitCircle)
+    /// <summary>Makes this the player of <paramref name="playArea"/> (the session builder calls it once the game started).</summary>
+    public void Activate(VanguardPlayArea playArea, VanguardPlayArea opponentPlayArea, VanguardSkillService skillService, GameContext gameContext)
     {
-        if(unitCircle?.UnitCircle is not { } circle) return [];
-        return PlayArea.EffectService.GetGrantedSkills(circle).Cast<VanguardSkill>().ToArray();
-    }
-
-    private void OnPlayerSoulPressed()
-    {
-        CardListComponent.Show("Soul", PlayArea.Soul.Cards.Cast<VanguardCard>().ToList());
-    }
-
-    private void OnOppSoulPressed()
-    {
-        CardListComponent.Show("Opponent's Soul", OpponentPlayArea.Soul.Cards.Cast<VanguardCard>().ToList());
-    }
-
-    public void Activate(VanguardPlayArea playArea, VanguardPlayArea oppPlayArea, VanguardSkillService vanguardSkillService, GameContext gameContext)
-    {
-        Active = true;
-        OpponentPlayArea = oppPlayArea;
         PlayArea = playArea;
-        GameContext = gameContext;
-        SkillService = vanguardSkillService;
-    }
-
-    public void Deactivate()
-    {
-        Active = false;
+        OpponentPlayArea = opponentPlayArea;
+        SkillService = skillService;
+        var presentation = new PresentationContext(Presenter, board.Sfx, BoardSide.Player);
+        input = new(this, gameContext, inputBoard, presentation, this, SelectFromCardListComponent, SelectCardsComponent, CardListComponent, CardDetails.Show);
+        answers = defaults = new(input);
     }
 
     public void SetEventBus(VanguardEventBus eventBus)
     {
         eventBus.PhaseChanged += OnPhaseChanged;
-        eventBus.SkillExecution += OnSkillExecution;
-        eventBus.SkillExecuted += OnSkillExecuted;
-        eventBus.OnDamageChecked += OnDamageChecked;
-        eventBus.OnDriveChecked += OnDriveChecked;
-        eventBus.TriggerResolved += OnTriggerResolved;
     }
 
-    private Task OnDriveChecked(VanguardPlayArea area, VanguardCard card)
-    {
-        if(ReferenceEquals(PlayArea, area))
-        {
-            PushProviderStrategy(new TriggerStrategy(board, PlayArea, SelectFromCardListComponent, GameContext));
-        }
-        return Task.CompletedTask;
-    }
-
-    private Task OnDamageChecked(VanguardPlayArea area, VanguardCard card)
-    {
-        if(ReferenceEquals(PlayArea, area))
-        {
-            PushProviderStrategy(new TriggerStrategy(board, PlayArea, SelectFromCardListComponent, GameContext));
-        }
-        return Task.CompletedTask;
-    }
-
-    private Task OnTriggerResolved()
-    {
-        if(strategy is TriggerStrategy)
-        {
-            PopProviderStrategy();
-        }
-        return Task.CompletedTask;
-    }
-
-    private void OnSkillExecuted(VanguardSkillInvocationSource invocationSource, VanguardSkill skill)
-    {
-        if(IsOwnSkill(invocationSource))
-        {
-            PopProviderStrategy();
-        }
-    }
-
-    private void OnSkillExecution(VanguardSkillInvocationSource invocationSource, VanguardSkill skill)
-    {
-        if(IsOwnSkill(invocationSource))
-        {
-            PushProviderStrategy(new SkillExecutionStrategy(board, PlayArea, CardListComponent, SelectFromCardListComponent, invocationSource.Card.Name));
-        }
-    }
-
-    // Skills can come from a circle, the hand, the soul or the (shared) guardian circle
-    private bool IsOwnSkill(VanguardSkillInvocationSource source) => source switch
-    {
-        VanguardUnitCircleInvocationSource unitCircle => PlayArea.OwnsUnitCircle(unitCircle.UnitCircle),
-        VanguardHandInvocationSource hand => ReferenceEquals(hand.Hand, PlayArea.Hand),
-        VanguardSoulInvocationSource soul => ReferenceEquals(soul.Soul, PlayArea.Soul),
-        // Both players share one guardian circle: its skills are the defender's
-        VanguardGuardianCircleInvocationSource => CurrentGuard() is { } guard && PlayArea.OwnsUnitCircle(guard.TargetCircle),
-        _ => false,
-    };
-
-    private GuardState? CurrentGuard() => GameContext.States.OfType<GuardState>().FirstOrDefault();
-
-    GuardState? guardStrategyFor = null;
-
-    // ArC guards inside a GuardState (no event): when it asks this player for guards or
-    // interceptors, switch to the guard step's UI, once per battle
-    private void EnsureGuardStrategy()
-    {
-        var guard = CurrentGuard();
-        if(guard is null || !PlayArea.OwnsUnitCircle(guard.TargetCircle) || ReferenceEquals(guard, guardStrategyFor)) return;
-
-        guardStrategyFor = guard;
-        SetProviderStrategy(new GuardPhaseStrategy(board, board.GetPlayerUnitCircleComponent(guard.TargetCircle), PlayArea, guard));
-    }
-
+    // Each phase's strategy on top of the default answers (guarding, skills and triggers are the defaults' prompts)
     private Task OnPhaseChanged(IPhase phase)
     {
-        if(phase is not IManualPhase) return Task.CompletedTask;
-
-        switch(phase)
+        if(input is null || defaults is null) return Task.CompletedTask;
+        answers = phase switch
         {
-            case MulliganPhase:
-                SetProviderStrategy(new MulliganPhaseStrategy(board, SelectCardsComponent));
-                return Task.CompletedTask;
-            case RidePhase:
-                SetProviderStrategy(new RidePhaseStrategy(board));
-                return Task.CompletedTask;
-            case MainPhase:
-                SetProviderStrategy(new VanguardMainPhaseStrategy(board, CardInfoComponent, GameContext));
-                return Task.CompletedTask;
-            case VanguardAttackPhase:
-                SetProviderStrategy(new AttackPhaseStrategy(board, GameContext));
-                return Task.CompletedTask;
-        }
-        throw new NotSupportedException($"{phase.GetType().Name} is not supported yet");
+            MulliganPhase => new VanguardMulliganStrategy(input, defaults),
+            RidePhase => new VanguardRidePhaseStrategy(input, defaults),
+            MainPhase => new VanguardMainPhaseStrategy(input, defaults),
+            VanguardAttackPhase => new VanguardAttackPhaseStrategy(input, defaults),
+            _ => defaults,
+        };
+        return Task.CompletedTask;
     }
 
-    public void SetProviderStrategy(IInputProviderStrategy strategy)
+    #region Questions
+    // A known answer first; else the board catches up, then the strategies answer
+    private async Task<T> Ask<T>(Question<T> question, Func<IVanguardAnswers, Task<T>> ask)
     {
-        strategyStack.Clear();
-        strategyStack.Push(strategy);
-        SetProviderStrategyCore();
-    }
-
-    public void PushProviderStrategy(IInputProviderStrategy strategy)
-    {
-        strategyStack.Push(strategy);
-        SetProviderStrategyCore();
-    }
-
-    public void PopProviderStrategy()
-    {
-        strategyStack.Pop();
-        SetProviderStrategyCore();
-    }
-
-    private void SetProviderStrategyCore()
-    {
-        strategy = strategyStack.Peek();
-    }
-
-    private void OnHandCardPressed(Card card)
-    {
-        bool skillActivationWindow = false;
-        if(GameContext.GameState is SelectMainPhaseActionState)
-        {
-            skillActivationWindow = true;
-        }
-        ShowCardInfo(card, skillActivationWindow);
-    }
-
-    private void OnUnitCircleCardPressed(Card card)
-    {
-        var circle = Board.OppArea.Circles.FirstOrDefault(circle => ReferenceEquals(circle.CurrentCard, card));
-        ShowCardInfo(card, grantedSkills: GrantedSkills(circle));
-    }
-
-    private void OnCardListCardPressed(Card card)
-    {
-        ShowCardInfo(card);
-    }
-
-    private void OnDamageZoneCardPressed(Card card)
-    {
-        ShowCardInfo(card);
-    }
-
-    private void OnPublicCardPressed(Card card)
-    {
-        ShowCardInfo(card);
-    }
-
-    private void ShowCardInfo(Card card, bool skillActivationWindow = false, VanguardSkill[]? grantedSkills = null)
-    {
-        // Above every other HUD panel, e.g. the card selection it was opened from
-        CardInfoComponent.MoveToFront();
-        CardInfoComponent.Show((VanguardCard)card.CurrentCard, skillActivationWindow, grantedSkills);
-    }
-
-    // Don't prompt the player before the board has caught up with the game
-    private async Task<T> WhenPresented<T>(Func<Task<T>> request)
-    {
+        var current = input ?? throw new InvalidOperationException($"{nameof(VanguardInputProvider)} was asked {question} before it was activated");
+        if(current.Answers.TryTake(question, out var known)) return known;
         await Presenter.WhenIdle();
-        return await request();
+        return await ask(answers!);
     }
 
-    public Task<List<CardBase>> SelectCardsFromHandRange(int minimum, int maximum)
+    // A new action starts: whatever the last one was given must have been asked for
+    private void StartAction()
     {
-        return WhenPresented(() =>
-        {
-            EnsureGuardStrategy();
-            return ((ISelectCardsFromHand)strategy).SelectCardsFromHand(minimum, maximum);
-        });
-    }
-
-    public Task<CardBase?> SelectCardFromHandOrNot()
-    {
-        return WhenPresented(() => ((ISelectCardFromHandOrNot)strategy).SelectCardFromHandOrNot(CurrentVanguard));
+        input?.Answers.EnsureNoneLeft("by the last action");
+        input?.Narrowing.Clear();
     }
 
     public Task<IMainPhaseAction> RequestMainPhaseAction(List<IMainPhaseAction> actions)
     {
-        return WhenPresented(() => ((IRequestMainPhaseAction)strategy).RequestMainPhaseAction(actions));
-    }
-
-    public Task<UnitCircle> SelectOpponentCircle(UnitSelector selector)
-    {
-        return WhenPresented(() => ((ISelectOpponentCircle)strategy).SelectOpponentCircle(selector));
-    }
-
-    public Task<UnitCircle> SelectOwnUnitCircle(UnitSelector selector)
-    {
-        return WhenPresented(() => ((ISelectOwnUnitCircle)strategy).SelectOwnUnitCircle(selector));
-    }
-
-    public Task<VanguardActivationSkill> SelectSkillToActivate(List<VanguardActivationSkill> skills)
-    {
-        return WhenPresented(() => ((ISelectSkillToActivate)strategy).SelectSkillToActivate(skills));
-    }
-
-    public Task<VanguardCard> SelectCardFromDamageZone()
-    {
-        return WhenPresented(() => ((ISelectCardFromDamageZone)strategy).SelectCardFromDamageZone());
-    }
-
-    public Task<VanguardCard> SelectCardFromDeck(int minGrade, int maxGrade)
-    {
-        return WhenPresented(() => ((ISelectCardFromDeck)strategy).SelectCardFromDeck(minGrade, maxGrade));
-    }
-
-    public Task<List<VanguardCard>> SelectCardsFromDamageZone(int amount)
-    {
-        return WhenPresented(() => {
-            if(GameContext.GameState is CounterBlastPhaseState)
-            {
-                return ((ISelectCardsToCounterBlast)strategy).SelectCardsFromDamageZone(amount);
-            }
-            if(GameContext.GameState is CounterChargePhaseState)
-            {
-                return ((ISelectCardsToCounterCharge)strategy).SelectCardsFromDamageZone(amount);
-            }
-            throw new NotImplementedException();
-        });
-    }
-
-    public Task<List<VanguardCard>> SelectCardsFromSoul(int amount)
-    {
-        return WhenPresented(() => ((ISelectCardsFromSoul)strategy).SelectCardsFromSoul(amount));
-    }
-
-    public Task<bool> QueryActivateSkill(VanguardCard Invoker, VanguardAutomaticSkill Skill)
-    {
-        return WhenPresented(() => ((IQueryActivateSkill)strategy).QueryActivateSkill(Invoker, Skill));
-    }
-
-    public Task<CardBase> SelectCardFromHand()
-    {
-        return WhenPresented(() => ((ISelectCardFromHand)strategy).SelectCardFromHand());
+        StartAction();
+        return Ask(MainPhaseAction, answers => answers.RequestMainPhaseAction(actions));
     }
 
     public Task<IAttackPhaseAction> RequestAttackPhaseAction(List<IAttackPhaseAction> actions)
     {
-        return WhenPresented(() => ((IRequestAttackPhaseAction)strategy).RequestAttackPhaseAction(actions));
+        StartAction();
+        return Ask(AttackPhaseAction, answers => answers.RequestAttackPhaseAction(actions));
     }
 
-    public Task<PendingSkill> SelectSkillToInvoke(IReadOnlyList<PendingSkill> skills)
-    {
-        return WhenPresented(() => PromptSkillOrder(skills));
-    }
-
-    // Several of this player's skills triggered at once: drag the one to resolve first out of
-    // the list (the rest are offered again after it, as it may change what they can do)
-    private async Task<PendingSkill> PromptSkillOrder(IReadOnlyList<PendingSkill> skills)
-    {
-        if(skills.Count == 1) return skills[0];
-
-        CardListComponent.Show("Select the skill to resolve first", skills.Select(skill => skill.Source.Card).ToList());
-        CardListComponent.CanClose = false;
-        CardListComponent.BaseDroppable = true;
-        CardListComponent.CardsDraggable = true;
-
-        TaskCompletionSource<PendingSkill> completionSource = new();
-        Action<Card> cardDroppedHandler = (card) =>
-        {
-            var chosen = skills.FirstOrDefault(skill => ReferenceEquals(skill.Source.Card, card.CurrentCard)) ?? skills[0];
-            completionSource.TrySetResult(chosen);
-        };
-        CardListComponent.CardDroppedOutside += cardDroppedHandler;
-
-        var result = await completionSource.Task;
-
-        CardListComponent.CardDroppedOutside -= cardDroppedHandler;
-        CardListComponent.BaseDroppable = false;
-        CardListComponent.CardsDraggable = false;
-        CardListComponent.CanClose = true;
-        CardListComponent.Hide();
-        return result;
-    }
-
-    public Task<List<UnitCircle>> SelectOwnUnitCirclesRange(UnitSelector selector, int minimum, int maximum)
-    {
-        return WhenPresented(() => PromptOwnUnitCircles(selector, minimum, maximum));
-    }
-
-    // Select buttons on the matching circles, then Confirm once enough are selected
-    private async Task<List<UnitCircle>> PromptOwnUnitCircles(UnitSelector selector, int minimum, int maximum)
-    {
-        List<UnitCircle> selected = [];
-        board.PushPlayerPhaseIndicatorText(minimum == maximum ? $"Select {maximum} unit(s)" : $"Select {minimum}-{maximum} units");
-        board.EnableSelectOwnUnitCircle(selector);
-        board.ShowLeftButton(TextConstants.Confirm);
-        board.EnableLeftButton(minimum == 0);
-
-        TaskCompletionSource completionSource = new();
-        Action<UnitCircleComponent> selectedHandler = (circle) =>
-        {
-            if(selected.Count >= maximum)
-            {
-                circle.ResetSelection();
-                return;
-            }
-            selected.Add(circle.UnitCircle);
-            board.EnableLeftButton(selected.Count >= minimum);
-        };
-        Action<UnitCircleComponent> deselectedHandler = (circle) =>
-        {
-            selected.Remove(circle.UnitCircle);
-            board.EnableLeftButton(selected.Count >= minimum);
-        };
-        Action confirmHandler = () => completionSource.TrySetResult();
-        board.PlayerCircleSelected += selectedHandler;
-        board.PlayerCircleDeselected += deselectedHandler;
-        board.LeftButtonPressed += confirmHandler;
-
-        await completionSource.Task;
-
-        board.PlayerCircleSelected -= selectedHandler;
-        board.PlayerCircleDeselected -= deselectedHandler;
-        board.LeftButtonPressed -= confirmHandler;
-        board.DisableSelectOwnUnitCircle();
-        board.EnableLeftButton();
-        board.HideLeftButton();
-        board.PopPlayerPhaseIndicatorText();
-        return selected;
-    }
-
+    public Task<CardBase> SelectCardFromHand() => Ask(CardFromHand, answers => answers.SelectCardFromHand());
+    public Task<CardBase?> SelectCardFromHandOrNot() => Ask(CardFromHandOrNot, answers => answers.SelectCardFromHandOrNot());
+    public Task<List<CardBase>> SelectCardsFromHandRange(int minimum, int maximum) => Ask(CardsFromHand, answers => answers.SelectCardsFromHandRange(minimum, maximum));
+    public Task<UnitCircle> SelectOwnUnitCircle(UnitSelector selector) => Ask(OwnCircle, answers => answers.SelectOwnUnitCircle(selector));
+    public Task<UnitCircle> SelectOpponentCircle(UnitSelector selector) => Ask(OpponentCircle, answers => answers.SelectOpponentCircle(selector));
+    public Task<List<UnitCircle>> SelectOwnUnitCircles(UnitSelector selector) => Ask(OwnCircles, answers => answers.SelectOwnUnitCircles(selector));
+    public Task<List<UnitCircle>> SelectOwnUnitCirclesRange(UnitSelector selector, int minimum, int maximum) => Ask(OwnCirclesRange, answers => answers.SelectOwnUnitCirclesRange(selector, minimum, maximum));
+    public Task<VanguardActivationSkill> SelectSkillToActivate(List<VanguardActivationSkill> skills) => Ask(SkillToActivate, answers => answers.SelectSkillToActivate(skills));
+    public Task<PendingSkill> SelectSkillToInvoke(IReadOnlyList<PendingSkill> skills) => Ask(SkillToInvoke, answers => answers.SelectSkillToInvoke(skills));
+    public Task<VanguardCard> SelectCardFromDamageZone() => Ask(CardFromDamageZone, answers => answers.SelectCardFromDamageZone());
+    public Task<VanguardCard> SelectCardFromDeck(int minGrade, int maxGrade) => Ask(CardFromDeck, answers => answers.SelectCardFromDeck(minGrade, maxGrade));
+    public Task<List<VanguardCard>> SelectCardsFromDamageZone(int amount) => Ask(CardsFromDamageZone, answers => answers.SelectCardsFromDamageZone(amount));
+    public Task<List<VanguardCard>> SelectCardsFromSoul(int amount) => Ask(CardsFromSoul, answers => answers.SelectCardsFromSoul(amount));
+    public Task<bool> QueryActivateSkill(VanguardCard invoker, VanguardAutomaticSkill automaticSkill) => Ask(ActivateTrigger, answers => answers.QueryActivateSkill(invoker, automaticSkill));
     public Task<VanguardSkills.SkillAction> SelectSkillOption(IReadOnlyList<VanguardSkills.SkillAction> options, VanguardSkillContextObject context)
+        => Ask(SkillOption, answers => answers.SelectSkillOption(options, context));
+    #endregion
+
+    #region Inspecting
+    private void OnZoneInspected(IZoneView view)
     {
-        return WhenPresented(() => PromptSkillOption(options, context));
+        if(view.Space is null) return;
+        ShowList(((Node)view).Name, view.Space);
     }
 
-    // "Choose one of": the options that can be used right now, each described as text
-    private Task<VanguardSkills.SkillAction> PromptSkillOption(IReadOnlyList<VanguardSkills.SkillAction> options, VanguardSkillContextObject context)
+    // A tap that answers what is asked (e.g. choosing a circle) isn't also a look at the card
+    private void OnCardInspected(IZoneView view, CardBase card)
     {
-        var choosable = options.Where(option => VanguardSkills.SkillRules.CanChooseSkillOption(option, context)).ToList();
-        if(choosable.Count == 1) return Task.FromResult(choosable[0]);
+        if(view.Space is { } zone && inputBoard.Takes(new CardClicked(card, zone))) return;
+        CardDetails.Show(new CardDetail(card, view.Space, GrantedSkills(view.Space)));
+    }
 
-        TaskCompletionSource<VanguardSkills.SkillAction> completionSource = new();
-        void Ask()
+    // Long pressing a vanguard lists its soul (unless the long press answers what is asked)
+    private void OnLongPressed(IZoneView view, CardBase? card)
+    {
+        if(view.Space is not Vanguard vanguard) return;
+        if(card is not null && inputBoard.Takes(new CardLongPressed(card, vanguard))) return;
+        var own = ReferenceEquals(vanguard, PlayArea.Vanguard);
+        var area = own ? PlayArea : OpponentPlayArea;
+        ShowList(own ? "Soul" : "Opponent's Soul", area.Soul);
+    }
+
+    private void ShowList(string title, ICardSpace zone)
+    {
+        var cards = ZoneSnapshot.Of(zone).Cards.Select(card => card.Card).ToList();
+        if(cards.Count == 0) return;
+        listedZone = zone;
+        CardListComponent.Show(title, cards);
+    }
+
+    private void OnListedCardPressed(Card node)
+    {
+        // While the list offers skills or cards to pick (cards draggable), the pick shows what each card stands for instead
+        if(CardListComponent.CardsDraggable) return;
+        if(node.CurrentCard is { } card) CardDetails.Show(new CardDetail(card, listedZone, []));
+    }
+
+    private void ShowDetails(Card node)
+    {
+        if(node.CurrentCard is { } card) CardDetails.Show(new CardDetail(card));
+    }
+
+    // Skills a unit got from effects (e.g. "this unit gets '[AUTO] ...' until end of turn")
+    private IReadOnlyList<ISkill> GrantedSkills(ICardSpace? zone)
+        => zone is UnitCircle circle && SkillService is not null ? PlayArea.EffectService.GetGrantedSkills(circle) : [];
+    #endregion
+
+    public override void _ExitTree()
+    {
+        driver?.Dispose();
+    }
+
+    private static IEnumerable<Node> Descendants(Node node)
+    {
+        foreach(var child in node.GetChildren())
         {
-            var dialog = ChoiceDialog.Show(this, $"{context.Invoker.Card.Name}: choose one",
-                choosable.Select(option => new ChoiceDialog.Choice(
-                    VanguardSkillToStringInterpreter.ExtractSkillAction(option),
-                    () => completionSource.TrySetResult(option))));
-
-            // The skill needs an answer: closing the dialog (Cancel) asks again. Deferred, since
-            // picking a choice also hides the dialog just before reporting the choice.
-            dialog.VisibilityChanged += () =>
-            {
-                if(!dialog.Visible)
-                {
-                    Callable.From(() =>
-                    {
-                        if(!completionSource.Task.IsCompleted) Ask();
-                    }).CallDeferred();
-                }
-            };
+            yield return child;
+            foreach(var descendant in Descendants(child)) yield return descendant;
         }
-        Ask();
-        return completionSource.Task;
-    }
-
-    public Task<List<UnitCircle>> SelectOwnUnitCircles(UnitSelector selector)
-    {
-        return WhenPresented(() =>
-        {
-            EnsureGuardStrategy();
-            return ((ISelectOwnUnitCircles)strategy).SelectOwnUnitCircles(selector);
-        });
     }
 }
