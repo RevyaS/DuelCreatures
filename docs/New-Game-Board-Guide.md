@@ -182,7 +182,7 @@ Copy `Games/Vanguard/Input/` (or `Games/YuGiOh/Input/`) and the input provider.
    - Preview answers on the board (guards, a mulligan) and `Resync()` the views afterwards.
 6. **The input provider** (`VanguardInputProvider.cs`):
    - implements the game's `I…PlayerInputProvider`, each method as `Ask(question, answers => …)`;
-   - swaps strategies on `PhaseChanged`;
+   - swaps strategies on `PhaseStarted` (`EventBus.Subscribe<PhaseStarted>`, published before each phase runs);
    - attaches the `InputBoard` to the driver;
    - handles inspecting (details on tap unless the tap answers something, zone lists, the soul on long press).
 7. **The HUD scene:**

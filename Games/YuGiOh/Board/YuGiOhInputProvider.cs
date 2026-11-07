@@ -98,13 +98,17 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
         answers = defaults = new(input);
     }
 
+    IDisposable? phaseSubscription;
+
     public void SetEventBus(YuGiOhEventBus eventBus)
     {
-        eventBus.PhaseChanged += OnPhaseChanged;
+        phaseSubscription?.Dispose();
+        // Published before each phase runs (pre-phases too), so the strategy is set before the phase asks anything
+        phaseSubscription = eventBus.Subscribe<ArC.CardGames.Rules.PhaseStarted>(started => OnPhaseStarted(started.Phase));
     }
 
     // Each phase's strategy on top of the default answers (main and battle by touch gestures; the rest by the defaults)
-    private Task OnPhaseChanged(IPhase phase)
+    private Task OnPhaseStarted(IPhase phase)
     {
         if(input is null || defaults is null) return Task.CompletedTask;
         answers = phase switch

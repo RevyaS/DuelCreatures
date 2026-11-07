@@ -343,8 +343,7 @@ public sealed class ArcDriver : IDisposable
 
         subscriptions.Add(eventBus.Subscribe<CardsMoved>(OnCardsMoved));
         subscriptions.Add(eventBus.Subscribe<CardTurned>(OnCardTurned));
-        eventBus.DeckShuffled += OnDeckShuffled;
-        subscriptions.Add(new Disposable(() => eventBus.DeckShuffled -= OnDeckShuffled));
+        subscriptions.Add(eventBus.Subscribe<DeckShuffled>(shuffled => OnDeckShuffled(shuffled.Deck)));
         if(OS.IsDebugBuild())
         {
             eventBus.Settled += OnSettled;

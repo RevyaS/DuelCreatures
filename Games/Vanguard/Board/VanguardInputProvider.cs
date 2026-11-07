@@ -97,13 +97,17 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
         answers = defaults = new(input);
     }
 
+    IDisposable? phaseSubscription;
+
     public void SetEventBus(VanguardEventBus eventBus)
     {
-        eventBus.PhaseChanged += OnPhaseChanged;
+        phaseSubscription?.Dispose();
+        // Published before each phase runs (pre-phases too), so the strategy is set before the phase asks anything
+        phaseSubscription = eventBus.Subscribe<PhaseStarted>(started => OnPhaseStarted(started.Phase));
     }
 
     // Each phase's strategy on top of the default answers (guarding, skills and triggers are the defaults' prompts)
-    private Task OnPhaseChanged(IPhase phase)
+    private Task OnPhaseStarted(IPhase phase)
     {
         if(input is null || defaults is null) return Task.CompletedTask;
         answers = phase switch
