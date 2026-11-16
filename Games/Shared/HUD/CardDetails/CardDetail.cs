@@ -26,7 +26,7 @@ public sealed record CardDetail(CardBase Card, ICardSpace? From, IReadOnlyList<I
     public bool IsFocused => Focus is not null || FocusText is not null;
 
     /// <summary>The card's own skills, then the granted ones.</summary>
-    public IEnumerable<ISkill> AllSkills => (Card is SkilledCard skilled ? skilled.Skills : []).Concat(GrantedSkills);
+    public IEnumerable<ISkill> AllSkills => (Card is ArC.CardGames.Skills.IHasSkills skilled ? skilled.Skills.Cast<ISkill>() : []).Concat(GrantedSkills);
 }
 
 /// <summary>
@@ -141,10 +141,12 @@ public sealed class ActivationGateSlot : IActivationGate
     private void OnChanged() => Changed?.Invoke();
 }
 
-/// <summary>Skills as text when no game's interpreter is provided: the kind of skill, in words.</summary>
+/// <summary>Skills as text when no game's interpreter is provided: an engine skill's name, else the kind of skill, in words.</summary>
 public sealed class SkillKindInterpreter : ISkillTextInterpreter
 {
     public static SkillKindInterpreter Instance { get; } = new();
 
-    public string Describe(ISkill skill) => Regex.Replace(skill.GetType().Name, "(?<=[a-z0-9])(?=[A-Z])", " ");
+    public string Describe(ISkill skill) => skill is ArC.CardGames.Skills.Skill named
+        ? named.Name
+        : Regex.Replace(skill.GetType().Name, "(?<=[a-z0-9])(?=[A-Z])", " ");
 }

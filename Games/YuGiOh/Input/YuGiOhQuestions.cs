@@ -1,3 +1,5 @@
+// Off until YuGiOh moves to the rewritten ArC (docs/ArC-Rewrite-Adoption-Guide.md, section 8 step 3): define YUGIOH_MIGRATED to build it
+#if YUGIOH_MIGRATED
 using System.Collections.Generic;
 using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Common;
@@ -30,3 +32,4 @@ public static class YuGiOhQuestions
     public static readonly Question<bool> ActivateTrigger = new(nameof(ActivateTrigger));
     public static readonly Question<YuGiOhSkills.SkillAction> SkillOption = new(nameof(SkillOption));
 }
+#endif

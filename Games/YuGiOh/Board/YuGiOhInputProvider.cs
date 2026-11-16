@@ -1,3 +1,5 @@
+// Off until YuGiOh moves to the rewritten ArC (docs/ArC-Rewrite-Adoption-Guide.md, section 8 step 3): define YUGIOH_MIGRATED to build it
+#if YUGIOH_MIGRATED
 using ArC.CardGames;
 using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Common;
@@ -215,3 +217,4 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
         driver?.Dispose();
     }
 }
+#endif

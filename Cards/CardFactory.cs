@@ -1,3 +1,5 @@
+// Off: written for ArC's old Vanguard skills (VanguardAutomaticSkill, VanguardSkills); rewrite on the skill engine to use again
+#if DUEL_MAIDENS_CARDS
 using ArC.CardGames.Rules;
 using ArC.CardGames.Vanguard.Skill;
 
@@ -101,3 +103,4 @@ public static class DuelMaidensCardsFactory
         public static VanguardCard CEOAmaterasu => new VanguardCard(3, "CEO Amaterasu", 13000, 1, 0, VanguardCardSkill.TWIN_DRIVE, VanguardTrigger.NONE, []);
     }
 }
+#endif

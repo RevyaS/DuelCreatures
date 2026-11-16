@@ -3,11 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using ArC.CardGames.Components;
 using ArC.CardGames.Flow;
+using ArC.CardGames.Stats;
 using ArC.CardGames.Vanguard;
 using Godot;
 
 /// <summary>
-/// Shows each guardian's shield (printed, plus effects, e.g. +5000 from an interceptor's skill) instead of its power,
+/// Shows each guardian's shield (VanguardStats.Shield: printed, plus effects, e.g. +5000 from an interceptor's skill) instead of its power,
 /// under the guardian circle's LineZone (bound to its GuardZone like any zone extension). Reads the shields each time
 /// the game settles (effects have no event of their own) and shows them in step with the board.
 /// </summary>
@@ -17,7 +18,6 @@ public partial class GuardianShields : Node, IBindable<GuardZone>
     EventBus? eventBus;
     CardLine line = null!;
     PresentationContext? presentation;
-    VanguardEffectService effects = null!;
     readonly Dictionary<CardBase, int> shields = new(ReferenceEqualityComparer.Instance);
 
     public void Bind(GuardZone guardZone)
@@ -26,7 +26,6 @@ public partial class GuardianShields : Node, IBindable<GuardZone>
         line = GetParent() as CardLine ?? throw new System.InvalidOperationException($"{GetPath()}: {nameof(GuardianShields)} goes directly under the guardian circle's zone");
         presentation = this.DependOn<PresentationContext>();
         var session = this.DependOn<VanguardGameSession>();
-        effects = session.EffectService;
         eventBus = session.EventBus;
         this.guardZone = guardZone;
         eventBus.Settled += OnSettled;
@@ -44,7 +43,7 @@ public partial class GuardianShields : Node, IBindable<GuardZone>
     {
         if(guardZone is null) return Task.CompletedTask;
         // Read now: the game runs ahead of what is shown
-        var read = guardZone.Cards.Select(card => (card, shield: ((VanguardCard)card).Guard + effects.GetEffectTotalShield(card))).ToList();
+        var read = guardZone.CardsInPlay.Select(guardian => (card: guardian.Card, shield: StatService.ValueOf(guardian, VanguardStats.Shield))).ToList();
         presentation.Present(() =>
         {
             shields.Clear();

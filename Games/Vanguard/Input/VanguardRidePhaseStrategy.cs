@@ -1,13 +1,13 @@
-using System.Linq;
 using System.Threading.Tasks;
+using ArC.CardGames.Actions;
 using ArC.CardGames.Components;
 using ArC.CardGames.Vanguard;
 
 /// <summary>
-/// The Ride Phase, as on the old board: drag a card from the hand onto the vanguard to ride it (only cards that can
-/// ride it can be dragged), or Next Phase not to ride.
+/// The Ride Phase: drag a card from the hand onto the vanguard to ride it (only cards an offered RideRequest has can be
+/// dragged), or Next Phase not to ride.
 /// </summary>
-public sealed class VanguardRidePhaseStrategy(VanguardInput input, IVanguardAnswers below) : VanguardStrategy(input, below)
+public sealed class VanguardRidePhaseStrategy(VanguardInput input, Offered offered)
 {
     public static class Text
     {
@@ -19,26 +19,25 @@ public sealed class VanguardRidePhaseStrategy(VanguardInput input, IVanguardAnsw
         public static readonly DropChoice Ride = new("Ride");
     }
 
-    VanguardPlayArea PlayArea => Input.PlayArea;
+    VanguardPlayArea PlayArea => input.PlayArea;
 
-    public override async Task<CardBase?> SelectCardFromHandOrNot()
+    public async Task<Request> Answer()
     {
-        using var scope = Input.Board.Scope()
+        using var scope = input.Board.Scope()
             .Drag(PlayArea.Hand, CanRide)
-            .Drop(PlayArea.Vanguard, card => Refs.Has(PlayArea.Hand.Cards, card) && CanRide(card) ? [ Choices.Ride ] : [])
+            .Drop(PlayArea.Vanguard, card => CanRide(card) ? [ Choices.Ride ] : [])
             .Button(BoardButton.NextPhase)
             .Hint(Text.Ride);
 
         switch(await scope.Next())
         {
             case CardDropped drop:
-                return drop.Card;
+                return offered.One<RideRequest>(ride => ReferenceEquals(ride.Card, drop.Card), "Riding");
             default:
-                Input.Presentation.PlaySfx(VanguardSfx.PhaseChange);
-                return null;
+                input.Presentation.PlaySfx(VanguardSfx.PhaseChange);
+                return offered.EndPhase;
         }
     }
 
-    private bool CanRide(CardBase card)
-        => card is VanguardCard newVanguard && PlayArea.Vanguard.Card is { } current && VanguardGameRules.CanRide(current, newVanguard);
+    private bool CanRide(CardBase card) => offered.Any<RideRequest>(ride => ReferenceEquals(ride.Card, card));
 }

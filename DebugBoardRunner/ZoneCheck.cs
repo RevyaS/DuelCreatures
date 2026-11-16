@@ -1,3 +1,5 @@
+// Off until YuGiOh moves to the rewritten ArC (docs/ArC-Rewrite-Adoption-Guide.md, section 8 step 3): define YUGIOH_MIGRATED to build it
+#if YUGIOH_MIGRATED
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -186,3 +188,4 @@ public partial class ZoneCheck : Control
         Results.Text = string.Join("\n", results);
     }
 }
+#endif

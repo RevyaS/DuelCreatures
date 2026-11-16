@@ -1,3 +1,5 @@
+// Off until YuGiOh moves to the rewritten ArC (docs/ArC-Rewrite-Adoption-Guide.md, section 8 step 3): define YUGIOH_MIGRATED to build it
+#if YUGIOH_MIGRATED
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -55,3 +57,4 @@ public sealed class YuGiOhBattlePhaseStrategy(YuGiOhInput input, IYuGiOhAnswers 
         _ => false,
     };
 }
+#endif

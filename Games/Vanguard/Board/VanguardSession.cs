@@ -52,7 +52,7 @@ public partial class VanguardSession : Control
         var (session, services) = VanguardSessionBuilder.Create()
             .Player1(new(PlayerDeck), services =>
             {
-                InputProviderComponent.Activate(services.Game.Board.Player1Area, services.Game.Board.Player2Area, services.SkillService, services.GameContext);
+                InputProviderComponent.Activate(services.Game.Board.Player1Area, services.Game.Board.Player2Area);
                 return InputProviderComponent;
             })
             .Player2(player2, services => VanguardOpponents.Create(Opponent, Difficulty, services))

@@ -1,3 +1,5 @@
+// Off until YuGiOh moves to the rewritten ArC (docs/ArC-Rewrite-Adoption-Guide.md, section 8 step 3): define YUGIOH_MIGRATED to build it
+#if YUGIOH_MIGRATED
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ArC.CardGames.Components;
@@ -63,3 +65,4 @@ public abstract class YuGiOhStrategy(YuGiOhInput input, IYuGiOhAnswers below) : 
     public virtual Task<bool> QueryActivateSkill(YuGiOhCard invoker, YuGiOhAutomaticSkill skill) => Below.QueryActivateSkill(invoker, skill);
     public virtual Task<YuGiOhSkills.SkillAction> SelectSkillOption(IReadOnlyList<YuGiOhSkills.SkillAction> options, YuGiOhSkillContextObject context) => Below.SelectSkillOption(options, context);
 }
+#endif

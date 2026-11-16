@@ -3,23 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ArC.CardGames.Components;
+using ArC.CardGames.Setup;
 
 /// <summary>
 /// The mulligan, as on the old board: drag the cards to redraw out of the hand into the selection panel (drag one back
 /// out to keep it), then Confirm there. The hand shows the game again before answering; the game then puts the chosen
-/// cards back into the deck.
+/// cards back into the deck. Answers MulliganQuestion.RETURN.
 /// </summary>
-public sealed class VanguardMulliganStrategy(VanguardInput input, IVanguardAnswers below) : VanguardStrategy(input, below)
+public sealed class VanguardMulliganStrategy(VanguardInput input)
 {
     public static class Text
     {
         public static string Title = "Select Cards to Mulligan";
     }
 
-    public override async Task<List<CardBase>> SelectCardsFromHandRange(int minimum, int maximum)
+    public async Task<IReadOnlyList<CardBase>> Answer(Choosing<CardBase> question)
     {
-        var hand = (HandZone)Input.ViewOf(Input.PlayArea.Hand);
-        var panel = Input.HandPicker;
+        int minimum = question.Minimum, maximum = question.Maximum;
+        var hand = (HandZone)input.ViewOf(input.PlayArea.Hand);
+        var panel = input.HandPicker;
         var confirmed = new TaskCompletionSource<List<CardBase>>();
 
         Action<CardBaseComponent> dragging = _ => panel.Droppable = true;

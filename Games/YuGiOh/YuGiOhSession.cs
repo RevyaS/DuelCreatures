@@ -1,3 +1,5 @@
+// Off until YuGiOh moves to the rewritten ArC (docs/ArC-Rewrite-Adoption-Guide.md, section 8 step 3): define YUGIOH_MIGRATED to build it
+#if YUGIOH_MIGRATED
 using System.Threading.Tasks;
 using ArC.CardGames.Bots;
 using ArC.CardGames.YuGiOh;
@@ -41,3 +43,4 @@ public partial class YuGiOhSession : Control
         GD.Print("Win Condition ", session.GameOverContext.ToString());
     }
 }
+#endif

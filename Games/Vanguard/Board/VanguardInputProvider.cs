@@ -3,23 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ArC.CardGames;
+using ArC.CardGames.Actions;
 using ArC.CardGames.Components;
 using ArC.CardGames.Flow;
-using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Rules;
 using ArC.CardGames.Setup;
+using ArC.CardGames.Skills;
 using ArC.CardGames.Vanguard;
 using Godot;
-using static VanguardQuestions;
 
 /// <summary>
-/// The human player of Vanguard, and the screen showing the game. Every question ArC asks goes, in order, to:
-/// <list type="number">
-/// <item>the answer a strategy already gave for it (a gesture that answered several questions at once);</item>
-/// <item>the current phase's strategy (mulligan, ride, main, attack), which passes what it doesn't answer to</item>
-/// <item>DefaultVanguardAnswers, which answers every question with the old board's mobile prompts (guarding too).</item>
+/// The human player of Vanguard, and the screen showing the game. ArC asks four questions; each waits for the board to
+/// finish showing what happened, then goes to:
+/// <list type="bullet">
+/// <item>ChooseAction: the strategy of the phase or window asking (ride, main, attack, the guard step), which matches a
+/// gesture to one of the offered requests; an unknown phase or window throws;</item>
+/// <item>Choose and Confirm: VanguardChoices, by the question's purpose and shape (the mulligan, triggers, costs, targets).</item>
 /// </list>
-/// Questions wait for the board to finish showing what happened first. Tapping a card shows its details (unless the tap
+/// Every answer is checked against what was offered (Expect) before it goes back. Tapping a card shows its details (unless the tap
 /// answers what is being asked), long pressing a vanguard lists its soul, pressing the drop zone lists it.
 /// </summary>
 public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvider, IProvide<IActivationGate>
@@ -36,9 +37,8 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
 
     InputBoard inputBoard = null!;
     VanguardInput? input;
-    DefaultVanguardAnswers? defaults;
-    // Who answers now: the phase's strategy, on top of the default answers
-    IVanguardAnswers? answers;
+    VanguardChoices? choices;
+    VanguardGuardPrompt? guard;
 
     /// <summary>What the card details may activate: nothing, unless the current scope puts its gate in (InputScope.Activatable).</summary>
     public ActivationGateSlot Activations { get; } = new();
@@ -46,7 +46,6 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
 
     public VanguardPlayArea PlayArea { get; private set; } = null!;
     public VanguardPlayArea OpponentPlayArea { get; private set; } = null!;
-    public VanguardSkillService SkillService { get; private set; } = null!;
     PlayAreaBase IPlayerInputProvider.PlayArea => PlayArea;
 
     // Board animations play from this queue; prompts wait until it's done
@@ -87,112 +86,73 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
     }
 
     /// <summary>Makes this the player of <paramref name="playArea"/> (the session builder calls it once the game started).</summary>
-    public void Activate(VanguardPlayArea playArea, VanguardPlayArea opponentPlayArea, VanguardSkillService skillService, GameContext gameContext)
+    public void Activate(VanguardPlayArea playArea, VanguardPlayArea opponentPlayArea)
     {
         PlayArea = playArea;
         OpponentPlayArea = opponentPlayArea;
-        SkillService = skillService;
         var presentation = new PresentationContext(Presenter, board.Sfx, BoardSide.Player);
-        input = new(this, gameContext, inputBoard, presentation, this, SelectFromCardListComponent, SelectCardsComponent, CardListComponent, CardDetails.Show);
-        answers = defaults = new(input);
+        input = new(this, inputBoard, presentation, this, SelectFromCardListComponent, SelectCardsComponent, CardListComponent, CardDetails.Show);
+        choices = new(input);
+        guard = new(input);
     }
 
-    IDisposable? phaseSubscription;
+    List<IDisposable> skillSubscriptions = [];
 
     public void SetEventBus(VanguardEventBus eventBus)
     {
-        phaseSubscription?.Dispose();
-        // Published before each phase runs (pre-phases too), so the strategy is set before the phase asks anything
-        phaseSubscription = eventBus.Subscribe<PhaseStarted>(started => OnPhaseStarted(started.Phase));
-
         // The player's own skill, pinned while it's used (what they're asked meanwhile is for it: its cost, its targets)
         foreach(var subscription in skillSubscriptions) subscription.Dispose();
         var resolving = GetNode<ResolvingSkillDetails>("%ResolvingSkill");
         skillSubscriptions =
         [
-            eventBus.Subscribe<SkillStarting>(started =>
+            eventBus.Subscribe<SkillUseStarted>(started =>
             {
-                if(IsOwnSkill(started.Source)) resolving.Started(started.Source.Card, started.Skill);
+                if(IsOwn(started.Run)) resolving.Started(started.Run.Self, started.Run.Skill);
             }),
-            eventBus.Subscribe<SkillFinished>(finished =>
+            eventBus.Subscribe<SkillUseEnded>(ended =>
             {
-                if(IsOwnSkill(finished.Source)) resolving.Finished(finished.Skill);
+                if(IsOwn(ended.Run)) resolving.Finished(ended.Run.Skill);
             }),
         ];
     }
 
-    List<IDisposable> skillSubscriptions = [];
-
-    // Skills come from a circle, the hand, the soul or the (shared) guardian circle, whose skills are the defender's
-    private bool IsOwnSkill(VanguardSkillInvocationSource source) => PlayArea is not null && source switch
-    {
-        VanguardUnitCircleInvocationSource unitCircle => PlayArea.OwnsUnitCircle(unitCircle.UnitCircle),
-        VanguardHandInvocationSource hand => ReferenceEquals(hand.Hand, PlayArea.Hand),
-        VanguardSoulInvocationSource soul => ReferenceEquals(soul.Soul, PlayArea.Soul),
-        VanguardGuardianCircleInvocationSource => input?.State<GuardState>() is { } guard && PlayArea.OwnsUnitCircle(guard.TargetCircle),
-        _ => false,
-    };
-
-    // Each phase's strategy on top of the default answers (guarding, skills and triggers are the defaults' prompts)
-    private Task OnPhaseStarted(IPhase phase)
-    {
-        if(input is null || defaults is null) return Task.CompletedTask;
-        answers = phase switch
-        {
-            MulliganPhase => new VanguardMulliganStrategy(input, defaults),
-            RidePhase => new VanguardRidePhaseStrategy(input, defaults),
-            MainPhase => new VanguardMainPhaseStrategy(input, defaults),
-            VanguardAttackPhase => new VanguardAttackPhaseStrategy(input, defaults),
-            _ => defaults,
-        };
-        return Task.CompletedTask;
-    }
+    private bool IsOwn(SkillRun run) => PlayArea is not null && ReferenceEquals(run.PlayArea, PlayArea);
 
     #region Questions
-    // A known answer first; else the board catches up, then the strategies answer
-    private async Task<T> Ask<T>(Question<T> question, Func<IVanguardAnswers, Task<T>> ask)
+    public async Task<Request> ChooseAction(ActionChoice choice)
     {
-        var current = input ?? throw new InvalidOperationException($"{nameof(VanguardInputProvider)} was asked {question} before it was activated");
-        if(current.Answers.TryTake(question, out var known)) return known;
+        var current = Asked();
         await Presenter.WhenIdle();
-        return await ask(answers!);
+        var offered = new Offered(choice);
+        var chosen = choice.Where switch
+        {
+            RidePhase => await new VanguardRidePhaseStrategy(current, offered).Answer(),
+            VanguardMainPhase => await new VanguardMainPhaseStrategy(current, offered).Answer(),
+            VanguardAttackPhase => await new VanguardAttackPhaseStrategy(current, offered).Answer(),
+            OpenWindow open when ReferenceEquals(open.Window, VanguardAttackPhase.GuardStep) => await guard!.Answer(offered, open),
+            var where => throw new NotSupportedException($"{nameof(VanguardInputProvider)} has no gesture for a choice in {where}. Offered: {offered.Describe()}"),
+        };
+        return choice.Expect(chosen);
     }
 
-    // A new action starts: whatever the last one was given must have been asked for
-    private void StartAction()
+    public async Task<IReadOnlyList<T>> Choose<T>(Choosing<T> question)
     {
-        input?.Answers.EnsureNoneLeft("by the last action");
-        input?.Narrowing.Clear();
+        Asked();
+        await Presenter.WhenIdle();
+        return question.Expect(await choices!.Choose(question));
     }
 
-    public Task<IMainPhaseAction> RequestMainPhaseAction(List<IMainPhaseAction> actions)
+    public async Task<bool> Confirm(Confirmation question)
     {
-        StartAction();
-        return Ask(MainPhaseAction, answers => answers.RequestMainPhaseAction(actions));
+        Asked();
+        await Presenter.WhenIdle();
+        return await choices!.Confirm(question);
     }
 
-    public Task<IAttackPhaseAction> RequestAttackPhaseAction(List<IAttackPhaseAction> actions)
-    {
-        StartAction();
-        return Ask(AttackPhaseAction, answers => answers.RequestAttackPhaseAction(actions));
-    }
+    // Vanguard asks for no order yet
+    public Task<IReadOnlyList<T>> Order<T>(Ordering<T> question) => throw new UnansweredQuestion(question.Purpose, question.Prompt, typeof(T), "ordering has no gesture yet");
 
-    public Task<CardBase> SelectCardFromHand() => Ask(CardFromHand, answers => answers.SelectCardFromHand());
-    public Task<CardBase?> SelectCardFromHandOrNot() => Ask(CardFromHandOrNot, answers => answers.SelectCardFromHandOrNot());
-    public Task<List<CardBase>> SelectCardsFromHandRange(int minimum, int maximum) => Ask(CardsFromHand, answers => answers.SelectCardsFromHandRange(minimum, maximum));
-    public Task<UnitCircle> SelectOwnUnitCircle(UnitSelector selector) => Ask(OwnCircle, answers => answers.SelectOwnUnitCircle(selector));
-    public Task<UnitCircle> SelectOpponentCircle(UnitSelector selector) => Ask(OpponentCircle, answers => answers.SelectOpponentCircle(selector));
-    public Task<List<UnitCircle>> SelectOwnUnitCircles(UnitSelector selector) => Ask(OwnCircles, answers => answers.SelectOwnUnitCircles(selector));
-    public Task<List<UnitCircle>> SelectOwnUnitCirclesRange(UnitSelector selector, int minimum, int maximum) => Ask(OwnCirclesRange, answers => answers.SelectOwnUnitCirclesRange(selector, minimum, maximum));
-    public Task<VanguardActivationSkill> SelectSkillToActivate(List<VanguardActivationSkill> skills) => Ask(SkillToActivate, answers => answers.SelectSkillToActivate(skills));
-    public Task<PendingSkill> SelectSkillToInvoke(IReadOnlyList<PendingSkill> skills) => Ask(SkillToInvoke, answers => answers.SelectSkillToInvoke(skills));
-    public Task<VanguardCard> SelectCardFromDamageZone() => Ask(CardFromDamageZone, answers => answers.SelectCardFromDamageZone());
-    public Task<VanguardCard> SelectCardFromDeck(int minGrade, int maxGrade) => Ask(CardFromDeck, answers => answers.SelectCardFromDeck(minGrade, maxGrade));
-    public Task<List<VanguardCard>> SelectCardsFromDamageZone(int amount) => Ask(CardsFromDamageZone, answers => answers.SelectCardsFromDamageZone(amount));
-    public Task<List<VanguardCard>> SelectCardsFromSoul(int amount) => Ask(CardsFromSoul, answers => answers.SelectCardsFromSoul(amount));
-    public Task<bool> QueryActivateSkill(VanguardCard invoker, VanguardAutomaticSkill automaticSkill) => Ask(ActivateTrigger, answers => answers.QueryActivateSkill(invoker, automaticSkill));
-    public Task<VanguardSkills.SkillAction> SelectSkillOption(IReadOnlyList<VanguardSkills.SkillAction> options, VanguardSkillContextObject context)
-        => Ask(SkillOption, answers => answers.SelectSkillOption(options, context));
+    private VanguardInput Asked() => input ?? throw new InvalidOperationException($"{nameof(VanguardInputProvider)} was asked before it was activated");
     #endregion
 
     #region Inspecting
@@ -239,9 +199,8 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
         if(node.CurrentCard is { } card) CardDetails.Show(new CardDetail(card));
     }
 
-    // Skills a unit got from effects (e.g. "this unit gets '[AUTO] ...' until end of turn")
-    private IReadOnlyList<ISkill> GrantedSkills(ICardSpace? zone)
-        => zone is UnitCircle circle && SkillService is not null ? PlayArea.EffectService.GetGrantedSkills(circle) : [];
+    // Skills a unit got from effects: none shown until the rewritten ArC's granted skills are read here
+    private static IReadOnlyList<ISkill> GrantedSkills(ICardSpace? zone) => [];
     #endregion
 
     public override void _ExitTree()

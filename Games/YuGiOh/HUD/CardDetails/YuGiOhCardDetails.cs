@@ -5,7 +5,8 @@ using Godot;
 /// <summary>YuGiOh's card details: its parts read YuGiOh cards, its skills read as YuGiOh skills.</summary>
 public partial class YuGiOhCardDetails : CardDetailsView
 {
-    protected override ISkillTextInterpreter SkillText => YuGiOhSkillTextInterpreter.Instance;
+    // Off until YuGiOh moves to the rewritten ArC (YuGiOhSkillTextInterpreter is gone from it): skills read as their names
+    // protected override ISkillTextInterpreter SkillText => YuGiOhSkillTextInterpreter.Instance;
 
     /// <summary>
     /// A spell's or trap's card activation has a button only while the card is Set (activated from its zone); from the

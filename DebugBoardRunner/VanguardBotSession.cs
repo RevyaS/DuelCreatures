@@ -29,9 +29,9 @@ public partial class VanguardBotSession : Control
 
         var (session, _) = VanguardSessionBuilder.Create()
             .Player1(new(RoyalPaladinTrialDeckBot.Deck), services =>
-                new RoyalPaladinTrialDeckBot(services.Game.Player1, services.DataQuery, services.SkillService, services.GameContext, BotDifficulty.MASTER))
+                new RoyalPaladinTrialDeckBot(services.Game.Player1, services.DataQuery, BotDifficulty.MASTER))
             .Player2(new(KageroTrialDeckBot.Deck), services =>
-                new KageroTrialDeckBot(services.Game.Player2, services.DataQuery, services.SkillService, services.GameContext, BotDifficulty.MASTER))
+                new KageroTrialDeckBot(services.Game.Player2, services.DataQuery, BotDifficulty.MASTER))
             .WithLogger(new GodotLogger())
             .Build();
 
