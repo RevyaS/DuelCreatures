@@ -281,6 +281,8 @@ handles).
 
 ### 4.1 The pattern
 
+(Section 12 walks through writing one from scratch, with the scene side and the selection panels.)
+
 Every phase strategy becomes the same three moves:
 
 1. **Allow** only what an offered request could use: a card can be dragged if some offered request uses it; a zone
@@ -560,3 +562,266 @@ Gaps found while writing this guide. None blocks the migration; each makes the c
 - **Answering before the board caught up.** Keep `await Presenter.WhenIdle()` before every question.
 - **Shadowed names.** In ArC's Vanguard namespace, `Skill` resolves to an old type; use `ArC.CardGames.Skills.Skill`. Watch
   for the same in `using` lists here.
+
+---
+
+## 11. Running the migration with Claude sessions
+
+One session per step of section 8. A fresh session for each keeps its context small: it reads this guide and the
+files of that step, not the whole history.
+
+### Who does what
+
+| You | Claude |
+|---|---|
+| Build, and paste **only the errors** (see the command below), grouped by file | Reads only the files the errors and the step name |
+| Run scenes in Godot and say what you saw (which gesture, what happened, the error text) | Says which scene to run and what to look at |
+| Run ArC's tests when a step needs them, paste the failures | Doesn't open ArC's design page; reads ArC's code only for the types it uses |
+| Delete the files a step retires, edit scenes | Says which files and nodes, writes the code |
+| Review and commit | Doesn't commit |
+
+The error list, without the noise (paste its output):
+
+```bash
+dotnet build "Duel Creatures.csproj" -nologo -v q 2>&1 | grep -E "error" | sed -E 's/.*Games/Games/; s/ \[.*//' | sort -u
+```
+
+### The opening prompt
+
+Copy it, set the step number, and paste the error list under it:
+
+```text
+We're adopting the rewritten ArC in DuelCreatures. Read docs/ArC-Rewrite-Adoption-Guide.md
+(sections 1, 3, 4, 12 and the row for this step in section 8; the rest only if you need it).
+Do step <N> only. Don't read ArC's design page or engine guide; read ArC code only for the
+types you use. I build and run Godot myself: don't build, I'll paste errors.
+Build errors for the files of this step:
+<paste>
+```
+
+### Habits that save tokens
+
+- **One step, then a new session.** When a step is done, ask the session to update the step's row in section 8 (and
+  anything it found that the guide got wrong), then start the next one fresh.
+- **Name the files.** "The YuGiOh main phase strategy: `Games/YuGiOh/Input/YuGiOhMainPhaseStrategy.cs`" is cheaper
+  than "look at how YuGiOh input works".
+- **Paste the error, not the log.** For Godot, the exception message and the top few frames of the stack.
+- **Let it write; you check.** Ask for the change and a list of what to verify in Godot, not for explanations first.
+- **Corrections stay in the session.** A wrong gesture is a small correction; a new topic is a new session.
+
+---
+
+## 12. Writing a gesture for a request
+
+How to make one offered request playable by touch: what you need, how the pieces connect, what keeps everything else
+switched off, and how to show a selection panel. The worked example is the Ride Phase.
+
+### 12.1 What you need
+
+| Piece | Where | For the Ride Phase |
+|---|---|---|
+| The request ArC offers, and who asks | ArC: the phase's or window's menu | `RidePhase.Menu` offers `RideRequest(Player, Card)`, plus `EndPhaseRequest`; `choice.Where` is the `RidePhase` |
+| A view bound to every zone the gesture touches | The board scene: a unique node named like the zone property | `%Hand` (bound by the board script) and `%Vanguard` in the play area scene, already there |
+| Any HUD button the gesture uses | A `BoardButtonView` with `Kind` set, anywhere under the provider's scene | `Kind = NextPhase`, already there |
+| Where the hint shows | An `InputHintLabel` under the provider's scene | Each play area's `InputHint`, already there |
+| The strategy | `Games/<Game>/Input/<Game><Phase>Strategy.cs` | `VanguardRidePhaseStrategy` |
+| A route to it | The provider's `ChooseAction` router (3.2) | `RidePhase => ride.Answer(choice)` |
+
+Nothing else: no binding code, no rule query, no extra scene node for the drop labels (a zone creates its
+`DropChoicesOverlay` when a scope first offers a drop on it; place one in the zone's scene only to style it).
+
+### 12.2 The strategy
+
+```csharp
+// Sketch: Games/Vanguard/Input/VanguardRidePhaseStrategy.cs on the new ArC
+/// <summary>
+/// The Ride Phase: drag a card from the hand onto the vanguard to ride it (only cards ArC offers a ride for can be
+/// dragged), or Next Phase not to ride.
+/// </summary>
+public sealed class VanguardRidePhaseStrategy(VanguardInput input)
+{
+    public static class Text
+    {
+        public static string Ride = "Ride Phase: drag a card onto your vanguard to ride, or Next Phase";
+    }
+
+    public static class Choices
+    {
+        public static readonly DropChoice Ride = new("Ride");
+    }
+
+    public async Task<Request> Answer(ActionChoice choice)
+    {
+        var offered = new Offered(choice);
+        var area = input.PlayArea;
+        // The offered ride for this card, if there is one: the only legality check the strategy makes
+        RideRequest? RideOf(CardBase card) => offered.Of<RideRequest>().FirstOrDefault(ride => ReferenceEquals(ride.Card, card));
+
+        using var scope = input.Board.Scope()
+            .Drag(area.Hand, card => RideOf(card) is not null)                              // 1. what can be picked up
+            .Drop(area.Vanguard, card => RideOf(card) is not null ? [ Choices.Ride ] : [])  // 2. where it can go, labelled
+            .Button(BoardButton.NextPhase)                                                  // 3. the way out
+            .Hint(Text.Ride);
+
+        switch(await scope.Next())                                                          // 4. one allowed gesture
+        {
+            case CardDropped drop:
+                return RideOf(drop.Card)!;                                                  // 5. the offered request
+            case ButtonPressed { Button: BoardButton.NextPhase }:
+                input.Presentation.PlaySfx(VanguardSfx.PhaseChange);
+                return offered.EndPhase;
+            case var other:
+                throw new InvalidOperationException($"{nameof(VanguardRidePhaseStrategy)} allowed {other} but doesn't handle it");
+        }
+    }
+}
+```
+
+What each line does:
+
+1. **`Drag(zone, allowed)`** makes the cards of the hand that `allowed` accepts draggable, and only those. A card ArC
+   offers no ride for can't be lifted.
+2. **`Drop(zone, choicesFor)`** makes the vanguard circle take a dragged card. While a card hovers, `choicesFor(card)`
+   gives the regions to show (here one, **Ride**); an empty list means "doesn't take this card", so nothing lights up
+   and letting go does nothing. Because the check is by the card's reference against offered requests, a card dragged
+   from anywhere else simply doesn't match.
+3. **`Button(kind)`** shows the HUD button for as long as the scope lasts.
+4. **`Next()`** waits for a gesture **this scope allowed**. Everything else the player does meanwhile is ignored.
+5. Return the request ArC offered, never a new one (`Expect` would throw).
+
+**Another target zone is the same lines.** If ArC offered, say, a request to put a card from the hand into the damage
+zone (a hypothetical `PutIntoDamageRequest(Player, Card)`), the strategy would be:
+
+```csharp
+PutIntoDamageRequest? PutOf(CardBase card) => offered.Of<PutIntoDamageRequest>().FirstOrDefault(put => ReferenceEquals(put.Card, card));
+scope.Drag(area.Hand, card => PutOf(card) is not null)
+     .Drop(area.DamageZone, card => PutOf(card) is not null ? [ Choices.PutIntoDamage ] : []);
+```
+
+The damage zone's view is a `LineZone`; every zone scene (`CardSlot`, `CardBox`, `LineZone`, `HandZone`, `StackZone`)
+can take drops. If the zone has no view (`ViewOf` throws "No view shows this …"), it isn't bound: add the scene node
+named like the zone property.
+
+Several regions on one zone (YuGiOh's **Summon | Set**) are several `DropChoice`s in the list; `drop.Choice` says which
+one the card landed on (compare with `ReferenceEquals`).
+
+### 12.3 What keeps every other input off
+
+You don't switch anything off by hand. The pieces are built so that **only what an open scope allowed is live**:
+
+| Input | Off unless | Undone by |
+|---|---|---|
+| Dragging cards | `Drag` names the zone and the card passes `allowed` | disposing the scope (`SetDraggable(null)`) |
+| Dropping on a zone | `Drop` names the zone and `choicesFor(card)` isn't empty | disposing (`OfferDrop(null)`) |
+| Tapping to pick, highlights | `Cards` / `Zones` | disposing (`SetHighlight(false)`) |
+| Swipes, aims | `Swipe` / `Aim` (the innermost open scope decides an aim in progress) | disposing (`SetGestures(false, false)`) |
+| HUD buttons | `Button`; every `BoardButtonView` starts unavailable (`HideWhenUnavailable` hides it) | disposing |
+| Skill buttons in the details | `Activatable` / `Commands` put the scope's gate in; otherwise the gate denies all | disposing |
+| Pick badges, hint | `Numbered` / `Hint` | disposing |
+
+And `Next()` filters too: a gesture the scope didn't allow never comes out of it, even if a view raised it.
+
+Two inputs are always on, by design: **tapping a face-up card shows its details**, and tapping a listing zone shows its
+card list. A tap that the scope *does* take (a pick) doesn't open the details (`InputBoard.Takes`).
+
+So the rules for a strategy are:
+
+- **Always `using var scope`** (or dispose it in `finally`). A scope left open leaves its drags and buttons live.
+- **One step, one scope.** For a gesture in several steps (drop, then tap tributes), dispose the first scope before
+  opening the next, so the hand isn't still draggable while tributes are tapped. Put each step in its own block or
+  method:
+
+```csharp
+CardDropped drop;
+using(var choose = input.Board.Scope().Drag(...).Drop(...).Hint(Text.Play))
+{
+    drop = (CardDropped)await choose.Next();
+}
+var fits = offered.Of<NormalSummonRequest>()
+    .Where(summon => ReferenceEquals(summon.Monster, drop.Card) && ReferenceEquals(summon.Zone, drop.To)).ToList();
+if(fits.Count == 1) return fits[0];
+return await PickTributes(fits);   // its own scope: Zones(tributes) + Numbered(picked) + Button(Confirm)
+```
+
+### 12.4 Picking on the board: tap, badges, Confirm
+
+For several zones or circles (tributes, Xyz materials, several skill targets), the pattern is a loop of short scopes:
+each tap changes the picked list, and a new scope shows the new state.
+
+```csharp
+// Sketch: pick between minimum and maximum of the offered zones by tapping, then Confirm
+async Task<IReadOnlyList<TZone>> PickZones<TZone>(IReadOnlyList<TZone> offered, int minimum, int maximum, string hint) where TZone : class, ICardSpace
+{
+    var picked = new List<TZone>();
+    while(true)
+    {
+        using var scope = input.Board.Scope()
+            .Zones(offered.Cast<ICardSpace>())
+            .Numbered(picked.Cast<ICardSpace>())
+            .Hint(hint);
+        if(picked.Count >= minimum && picked.Count <= maximum) scope.Button(BoardButton.Confirm);
+
+        switch(await scope.Next())
+        {
+            case ButtonPressed { Button: BoardButton.Confirm }:
+                return picked;
+            case ZoneClicked { Zone: TZone zone }:
+                // Tap again to drop it; a new pick only while there's room
+                if(!Refs.Remove(picked, zone) && picked.Count < maximum) picked.Add(zone);
+                break;
+        }
+    }
+}
+```
+
+Zones are records, so remove and compare them by reference (`Refs.Remove`, `ReferenceEquals`), never `List.Remove`.
+`Refs` lives in `Games/Vanguard/Input/DefaultVanguardAnswers.cs` today: move it to `Games/Shared/` before that file is
+deleted.
+For a single pick, return on the first tap and leave out Confirm. Cards on the board work the same with
+`Cards(zone, allowed)` and `CardClicked`; Counter Blast uses `LongPress` and `CardLongPressed` instead of taps.
+
+### 12.5 Showing a selection panel
+
+When the cards are hidden or piled (deck, soul, graveyard, Extra Deck), pick in a panel instead of on the board. The
+panels already exist; a strategy only calls a prompt with the panel and the cards:
+
+| Panel (node in the provider's scene) | Reached as | Prompt | Use |
+|---|---|---|---|
+| `CardList` (`%CardListComponent`) | `input.EffectPicker` | `Prompts.DragOutOfCardList(list, title, options, canDecline, inspect)` | Pick **one**: a deck search, a skill, the next trigger, a chain response. Press a card to read it, drag it out to pick |
+| `SelectFromCardList` (`%SelectFromCardListComponent`) | `input.CardPicker` | `Prompts.PickCards(list, title, selectionTitle, min, max, cards)` | Pick **several**, then Confirm: Soul Blast, a heal, cards for a cost |
+| `SelectCardsComponent` (`%SelectCardsComponent`) | `input.HandPicker` | the mulligan strategy's own loop | Drag cards **out of the hand** into the panel, Confirm there |
+| `CardListPanel` (`%ChainView`, YuGiOh) | the provider | `Prompts.ShowToInspect(panel, title, items, inspect)` | Read only, beside another prompt |
+
+For example, a deck search asked as `Choose<CardBase>` with one card to pick:
+
+```csharp
+var (picked, card) = await Prompts.DragOutOfCardList(input.EffectPicker, question.Prompt,
+    question.Offered.Select(card => (card, card)).ToList(),
+    canDecline: question.CanCancel,
+    inspect: (card, _) => input.ShowDetails(new CardDetail(card)));
+return picked ? [ card ] : [];
+```
+
+The prompts clean up after themselves (`finally`): the panel closes and its handlers are removed whether the player
+picked or declined.
+
+**Adding a new kind of panel:**
+
+1. Design it as a scene and put it in the provider's scene **under the `PromptLayer`**, with a unique name. If it should
+   collapse with a swipe down, its script implements `ICollapsiblePrompt` (the layer finds it when ready).
+2. In the provider's `_Ready`, `GetNode<YourPanel>("%YourPanel")`, and pass it into `<Game>Input` as a property with a
+   one-line summary of what it's for.
+3. Write its prompt as a static method in `Prompts` (or on the panel) that shows it, awaits the answer through a
+   `TaskCompletionSource`, and in `finally` removes its handlers and hides it, like `PickCards`.
+4. Exported values (colours, sizes, texts that aren't the question's prompt) go on the panel's script, not in the
+   strategy.
+
+### 12.6 Checking it
+
+Run it in Godot (F5 for a real game). For a new gesture, look at:
+
+- only the cards with an offered request can be lifted, and only the right zone lights up with the right labels;
+- letting go anywhere else does nothing, and the card goes back;
+- the buttons show only while offered, and the hint says what is asked;
+- after the answer, nothing stays draggable, highlighted or numbered (the scope was disposed);
+- tapping other face-up cards still shows their details.
