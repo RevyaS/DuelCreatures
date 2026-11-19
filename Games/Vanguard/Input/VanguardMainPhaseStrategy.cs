@@ -12,7 +12,7 @@ using ArC.CardGames.Vanguard;
 /// <item>tap a card for its details, and activate an [ACT] skill there (from the hand or a circle);</item>
 /// <item>Next Phase.</item>
 /// </list>
-/// Only what an offered request (CallRequest, SwapRequest, ActivateSkill) uses can be dragged, dropped or activated.
+/// Only what an offered request (CallRequest, SwapRequest, ActivateSkillRequest) uses can be dragged, dropped or activated.
 /// </summary>
 public sealed class VanguardMainPhaseStrategy(VanguardInput input, Offered offered)
 {

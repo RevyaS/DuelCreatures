@@ -1,5 +1,3 @@
-// Off until YuGiOh moves to the rewritten ArC (docs/ArC-Rewrite-Adoption-Guide.md, section 8 step 3): define YUGIOH_MIGRATED to build it
-#if YUGIOH_MIGRATED
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +20,7 @@ using Orientation = ArC.CardGames.Components.Orientation;
 public partial class ZoneCheck : Control
 {
     record ZoneCheckMove : IMoveReason;
+    record ZoneCheckSummon : ISummonReason;
 
     static readonly CardMove CheckMove = new(nameof(CheckMove));
 
@@ -65,15 +64,15 @@ public partial class ZoneCheck : Control
     private async Task Run()
     {
         // Cards without skills, so nothing triggers and asks for input
-        var monsters = Enumerable.Range(1, 6).Select(i => (CardBase)new YuGiOhNormalMonsterCard(4, $"Zone Check Monster {i}", [], 1000, 1000, [ MonsterType.EFFECT ], [])).ToList();
-        var spells = Enumerable.Range(1, 4).Select(i => (CardBase)new YuGiOhSpellCard($"Zone Check Spell {i}", SpellProperty.CONTINUOUS, [], CardScopedRestriction.UNLIMITED, [])).ToList();
+        var monsters = Enumerable.Range(1, 6).Select(i => (CardBase)new YuGiOhNormalMonsterCard(4, $"Zone Check Monster {i}", YuGiOhAttribute.DARK, [], 1000, 1000, [ MonsterType.EFFECT ])).ToList();
+        var spells = Enumerable.Range(1, 4).Select(i => (CardBase)new YuGiOhSpellCard($"Zone Check Spell {i}", SpellProperty.CONTINUOUS, [])).ToList();
         var deck = DeckBuilder.Create();
         foreach(var card in monsters.Concat(spells)) deck.AddCards(card);
 
         // Bots: the skill service looks up the players on every event, but with skill-less cards it never asks them anything
         var (session, services) = YuGiOhSessionBuilder.Create()
-            .Player1(new(deck, DeckBuilder.Create()), s => new ExosisterTacticalTryDeckBot(s.Game.Player1, s.DataQuery, s.SkillService, s.GameContext, BotDifficulty.MASTER))
-            .Player2(new(DeckBuilder.Create().AddCards(monsters[0]), DeckBuilder.Create()), s => new ExosisterTacticalTryDeckBot(s.Game.Player2, s.DataQuery, s.SkillService, s.GameContext, BotDifficulty.MASTER))
+            .Player1(new(deck, DeckBuilder.Create()), s => new ExosisterTacticalTryDeckBot(s.Game.Player1, s.DataQuery, BotDifficulty.MASTER))
+            .Player2(new(DeckBuilder.Create().AddCards(monsters[0]), DeckBuilder.Create()), s => new ExosisterTacticalTryDeckBot(s.Game.Player2, s.DataQuery, BotDifficulty.MASTER))
             .Build();
         session.StartGame();
         var area = services.Game.Board.Player1Area;
@@ -98,7 +97,7 @@ public partial class ZoneCheck : Control
             () => Expect(Hand.Displayed.Count == 8 && Deck.CountValue == 2, "8 in hand, 2 in the deck"));
 
         var monster = area.Hand.Cards.OfType<YuGiOhNormalMonsterCard>().First();
-        await Step("Summon into the CardBox", () => area.SummonCard(monster, area.Hand, area.MonsterZone1),
+        await Step("Summon into the CardBox", () => area.SummonCard(monster, area.Hand, area.MonsterZone1, new ZoneCheckSummon()),
             () => Expect(Shows(MonsterZone1, monster) && Hand.Displayed.Count == 7, "the monster is in the box, 7 in hand"));
 
         await Step("Turn it sideways (Defense Position)", () => area.Turn(area.MonsterZone1, orientation: Orientation.HORIZONTAL),
@@ -188,4 +187,3 @@ public partial class ZoneCheck : Control
         Results.Text = string.Join("\n", results);
     }
 }
-#endif

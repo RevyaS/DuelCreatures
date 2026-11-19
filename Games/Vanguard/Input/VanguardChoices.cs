@@ -6,7 +6,7 @@ using ArC.CardGames.Components;
 using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Setup;
 using ArC.CardGames.Vanguard;
-using ActivateSkill = ArC.CardGames.Skills.ActivateSkill;
+using ActivateSkillRequest = ArC.CardGames.Skills.ActivateSkillRequest;
 
 /// <summary>
 /// Answers Vanguard's "pick from these" and "yes or no" questions (Choose, Confirm) by their shape: the mulligan by its
@@ -56,9 +56,9 @@ public sealed class VanguardChoices(VanguardInput input)
         {
             return (await ChooseCards(question.Offered.Cast<CardBase>().ToList(), question.Minimum, question.Maximum, question.Purpose, question.Prompt, question.CanCancel)).Cast<T>().ToList();
         }
-        if(question is Choosing<ActivateSkill> skills)
+        if(question is Choosing<ActivateSkillRequest> skills)
         {
-            IReadOnlyList<ActivateSkill> next = new List<ActivateSkill> { await ChooseSkill(skills) };
+            IReadOnlyList<ActivateSkillRequest> next = new List<ActivateSkillRequest> { await ChooseSkill(skills) };
             return (IReadOnlyList<T>)next;
         }
         throw new UnansweredQuestion(question.Purpose, question.Prompt, typeof(T));
@@ -177,7 +177,7 @@ public sealed class VanguardChoices(VanguardInput input)
     }
 
     // Several of the player's skills wait at once: drag the one to resolve first out of the list
-    private async Task<ActivateSkill> ChooseSkill(Choosing<ActivateSkill> question)
+    private async Task<ActivateSkillRequest> ChooseSkill(Choosing<ActivateSkillRequest> question)
     {
         if(question.Offered.Count == 1 && question.Minimum == 1) return question.Offered[0];
         var (_, skill) = await Prompts.DragOutOfCardList(input.EffectPicker, Text.ChooseSkillToResolve,
@@ -191,9 +191,9 @@ public sealed class VanguardChoices(VanguardInput input)
     /// <summary>"Use this skill?": drag its card out of the list to use it, close the list not to. Any other question: Yes or No.</summary>
     public async Task<bool> Confirm(Confirmation question)
     {
-        if(question.Purpose is ActivateSkill activation)
+        if(question.Purpose is ActivateSkillRequest activation)
         {
-            var (picked, _) = await Prompts.DragOutOfCardList<ActivateSkill>(input.EffectPicker, Text.ActivateTrigger, [ (activation.Card, activation) ], canDecline: true,
+            var (picked, _) = await Prompts.DragOutOfCardList<ActivateSkillRequest>(input.EffectPicker, Text.ActivateTrigger, [ (activation.Card, activation) ], canDecline: true,
                 (card, shown) => input.ShowDetails(new CardDetail(card) { Focus = shown.Skill }));
             return picked;
         }

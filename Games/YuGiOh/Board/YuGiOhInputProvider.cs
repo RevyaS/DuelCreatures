@@ -1,25 +1,28 @@
-// Off until YuGiOh moves to the rewritten ArC (docs/ArC-Rewrite-Adoption-Guide.md, section 8 step 3): define YUGIOH_MIGRATED to build it
-#if YUGIOH_MIGRATED
-using ArC.CardGames;
-using ArC.CardGames.Components;
-using ArC.CardGames.Predefined.Common;
-using ArC.CardGames.Setup;
-using ArC.CardGames.YuGiOh;
-using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static YuGiOhQuestions;
+using ArC.CardGames;
+using ArC.CardGames.Actions;
+using ArC.CardGames.Components;
+using ArC.CardGames.Flow;
+using ArC.CardGames.Rules;
+using ArC.CardGames.Setup;
+using ArC.CardGames.Skills;
+using ArC.CardGames.YuGiOh;
+using Godot;
 
 /// <summary>
-/// The human player of YuGiOh, and the screen showing the game. Every question ArC asks goes, in order, to:
-/// <list type="number">
-/// <item>the answer a strategy already gave for it (a gesture that answered several questions at once);</item>
-/// <item>the current strategy (e.g. YuGiOhMainPhaseStrategy in the main phase), which passes what it doesn't answer to</item>
-/// <item>DefaultYuGiOhAnswers, which answers every question with plain prompts.</item>
+/// The human player of YuGiOh, and the screen showing the game. ArC asks four questions; each waits for the board to
+/// finish showing what happened, then goes to:
+/// <list type="bullet">
+/// <item>ChooseAction: the strategy of the phase or window asking (the Main Phases, the Battle Phase, the chain
+/// responses, priority and summon windows), which matches a gesture to one of the offered requests; an unknown phase or
+/// window throws;</item>
+/// <item>Choose and Confirm: YuGiOhChoices, by the question's shape (zones, cards by where they are, options, effects).</item>
 /// </list>
-/// Questions wait for the board to finish showing what happened first.
+/// Every answer is checked against what was offered (Expect) before it goes back. Tapping a card shows its details (unless
+/// the tap answers what is being asked), tapping a listing zone lists it.
 /// </summary>
 public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, IProvide<PresentationContext>, IProvide<IActivationGate>
 {
@@ -36,9 +39,8 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
 
     InputBoard inputBoard = null!;
     YuGiOhInput? input;
-    DefaultYuGiOhAnswers? defaults;
-    // Who answers now: the phase's strategy, on top of the default answers
-    IYuGiOhAnswers? answers;
+    YuGiOhChoices? choices;
+    YuGiOhResponsesPrompt? responses;
 
     /// <summary>What the card details may activate: nothing, unless the current scope puts its gate in (InputScope.Activatable).</summary>
     public ActivationGateSlot Activations { get; } = new();
@@ -46,9 +48,9 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
 
     public YuGiOhPlayArea PlayArea { get; private set; } = null!;
     public YuGiOhPlayArea OpponentPlayArea { get; private set; } = null!;
-    public YuGiOhSkillService SkillService { get; private set; } = null!;
     PlayAreaBase IPlayerInputProvider.PlayArea => PlayArea;
 
+    // Board animations play from this queue; prompts wait until it's done
     public Presenter Presenter { get; } = new();
 
     public override void _Ready()
@@ -86,107 +88,98 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
         driver = board.Show(session, Presenter, sleeves);
         driver.ZoneInspected += OnZoneInspected;
         driver.CardInspected += OnCardInspected;
-        driver.BindAll<ArC.CardGames.Rules.GameSession>(this, session);
+        driver.BindAll<GameSession>(this, session);
         inputBoard.Attach(driver);
     }
 
     /// <summary>Makes this the player of <paramref name="playArea"/> (the session builder calls it once the game started).</summary>
-    public void Activate(YuGiOhPlayArea playArea, YuGiOhPlayArea opponentPlayArea, YuGiOhSkillService skillService)
+    public void Activate(YuGiOhPlayArea playArea, YuGiOhPlayArea opponentPlayArea)
     {
         PlayArea = playArea;
         OpponentPlayArea = opponentPlayArea;
-        SkillService = skillService;
-        input = new(this, inputBoard, this, SelectFromCardListComponent, CardListComponent, ChainView, CardDetails.Show, CardDetails.SkillTextInterpreter());
-        answers = defaults = new(input);
+        input = new(this, inputBoard, this, SelectFromCardListComponent, CardListComponent, ChainView, CardDetails.Show);
+        choices = new(input);
+        responses = new(input);
     }
 
-    IDisposable? phaseSubscription;
+    List<IDisposable> subscriptions = [];
 
-    public void SetEventBus(YuGiOhEventBus eventBus)
+    /// <summary>Follows the game's skills and chain: the player's own skill is pinned while it's used; the chain so far is kept for the responses.</summary>
+    public void SetEventBus(EventBus eventBus)
     {
-        phaseSubscription?.Dispose();
-        // Published before each phase runs (pre-phases too), so the strategy is set before the phase asks anything
-        phaseSubscription = eventBus.Subscribe<ArC.CardGames.Rules.PhaseStarted>(started => OnPhaseStarted(started.Phase));
-
-        // The player's own skill, pinned while it's activated or resolved (what they're asked meanwhile is for it)
-        foreach(var subscription in skillSubscriptions) subscription.Dispose();
+        foreach(var subscription in subscriptions) subscription.Dispose();
         var resolving = GetNode<ResolvingSkillDetails>("%ResolvingSkill");
-        skillSubscriptions =
+        subscriptions =
         [
-            eventBus.Subscribe<SkillStarting>(started =>
+            eventBus.Subscribe<SkillUseStarted>(started =>
             {
-                if(ReferenceEquals(started.Owner, PlayArea)) resolving.Started(started.Source.Card, started.Skill);
+                input?.Runs.Add(started.Run);
+                if(IsOwn(started.Run)) resolving.Started(started.Run.Self, started.Run.Skill);
+                return Task.CompletedTask;
             }),
-            eventBus.Subscribe<SkillFinished>(finished =>
+            eventBus.Subscribe<SkillUseEnded>(ended =>
             {
-                if(ReferenceEquals(finished.Owner, PlayArea)) resolving.Finished(finished.Skill);
+                input?.Runs.Remove(ended.Run);
+                if(IsOwn(ended.Run)) resolving.Finished(ended.Run.Skill);
+                return Task.CompletedTask;
+            }),
+            eventBus.Subscribe<ChainLinkAdded>(added =>
+            {
+                input?.Chain.Add(added.Link);
+                return Task.CompletedTask;
+            }),
+            eventBus.Subscribe<ChainLinkResolved>(resolved =>
+            {
+                input?.Chain.Remove(resolved.Link);
+                return Task.CompletedTask;
+            }),
+            eventBus.Subscribe<ChainResolved>(_ =>
+            {
+                input?.Chain.Clear();
+                return Task.CompletedTask;
             }),
         ];
     }
 
-    List<IDisposable> skillSubscriptions = [];
-
-    // Each phase's strategy on top of the default answers (main and battle by touch gestures; the rest by the defaults)
-    private Task OnPhaseStarted(IPhase phase)
-    {
-        if(input is null || defaults is null) return Task.CompletedTask;
-        answers = phase switch
-        {
-            MainPhase => new YuGiOhMainPhaseStrategy(input, defaults),
-            AttackPhase => new YuGiOhBattlePhaseStrategy(input, defaults),
-            _ => defaults,
-        };
-        return Task.CompletedTask;
-    }
+    private bool IsOwn(SkillRun run) => PlayArea is not null && ReferenceEquals(run.PlayArea, PlayArea);
 
     #region Questions
-    // A known answer first; else the board catches up, then the strategies answer
-    private async Task<T> Ask<T>(Question<T> question, Func<IYuGiOhAnswers, Task<T>> ask)
+    public async Task<Request> ChooseAction(ActionChoice choice)
     {
-        var current = input ?? throw new InvalidOperationException($"{nameof(YuGiOhInputProvider)} was asked {question} before it was activated");
-        if(current.Answers.TryTake(question, out var known)) return known;
+        var current = Asked();
         await Presenter.WhenIdle();
-        return await ask(answers!);
+        var offered = new Offered(choice);
+        var chosen = choice.Where switch
+        {
+            YuGiOhMainPhase => await new YuGiOhMainPhaseStrategy(current, offered).Answer(),
+            YuGiOhBattlePhase => await new YuGiOhBattlePhaseStrategy(current, offered).Answer(),
+            OpenWindow open when IsResponseWindow(open) => await responses!.Answer(offered, open),
+            var where => throw new NotSupportedException($"{nameof(YuGiOhInputProvider)} has no gesture for a choice in {where}. Offered: {offered.Describe()}"),
+        };
+        return choice.Expect(chosen);
     }
 
-    // A new action starts: whatever the last one was given must have been asked for
-    private void StartAction()
+    private static bool IsResponseWindow(OpenWindow open)
+        => ReferenceEquals(open.Window, YuGiOhWindows.Responses) || ReferenceEquals(open.Window, YuGiOhWindows.Priority) || ReferenceEquals(open.Window, YuGiOhWindows.Summon);
+
+    public async Task<IReadOnlyList<T>> Choose<T>(Choosing<T> question)
     {
-        input?.Answers.EnsureNoneLeft("by the last action");
-        input?.Narrowing.Clear();
+        Asked();
+        await Presenter.WhenIdle();
+        return question.Expect(await choices!.Choose(question));
     }
 
-    public Task<IMainPhaseAction> RequestMainPhaseAction(List<IMainPhaseAction> actions)
+    public async Task<bool> Confirm(Confirmation question)
     {
-        StartAction();
-        return Ask(MainPhaseAction, answers => answers.RequestMainPhaseAction(actions));
+        Asked();
+        await Presenter.WhenIdle();
+        return await choices!.Confirm(question);
     }
 
-    public Task<IAttackPhaseAction> RequestAttackPhaseAction(List<IAttackPhaseAction> actions)
-    {
-        StartAction();
-        return Ask(AttackPhaseAction, answers => answers.RequestAttackPhaseAction(actions));
-    }
+    // YuGiOh asks for no order yet
+    public Task<IReadOnlyList<T>> Order<T>(Ordering<T> question) => throw new UnansweredQuestion(question.Purpose, question.Prompt, typeof(T), "ordering has no gesture yet");
 
-    public Task<CardBase> SelectCardFromHand() => Ask(CardFromHand, answers => answers.SelectCardFromHand());
-    public Task<CardBase?> SelectCardFromHandOrNot() => Ask(CardFromHandOrNot, answers => answers.SelectCardFromHandOrNot());
-    public Task<List<CardBase>> SelectCardsFromHandRange(int minimum, int maximum) => Ask(CardsFromHand, answers => answers.SelectCardsFromHandRange(minimum, maximum));
-    public Task<IYuGiOhZone> SelectOwnZone(ZoneSelector selector) => Ask(OwnZone, answers => answers.SelectOwnZone(selector));
-    public Task<IYuGiOhZone> SelectOpponentZone(ZoneSelector selector) => Ask(OpponentZone, answers => answers.SelectOpponentZone(selector));
-    public Task<List<IYuGiOhZone>> SelectOwnZonesRange(ZoneSelector selector, int minimum, int maximum) => Ask(OwnZones, answers => answers.SelectOwnZonesRange(selector, minimum, maximum));
-    public Task<YuGiOhNonPassiveSkill> SelectSkillToActivate(List<YuGiOhNonPassiveSkill> skills) => Ask(SkillToActivate, answers => answers.SelectSkillToActivate(skills));
-    public Task<bool> QuerySetCard<TCard>(TCard card) where TCard : YuGiOhCard => Ask(SetCard, answers => answers.QuerySetCard(card));
-    public Task<YuGiOhCard> SelectCardFromExtraDeck() => Ask(CardFromExtraDeck, answers => answers.SelectCardFromExtraDeck());
-    public Task<YuGiOhCard> SelectCardFromDeck() => Ask(CardFromDeck, answers => answers.SelectCardFromDeck());
-    public Task<YuGiOhCard> SelectCardFromGraveyard() => Ask(CardFromGraveyard, answers => answers.SelectCardFromGraveyard());
-    public Task<YuGiOhCard> SelectCardFromOpponentHand() => Ask(CardFromOpponentHand, answers => answers.SelectCardFromOpponentHand());
-    public Task<YuGiOhCard> SelectCardFromOpponentGraveyard() => Ask(CardFromOpponentGraveyard, answers => answers.SelectCardFromOpponentGraveyard());
-    public Task<string> DeclareCardName() => Ask(CardName, answers => answers.DeclareCardName());
-    public Task<List<YuGiOhCard>> SelectXYZMaterials(MonsterZone zone, int amount) => Ask(MaterialsOfXYZ, answers => answers.SelectXYZMaterials(zone, amount));
-    public Task<YuGiOhChainResponse?> SelectChainResponse(YuGiOhChain chain) => Ask(ChainResponse, answers => answers.SelectChainResponse(chain));
-    public Task<bool> QueryActivateSkill(YuGiOhCard invoker, YuGiOhAutomaticSkill skill) => Ask(ActivateTrigger, answers => answers.QueryActivateSkill(invoker, skill));
-    public Task<YuGiOhSkills.SkillAction> SelectSkillOption(IReadOnlyList<YuGiOhSkills.SkillAction> options, YuGiOhSkillContextObject context)
-        => Ask(SkillOption, answers => answers.SelectSkillOption(options, context));
+    private YuGiOhInput Asked() => input ?? throw new InvalidOperationException($"{nameof(YuGiOhInputProvider)} was asked before it was activated");
     #endregion
 
     #region Inspecting
@@ -199,8 +192,10 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
         CardListComponent.Show(((Node)view).Name, cards);
     }
 
+    // A tap that answers what is asked (e.g. choosing a zone) isn't also a look at the card
     private void OnCardInspected(IZoneView view, CardBase card)
     {
+        if(view.Space is { } zone && inputBoard.Takes(new CardClicked(card, zone))) return;
         CardDetails.Show(new CardDetail(card, view.Space, []));
     }
 
@@ -217,4 +212,3 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
         driver?.Dispose();
     }
 }
-#endif

@@ -1,5 +1,3 @@
-// Off until YuGiOh moves to the rewritten ArC (docs/ArC-Rewrite-Adoption-Guide.md, section 8 step 3): define YUGIOH_MIGRATED to build it
-#if YUGIOH_MIGRATED
 using System.Threading.Tasks;
 using ArC.CardGames.Bots;
 using ArC.CardGames.YuGiOh;
@@ -17,11 +15,11 @@ public partial class YuGiOhSession : Control
         var (session, services) = YuGiOhSessionBuilder.Create()
             .Player1(new(YuGiOhDeckFactory.ExosisterTacticalTryDeck), services =>
             {
-                InputProviderComponent.Activate(services.Game.Board.Player1Area, services.Game.Board.Player2Area, services.SkillService);
+                InputProviderComponent.Activate(services.Game.Board.Player1Area, services.Game.Board.Player2Area);
                 return InputProviderComponent;
             })
             .Player2(new(YuGiOhDeckFactory.ExosisterTacticalTryDeck), services =>
-                new ExosisterTacticalTryDeckBot(services.Game.Player2, services.DataQuery, services.SkillService, services.GameContext, BotDifficulty.MASTER))
+                new ExosisterTacticalTryDeckBot(services.Game.Player2, services.DataQuery, BotDifficulty.MASTER))
             .WithLogger(new GodotLogger())
             .Build();
 
@@ -43,4 +41,3 @@ public partial class YuGiOhSession : Control
         GD.Print("Win Condition ", session.GameOverContext.ToString());
     }
 }
-#endif

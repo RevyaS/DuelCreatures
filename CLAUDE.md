@@ -21,6 +21,8 @@ Sibling repos, checked out next to this one:
   `Compile Remove="RevGodotCore.Tests/**"` in `RevGodotCore.csproj`.
 - **Design history and status** are in `docs/ArC-Workflow-Plan.md` (decisions log, steps 1–9 with what each did).
   **How to build a board for a game** is `docs/New-Game-Board-Guide.md`. Update both when the architecture changes.
+- **Adopting the rewritten ArC** (four questions, menus of complete requests, gestures matched to offered requests):
+  `docs/ArC-Rewrite-Adoption-Guide.md`. Read it before touching the input layer; its section 8 is the migration order.
 
 ## Building and testing
 
@@ -61,10 +63,11 @@ ArC session ── CardsMoved / CardTurned / DeckShuffled ──▶ ArcDriver �
   swiped, long pressed, which buttons and details activations are offered, the hint). Gestures are game-term
   records (`CardDropped`, `Aimed`, `ZoneClicked`, …). `Prompts` has the shared prompts (`PickCards`, `Choose`,
   `DragOutOfCardList`, `ShowToInspect`).
-- **Per game** (`Games/<Game>/Input/`): `<Game>Questions` (one typed `Question<T>` per input-provider method),
-  `I<Game>Answers` + `<Game>Strategy` (pass-through base), `<Game>Input` (context), `Default<Game>Answers` (answers
-  everything with plain prompts), phase strategies (gestures). The input provider (`Games/<Game>/Board/<Game>InputProvider.cs`)
-  asks: pre-answer → phase strategy → defaults, after `Presenter.WhenIdle()`. Pre-answers left unasked fail loudly.
+- **Per game** (`Games/<Game>/Input/`): `<Game>Input` (context), phase and window strategies that match a gesture to
+  one of the offered requests (`Offered`), and `<Game>Choices` (answers `Choose`/`Confirm` by the question's shape).
+  The input provider (`Games/<Game>/Board/<Game>InputProvider.cs`) implements ArC's four questions, after
+  `Presenter.WhenIdle()`: `ChooseAction` goes to the strategy for `choice.Where` (an unknown one throws), and every
+  answer is checked with `Expect`. A question with no gesture throws `UnansweredQuestion`.
 - **HUD:** card details are built from parts (`Games/Shared/HUD/CardDetails/`, per-game scenes); activation buttons are
   gated by `IActivationGate`. Prompt panels sit in a `PromptLayer` (swipe down collapses, swipe up/tap restores) with
   `ResolvingSkillDetails` (the player's own skill pinned while it's activated or resolved).
@@ -120,12 +123,13 @@ Shared, both games:
 - Next Phase / Confirm buttons appear only while offered (`BoardButtonView.HideWhenUnavailable`); the hint says what
   is asked.
 
-YuGiOh (`YuGiOhMainPhaseStrategy`, `YuGiOhBattlePhaseStrategy`, `DefaultYuGiOhAnswers`):
+YuGiOh (`YuGiOhMainPhaseStrategy`, `YuGiOhBattlePhaseStrategy`, `YuGiOhResponsesPrompt`, `YuGiOhChoices`):
 - Drag a monster from the hand onto a monster zone: the zone splits into **Summon | Set** labels in its top corners.
 - Drag a spell onto a spell & trap zone: **Activate | Set**; a trap: **Set** only.
 - Swipe a monster left for Defense Position, right for Attack Position (right on a face-down one Flip Summons).
-- Effects: tap the card, press the effect in its details. Xyz Summon: open your Extra Deck list, press the monster,
-  press **Xyz Summon** in its details, then pick materials (numbered, Confirm).
+- Effects: tap the card, press the effect in its details; a Set card: press **Activate** in its details. Xyz Summon:
+  open your Extra Deck list, press the monster, press **Xyz Summon** in its details, then tap materials (numbered,
+  Confirm). A tribute summon: drop the monster on a zone, then tap the tributes (numbered, Confirm).
 - Battle: drag from a monster onto the monster to attack; with no opponent monsters, onto the opponent's **hand**
   (direct attack). Next Phase / End Phase buttons.
 - Chain responses: drag an effect out of the list or close it to pass; the chain so far is shown above (`ChainView`),

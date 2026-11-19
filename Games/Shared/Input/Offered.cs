@@ -5,7 +5,7 @@ using ArC.CardGames.Actions;
 using ArC.CardGames.Components;
 using ArC.CardGames.Rules;
 using ArC.CardGames.Setup;
-using ActivateSkill = ArC.CardGames.Skills.ActivateSkill;
+using ActivateSkillRequest = ArC.CardGames.Skills.ActivateSkillRequest;
 
 /// <summary>
 /// The requests a menu or a window offers now (<see cref="ActionChoice.Available"/>), for strategies to match gestures
@@ -33,13 +33,13 @@ public sealed class Offered(ActionChoice choice)
     public PassRequest Pass => Of<PassRequest>().Single();
 
     /// <summary>Whether an offered skill activation has this card, place and skill (what the card details may activate).</summary>
-    public bool CanActivate(CardBase card, ICardSpace? from, ISkill skill) => Of<ActivateSkill>().Any(activation => IsActivation(activation, card, from, skill));
+    public bool CanActivate(CardBase card, ICardSpace? from, ISkill skill) => Of<ActivateSkillRequest>().Any(activation => IsActivation(activation, card, from, skill));
 
     /// <summary>The offered activation of <paramref name="skill"/> of <paramref name="card"/> from <paramref name="from"/>.</summary>
-    public ActivateSkill Activation(CardBase card, ICardSpace? from, ISkill skill)
-        => One<ActivateSkill>(activation => IsActivation(activation, card, from, skill), $"Activating {skill} of {card.Name}");
+    public ActivateSkillRequest Activation(CardBase card, ICardSpace? from, ISkill skill)
+        => One<ActivateSkillRequest>(activation => IsActivation(activation, card, from, skill), $"Activating {skill} of {card.Name}");
 
-    private static bool IsActivation(ActivateSkill activation, CardBase card, ICardSpace? from, ISkill skill)
+    private static bool IsActivation(ActivateSkillRequest activation, CardBase card, ICardSpace? from, ISkill skill)
         => ReferenceEquals(activation.Card, card) && ReferenceEquals(activation.From, from) && ReferenceEquals(activation.Skill, skill);
 
     public string Describe() => string.Join(", ", Choice.Available.Select(request => request.GetType().Name));
