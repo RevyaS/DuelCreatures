@@ -13,9 +13,10 @@ public partial class YuGiOhCardDetails : CardDetailsView
     /// hand it's activated by dropping the card on a zone, so it reads as text. Other effects the player activates
     /// (ignition, quick) have buttons.
     /// </summary>
-    public override bool HasButton(ISkill skill, CardDetail detail) => skill switch
-    {
-        YuGiOhCardActivationSkill => detail.From is SpellAndTrapZone && !detail.Card.IsFaceUp,
-        _ => base.HasButton(skill, detail),
-    };
+    public override bool HasButton(ISkill skill, CardDetail detail) => false;
+    // public override bool HasButton(ISkill skill, CardDetail detail) => skill switch
+    // {
+    //     YuGiOhCardActivationSkill => detail.From is SpellAndTrapZone && !detail.Card.IsFaceUp,
+    //     _ => base.HasButton(skill, detail),
+    // };
 }
