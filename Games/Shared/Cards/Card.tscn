@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://d3joytsthq224" path="res://Games/Shared/Cards/Card.cs" id="1_gasdx"]
 [ext_resource type="PackedScene" uid="uid://871mkmeodd5s" path="res://Games/Shared/Components/BackgroundRect.tscn" id="2_6ma3f"]
-[ext_resource type="Script" path="res://addons/rev_godot_core/Components/GestureDetector.cs" id="9_gestures"]
+[ext_resource type="Script" uid="uid://d4hsgey1lfdfu" path="res://addons/rev_godot_core/Components/GestureDetector.cs" id="9_gestures"]
 
 [node name="Card" type="Control"]
 custom_minimum_size = Vector2(300, 420)
@@ -41,19 +41,27 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Border"]
+[node name="Face" type="MarginContainer" parent="Border"]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="FaceColor" type="ColorRect" parent="Border/Face"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Border/Face"]
+layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="Front" type="TextureRect" parent="Border/MarginContainer"]
+[node name="Front" type="TextureRect" parent="Border/Face/MarginContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 expand_mode = 1

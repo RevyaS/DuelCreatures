@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://cyyv18sljb87o"]
+[gd_scene load_steps=8 format=3 uid="uid://cyyv18sljb87o"]
 
 [ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Games/Shared/Cards/Card.tscn" id="1_card"]
+[ext_resource type="Script" path="res://Games/YuGiOh/Cards/YuGiOhCardComponent.cs" id="2_01b6i"]
 [ext_resource type="Script" uid="uid://gyo6ja063yda" path="res://Games/YuGiOh/Cards/YuGiOhLevelFace.cs" id="2_level"]
 [ext_resource type="Script" uid="uid://c51l3r73ka3kn" path="res://Games/YuGiOh/Cards/YuGiOhAttackFace.cs" id="3_attack"]
 [ext_resource type="Script" uid="uid://bfpwrij2gxufx" path="res://Games/YuGiOh/Cards/YuGiOhDefenseFace.cs" id="4_defense"]
@@ -10,6 +11,10 @@
 bg_color = Color(0, 0, 0, 0.6)
 
 [node name="Card" instance=ExtResource("1_card")]
+script = ExtResource("2_01b6i")
+
+[node name="MarginContainer" parent="Border/Face" index="1"]
+theme_override_constants/margin_bottom = 69
 
 [node name="LevelPanel" type="PanelContainer" parent="Border" index="2"]
 layout_mode = 1

@@ -5,6 +5,8 @@ using Godot;
 [Tool]
 public abstract partial class CardBaseComponent : Control
 {
+    MarginContainer Face = null!;
+    ColorRect FaceColor = null!;
     TextureRect Front = null!;
     BackgroundRect Back = null!;
     // Press, long press and drag (see GestureDetector)
@@ -42,6 +44,18 @@ public abstract partial class CardBaseComponent : Control
         set
         {
             texture = value;
+            Render();
+        }
+    }
+
+    private Color _faceColor = Color.Color8(19, 80, 146);
+    [Export]
+    public Color FaceColorValue
+    {
+        get => _faceColor;
+        set
+        {
+            _faceColor = value;
             Render();
         }
     }
@@ -115,6 +129,8 @@ public abstract partial class CardBaseComponent : Control
     /// <summary>Finds the scene's nodes this card draws with; a subclass finds its own too (calling base first).</summary>
     protected virtual void FindNodes()
     {
+        Face = GetNode<MarginContainer>($"%{nameof(Face)}");
+        FaceColor = GetNode<ColorRect>($"%{nameof(FaceColor)}");
         Front = GetNode<TextureRect>($"%{nameof(Front)}");
         Back = GetNode<BackgroundRect>($"%{nameof(Back)}");
         Border = GetNode<ColorRect>($"%{nameof(Border)}");
@@ -131,7 +147,8 @@ public abstract partial class CardBaseComponent : Control
 
     protected virtual void RenderCore()
     {
-        Front.Visible = _isFront;
+        Face.Visible = _isFront;
+        FaceColor.Color = _faceColor;
         Front.Texture = texture;
         Border.Color = _outline ?? defaultBorderColor;
 
