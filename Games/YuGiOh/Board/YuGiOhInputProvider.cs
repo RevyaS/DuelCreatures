@@ -108,7 +108,8 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
     public void SetEventBus(EventBus eventBus)
     {
         foreach(var subscription in subscriptions) subscription.Dispose();
-        var resolving = GetNode<ResolvingSkillDetails>("%ResolvingSkill");
+        var resolving = new ResolvingSkills();
+        GetNode<ResolvingSkillDetails>("%ResolvingSkill").Follow(resolving);
         subscriptions =
         [
             eventBus.Subscribe<SkillUseStarted>(started =>

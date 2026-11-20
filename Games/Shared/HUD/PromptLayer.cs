@@ -23,6 +23,9 @@ public partial class PromptLayer : Control
 
     public bool IsCollapsed => collapsed;
 
+    /// <summary>The layer collapsed (true: the board shows) or came back up (false).</summary>
+    public event System.Action<bool>? CollapsedChanged;
+
     public override void _Ready()
     {
         MouseFilter = MouseFilterEnum.Ignore;
@@ -58,6 +61,7 @@ public partial class PromptLayer : Control
         collapsed = true;
         handle.Visible = true;
         SlideTo(Size.Y - HandleHeight);
+        CollapsedChanged?.Invoke(true);
     }
 
     public void Expand()
@@ -65,6 +69,7 @@ public partial class PromptLayer : Control
         if(!collapsed) return;
         collapsed = false;
         SlideTo(0, () => handle.Visible = false);
+        CollapsedChanged?.Invoke(false);
     }
 
     bool HasContent => prompts.Any(prompt => prompt.IsShowing);
@@ -78,6 +83,7 @@ public partial class PromptLayer : Control
             collapsed = false;
             handle.Visible = false;
             Position = Position with { Y = 0 };
+            CollapsedChanged?.Invoke(false);
         }
     }
 

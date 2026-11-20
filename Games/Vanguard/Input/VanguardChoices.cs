@@ -10,7 +10,7 @@ using ActivateSkillRequest = ArC.CardGames.Skills.ActivateSkillRequest;
 
 /// <summary>
 /// Answers Vanguard's "pick from these" and "yes or no" questions (Choose, Confirm) by their shape: the mulligan by its
-/// purpose; circles by tapping them (several: numbered badges, then Confirm); cards by where they are (damage: long press
+/// purpose; circles on the enlarged field (FieldSelectScreen: several are numbered, then OK); cards by where they are (damage: long press
 /// to turn for a counter blast or charge; the deck: drag one out of the list; the hand, the soul, the drop zone: pick
 /// from a list, then Confirm); skills by dragging one out of the list. A shape with no gesture throws UnansweredQuestion.
 /// </summary>
@@ -23,7 +23,6 @@ public sealed class VanguardChoices(VanguardInput input)
         public static string ProvidePower = "Tap a unit to give the trigger's power";
         public static string ProvideCritical = "Tap a unit to give the trigger's critical";
         public static string Stand = "Tap a resting rear-guard to stand it";
-        public static string ChooseCircles(string prompt, int minimum, int maximum) => $"{prompt} ({Select(minimum, maximum)}): tap to choose, then Confirm";
         public static string ChooseSkillToResolve = "Select the skill to resolve first";
         public static string ActivateTrigger = "Select Skill to Activate";
         public static string Heal = "Select Card to Heal";
@@ -50,7 +49,7 @@ public sealed class VanguardChoices(VanguardInput input)
         }
         if(typeof(ICardSpace).IsAssignableFrom(typeof(T)))
         {
-            return (await ChooseZones(question.Offered.Cast<ICardSpace>().ToList(), question.Minimum, question.Maximum, ZoneHint(question.Purpose, question.Prompt))).Cast<T>().ToList();
+            return (await ChooseZones(question.Offered.Cast<ICardSpace>().ToList(), question.Minimum, question.Maximum, ZoneHint(question.Purpose, question.Prompt), question.CanCancel)).Cast<T>().ToList();
         }
         if(typeof(CardBase).IsAssignableFrom(typeof(T)))
         {
@@ -72,37 +71,9 @@ public sealed class VanguardChoices(VanguardInput input)
         _ => prompt,
     };
 
-    // One: tap it. Several: tap circles to choose them (badges number them), tap a chosen one again to drop it, then Confirm
-    private async Task<List<ICardSpace>> ChooseZones(List<ICardSpace> candidates, int minimum, int maximum, string hint)
-    {
-        if(minimum == 1 && maximum == 1)
-        {
-            using var scope = input.Board.Scope().Zones(candidates).Hint(hint);
-            return [ ((ZoneClicked)await scope.Next()).Zone ];
-        }
-
-        var chosen = new CardSelection<ICardSpace>(candidates, minimum, maximum);
-        while(true)
-        {
-            using var scope = input.Board.Scope().Hint(Text.ChooseCircles(hint, minimum, maximum));
-            if(chosen.CanPickMore) scope.Zones(candidates.Where(zone => !chosen.IsPicked(zone)));
-            foreach(var zone in chosen.Picks) scope.Cards(zone);
-            scope.Numbered(chosen.Picks);
-            if(chosen.CanConfirm) scope.Button(BoardButton.Confirm);
-
-            switch(await scope.Next())
-            {
-                case ButtonPressed:
-                    return chosen.Picks.ToList();
-                case ZoneClicked { Zone: var zone }:
-                    chosen.Toggle(zone);
-                    break;
-                case CardClicked { Zone: var zone }:
-                    chosen.Toggle(zone);
-                    break;
-            }
-        }
-    }
+    // On the enlarged field (FieldSelectScreen): one, tap it; several, tap to number them, tap again to drop, then OK
+    private async Task<List<ICardSpace>> ChooseZones(List<ICardSpace> candidates, int minimum, int maximum, string hint, bool canCancel)
+        => (await input.FieldSelect.ChooseZones(candidates, minimum, maximum, hint, canCancel)).ToList();
 
     // By where the offered cards are: the gesture depends on the place, not on the skill asking
     private async Task<IReadOnlyList<CardBase>> ChooseCards(List<CardBase> cards, int minimum, int maximum, object purpose, string prompt, bool canCancel)
@@ -131,7 +102,7 @@ public sealed class VanguardChoices(VanguardInput input)
         var circles = cards.Select(CircleOf).ToList();
         if(circles.All(circle => circle is not null))
         {
-            var chosen = await ChooseZones(circles.Cast<ICardSpace>().ToList(), minimum, maximum, prompt);
+            var chosen = await ChooseZones(circles.Cast<ICardSpace>().ToList(), minimum, maximum, prompt, canCancel);
             return chosen.Select(zone => ((UnitCircle)zone).Card!).Cast<CardBase>().ToList();
         }
         throw new UnansweredQuestion(purpose, prompt, typeof(CardBase), "the offered cards are in several places or in none the board can pick from");

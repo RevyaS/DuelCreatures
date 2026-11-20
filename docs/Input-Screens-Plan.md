@@ -128,9 +128,17 @@ YuGiOh has no mulligan; the same parts would make a "go first / second" screen i
 [ OK / Cancel (several picks or optional)                        ]
 ```
 
-`FieldSelectScreen.tscn`. The field is **the real play area view, moved and scaled** into the screen's `%FieldFocus`
-rect while the screen is up, then put back. Not a copy: the circles, their highlights, badges and `ZoneClicked` stay
-the ones `InputBoard` already uses, so `ChooseZones` keeps working unchanged under the new look.
+**Built** for Vanguard: `FieldSelectScreen` (shared script, `Games/Shared/HUD/Prompts/`), laid out in
+`Games/Vanguard/HUD/Prompts/VanguardFieldSelectScreen.tscn`, instanced as `%FieldSelect` in the input provider's
+`PromptLayer`. `VanguardChoices.ChooseZones` (triggers, skill targets, units picked by circle) and
+`VanguardInputProvider.Assign` go to it. YuGiOh still picks zones on the board.
+
+The field is **the real board, scaled and moved** so the play areas holding the offered spaces fill the screen's
+`%FieldFocus` rect, then put back (`FieldFocus.Focus/Release`). The board's root is transformed, not the play area:
+`Player1Area` sits in a `VBoxContainer`, which resets its children's scale and position whenever it lays them out. Not
+a copy: the circles, their highlights, badges, drops and `ZoneClicked` stay the ones `InputBoard` already uses, and
+whatever works from global positions (aim lines, card flights, drop hit tests) follows. The screen's other parts are
+opaque and cover the rest of the board; `%FieldFocus` lets presses through to it.
 
 - Which field: the play area holding the offered circles; both (rare) enlarges the whole board.
 - **Orientation: the circles stay where they are on the board, the cards face you.**
@@ -138,15 +146,30 @@ the ones `InputBoard` already uses, so `ChooseZones` keeps working unchanged und
   - The opponent's field: their back row on top, their vanguard bottom center (as across the table on the board), but
     every card upright for you, not upside down. That's the one difference from the board: there `FacesOwner` turns
     the far side's cards to read for their owner.
-  - So `FieldFocus` keeps the area's placement and asks the play area view to turn its cards to face the viewer while
-    it's focused (`PlayAreaView.FaceViewer(bool)`: overrides `QuarterTurnContainer.FacesOwner` for the area's cards),
-    and gives it back after.
-- The top shows the asking skill's card large (the `SkillBanner`'s full version). A tap on a field card or a row card
-  shows *its* details over that, a tap elsewhere closes them (not answering).
-- **Card row** (`SelectionGrid` with one row): for answers that put a card on a circle, like a superior call or
-  "move a card to a circle". Pick a card (select button), then tap a circle. **(check ArC)** whether those are one
-  question (card + circle) or two (`Choose<CardBase>`, then `Choose<circle>`); with two, the row shows the card picked
-  in the first while the second is asked.
+  - So the area keeps its placement and `PlayAreaView.FaceViewer(bool)` turns what reads for its owner to read for the
+    viewer while it's focused: half a turn more for every card holder (`CardArea`, `CardLine` `FlippedAppearance`),
+    and `FacesOwner` labels as on the near side. It gives them back after. Piles (`CardVerticalStack`) aren't turned.
+- The top shows the asking skill (a `ResolvingSkillDetails` with the game's full details scene, reading the same
+  `ResolvingSkills` as the pinned one, which steps aside while a screen is up). A tap on a field card or a row card
+  shows *its* details over that (`%DetailsSpace`), a tap elsewhere closes them (not answering). A trigger's question
+  has no skill asking, so the top is only room for details; showing the trigger's card there is still to do.
+- Swiping down collapses the layer: the board goes back to its size until the screen comes back up
+  (`PromptLayer.CollapsedChanged`).
+- **Card row** (`SelectionGrid` with one row): for ArC's `Assigning<TCard, TSpace>` questions (`IPlayerInput.Assign`),
+  which put cards on circles in one answer, like a superior call. Which cards is asked before, as its own question
+  (superior call from the deck: `Steps.PickExactly` from the deck, a D screen, then `Steps.Assign(chosen: pick, …)`).
+  The row holds the question's cards, unplaced ones only, in order:
+  - **Tap a highlighted circle: the leftmost card goes there** (circles offered only where that card may go,
+    `question.SpacesFor(card)`). This holds however many cards the row holds, a whole deck included.
+  - **Or drag any row card onto a circle** it may go to (`CanPlace`); drops are hit-tested by position, so the
+    enlarged board takes them.
+  - Tapping a circle holding a placed card takes it back (it returns to its place in the row). Placed circles are
+    numbered in placing order. Overcalling onto an occupied circle is allowed where ArC allows it. Dragging a placed
+    card back to the row isn't built.
+  - Placements are previews: nothing moves in ArC until **OK** (enabled between `Minimum` and `Maximum`
+    placements; Cancel when `CanCancel`); the board `Resync()`s after. The answer goes through `question.Expect`.
+  - An input that doesn't override `Assign` gets ArC's `Assigning.OneByOne` (a card question, then a circle per card);
+    YuGiOh's provider still does.
 - Single pick: a tap answers, as now. Several: tap = numbered, tap again = drop, OK. Optional: Cancel.
 
 Used for: skill targets, trigger power / critical / stand, interceptors outside the guard step, retire / rest
@@ -313,6 +336,9 @@ public partial class SelectableCard : Control
    the markers.
 4. **Guard** on D: `GuardScreen` + `GuardTotal`, `VanguardGuardPrompt.Stage` moved to it.
 5. **C** `FieldSelectScreen` with `FieldFocus` and `PlayAreaView.FaceViewer`; then the card row for superior calls.
+   **Built** (section 4), with the screen base every screen uses: `InputScreen` (in the `PromptLayer`, one at a time,
+   the error naming the question still answered; `%SwipeArea` collapses the layer) and `ResolvingSkills` (one list of
+   the skills being used, read by every `ResolvingSkillDetails`).
 6. **B** `MulliganScreen` (after asking ArC about turn order at mulligan time).
 7. YuGiOh: route its `Choose`/`Confirm` to A, C, D (`YuGiOhChoices`), with a `YuGiOhSkillBanner.tscn` and
    `YuGiOhCardTags`.

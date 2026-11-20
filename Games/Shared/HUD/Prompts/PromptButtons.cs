@@ -19,12 +19,29 @@ public partial class PromptButtons : Control
     public event Action? Confirmed;
     public event Action? Cancelled;
 
+    System.Threading.Tasks.TaskCompletionSource<PromptButton>? waiting;
+
     public override void _Ready()
     {
         Ok.Text = OkText;
         Cancel.Text = CancelText;
-        Ok.Pressed += () => Confirmed?.Invoke();
-        Cancel.Pressed += () => Cancelled?.Invoke();
+        Ok.Pressed += () =>
+        {
+            waiting?.TrySetResult(PromptButton.Ok);
+            Confirmed?.Invoke();
+        };
+        Cancel.Pressed += () =>
+        {
+            waiting?.TrySetResult(PromptButton.Cancel);
+            Cancelled?.Invoke();
+        };
+    }
+
+    /// <summary>The next press of OK or Cancel (one still waiting is the same press).</summary>
+    public System.Threading.Tasks.Task<PromptButton> NextPress()
+    {
+        if(waiting is null || waiting.Task.IsCompleted) waiting = new();
+        return waiting.Task;
     }
 
     /// <summary>OK can be pressed.</summary>

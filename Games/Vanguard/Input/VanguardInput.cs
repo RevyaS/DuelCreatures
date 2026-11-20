@@ -10,6 +10,7 @@ public sealed class VanguardInput(
     SelectFromCardList cardPicker,
     SelectCardsComponent handPicker,
     CardList effectPicker,
+    FieldSelectScreen fieldSelect,
     System.Action<CardDetail> showDetails)
 {
     /// <summary>The player being asked.</summary>
@@ -27,6 +28,8 @@ public sealed class VanguardInput(
     public SelectCardsComponent HandPicker { get; } = handPicker;
     /// <summary>Where skills and cards are picked by dragging one out (Prompts.DragOutOfCardList).</summary>
     public CardList EffectPicker { get; } = effectPicker;
+    /// <summary>Where circles are picked and cards placed on them, on the enlarged field.</summary>
+    public FieldSelectScreen FieldSelect { get; } = fieldSelect;
     /// <summary>Shows a card's details (e.g. the skill a card stands for in the effect picker).</summary>
     public System.Action<CardDetail> ShowDetails { get; } = showDetails;
 

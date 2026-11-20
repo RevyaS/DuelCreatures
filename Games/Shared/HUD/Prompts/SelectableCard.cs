@@ -3,15 +3,30 @@ using ArC.CardGames.Components;
 using Godot;
 
 /// <summary>
-/// One card offered on an input screen, enlarged: the game's card scene (CardScenes.Create) fitted into %CardSlot (its
-/// size set in the scene), with its pick number (%Badge, a SelectionBadge), where it is or what it's for (%Tag, a
+/// One card offered on an input screen, enlarged: the game's card scene (CardScenes.Create) in %CardSlot at
+/// <see cref="CardScale"/> (a ratio of the card component's own size, SizeConstants.CardDefaultSize, as every card
+/// holder sizes its cards; the slot is that big and the layout around it follows), with its pick number (%Badge, a SelectionBadge), where it is or what it's for (%Tag, a
 /// CardTagView), a state drawn over it (%Marker, a CardMarker's scene) and the button picking it (%SelectButton, any
 /// BaseButton in toggle mode). A tap on the card is <see cref="Pressed"/> (its details); the button is
 /// <see cref="SelectPressed"/>. The card shows what it's told: whoever owns the selection sets <see cref="PickNumber"/>
 /// and <see cref="CanSelect"/>, the button never picks by itself. Laid out in SelectableCard.tscn.
 /// </summary>
+[Tool]
 public partial class SelectableCard : Control
 {
+    float cardScale = 1;
+    /// <summary>The card's size, as a ratio of the card component's own size (SelectionGrid sets it for its cards).</summary>
+    [Export(PropertyHint.Range, "0.05, 2.0, 0.01, or_greater")]
+    public float CardScale
+    {
+        get => cardScale;
+        set
+        {
+            cardScale = value;
+            if(IsNodeReady()) FitCard();
+        }
+    }
+
     Control? cardSlot, markerSlot;
     BaseButton? selectButton;
     SelectionBadge? badge;
@@ -34,11 +49,39 @@ public partial class SelectableCard : Control
 
     public override void _Ready()
     {
-        GetNode<GestureDetector>("%Gestures").Tapped += () => Pressed?.Invoke(this);
+        // Fields reset after a C# rebuild in the editor: look the nodes up again
+        cardSlot = null;
+        FitCard();
+        if(Engine.IsEditorHint()) return;
+        var gestures = GetNode<GestureDetector>("%Gestures");
+        gestures.Tapped += () => Pressed?.Invoke(this);
+        // A drag carries the card (CardDrag) to whatever takes it, e.g. a circle on the enlarged field
+        gestures.DragStarted += position =>
+        {
+            if(draggable && cardNode is not null) CardDrag.Begin(cardNode, position);
+        };
+        gestures.DragMoved += CardDrag.Move;
+        gestures.DragEnded += CardDrag.End;
+        gestures.DragCancelled += CardDrag.Cancel;
         SelectButton.ToggleMode = true;
         SelectButton.Pressed += OnSelectButtonPressed;
-        CardSlot.Resized += FitCard;
         Badge.Number = pickNumber;
+        Draggable = draggable;
+    }
+
+    bool draggable;
+    /// <summary>The card can be dragged out (onto drop targets); off, a drag scrolls the list it's in.</summary>
+    public bool Draggable
+    {
+        get => draggable;
+        set
+        {
+            draggable = value;
+            if(!IsNodeReady() || Engine.IsEditorHint()) return;
+            var gestures = GetNode<GestureDetector>("%Gestures");
+            gestures.Drags = value;
+            gestures.ScrollsParent = !value;
+        }
     }
 
     /// <summary>The card shown.</summary>
@@ -52,6 +95,8 @@ public partial class SelectableCard : Control
         cardNode = CardScenes.Create(shown);
         cardNode.IsFront = true;
         CardSlot.AddChild(cardNode);
+        // Under the slot's marker, tag and badge
+        CardSlot.MoveChild(cardNode, 0);
         // This view takes every press; the card only shows
         cardNode.IgnoreMouse();
         FitCard();
@@ -126,14 +171,10 @@ public partial class SelectableCard : Control
         return null;
     }
 
-    // The card scene is centered on the slot and scales around its center: as large as fits the slot
+    // The slot is a card at CardScale; the card scene is centered on it and scales around its center
     private void FitCard()
     {
-        if(cardNode is null) return;
-        var cardSize = cardNode.CustomMinimumSize;
-        if(cardSize.X <= 0 || cardSize.Y <= 0) cardSize = cardNode.Size;
-        if(cardSize.X <= 0 || cardSize.Y <= 0 || CardSlot.Size.X <= 0 || CardSlot.Size.Y <= 0) return;
-        var scale = Mathf.Min(CardSlot.Size.X / cardSize.X, CardSlot.Size.Y / cardSize.Y);
-        cardNode.Scale = new Vector2(scale, scale);
+        CardSlot.CustomMinimumSize = SizeConstants.CardDefaultSize * CardScale;
+        if(cardNode is not null) cardNode.Scale = new Vector2(CardScale, CardScale);
     }
 }

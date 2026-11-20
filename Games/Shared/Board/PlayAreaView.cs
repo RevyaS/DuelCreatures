@@ -25,14 +25,35 @@ public partial class PlayAreaView : Control
 
     public override void _Ready() => Render();
 
+    bool facingViewer;
+
+    /// <summary>
+    /// While true, everything in the area reads upright for the player looking at the screen, even on the far side (an
+    /// input screen enlarging the opponent's field): the circles stay where they are, but the cards and labels that
+    /// face their owner across the table turn to face the viewer. False gives them back.
+    /// </summary>
+    public void FaceViewer(bool face)
+    {
+        if(face == facingViewer) return;
+        facingViewer = face;
+        if(!FlippedAppearance) return;
+        // Half a turn more for every card holder (a zone's own setting stays as the scene has it once given back)
+        foreach(var area in this.Descendants<CardArea>()) area.FlippedAppearance = !area.FlippedAppearance;
+        foreach(var line in this.Descendants<CardLine>()) line.FlippedAppearance = !line.FlippedAppearance;
+        Render();
+    }
+
+    // Turned to read for its owner across the table: on the far side, unless it faces the viewer for now
+    bool ReadsForOwnerAcross => FlippedAppearance && !facingViewer;
+
     private void Render()
     {
         if(!IsNodeReady()) return;
         foreach(var container in this.Descendants<QuarterTurnContainer>())
         {
-            if(container.FacesOwner) container.OnFarSide = FlippedAppearance;
+            if(container.FacesOwner) container.OnFarSide = ReadsForOwnerAcross;
         }
-        Flip(FlippedAppearance);
+        Flip(ReadsForOwnerAcross);
     }
 
     /// <summary>What else a game turns on the far side (e.g. Vanguard's circle icons).</summary>
