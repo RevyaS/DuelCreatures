@@ -1,6 +1,6 @@
 # Input screens: asking like Vanguard ZERO
 
-A plan, nothing built yet. It reworks how the client *asks* (the screens a question opens), not what it answers:
+A plan; step 1 (the shared parts, section 9) is built, the screens are not. It reworks how the client *asks* (the screens a question opens), not what it answers:
 `VanguardChoices`, the strategies and `Expect` keep answering ArC's four questions exactly as now. Every screen is
 built from shared scenes so YuGiOh can use the same ones.
 
@@ -299,6 +299,15 @@ public partial class SelectableCard : Control
    API, `SelectButton.tscn`, `CardTagView.tscn`, `CardTag` / `CardMarker` and `VanguardCardTags` /
    `VanguardCardMarkers`, `SelectionGrid.tscn`, `PromptHeader`, `PromptButtons`, `DetailsSpace` and the overlay placing
    details into it.
+   **Built:** all under `Games/Shared/HUD/Prompts/` (Vanguard's tags and markers under
+   `Games/Vanguard/HUD/Prompts/`, placeholder marker scenes in `Markers/`). `CardView` and the board's `CardSlot` show
+   their numbers with `SelectionBadge.tscn` (`ZoneInput.ShowPickNumber` instances it; `CardSlot`'s `PickNumber…` colour
+   exports are gone, the look is the scene). Both games' `ChooseZones` count with `CardSelection<ICardSpace>`.
+   `SelectionGrid.Show(selection, cardOf)` wires select buttons to a `CardSelection`; `PromptHeader.Follow` and
+   `PromptButtons.Follow` keep the counter and OK in step with it. `VanguardCardTags`/`VanguardCardMarkers` derive from
+   `CardIndicators`, whose `EnsureComplete()` names every unset property. `DetailsSpace.Showing()` is the one visible
+   details space (two at once throws); `CardDetailsOverlay.Show` fits its details into it, else puts them back where
+   the scene has them.
 2. **A** `SwipeUpPicker` for "activate?", skill order, options (smallest, fixes the accidental decline).
 3. **D** `CardSelectScreen` for soul blast, discard, drop zone, deck search, heal; then counter blast / charge with
    the markers.

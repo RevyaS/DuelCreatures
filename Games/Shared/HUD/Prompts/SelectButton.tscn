@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[node name="SelectButton" type="Button"]
+custom_minimum_size = Vector2(160, 64)
+offset_right = 160.0
+offset_bottom = 64.0
+theme_override_font_sizes/font_size = 32
+toggle_mode = true
+text = "Select"

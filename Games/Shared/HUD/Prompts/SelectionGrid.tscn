@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://Games/Shared/HUD/Prompts/SelectionGrid.cs" id="1_grid"]
+[ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/SelectableCard.tscn" id="2_item"]
+
+[node name="SelectionGrid" type="ScrollContainer"]
+custom_minimum_size = Vector2(0, 560)
+offset_right = 1080.0
+offset_bottom = 560.0
+horizontal_scroll_mode = 0
+script = ExtResource("1_grid")
+ItemScene = ExtResource("2_item")
+
+[node name="Items" type="HFlowContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 16
+alignment = 1

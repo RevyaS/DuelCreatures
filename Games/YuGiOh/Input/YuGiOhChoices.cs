@@ -62,24 +62,24 @@ public sealed class YuGiOhChoices(YuGiOhInput input)
             return [ ((ZoneClicked)await scope.Next()).Zone ];
         }
 
-        List<ICardSpace> chosen = [];
+        var chosen = new CardSelection<ICardSpace>(candidates, minimum, maximum);
         while(true)
         {
             using var scope = input.Board.Scope().Hint(Text.ChooseZones(hint, minimum, maximum));
-            if(chosen.Count < maximum) scope.Zones(candidates.Where(zone => !Refs.Has(chosen, zone)));
-            foreach(var zone in chosen) scope.Cards(zone);
-            scope.Numbered(chosen);
-            if(chosen.Count >= minimum) scope.Button(BoardButton.Confirm);
+            if(chosen.CanPickMore) scope.Zones(candidates.Where(zone => !chosen.IsPicked(zone)));
+            foreach(var zone in chosen.Picks) scope.Cards(zone);
+            scope.Numbered(chosen.Picks);
+            if(chosen.CanConfirm) scope.Button(BoardButton.Confirm);
 
             switch(await scope.Next())
             {
                 case ButtonPressed:
-                    return chosen;
+                    return chosen.Picks.ToList();
                 case ZoneClicked { Zone: var zone }:
-                    chosen.Add(zone);
+                    chosen.Toggle(zone);
                     break;
                 case CardClicked { Zone: var zone }:
-                    Refs.Remove(chosen, zone);
+                    chosen.Toggle(zone);
                     break;
             }
         }

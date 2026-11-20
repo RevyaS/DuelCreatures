@@ -1,0 +1,83 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://Games/Shared/HUD/Prompts/SelectableCard.cs" id="1_card"]
+[ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/SelectionBadge.tscn" id="2_badge"]
+[ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/CardTagView.tscn" id="3_tag"]
+[ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/SelectButton.tscn" id="4_select"]
+[ext_resource type="Script" path="res://addons/rev_godot_core/Components/GestureDetector.cs" id="5_gestures"]
+
+[node name="SelectableCard" type="Control"]
+custom_minimum_size = Vector2(330, 540)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 330.0
+offset_bottom = 540.0
+script = ExtResource("1_card")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="CardArea" type="Control" parent="Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="CardSlot" type="Control" parent="Layout/CardArea"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Marker" type="Control" parent="Layout/CardArea"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Tag" parent="Layout/CardArea" instance=ExtResource("3_tag")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_top = 6.0
+offset_right = -6.0
+offset_bottom = 40.0
+grow_horizontal = 0
+
+[node name="Badge" parent="Layout/CardArea" instance=ExtResource("2_badge")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = -65.0
+offset_right = 46.0
+offset_bottom = -6.0
+grow_vertical = 0
+
+[node name="SelectButton" parent="Layout" instance=ExtResource("4_select")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Gestures" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("5_gestures")

@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Games/Shared/HUD/Prompts/PromptButtons.cs" id="1_buttons"]
+
+[node name="PromptButtons" type="HBoxContainer"]
+offset_right = 1080.0
+offset_bottom = 90.0
+mouse_filter = 2
+theme_override_constants/separation = 24
+alignment = 1
+script = ExtResource("1_buttons")
+
+[node name="Ok" type="Button" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 90)
+layout_mode = 2
+theme_override_font_sizes/font_size = 42
+disabled = true
+text = "OK"
+
+[node name="Cancel" type="Button" parent="."]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(320, 90)
+layout_mode = 2
+theme_override_font_sizes/font_size = 42
+text = "Cancel"

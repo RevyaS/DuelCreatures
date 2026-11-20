@@ -1,0 +1,44 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://Games/Shared/HUD/Prompts/CardTagView.cs" id="1_tag"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tag"]
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1, 0.1, 0.15, 0.85)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="CardTagView" type="PanelContainer"]
+visible = false
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tag")
+script = ExtResource("1_tag")
+
+[node name="Content" type="HBoxContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="Icon" type="TextureRect" parent="Content"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Text" type="Label" parent="Content"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 28
+vertical_alignment = 1

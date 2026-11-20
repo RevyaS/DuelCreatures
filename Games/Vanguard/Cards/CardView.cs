@@ -15,8 +15,7 @@ public partial class CardView : Control
     const string ScenePath = "res://Games/Vanguard/Cards/CardView.tscn";
 
     Card card = null!;
-    PanelContainer BadgePanel = null!;
-    Label Badge = null!;
+    SelectionBadge Badge = null!;
 
     public string CardId { get; private set; } = null!;
     public VanguardCard ShownCard { get; private set; } = null!;
@@ -55,21 +54,16 @@ public partial class CardView : Control
             else if(direction == GestureDetector.SwipeDirection.Down) SwipedDown?.Invoke(this);
         };
 
-        BadgePanel = GetNode<PanelContainer>($"%{nameof(BadgePanel)}");
-        Badge = GetNode<Label>($"%{nameof(Badge)}");
+        Badge = GetNode<SelectionBadge>($"%{nameof(Badge)}");
         // Follows the view's scale
-        Badge.AddThemeFontSizeOverride("font_size", Mathf.Max(46, (int)(50 * scale)));
+        Badge.SetFontSize(Mathf.Max(46, (int)(50 * scale)));
     }
 
     /// <summary>A short text over the card's corner, eg; the copies in the deck. Null hides it.</summary>
     public string? BadgeText
     {
-        get => BadgePanel.Visible ? Badge.Text : null;
-        set
-        {
-            Badge.Text = value ?? string.Empty;
-            BadgePanel.Visible = value is not null;
-        }
+        get => Badge.Text;
+        set => Badge.Text = value;
     }
 
     /// <summary>Greys the card out, eg; when no copy is left to add.</summary>
