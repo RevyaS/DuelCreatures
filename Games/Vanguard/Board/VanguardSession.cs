@@ -67,11 +67,10 @@ public partial class VanguardSession : Control
     private async Task StartGame(VanguardGameSession session, VanguardGameDataQuery dataQuery)
     {
         session.StartGame();
-        // After StartGame: the game's board and decks exist from here on
-        InputProviderComponent.Show(session, DataManager.Get(this).BoardSleevesFor<VanguardCard>());
+
 
         #region DEBUG
-        // session.Game.Board.Player1Area.Vanguard.Assign(RoyalPaladin.LittleSageMarron);
+        session.Game.Board.Player1Area.Vanguard.Assign(RoyalPaladin.KingOfKnightsAlfred);
 
         // session.Game.Board.Player1Area.Vanguard.Assign(NovaGrappler.KingOfSword);
         // session.Game.Board.Player1Area.Hand.AddCard(NovaGrappler.MrInvincible);
@@ -90,7 +89,10 @@ public partial class VanguardSession : Control
         //     RoyalPaladin.SailorGuardianMichiru,
         //     RoyalPaladin.BlasterBlade,
         // ]);
-        // session.Game.Board.Player2Area.DamageZone.AddCard(Kagero.BerserkDragon);
+        session.Game.Board.Player1Area.DamageZone.AddCard(Kagero.BerserkDragon);
+        session.Game.Board.Player1Area.DamageZone.AddCard(Kagero.BerserkDragon);
+        session.Game.Board.Player1Area.DamageZone.AddCard(Kagero.BerserkDragon);
+        session.Game.Board.Player1Area.DamageZone.AddCard(Kagero.BerserkDragon);
         // session.Game.Board.Player2Area.DamageZone.AddCard(Kagero.BerserkDragon);
         // session.Game.Board.Player2Area.DamageZone.AddCard(Kagero.BerserkDragon);
         // session.Game.Board.Player2Area.DamageZone.AddCard(Kagero.BerserkDragon);
@@ -101,7 +103,9 @@ public partial class VanguardSession : Control
         // session.Game.Board.Player1Area.Hand.AddCard(RoyalPaladin.Wingal);
         // session.Game.Board.Player2Area.FrontLeft.Assign(RoyalPaladin.KnightOfSilenceGallatin);
         #endregion
-        
+
+        // After StartGame: the game's board and decks exist from here on
+        InputProviderComponent.Show(session, DataManager.Get(this).BoardSleevesFor<VanguardCard>());
         while(!session.IsGameOver())
         {
             GD.Print($"Applying session {session.CurrentPhase}");
