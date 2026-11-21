@@ -60,6 +60,8 @@ public partial class PromptLayer : Control
         if(collapsed || !HasContent) return;
         collapsed = true;
         handle.Visible = true;
+        // Above every prompt: a prompt brought to the front (an input screen) would cover the bar and take its taps
+        handle.MoveToFront();
         SlideTo(Size.Y - HandleHeight);
         CollapsedChanged?.Invoke(true);
     }

@@ -50,9 +50,9 @@ public static class ZoneInput
     }
 
     /// <summary>
-    /// Shows <paramref name="number"/> at the top of <paramref name="zone"/> (which pick it was) in a SelectionBadge, the
-    /// same scene the input screens number their cards with, or hides it when null; added the first time it's shown. It
-    /// never takes clicks.
+    /// Shows <paramref name="number"/> over <paramref name="zone"/> (which pick it was) in a SelectionBadge, the same scene
+    /// the input screens number their cards with, or hides it when null; added the first time it's shown. The badge
+    /// covers the zone and its scene places the number in it. It never takes clicks.
     /// </summary>
     public static void ShowPickNumber(Control zone, ref SelectionBadge? badge, int? number)
     {
@@ -63,8 +63,7 @@ public static class ZoneInput
             badge.Name = "PickNumber";
             zone.AddChild(badge);
             badge.IgnoreMouse();
-            badge.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.CenterTop, Control.LayoutPresetMode.Minsize);
-            badge.GrowHorizontal = Control.GrowDirection.Both;
+            badge.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
         }
         badge.Number = number;
     }

@@ -68,6 +68,10 @@ ArC session ── CardsMoved / CardTurned / DeckShuffled ──▶ ArcDriver �
   The input provider (`Games/<Game>/Board/<Game>InputProvider.cs`) implements ArC's four questions, after
   `Presenter.WhenIdle()`: `ChooseAction` goes to the strategy for `choice.Where` (an unknown one throws), and every
   answer is checked with `Expect`. A question with no gesture throws `UnansweredQuestion`.
+- **Input screens** (`Games/Shared/HUD/Prompts/`, `docs/Input-Screens-Plan.md`): a question can open an
+  `InputScreen` over the board, in the `PromptLayer`, one at a time. Built from shared part scenes (`SelectableCard`,
+  `SelectionGrid`, `PromptHeader`, `PromptButtons`, `DetailsSpace`, `FieldFocus`); games add layouts. The field
+  selection screen enlarges the real board (`FieldFocus` scales its root) rather than copying it.
 - **HUD:** card details are built from parts (`Games/Shared/HUD/CardDetails/`, per-game scenes); activation buttons are
   gated by `IActivationGate`. Prompt panels sit in a `PromptLayer` (swipe down collapses, swipe up/tap restores) with
   `ResolvingSkillDetails` (the player's own skill pinned while it's activated or resolved).
@@ -117,7 +121,8 @@ Shared, both games:
 - Skills, skill order, triggers, "choose one of" options and deck searches are picked by **dragging a card out of the
   card list** (press to read, drag out to pick; dropping back on the list returns it). Options show only the ones ArC
   says can be chosen.
-- Several zones/circles: tap to pick (a numbered badge 1, 2, … shows), tap again to drop, **Confirm** to finish.
+- Several zones/circles: tap to pick (a numbered badge 1, 2, … shows), tap again to drop, **Confirm** to finish
+  (Vanguard: on the field selection screen, **OK** to finish; YuGiOh: on the board).
 - The player's own skill is pinned while it's activated or resolved; prompts collapse with a swipe down (chevron bar),
   return with a swipe up or tap.
 - Next Phase / Confirm buttons appear only while offered (`BoardButtonView.HideWhenUnavailable`); the hint says what
@@ -147,7 +152,12 @@ Vanguard (`VanguardMulliganStrategy`, `VanguardRidePhaseStrategy`, `VanguardMain
   (**Return**); tap a front rear-guard to intercept, tap it on the guardian circle to call it back; the guarded unit
   shows its would-be power; Confirm. Nothing moves in ArC until Confirm (the board previews, then `Resync()`s).
 - Counter blast / counter charge: long press damage cards to turn them, Confirm when exactly enough.
-- Triggers, skill targets, interceptors: tap highlighted circles (a tap that selects doesn't open details).
+- Triggers, skill targets, units picked by circle: the **field selection screen** (`FieldSelectScreen`) enlarges the
+  play area holding the circles (the opponent's cards turned to face you), tap highlighted circles (a tap that selects
+  doesn't open details; other taps show details at the top); several are numbered, then OK; Cancel when optional.
+  Swipe down to see the whole board.
+- Superior call: pick the cards from the deck, then on the field selection screen tap a highlighted circle to place
+  the leftmost card of the row there, or drag any row card onto a circle; tap a placed card to take it back; OK.
 - Long press a vanguard: its soul list. Drive/damage checks and the opponent's guards pause briefly to be read.
 - Layout: the phase shows in the turn player's play area, between the (hidden) extra circles; the hint sits under
   your phase label; Next Phase and Confirm share the place left of the guardian circle.
@@ -157,6 +167,10 @@ Vanguard (`VanguardMulliganStrategy`, `VanguardRidePhaseStrategy`, `VanguardMain
 - **The user designs scenes; the code binds to them.** Find nodes with `GetNode<T>("%Name")` (unique names), never
   `[Export]` node references. No layout enums: layouts are scenes.
 - **UI values are exported** (colours, sizes, timings, texts), never magic constants.
+- **Card sizes are ratios of the Card component**, never fixed pixel sizes: anything holding cards exports a
+  `CardScale` (`CardArea`, `CardLine`, `CardListPanel`, `SelectableCard`, `SelectionGrid`) and sizes itself as
+  `SizeConstants.CardDefaultSize * CardScale`, with the card scene scaled by the same ratio. Layouts around cards are
+  given in cards too (e.g. `SelectionGrid.VisibleRows`), so changing a scale resizes everything with it.
 - **The UI is dumb.** Legality comes from ArC's `Can…`/`Validate…`; strategies only limit which inputs are allowed.
 - **Strongly typed, fails loudly**, at build time where possible (typed questions, typed gestures, binding reports).
   Avoid `object`, strings and primitives that can mean anything.
