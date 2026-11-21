@@ -152,7 +152,7 @@ opaque and cover the rest of the board; `%FieldFocus` lets presses through to it
 - The top shows the asking skill (a `ResolvingSkillDetails` with the game's full details scene, reading the same
   `ResolvingSkills` as the pinned one, which steps aside while a screen is up). A tap on a field card or a row card
   shows *its* details over that (`%DetailsSpace`), a tap elsewhere closes them (not answering). A trigger's question
-  has no skill asking, so the top is only room for details; showing the trigger's card there is still to do.
+  has no skill asking: triggers get their own layout with the battle on top (below, "Triggers: the battle on top").
 - Swiping down collapses the layer: the board goes back to its size until the screen comes back up
   (`PromptLayer.CollapsedChanged`).
 - **Card row** (`SelectionGrid` with one row): for ArC's `Assigning<TCard, TSpace>` questions (`IPlayerInput.Assign`),
@@ -174,6 +174,85 @@ opaque and cover the rest of the board; `%FieldFocus` lets presses through to it
 
 Used for: skill targets, trigger power / critical / stand, interceptors outside the guard step, retire / rest
 choices on units, superior calls. YuGiOh: targets on the field, tributes, Xyz materials, zone choices.
+
+### Triggers: the battle on top
+
+**The problem:** a trigger's question offers only the checking player's circles (`area.OccupiedCircles`), so the
+screen enlarges only that play area. The other side of the battle (the unit you attack on a drive check, the unit
+attacking you on a damage check) is off screen, and judging where the power or critical goes means collapsing the
+layer to look. Meanwhile the top half is empty: no skill is asking.
+
+**The layout:** `VanguardTriggerSelectScreen.tscn`, an **inherited scene** of `VanguardFieldSelectScreen.tscn` (same
+`FieldSelectScreen` script), with the top half used for the battle and the trigger:
+
+```
+[ Battle: attacker card · power · critical      vs      defender's overall power ]
+[ Trigger: the revealed card · what it gives ("+10000 power", "+1 critical", "Stand") ]
+[ Prompt: Give the power to a unit                                               ]
+[ Your field, enlarged, circles highlighted (as now)                             ]
+[ OK                                                                             ]
+```
+
+- `VanguardChoices.ChooseZones` opens it for `TriggerQuestion.Power`, `.Critical` and `.Stand`; every other circle pick
+  keeps the plain layout.
+- **Tap previews, OK answers.** A new export on `FieldSelectScreen`, `ConfirmSinglePick` (false on the plain layout,
+  true on this one): a single pick is numbered instead of answering, the battle summary and the unit's power show the
+  would-be numbers, a tap on another circle moves the pick, and **OK** answers. Skill targets keep answering on one tap.
+- What the preview shows:
+  - Power to the attacker (drive check): the attacker's power goes up. Power to your defending unit (damage check): the
+    defender's overall power goes up. Power to any other unit: the summary stays, that unit shows its would-be power on
+    the field (as the guard's would-be power does now).
+  - Critical to the attacker: its critical goes up.
+  - Stand: no numbers change; the summary is there to see the battle.
+- `%Trigger` (`VanguardTriggerCard.tscn`): the revealed trigger as a small `SelectableCard` (not selectable; a tap
+  shows its details) and a `Label` with what it gives, worded from exported texts.
+
+**Needed from ArC:** the trigger's amount. The question carries only the `TriggerQuestion` purpose; the client must not
+assume +10000 / +1. Ask for the trigger card (or its amount) on the question, e.g. in its `About`. Until then the
+summary shows the current numbers and the preview shows nothing.
+
+### The battle summary (shared by triggers and guarding)
+
+One part, `VanguardBattleSummary.tscn`, used by the trigger layout and the guard screen (section 5). Every number is a
+`StatView`, so the graphics are yours to place: for now `TextureRect`s and `Label`s, the textures set in the scenes.
+
+| Scene | Holds | Shows |
+|---|---|---|
+| `StatView.tscn` (shared, `Games/Shared/HUD/Prompts/`) | `%Icon` (`TextureRect`), `%Value` (`Label`) | One number with its picture. Exports: the icon texture, the value's colour, the colour of a would-be value (`PreviewColor`). |
+| `VanguardAttackerView.tscn` | `%Card` (a `SelectableCard`, not selectable), `%Power` and `%Critical` (`StatView`s), plus any `TextureRect`s you add around the card | The attacking unit (a tap shows its details), its power in this battle (boost included) and its critical. |
+| `VanguardDefenseView.tscn` | `%Power` (`StatView`) | The defender's **overall power: its power plus the shield on the guardian circle**. |
+| `VanguardBattleSummary.tscn` | `%Attacker` (`VanguardAttackerView`), `%Defense` (`VanguardDefenseView`), anything else you place between them ("vs") | The battle. |
+
+The API (the summary doesn't decide anything; prompts tell it what to show):
+
+```csharp
+public partial class StatView : Control
+{
+    /// <summary>The number shown.</summary>
+    public int Value { get; set; }
+    /// <summary>A would-be number shown instead, in PreviewColor; null shows Value again.</summary>
+    public int? Preview { get; set; }
+}
+
+public partial class VanguardBattleSummary : Control
+{
+    /// <summary>The battle as it is now: attacker card, its power and critical, the defender's power plus shield.</summary>
+    public void Show(VanguardBattle battle);
+    /// <summary>Would-be numbers (null: as shown). Clear with ClearPreview.</summary>
+    public void Preview(int? attackerPower = null, int? attackerCritical = null, int? defensePower = null);
+    public void ClearPreview();
+    public event Action<CardBase>? CardPressed;   // the attacker's card: details
+}
+```
+
+- `VanguardBattle` is a record (attacker circle, booster circle or none, target circle) kept by a session component,
+  `VanguardBattleTracker`, from the events `VanguardBattleLines` already listens to (`AttackDeclared`, `BoostDeclared`,
+  `BattleEnded`). The numbers are read from ArC when shown: the attacker's power in the battle, its critical, the
+  target's power and the shield on the guardian circle. **Check ArC** for one query giving the defender's power plus
+  shield (and whether the attacker's power includes the boost); otherwise the summary sums them, as
+  `ShowGuardedPower` does now.
+- Both players' battles: on a damage check you're the defender, and the same summary reads the other way round.
+- YuGiOh can reuse `StatView` for ATK against ATK/DEF later; the summary itself is Vanguard's.
 
 ## 5. D. Card selection screen
 
@@ -212,20 +291,24 @@ question the board can't answer.
 ### Guard
 
 ```
-[ Details space                                         ]
-[ Attacker power  →  Guarded unit's would-be power       ]
-[ Prompt: Guard                                         ]
+[ Details space                                                          ]
+[ Battle: attacker card · power · critical   vs   your overall power     ]
+[ Prompt: Guard                                                          ]
 [ Hand cards (Hand tag, shields shown) + front rear-guards that can intercept (Intercept tag) ]
-[ Guard                         No Guard                ]
+[ Guard                         No Guard                                 ]
 ```
 
-`GuardScreen.tscn` (Vanguard layout) on the shared parts plus `GuardTotal.tscn` (the power line).
+`GuardScreen.tscn` (Vanguard layout) on the shared parts plus the **battle summary** (`VanguardBattleSummary.tscn`,
+section 4), the same part the trigger layout uses: the attacker with its power and critical, and your overall power
+(your unit's power plus the shield). Every pick previews the overall power (`Preview(defensePower: …)`), so you see
+how much more to place against the attacker's power.
 
 - One grid for both: the hand cards that can guard (offered `CallGuardianRequest`s) with the **Hand** tag and their
   shield shown (`VanguardCardComponent.GuardMode`), and the rear-guards that can intercept (offered
   `InterceptRequest`s) with the **Intercept** tag.
-- Select any number; the would-be power updates on every pick (the client's sum of the picked shields, as
-  `ShowGuardedPower` does now).
+- Select any number; the would-be overall power updates on every pick (the unit's power, the shield already on the
+  guardian circle and the picked shields; the client's sum of the picked shields, as `ShowGuardedPower` does now).
+  Shield a guardian's skill adds once placed shows after Guard.
 - **Guard** answers the picks; **No Guard** passes (or Guard with nothing picked: one of the two, your call in the
   scene).
 - `VanguardGuardPrompt` keeps its staging and one-request-per-question answering; only `Stage` changes, from board
@@ -334,11 +417,14 @@ public partial class SelectableCard : Control
 2. **A** `SwipeUpPicker` for "activate?", skill order, options (smallest, fixes the accidental decline).
 3. **D** `CardSelectScreen` for soul blast, discard, drop zone, deck search, heal; then counter blast / charge with
    the markers.
-4. **Guard** on D: `GuardScreen` + `GuardTotal`, `VanguardGuardPrompt.Stage` moved to it.
+4. **Battle summary and guard:** `StatView`, `VanguardAttackerView`, `VanguardDefenseView`, `VanguardBattleSummary`,
+   `VanguardBattleTracker`; then `GuardScreen` with the summary, `VanguardGuardPrompt.Stage` moved to it.
 5. **C** `FieldSelectScreen` with `FieldFocus` and `PlayAreaView.FaceViewer`; then the card row for superior calls.
    **Built** (section 4), with the screen base every screen uses: `InputScreen` (in the `PromptLayer`, one at a time,
    the error naming the question still answered; `%SwipeArea` collapses the layer) and `ResolvingSkills` (one list of
    the skills being used, read by every `ResolvingSkillDetails`).
+   Next: the trigger layout, `VanguardTriggerSelectScreen.tscn` (inherited, with the battle summary and
+   `%Trigger`) and `FieldSelectScreen.ConfirmSinglePick`; the would-be numbers once ArC gives the trigger's amount.
 6. **B** `MulliganScreen` (after asking ArC about turn order at mulligan time).
 7. YuGiOh: route its `Choose`/`Confirm` to A, C, D (`YuGiOhChoices`), with a `YuGiOhSkillBanner.tscn` and
    `YuGiOhCardTags`.
@@ -351,5 +437,5 @@ prompts until their step.
 
 ## 10. Open questions
 
-None left from the design pass. To check while building: the ArC points above (turn order at mulligan time, superior
-call as one question or two) and the **(check in ZERO)** notes.
+None left from the design pass. To check while building: the ArC points above (turn order at mulligan time, the
+trigger's amount on its question, one query for the defender's power plus shield) and the **(check in ZERO)** notes.
