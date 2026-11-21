@@ -309,8 +309,26 @@ public sealed class ArcDriver : IDisposable
         return false;
     }
 
-    private CardMove MoveFor(IMoveReason reason, ICardSpace to)
+    /// <summary>
+    /// Animates moves for <typeparamref name="TReason"/> from a <typeparamref name="TFrom"/> zone into a
+    /// <typeparamref name="TTo"/> zone as <paramref name="move"/> (<see cref="ICardSpace"/> for either end means any zone):
+    /// for a reason that moves cards to or from several places (a battle's guardians and hit units, a trigger check's card
+    /// to the hand or the damage zone). Checked before <see cref="Animate{TReason}"/>, in the order registered.
+    /// </summary>
+    public ArcDriver Animate<TReason, TFrom, TTo>(CardMove move) where TReason : IMoveReason where TFrom : ICardSpace where TTo : ICardSpace
     {
+        moveAnimationsBetween.Add((typeof(TReason), typeof(TFrom), typeof(TTo), move));
+        return this;
+    }
+
+    readonly List<(Type Reason, Type From, Type To, CardMove Move)> moveAnimationsBetween = [];
+
+    private CardMove MoveFor(IMoveReason reason, ICardSpace from, ICardSpace to)
+    {
+        foreach(var (reasonType, fromType, toType, between) in moveAnimationsBetween)
+        {
+            if(reasonType.IsInstanceOfType(reason) && fromType.IsInstanceOfType(from) && toType.IsInstanceOfType(to)) return between;
+        }
         if(TryFind(moveAnimations, reason, out var move)) return move;
         return to switch
         {
@@ -354,7 +372,7 @@ public sealed class ArcDriver : IDisposable
         var from = shown.GetValueOrDefault(moved.From);
         var to = shown.GetValueOrDefault(moved.To);
         if(from is not null) Apply(from, new ZoneCardsLeft(moved.Cards, to?.View, ZoneSnapshot.Of(moved.From)));
-        if(to is not null) Apply(to, new ZoneCardsArrived(moved.Cards, from?.View, MoveFor(moved.Reason, moved.To), ZoneSnapshot.Of(moved.To)));
+        if(to is not null) Apply(to, new ZoneCardsArrived(moved.Cards, from?.View, MoveFor(moved.Reason, moved.From, moved.To), ZoneSnapshot.Of(moved.To)));
         if(TryFind(moveSounds, moved.Reason, out var cue))
         {
             var context = ContextFor(to?.Side ?? from?.Side ?? BoardSide.Both);

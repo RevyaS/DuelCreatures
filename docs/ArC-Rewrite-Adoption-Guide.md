@@ -431,12 +431,12 @@ reason.
   `Animate<NormalSummonOrSetRequest>(…)`, `Animate<XyzSummonRequest>(…)`, `Animate<SetCardRequest>(…)`. The remaining
   YuGiOh reason records (`AttackHits`, `AttackLost`, `TributeCost`, `UsedAsXYZMaterial`, `CardActivated`, …) still
   exist for the moves no request makes directly.
-- **Vanguard** still uses its own reasons (`Rode`, `Called`, `Overcalled`, `Swapped`, `DriveChecked`, `TookDamage`,
-  `Healed`, `DefeatedInBattle`, `Guarded`, `Intercepted`, `GuardFinished`, `DeckedOut`, …). ArC's **slice G** will
-  replace them with requests (`RideRequest`, `CallRequest`, `TriggerCheckRequest`, …). Until then
-  `VanguardPresentationConfig.ShowVanguardMoves` keeps working; when G lands, re-map each line to the request type
-  that now makes the move. `TriggerCheckRequest.Type` (drive or damage) is how a drive check and a damage check will be
-  told apart.
+- **Vanguard** keeps reason records only for the turn's own moves (`Rode`, `SuperiorRide`, `RodeUpon`, `Called`,
+  `Overcalled`, `Swapped`, `Guarded`, `Intercepted`, `DeckedOut`). A move with no reason given has **what is being
+  resolved** as its reason: a request or a procedure (`VanguardBattle`: the guardians leaving, a hit rear-guard;
+  `TriggerCheckRequest`: a check's card revealed; `TriggerCheck`: that card to the hand or the damage zone, a heal).
+  One such reason moves cards to several places, so `ShowVanguardMoves` tells them apart with
+  `Animate<TReason, TFrom, TTo>` (the zones at both ends; `ICardSpace` for any), checked before `Animate<TReason>`.
 - Moves made by skills carry the skill's request (`MoveRequest`, `MoveCardsRequest`, `FlipRequest`, …). Map
   `Animate<MoveRequest>` etc. once for both games if you want skill moves to look different from the default.
 - A useful catch-all: `Animate<Request>` (the lookup walks base classes), for "any move a request made".

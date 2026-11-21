@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ArC.CardGames.Components;
 using ArC.CardGames.Vanguard;
 using Godot;
 
@@ -56,17 +57,16 @@ public static class VanguardPresentationConfig
         .Animate<CallGuardianRequest>(VanguardMoves.ToGuardZone)
         .Animate<Intercepted>(VanguardMoves.ToGuardZone)
         .Animate<InterceptRequest>(VanguardMoves.ToGuardZone)
-        .Animate<GuardFinished>(VanguardMoves.GuardToDropZone)
-        .Animate<DriveChecked>(VanguardMoves.DeckToTriggerZone)
-        .Animate<DamageChecked>(VanguardMoves.DeckToTriggerZone)
-        .Animate<TookDamage>(VanguardMoves.TriggerToDamage)
+        // The battle moves the guardians and a hit rear-guard; a check reveals a card, then its trigger check sends it on
+        .Animate<VanguardBattle, GuardZone, DropZone>(VanguardMoves.GuardToDropZone)
+        .Animate<VanguardBattle, ICardSpace, DropZone>(VanguardMoves.ToDropZone)
+        .Animate<TriggerCheckRequest>(VanguardMoves.DeckToTriggerZone)
+        .Animate<TriggerCheck, TriggerZone, DamageZone>(VanguardMoves.TriggerToDamage)
+        .Animate<TriggerCheck, DamageZone, DropZone>(VanguardMoves.ToDropZone)
         // Into the drop zone
         .Animate<Overcalled>(VanguardMoves.ToDropZone)
-        .Animate<DefeatedInBattle>(VanguardMoves.ToDropZone)
-        .Animate<Healed>(VanguardMoves.ToDropZone)
         // Held to be read: drive and damage checks, and the opponent's guards
-        .Hold<DriveChecked>(CheckRevealHold, CheckReveal)
-        .Hold<DamageChecked>(CheckRevealHold, CheckReveal)
+        .Hold<TriggerCheckRequest>(CheckRevealHold, CheckReveal)
         .Hold<Guarded>(GuardRevealHold, GuardReveal)
         .Hold<Intercepted>(GuardRevealHold, GuardReveal)
         .Hold<CallGuardianRequest>(GuardRevealHold, GuardReveal)

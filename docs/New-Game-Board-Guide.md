@@ -68,8 +68,10 @@ scene passes `BoardSleeves.Defaults<MyCard>()`. A player picks with `DataManager
 - `Register()`: `PresentationConfig.Register(Moves, SfxStreams)`.
 - `CardMove`s with their `Transition`s, and `SfxCue`s with their streams.
 - An extension like `ShowVanguardMoves(this ArcDriver driver)`: `driver.Animate<Called>(Moves.ToUnitCircle)
-  .Sound<Called>(Sfx.Call)` for each move reason, and `.Hold<DriveChecked>(seconds, sides)` for moves to read before
-  the game goes on. The most specific registered reason type wins. Moves to the hand and the deck have defaults.
+  .Sound<Called>(Sfx.Call)` for each move reason, and `.Hold<TriggerCheckRequest>(seconds, sides)` for moves to read
+  before the game goes on. The most specific registered reason type wins. A reason that moves cards to several places
+  (a request or procedure being resolved) is told apart by its zones: `.Animate<VanguardBattle, GuardZone, DropZone>(…)`,
+  checked first. Moves to the hand and the deck have defaults.
 
 ## 2. Play area scene
 
