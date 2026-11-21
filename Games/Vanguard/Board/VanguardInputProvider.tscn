@@ -13,6 +13,8 @@
 [ext_resource type="Script" path="res://Games/Shared/HUD/ResolvingSkillDetails.cs" id="31_resolving"]
 [ext_resource type="PackedScene" path="res://Games/Vanguard/HUD/CardDetailParts/VanguardCardDetails.tscn" id="32_details"]
 [ext_resource type="PackedScene" path="res://Games/Vanguard/HUD/Prompts/VanguardFieldSelectScreen.tscn" id="33_field"]
+[ext_resource type="PackedScene" path="res://Games/Vanguard/HUD/Prompts/VanguardCardSelectScreen.tscn" id="34_cards"]
+[ext_resource type="Resource" path="res://Games/Vanguard/HUD/Prompts/VanguardCardTags.tres" id="35_tags"]
 
 [node name="InputProviderComponent" type="Control"]
 layout_mode = 3
@@ -22,6 +24,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_mnfo1")
+CardTags = ExtResource("35_tags")
 
 [node name="VanguardBoard" parent="." instance=ExtResource("2_board")]
 unique_name_in_owner = true
@@ -124,6 +127,11 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="FieldSelect" parent="HUD/Prompts" instance=ExtResource("33_field")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+
+[node name="CardSelect" parent="HUD/Prompts" instance=ExtResource("34_cards")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1

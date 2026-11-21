@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://Games/Shared/HUD/Prompts/SelectableCard.cs" id="1_card"]
 [ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/SelectionBadge.tscn" id="2_badge"]
 [ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/CardTagView.tscn" id="3_tag"]
 [ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/SelectButton.tscn" id="4_select"]
 [ext_resource type="Script" path="res://addons/rev_godot_core/Components/GestureDetector.cs" id="5_gestures"]
+[ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/FacingIndicator.tscn" id="6_facing"]
 
 [node name="SelectableCard" type="VBoxContainer"]
 offset_right = 300.0
@@ -19,29 +20,46 @@ custom_minimum_size = Vector2(300, 420)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="Marker" type="Control" parent="CardSlot"]
+[node name="Overlays" type="Control" parent="CardSlot"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -210.0
+offset_right = 150.0
+offset_bottom = 210.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(150, 210)
+mouse_filter = 2
+
+[node name="Facing" parent="CardSlot/Overlays" instance=ExtResource("6_facing")]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_right = 0.0
+offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
 
-[node name="Tag" parent="CardSlot" instance=ExtResource("3_tag")]
+[node name="Tag" parent="CardSlot/Overlays" instance=ExtResource("3_tag")]
 unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
+anchors_preset = 15
 anchor_right = 1.0
-offset_left = -40.0
-offset_top = 6.0
-offset_right = -6.0
-offset_bottom = 40.0
-grow_horizontal = 0
+anchor_bottom = 1.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Badge" parent="CardSlot" instance=ExtResource("2_badge")]
+[node name="Badge" parent="CardSlot/Overlays" instance=ExtResource("2_badge")]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15

@@ -10,9 +10,9 @@ using ActivateSkillRequest = ArC.CardGames.Skills.ActivateSkillRequest;
 
 /// <summary>
 /// Answers Vanguard's "pick from these" and "yes or no" questions (Choose, Confirm) by their shape: the mulligan by its
-/// purpose; circles on the enlarged field (FieldSelectScreen: several are numbered, then OK); cards by where they are (damage: long press
-/// to turn for a counter blast or charge; the deck: drag one out of the list; the hand, the soul, the drop zone: pick
-/// from a list, then Confirm); skills by dragging one out of the list. A shape with no gesture throws UnansweredQuestion.
+/// purpose; circles, and units by their circles, on the enlarged field (FieldSelectScreen: several are numbered, then
+/// OK); any other cards on the card selection screen (CardSelectScreen: tagged with where they are; a counter blast or
+/// charge shows how the picks will face); skills by dragging one out of the list. A shape with no gesture throws UnansweredQuestion.
 /// </summary>
 public sealed class VanguardChoices(VanguardInput input)
 {
@@ -26,13 +26,8 @@ public sealed class VanguardChoices(VanguardInput input)
         public static string ChooseSkillToResolve = "Select the skill to resolve first";
         public static string ActivateTrigger = "Select Skill to Activate";
         public static string Heal = "Select Card to Heal";
-        public static string Hand = "Hand";
-        public static string DamageZone = "Damage Zone";
-        public static string Soul = "Soul";
-        public static string Drop = "Drop Zone";
-        public static string Deck = "Deck";
-        public static string CounterBlast(int amount) => $"Counter Blast ({amount}): long press face-up damage, then Confirm";
-        public static string CounterCharge(int amount) => $"Counter Charge ({amount}): long press face-down damage, then Confirm";
+        public static string CounterBlast(int amount) => $"Counter Blast {amount}: select the damage to turn face down";
+        public static string CounterCharge(int amount) => $"Counter Charge {amount}: select the damage to turn face up";
         public static string Yes = "Yes";
         public static string No = "No";
     }
@@ -75,37 +70,37 @@ public sealed class VanguardChoices(VanguardInput input)
     private async Task<List<ICardSpace>> ChooseZones(List<ICardSpace> candidates, int minimum, int maximum, string hint, bool canCancel)
         => (await input.FieldSelect.ChooseZones(candidates, minimum, maximum, hint, canCancel)).ToList();
 
-    // By where the offered cards are: the gesture depends on the place, not on the skill asking
+    // Units only: on the enlarged field. Anything else (the hand, the soul, the drop zone, the deck, the damage zone, or
+    // several places at once): the card selection screen, each card tagged with where it is
     private async Task<IReadOnlyList<CardBase>> ChooseCards(List<CardBase> cards, int minimum, int maximum, object purpose, string prompt, bool canCancel)
     {
         if(cards.Count == 0) return [];
-        bool All(IEnumerable<CardBase> zone) => cards.All(card => Refs.Has(zone, card));
 
-        if(All(PlayArea.DamageZone.Cards))
-        {
-            if(purpose is TriggerQuestion.Heal) return await Prompts.PickCards(input.CardPicker, Text.DamageZone, Text.Heal, minimum, maximum, cards);
-            if(minimum == maximum && cards.All(card => card.IsFaceUp)) return await TurnDamage(cards, maximum, blast: true);
-            if(minimum == maximum && cards.All(card => !card.IsFaceUp)) return await TurnDamage(cards, maximum, blast: false);
-            return await Prompts.PickCards(input.CardPicker, Text.DamageZone, prompt, minimum, maximum, cards);
-        }
-        if(All(PlayArea.Deck.Cards) && maximum == 1)
-        {
-            var (picked, card) = await Prompts.DragOutOfCardList(input.EffectPicker, prompt, cards.Select(card => (card, card)).ToList(), canDecline: canCancel || minimum == 0,
-                (shown, _) => input.ShowDetails(new CardDetail(shown)));
-            return picked ? [ card ] : [];
-        }
-
-        var title = All(PlayArea.Hand.Cards) ? Text.Hand : All(PlayArea.Soul.Cards) ? Text.Soul : All(PlayArea.DropZone.Cards) ? Text.Drop : All(PlayArea.Deck.Cards) ? Text.Deck : null;
-        if(title is not null) return await Prompts.PickCards(input.CardPicker, title, prompt, minimum, maximum, cards);
-
-        // Units: tap their circles
         var circles = cards.Select(CircleOf).ToList();
         if(circles.All(circle => circle is not null))
         {
             var chosen = await ChooseZones(circles.Cast<ICardSpace>().ToList(), minimum, maximum, prompt, canCancel);
             return chosen.Select(zone => ((UnitCircle)zone).Card!).Cast<CardBase>().ToList();
         }
-        throw new UnansweredQuestion(purpose, prompt, typeof(CardBase), "the offered cards are in several places or in none the board can pick from");
+
+        var hint = purpose is TriggerQuestion.Heal ? Text.Heal : prompt;
+        Func<CardBase, bool, FacingMark>? facing = null;
+        // Exactly N of the face-up damage is a counter blast (the picks turn face down), of the face-down damage a
+        // counter charge (the picks turn face up)
+        if(purpose is not TriggerQuestion.Heal && minimum == maximum && cards.All(card => Refs.Has(PlayArea.DamageZone.Cards, card)))
+        {
+            if(cards.All(card => card.IsFaceUp))
+            {
+                hint = Text.CounterBlast(maximum);
+                facing = (_, picked) => picked ? FacingMark.FaceDown : FacingMark.None;
+            }
+            else if(cards.All(card => !card.IsFaceUp))
+            {
+                hint = Text.CounterCharge(maximum);
+                facing = (_, picked) => picked ? FacingMark.FaceUp : FacingMark.FaceDown;
+            }
+        }
+        return await input.CardSelect.ChooseCards(new CardSelectRequest(cards, minimum, maximum, hint, canCancel, card => input.CardTags.For(ZoneOf(card)), facing));
     }
 
     private UnitCircle? CircleOf(CardBase card)
@@ -113,39 +108,12 @@ public sealed class VanguardChoices(VanguardInput input)
             .SelectMany(area => area.Rearguards.Cast<UnitCircle>().Prepend(area.Vanguard))
             .FirstOrDefault(circle => ReferenceEquals(circle.Card, card));
 
-    // Counter blast (face-up damage turns face down) or counter charge (face down turns face up): long press the damage
-    // to turn it, long press again to turn it back, then Confirm once exactly enough are turned
-    private async Task<IReadOnlyList<CardBase>> TurnDamage(List<CardBase> candidates, int amount, bool blast)
-    {
-        var damage = (LineZone)input.ViewOf(PlayArea.DamageZone);
-        List<CardBase> chosen = [];
-        try
-        {
-            while(true)
-            {
-                using var scope = input.Board.Scope()
-                    .LongPress(PlayArea.DamageZone, card => Refs.Has(candidates, card) && (Refs.Has(chosen, card) || chosen.Count < amount))
-                    .Hint(blast ? Text.CounterBlast(amount) : Text.CounterCharge(amount));
-                if(chosen.Count == amount) scope.Button(BoardButton.Confirm);
-
-                switch(await scope.Next())
-                {
-                    case ButtonPressed:
-                        return chosen;
-                    case CardLongPressed { Card: var card }:
-                        // Previewed by turning the card where it lies; the game turns it for real once confirmed
-                        bool add = !Refs.Remove(chosen, card);
-                        if(add) chosen.Add(card);
-                        if(damage.FindCardNode(card) is { } node) node.IsFront = add ? !blast : blast;
-                        break;
-                }
-            }
-        }
-        finally
-        {
-            damage.Resync();
-        }
-    }
+    // The zone holding a card offered to pick, either player's
+    private ICardSpace ZoneOf(CardBase card)
+        => new PlayAreaBase[] { PlayArea, input.OpponentPlayArea }
+            .SelectMany(area => area.Zones)
+            .FirstOrDefault(zone => zone is ICardSource source && source.Holds(card))
+            ?? throw new InvalidOperationException($"{card.Name} was offered to pick, but no zone of either play area holds it");
 
     // Several of the player's skills wait at once: drag the one to resolve first out of the list
     private async Task<ActivateSkillRequest> ChooseSkill(Choosing<ActivateSkillRequest> question)

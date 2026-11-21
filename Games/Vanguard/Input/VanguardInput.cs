@@ -11,6 +11,8 @@ public sealed class VanguardInput(
     SelectCardsComponent handPicker,
     CardList effectPicker,
     FieldSelectScreen fieldSelect,
+    CardSelectScreen cardSelect,
+    VanguardCardTags cardTags,
     System.Action<CardDetail> showDetails)
 {
     /// <summary>The player being asked.</summary>
@@ -30,6 +32,10 @@ public sealed class VanguardInput(
     public CardList EffectPicker { get; } = effectPicker;
     /// <summary>Where circles are picked and cards placed on them, on the enlarged field.</summary>
     public FieldSelectScreen FieldSelect { get; } = fieldSelect;
+    /// <summary>Where cards are picked from anywhere but the circles (soul, drop zone, deck, damage, hand).</summary>
+    public CardSelectScreen CardSelect { get; } = cardSelect;
+    /// <summary>The location tags on cards offered to pick.</summary>
+    public VanguardCardTags CardTags { get; } = cardTags;
     /// <summary>Shows a card's details (e.g. the skill a card stands for in the effect picker).</summary>
     public System.Action<CardDetail> ShowDetails { get; } = showDetails;
 

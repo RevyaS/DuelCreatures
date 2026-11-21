@@ -32,6 +32,10 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
     SelectCardsComponent SelectCardsComponent = null!;
     CardDetailsOverlay CardDetails = null!;
     FieldSelectScreen FieldSelect = null!;
+    CardSelectScreen CardSelect = null!;
+
+    /// <summary>The location tags on cards offered to pick (VanguardCardTags.tres).</summary>
+    [Export] public VanguardCardTags CardTags { get; set; } = null!;
     // The player's skills being used, for every view of the skill asking (the pinned details, the screens' banners)
     readonly ResolvingSkills resolvingSkills = new();
     ArcDriver? driver;
@@ -64,6 +68,10 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
         CardDetails = GetNode<CardDetailsOverlay>($"%{nameof(CardDetails)}");
         FieldSelect = GetNode<FieldSelectScreen>($"%{nameof(FieldSelect)}");
         FieldSelect.CardPressed += card => CardDetails.Show(new CardDetail(card));
+        CardSelect = GetNode<CardSelectScreen>($"%{nameof(CardSelect)}");
+        CardSelect.CardPressed += card => CardDetails.Show(new CardDetail(card));
+        if(CardTags is null) throw new InvalidOperationException($"{GetPath()}: set {nameof(CardTags)} (VanguardCardTags.tres)");
+        CardTags.EnsureComplete();
         foreach(var resolving in this.Descendants<ResolvingSkillDetails>()) resolving.Follow(resolvingSkills);
         // A card offered to pick (a heal, a soul blast, the mulligan): its details, to read before picking
         SelectFromCardListComponent.CardPressed += node => ShowDetails(node);
@@ -98,7 +106,7 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
         PlayArea = playArea;
         OpponentPlayArea = opponentPlayArea;
         var presentation = new PresentationContext(Presenter, board.Sfx, BoardSide.Player);
-        input = new(this, inputBoard, presentation, this, SelectFromCardListComponent, SelectCardsComponent, CardListComponent, FieldSelect, CardDetails.Show);
+        input = new(this, inputBoard, presentation, this, SelectFromCardListComponent, SelectCardsComponent, CardListComponent, FieldSelect, CardSelect, CardTags, CardDetails.Show);
         choices = new(input);
         guard = new(input);
     }

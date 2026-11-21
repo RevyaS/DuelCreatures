@@ -2,8 +2,10 @@ using System;
 using Godot;
 
 /// <summary>
-/// Shows a <see cref="CardTag"/>: its %Icon, its %Text, or both, whichever the tag has; hidden with no tag. Laid out in
-/// CardTagView.tscn.
+/// The location indicator: shows a <see cref="CardTag"/> (where a card offered to pick is, or what it's for) over the
+/// card. The scene's root covers the card at the card component's own size (300x420, scaled with the card), and %Panel
+/// is the indicator itself, placed by its anchors; it holds %Icon and %Text, each shown only when the tag has one.
+/// Hidden with no tag. Restyle it, or give it a graphic, in CardTagView.tscn; the code only fills in the tag.
 /// </summary>
 public partial class CardTagView : Control
 {
@@ -13,6 +15,8 @@ public partial class CardTagView : Control
     Label TextLabel => text ??= GetNode<Label>("%Text");
 
     CardTag? tag;
+
+    public override void _Ready() => Tag = tag;
 
     /// <summary>The tag shown, or null: hidden.</summary>
     public CardTag? Tag
@@ -26,6 +30,7 @@ public partial class CardTagView : Control
             }
             tag = value;
             Visible = value is not null;
+            if(!IsNodeReady()) return;
             IconRect.Texture = value?.Icon;
             IconRect.Visible = value?.HasIcon == true;
             TextLabel.Text = value?.Text ?? string.Empty;

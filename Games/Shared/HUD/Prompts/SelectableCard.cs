@@ -5,9 +5,11 @@ using Godot;
 /// <summary>
 /// One card offered on an input screen, enlarged: the game's card scene (CardScenes.Create) in %CardSlot at
 /// <see cref="CardScale"/> (a ratio of the card component's own size, SizeConstants.CardDefaultSize, as every card
-/// holder sizes its cards; the slot is that big and the layout around it follows), with its pick number (%Badge, a SelectionBadge), where it is or what it's for (%Tag, a
-/// CardTagView), a state drawn over it (%Marker, a CardMarker's scene) and the button picking it (%SelectButton, any
-/// BaseButton in toggle mode). A tap on the card is <see cref="Pressed"/> (its details); the button is
+/// holder sizes its cards; the slot is that big and the layout around it follows), and the button picking it
+/// (%SelectButton, any BaseButton in toggle mode). Over the card, %Overlays is a layer the card component's own size
+/// (300x420), scaled with the card, so what's in it is designed as on a full-size card: its pick number (%Badge, a
+/// SelectionBadge), where it is or what it's for (%Tag, a CardTagView) and how it will face (%Facing, a
+/// FacingIndicator). A tap on the card is <see cref="Pressed"/> (its details); the button is
 /// <see cref="SelectPressed"/>. The card shows what it's told: whoever owns the selection sets <see cref="PickNumber"/>
 /// and <see cref="CanSelect"/>, the button never picks by itself. Laid out in SelectableCard.tscn.
 /// </summary>
@@ -27,12 +29,14 @@ public partial class SelectableCard : Control
         }
     }
 
-    Control? cardSlot, markerSlot;
+    Control? cardSlot, overlays;
     BaseButton? selectButton;
     SelectionBadge? badge;
     CardTagView? tagView;
     Control CardSlot => cardSlot ??= GetNode<Control>("%CardSlot");
-    Control MarkerSlot => markerSlot ??= GetNode<Control>("%Marker");
+    Control Overlays => overlays ??= GetNode<Control>("%Overlays");
+    FacingIndicator? facingView;
+    FacingIndicator FacingView => facingView ??= GetNode<FacingIndicator>("%Facing");
     BaseButton SelectButton => selectButton ??= GetNode<BaseButton>("%SelectButton");
     SelectionBadge Badge => badge ??= GetNode<SelectionBadge>("%Badge");
     CardTagView TagView => tagView ??= GetNode<CardTagView>("%Tag");
@@ -40,7 +44,6 @@ public partial class SelectableCard : Control
     Card? cardNode;
     CardBase? card;
     int? pickNumber;
-    CardMarker? marker;
 
     /// <summary>The select button (picks or drops the card).</summary>
     public event Action<SelectableCard>? SelectPressed;
@@ -51,6 +54,7 @@ public partial class SelectableCard : Control
     {
         // Fields reset after a C# rebuild in the editor: look the nodes up again
         cardSlot = null;
+        overlays = null;
         FitCard();
         if(Engine.IsEditorHint()) return;
         var gestures = GetNode<GestureDetector>("%Gestures");
@@ -95,7 +99,7 @@ public partial class SelectableCard : Control
         cardNode = CardScenes.Create(shown);
         cardNode.IsFront = true;
         CardSlot.AddChild(cardNode);
-        // Under the slot's marker, tag and badge
+        // Under the overlays
         CardSlot.MoveChild(cardNode, 0);
         // This view takes every press; the card only shows
         cardNode.IgnoreMouse();
@@ -135,22 +139,11 @@ public partial class SelectableCard : Control
         set => TagView.Tag = value;
     }
 
-    /// <summary>A state drawn over the card (its scene instanced into %Marker), or none.</summary>
-    public CardMarker? Marker
+    /// <summary>How the card will face once answered (counter blast / charge), or none.</summary>
+    public FacingMark Facing
     {
-        get => marker;
-        set
-        {
-            if(ReferenceEquals(marker, value)) return;
-            marker = value;
-            foreach(var shown in MarkerSlot.GetChildren()) shown.QueueFree();
-            if(value is null) return;
-            var scene = value.Scene ?? throw new InvalidOperationException($"The card marker {value.ResourcePath} has no {nameof(CardMarker.Scene)}");
-            var node = scene.Instantiate();
-            MarkerSlot.AddChild(node);
-            if(node is Control control) control.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
-            node.IgnoreMouse();
-        }
+        get => FacingView.Mark;
+        set => FacingView.Mark = value;
     }
 
     // The button only reports the press: the selection decides, and PickNumber puts the button back as it says
@@ -171,10 +164,12 @@ public partial class SelectableCard : Control
         return null;
     }
 
-    // The slot is a card at CardScale; the card scene is centered on it and scales around its center
+    // The slot is a card at CardScale; the card scene and the overlays are centered on it and scale around their center
     private void FitCard()
     {
+        var scale = new Vector2(CardScale, CardScale);
         CardSlot.CustomMinimumSize = SizeConstants.CardDefaultSize * CardScale;
-        if(cardNode is not null) cardNode.Scale = new Vector2(CardScale, CardScale);
+        Overlays.Scale = scale;
+        if(cardNode is not null) cardNode.Scale = scale;
     }
 }

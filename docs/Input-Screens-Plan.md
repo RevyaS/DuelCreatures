@@ -41,11 +41,11 @@ Shared parts that make it (all scenes):
 | Asking skill | `SkillBanner.tscn` | The skill demanding the input, small: name + that skill's text only. It is a `ResolvingSkillDetails` holding a compact details scene per game (`VanguardSkillBanner.tscn`: `CardNamePart` + `SkillTextPart`). Not closable; goes when the skill finishes, as today. |
 | Prompt | `PromptHeader.tscn` | The hint text and a counter ("2 / 3"). Replaces `InputHintLabel` while a screen is up. |
 | Pick list | `SelectionGrid.tscn` | 1–3 rows of items (scrolls beyond), each an instance of its `[Export] PackedScene ItemScene` (`SelectableCard.tscn`). |
-| One card to pick | `SelectableCard.tscn` | Holds the game's card scene (from `CardGameStyle`), **enlarged** (its size set in the scene), and slots: `%SelectButton`, `%Badge`, `%Tag`, `%Marker`. A tap on the card shows its details; the select button picks it. API in section 7. |
+| One card to pick | `SelectableCard.tscn` | Holds the game's card scene (from `CardGameStyle`) at `CardScale`, `%SelectButton`, and `%Overlays`: a card-sized layer (300x420, scaled with the card) holding `%Badge`, `%Tag` and `%Facing`. A tap on the card shows its details; the select button picks it. API in section 7. |
 | Select button | `SelectButton.tscn` | The small button that picks / unpicks its card. The scene's root is any `BaseButton` in toggle mode, so it can be a `TextureButton` with your images (unpicked, picked, disabled) or a plain `Button`. Code only sets `ButtonPressed` and `Disabled`. |
 | Number badge | `SelectionBadge.tscn` | The "1, 2, 3" pick number. **Extracted from `CardView.tscn`'s `BadgePanel`/`Badge`**, so the board circles and the grid show the same scene. |
 | Tag | `CardTagView.tscn` | Top right of the card: where it is ("Soul", "Drop", "Hand", …) or what it's for ("Intercept"). `%Icon` and `%Text`: shows the icon, the text, or both, whichever the tag has. Section 7. |
-| Marker | (a scene per marker) | A state drawn over the card, e.g. counter blast's "will turn face down". The marker resource names its scene; it's instanced into `%Marker`. Section 7. |
+| Facing | `FacingIndicator.tscn` | How the card will face once answered (counter blast: face down; counter charge: face up), one node per state (`%FaceDown`, `%FaceUp`). Section 7. |
 | Buttons | `PromptButtons.tscn` | OK and Cancel (Cancel hidden unless the question allows declining). OK disabled until the pick count fits. Their texts are exported per screen. |
 | Field focus | `FieldFocus` (script on a `Control` in the screen) | Marks the rect the field is enlarged into (screen C). |
 
@@ -264,7 +264,10 @@ public partial class VanguardBattleSummary : Control
 [ OK  (Cancel when it can be declined) ]
 ```
 
-`CardSelectScreen.tscn`.
+**Built** for Vanguard: `CardSelectScreen` (shared script) with `CardSelectRequest`, laid out in
+`Games/Vanguard/HUD/Prompts/VanguardCardSelectScreen.tscn`, instanced as `%CardSelect` in the input provider's
+`PromptLayer`. It covers the board (swipe down to look at it). `VanguardChoices.ChooseCards` sends every card question
+to it except units, which go by their circles to C.
 
 - **Tap a card: its details** in the details space. **Its select button: picks it** (numbered with
   `SelectionBadge`); the button again: drops it. OK when the count fits.
@@ -280,8 +283,8 @@ What goes through it (Vanguard), by place, as `VanguardChoices.ChooseCards` rout
 | Soul blast, discard, cards from the drop zone | `PickCards` (drag into panel) | select + OK |
 | Deck search | `DragOutOfCardList` | select + OK (Cancel when `CanCancel` / minimum 0) |
 | Heal (damage zone) | `PickCards` | select + OK |
-| Counter blast | long press damage on the board | select + OK; picked cards get the "will turn face down" marker |
-| Counter charge | long press | same, marker "will turn face up" |
+| Counter blast | long press damage on the board | select + OK; picked cards show **Face down** (`FacingIndicator`) |
+| Counter charge | long press | select + OK; unpicked cards show **Face down**, picked ones **Face up** |
 | Guard | drag to the guardian circle, tap interceptors | select + Guard (below) |
 | Cards from several places at once | throws `UnansweredQuestion` | works: the tag tells them apart |
 
@@ -346,8 +349,8 @@ public partial class SelectableCard : Control
 
     /// <summary>Where the card is or what it's for (icon and/or text), or none.</summary>
     public CardTag? Tag { get; set; }
-    /// <summary>A state drawn over the card (its scene is instanced into %Marker), or none.</summary>
-    public CardMarker? Marker { get; set; }
+    /// <summary>How the card will face once answered (counter blast / charge), or none.</summary>
+    public FacingMark Facing { get; set; }   // None, FaceDown, FaceUp
 
     public event Action<SelectableCard>? SelectPressed;   // the select button
     public event Action<SelectableCard>? Pressed;         // a tap on the card: details
@@ -359,20 +362,19 @@ public partial class SelectableCard : Control
     [Export] public Texture2D? Icon { get; set; }
 }
 
-[GlobalClass] public partial class CardMarker : Resource
-{
-    [Export] public PackedScene Scene { get; set; } = null!;
-}
 ```
 
-- `CardTagView.tscn` shows the tag's icon, text, or both (both may be set; an empty one is hidden). A tag with neither
-  fails loudly.
+- **Two indicators, each a component to design:** the location (`CardTagView.tscn`: `%Panel` with `%Icon` and
+  `%Text`, each shown when the tag has one; a tag with neither fails loudly) and the facing (`FacingIndicator.tscn`:
+  `%FaceDown` and `%FaceUp`, each a node of its own; swap their shade and label for graphics). Both scenes' roots are
+  a card at the card component's own size (300x420) and sit in `SelectableCard`'s `%Overlays`, which scales with the
+  card, so they're designed as on a full-size card and keep their proportions at any `CardScale`. The pick number
+  (`SelectionBadge`) is in the same layer.
 - Per game, a resource with **one property per place and role**, not a dictionary of strings, so a missing one is a
   missing property, not a typo:
   - `VanguardCardTags.tres` (`VanguardCardTags : Resource`): `Hand`, `Soul`, `DropZone`, `Deck`, `DamageZone`,
     `RearGuard`, `Vanguard`, `Intercept`. `For(ICardSpace zone)` maps a zone to its tag and throws for a zone it
     doesn't know. Roles (`Intercept`) are set by the prompt that knows the role (the guard screen).
-  - `VanguardCardMarkers.tres`: `WillTurnFaceDown` (counter blast), `WillTurnFaceUp` (counter charge).
   - YuGiOh later: `YuGiOhCardTags.tres` (`Hand`, `Deck`, `Graveyard`, `Banished`, `ExtraDeck`, `Field`, …).
   - An unset property used at runtime fails loudly, naming the resource and the property.
 - The tag is on `SelectableCard`, not on `VanguardCardComponent`: it's only needed while picking, and on the wrapper
@@ -390,7 +392,7 @@ public partial class SelectableCard : Control
 | Skill targets, trigger power / critical / stand | C (top shows the skill's / trigger's card) |
 | Superior call, move to a circle | C with the card row |
 | Soul blast, discard, drop zone, deck search, heal | D |
-| Counter blast / counter charge | D with markers |
+| Counter blast / counter charge | D with the facing indicator |
 | Guard (hand guardians + interceptors) | D (`GuardScreen`), Hand / Intercept tags |
 | Optional choices (`CanCancel`, minimum 0) | D with **Cancel** (answers nothing); C also gets Cancel for optional circle picks |
 | `Order<T>` (put cards back in an order) | not asked by ArC yet; D's numbers can mean the order when it is |
@@ -417,6 +419,9 @@ public partial class SelectableCard : Control
 2. **A** `SwipeUpPicker` for "activate?", skill order, options (smallest, fixes the accidental decline).
 3. **D** `CardSelectScreen` for soul blast, discard, drop zone, deck search, heal; then counter blast / charge with
    the markers.
+   **Built** (section 5). The markers became one facing indicator (`FacingIndicator`, `FacingMark`); `CardMarker` and
+   `VanguardCardMarkers` are gone. The location tags come from `VanguardCardTags.tres`, exported on the input provider
+   (`CardTags`) and checked complete at startup.
 4. **Battle summary and guard:** `StatView`, `VanguardAttackerView`, `VanguardDefenseView`, `VanguardBattleSummary`,
    `VanguardBattleTracker`; then `GuardScreen` with the summary, `VanguardGuardPrompt.Stage` moved to it.
 5. **C** `FieldSelectScreen` with `FieldFocus` and `PlayAreaView.FaceViewer`; then the card row for superior calls.
