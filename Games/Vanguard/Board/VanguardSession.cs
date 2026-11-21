@@ -70,7 +70,7 @@ public partial class VanguardSession : Control
 
 
         #region DEBUG
-        session.Game.Board.Player1Area.Vanguard.Assign(RoyalPaladin.KingOfKnightsAlfred);
+        // session.Game.Board.Player1Area.Vanguard.Assign(RoyalPaladin.KingOfKnightsAlfred);
 
         // session.Game.Board.Player1Area.Vanguard.Assign(NovaGrappler.KingOfSword);
         // session.Game.Board.Player1Area.Hand.AddCard(NovaGrappler.MrInvincible);
@@ -89,10 +89,10 @@ public partial class VanguardSession : Control
         //     RoyalPaladin.SailorGuardianMichiru,
         //     RoyalPaladin.BlasterBlade,
         // ]);
-        session.Game.Board.Player1Area.DamageZone.AddCard(Kagero.BerserkDragon);
-        session.Game.Board.Player1Area.DamageZone.AddCard(Kagero.BerserkDragon);
-        session.Game.Board.Player1Area.DamageZone.AddCard(Kagero.BerserkDragon);
-        session.Game.Board.Player1Area.DamageZone.AddCard(Kagero.BerserkDragon);
+        // session.Game.Board.Player1Area.DamageZone.AddCard(Kagero.BerserkDragon);
+        // session.Game.Board.Player1Area.DamageZone.AddCard(Kagero.BerserkDragon);
+        // session.Game.Board.Player1Area.DamageZone.AddCard(Kagero.BerserkDragon);
+        // session.Game.Board.Player1Area.DamageZone.AddCard(Kagero.BerserkDragon);
         // session.Game.Board.Player2Area.DamageZone.AddCard(Kagero.BerserkDragon);
         // session.Game.Board.Player2Area.DamageZone.AddCard(Kagero.BerserkDragon);
         // session.Game.Board.Player2Area.DamageZone.AddCard(Kagero.BerserkDragon);
