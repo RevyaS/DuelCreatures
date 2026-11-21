@@ -118,9 +118,11 @@ Shared, both games:
 - Aiming (attacks): no line while searching; only a valid target under the finger shows the line (scale 0.4) and the
   target marker. Letting go anywhere else does nothing.
 - Every attack, including the opponent's and bots', stays drawn (line + target marker) from declaration to battle end.
-- Skills, skill order, triggers and "choose one of" options are picked by **dragging a card out of the card list**
-  (press to read, drag out to pick; dropping back on the list returns it). Options show only the ones ArC says can be
-  chosen. YuGiOh deck searches too.
+- Skills, skill order, triggers and "choose one of" options are picked by dragging a card out: in Vanguard on the
+  **swipe-up picker** (`SwipeUpPicker`: swipe a card up out of the row onto the space above to pick it, let go on the
+  row to keep it there; tap a card for what it stands for; only **Cancel** declines, shown when the question may be
+  declined); in YuGiOh out of the card list (press to read, drag out to pick; dropping back returns it; closing the
+  list declines), its deck searches too. Options show only the ones ArC says can be chosen.
 - Several zones/circles: tap to pick (a numbered badge 1, 2, … shows), tap again to drop, **Confirm** to finish
   (Vanguard: on the field selection screen, **OK** to finish; YuGiOh: on the board).
 - The player's own skill is pinned while it's activated or resolved; prompts collapse with a swipe down (chevron bar),
@@ -152,8 +154,9 @@ Vanguard (`VanguardMulliganStrategy`, `VanguardRidePhaseStrategy`, `VanguardMain
   (**Return**); tap a front rear-guard to intercept, tap it on the guardian circle to call it back; the guarded unit
   shows its would-be power; Confirm. Nothing moves in ArC until Confirm (the board previews, then `Resync()`s).
 - Cards from the soul, drop zone, deck (searches, superior call), damage zone (heal) or hand, or from several places
-  at once: the **card selection screen** (`CardSelectScreen`): each card tagged with where it is; tap a card for its
-  details, its select button picks it (numbered), again drops it; OK once the count fits; Cancel when optional.
+  at once: the **card selection screen** (`CardSelectScreen`): each card tagged with where it is; a tap picks the card
+  (numbered, outlined) and shows its details, a tap again drops it; once the most are picked the others are tinted and
+  a tap only shows details; OK once the count fits; Cancel when optional.
 - Counter blast / counter charge: the card selection screen with the damage; picked cards show how they'll face
   (counter blast: face down; counter charge: the face-down cards, the picked ones face up); OK when exactly enough.
 - Triggers, skill targets, units picked by circle: the **field selection screen** (`FieldSelectScreen`) enlarges the

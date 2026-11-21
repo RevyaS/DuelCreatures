@@ -1,0 +1,156 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://Games/Shared/HUD/Prompts/SwipeUpPicker.cs" id="1_screen"]
+[ext_resource type="Script" path="res://Games/Shared/HUD/ResolvingSkillDetails.cs" id="2_banner"]
+[ext_resource type="PackedScene" path="res://Games/Vanguard/HUD/CardDetailParts/VanguardCardDetails.tscn" id="3_details"]
+[ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/DetailsSpace.tscn" id="4_space"]
+[ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/PromptHeader.tscn" id="5_header"]
+[ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/SelectionGrid.tscn" id="6_row"]
+[ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/PromptButtons.tscn" id="7_buttons"]
+[ext_resource type="Script" path="res://Games/Shared/HUD/DropArea.cs" id="8_drop"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_top"]
+bg_color = Color(0.07, 0.08, 0.11, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bottom"]
+bg_color = Color(0.1, 0.11, 0.15, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hint"]
+bg_color = Color(1, 0.85, 0.2, 0.18)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 0.85, 0.2, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[node name="VanguardSwipeUpPicker" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_screen")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="SwipeArea" type="PanelContainer" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_top")
+
+[node name="Margin" type="MarginContainer" parent="Layout/SwipeArea"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 16
+
+[node name="Content" type="VBoxContainer" parent="Layout/SwipeArea/Margin"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 16
+
+[node name="PickArea" type="Control" parent="Layout/SwipeArea/Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+script = ExtResource("8_drop")
+
+[node name="SkillBanner" type="Control" parent="Layout/SwipeArea/Margin/Content/PickArea"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_banner")
+
+[node name="Details" parent="Layout/SwipeArea/Margin/Content/PickArea/SkillBanner" instance=ExtResource("3_details")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DetailsSpace" parent="Layout/SwipeArea/Margin/Content/PickArea" instance=ExtResource("4_space")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PickHint" type="PanelContainer" parent="Layout/SwipeArea/Margin/Content/PickArea"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hint")
+
+[node name="Label" type="Label" parent="Layout/SwipeArea/Margin/Content/PickArea/PickHint"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 48
+text = "Release to pick"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Header" parent="Layout/SwipeArea/Margin/Content" instance=ExtResource("5_header")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Bottom" type="PanelContainer" parent="Layout"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bottom")
+
+[node name="Margin" type="MarginContainer" parent="Layout/Bottom"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 32
+
+[node name="Content" type="VBoxContainer" parent="Layout/Bottom/Margin"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 16
+
+[node name="Row" parent="Layout/Bottom/Margin/Content" instance=ExtResource("6_row")]
+unique_name_in_owner = true
+layout_mode = 2
+CardScale = 0.7
+VisibleRows = 1.0
+
+[node name="Buttons" parent="Layout/Bottom/Margin/Content" instance=ExtResource("7_buttons")]
+unique_name_in_owner = true
+layout_mode = 2

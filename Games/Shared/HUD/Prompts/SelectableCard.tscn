@@ -1,9 +1,8 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://Games/Shared/HUD/Prompts/SelectableCard.cs" id="1_card"]
 [ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/SelectionBadge.tscn" id="2_badge"]
 [ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/CardTagView.tscn" id="3_tag"]
-[ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/SelectButton.tscn" id="4_select"]
 [ext_resource type="Script" path="res://addons/rev_godot_core/Components/GestureDetector.cs" id="5_gestures"]
 [ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/FacingIndicator.tscn" id="6_facing"]
 
@@ -69,11 +68,6 @@ offset_right = 0.0
 offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="SelectButton" parent="." instance=ExtResource("4_select")]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 4
 
 [node name="Gestures" type="Node" parent="."]
 unique_name_in_owner = true

@@ -12,6 +12,8 @@ public sealed class VanguardInput(
     CardList effectPicker,
     FieldSelectScreen fieldSelect,
     CardSelectScreen cardSelect,
+    SwipeUpPicker swipeUp,
+    ResolvingSkills resolvingSkills,
     VanguardCardTags cardTags,
     System.Action<CardDetail> showDetails)
 {
@@ -34,6 +36,10 @@ public sealed class VanguardInput(
     public FieldSelectScreen FieldSelect { get; } = fieldSelect;
     /// <summary>Where cards are picked from anywhere but the circles (soul, drop zone, deck, damage, hand).</summary>
     public CardSelectScreen CardSelect { get; } = cardSelect;
+    /// <summary>Where one skill or option is picked by swiping its card up out of a row.</summary>
+    public SwipeUpPicker SwipeUp { get; } = swipeUp;
+    /// <summary>The player's skills being used (e.g. the card a skill's options are shown on).</summary>
+    public ResolvingSkills ResolvingSkills { get; } = resolvingSkills;
     /// <summary>The location tags on cards offered to pick.</summary>
     public VanguardCardTags CardTags { get; } = cardTags;
     /// <summary>Shows a card's details (e.g. the skill a card stands for in the effect picker).</summary>

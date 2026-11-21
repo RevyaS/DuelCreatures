@@ -33,6 +33,7 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
     CardDetailsOverlay CardDetails = null!;
     FieldSelectScreen FieldSelect = null!;
     CardSelectScreen CardSelect = null!;
+    SwipeUpPicker SwipeUp = null!;
 
     /// <summary>The location tags on cards offered to pick (VanguardCardTags.tres).</summary>
     [Export] public VanguardCardTags CardTags { get; set; } = null!;
@@ -70,6 +71,7 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
         FieldSelect.CardPressed += card => CardDetails.Show(new CardDetail(card));
         CardSelect = GetNode<CardSelectScreen>($"%{nameof(CardSelect)}");
         CardSelect.CardPressed += card => CardDetails.Show(new CardDetail(card));
+        SwipeUp = GetNode<SwipeUpPicker>($"%{nameof(SwipeUp)}");
         if(CardTags is null) throw new InvalidOperationException($"{GetPath()}: set {nameof(CardTags)} (VanguardCardTags.tres)");
         CardTags.EnsureComplete();
         foreach(var resolving in this.Descendants<ResolvingSkillDetails>()) resolving.Follow(resolvingSkills);
@@ -106,7 +108,7 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
         PlayArea = playArea;
         OpponentPlayArea = opponentPlayArea;
         var presentation = new PresentationContext(Presenter, board.Sfx, BoardSide.Player);
-        input = new(this, inputBoard, presentation, this, SelectFromCardListComponent, SelectCardsComponent, CardListComponent, FieldSelect, CardSelect, CardTags, CardDetails.Show);
+        input = new(this, inputBoard, presentation, this, SelectFromCardListComponent, SelectCardsComponent, CardListComponent, FieldSelect, CardSelect, SwipeUp, resolvingSkills, CardTags, CardDetails.Show);
         choices = new(input);
         guard = new(input);
     }

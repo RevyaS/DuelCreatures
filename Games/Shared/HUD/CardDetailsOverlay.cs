@@ -6,7 +6,8 @@ using Godot;
 /// A game's CardDetailsView shown over the board (e.g. Vanguard, whose board fills the screen): a full-screen layer
 /// holding the details scene, shown with a card's details and hidden by a press anywhere outside them. Put the game's
 /// details scene (a CardDetailsView) under it, where details go over the board. While an input screen is up, the
-/// details are fitted into its DetailsSpace instead.
+/// details are fitted into its DetailsSpace instead, and presses go through to the screen (a tap on another card shows
+/// that one's details instead); they close with the screen.
 /// </summary>
 public partial class CardDetailsOverlay : Control
 {
@@ -26,6 +27,17 @@ public partial class CardDetailsOverlay : Control
         homeOffsets = [ details.OffsetLeft, details.OffsetTop, details.OffsetRight, details.OffsetBottom ];
     }
 
+    public override void _EnterTree() => InputScreen.CurrentChanged += OnScreenChanged;
+    public override void _ExitTree() => InputScreen.CurrentChanged -= OnScreenChanged;
+
+    // Details shown on a screen go with it
+    private void OnScreenChanged()
+    {
+        if(onScreen && InputScreen.Current is null) Hide();
+    }
+
+    bool onScreen;
+
     public void Show(CardDetail detail)
     {
         details.Show(detail);
@@ -37,6 +49,9 @@ public partial class CardDetailsOverlay : Control
     // Into the input screen's details space, or where the scene puts them with no screen up
     private void Place(DetailsSpace? space)
     {
+        onScreen = space is not null;
+        // Over the board, a press anywhere else closes them; on a screen, presses reach the screen
+        MouseFilter = onScreen ? MouseFilterEnum.Ignore : MouseFilterEnum.Stop;
         if(space is null)
         {
             SetEdges(details, homeAnchors, homeOffsets);

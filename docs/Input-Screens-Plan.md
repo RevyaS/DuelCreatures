@@ -41,8 +41,7 @@ Shared parts that make it (all scenes):
 | Asking skill | `SkillBanner.tscn` | The skill demanding the input, small: name + that skill's text only. It is a `ResolvingSkillDetails` holding a compact details scene per game (`VanguardSkillBanner.tscn`: `CardNamePart` + `SkillTextPart`). Not closable; goes when the skill finishes, as today. |
 | Prompt | `PromptHeader.tscn` | The hint text and a counter ("2 / 3"). Replaces `InputHintLabel` while a screen is up. |
 | Pick list | `SelectionGrid.tscn` | 1–3 rows of items (scrolls beyond), each an instance of its `[Export] PackedScene ItemScene` (`SelectableCard.tscn`). |
-| One card to pick | `SelectableCard.tscn` | Holds the game's card scene (from `CardGameStyle`) at `CardScale`, `%SelectButton`, and `%Overlays`: a card-sized layer (300x420, scaled with the card) holding `%Badge`, `%Tag` and `%Facing`. A tap on the card shows its details; the select button picks it. API in section 7. |
-| Select button | `SelectButton.tscn` | The small button that picks / unpicks its card. The scene's root is any `BaseButton` in toggle mode, so it can be a `TextureButton` with your images (unpicked, picked, disabled) or a plain `Button`. Code only sets `ButtonPressed` and `Disabled`. |
+| One card to pick | `SelectableCard.tscn` | Holds the game's card scene (from `CardGameStyle`) at `CardScale`, and `%Overlays`: a card-sized layer (300x420, scaled with the card) holding `%Badge`, `%Tag` and `%Facing`. A tap shows the card's details and, where cards are picked, picks or drops it (picked: outlined, `PickedOutline`; can't be picked now: tinted, `DimmedTint`). API in section 7. |
 | Number badge | `SelectionBadge.tscn` | The "1, 2, 3" pick number. **Extracted from `CardView.tscn`'s `BadgePanel`/`Badge`**, so the board circles and the grid show the same scene. |
 | Tag | `CardTagView.tscn` | Top right of the card: where it is ("Soul", "Drop", "Hand", …) or what it's for ("Intercept"). `%Icon` and `%Text`: shows the icon, the text, or both, whichever the tag has. Section 7. |
 | Facing | `FacingIndicator.tscn` | How the card will face once answered (counter blast: face down; counter charge: face up), one node per state (`%FaceDown`, `%FaceUp`). Section 7. |
@@ -64,7 +63,11 @@ and fails loudly (naming the question it's still answering).
 **Now:** "Use this skill?" opens the effect list with one card; drag it out to use it, any press outside the list
 declines. The card details sit over the list, so pressing to read them easily lands "outside" and declines by accident.
 
-**Plan:** `SwipeUpPicker.tscn` (the current drag-out gesture, in the ZERO layout, with a real Cancel)
+**Built** for Vanguard: `SwipeUpPicker` (shared script) with `SwipeUpOption<T>`, laid out in
+`Games/Vanguard/HUD/Prompts/VanguardSwipeUpPicker.tscn`, instanced as `%SwipeUp`. A row card dragged out and let go
+over `%PickArea` (a `DropArea` filling the space above the row) is the pick; `%PickHint` shows while it's over it.
+"Choose one of" options show the asking skill's card once per option, the option's label as its location tag, details
+focused on the option. `VanguardChoices` sends "use this skill?", skill order and options to it.
 
 ```
 [ SkillBanner: the skill being used, if any; else open space for card details ]
@@ -269,9 +272,11 @@ public partial class VanguardBattleSummary : Control
 `PromptLayer`. It covers the board (swipe down to look at it). `VanguardChoices.ChooseCards` sends every card question
 to it except units, which go by their circles to C.
 
-- **Tap a card: its details** in the details space. **Its select button: picks it** (numbered with
-  `SelectionBadge`); the button again: drops it. OK when the count fits.
-- Select buttons are disabled on unpicked cards once the maximum is picked (`CardSelection.CanPickMore`).
+- **Tap a card: picks it** (numbered with `SelectionBadge`, outlined) **and shows its details** in the details space;
+  tap it again: drops it. OK when the count fits. While a screen is up, the details overlay lets presses through, so
+  the next tap reaches the next card; the details close with the screen.
+- Unpicked cards can't be picked once the maximum is (`CardSelection.CanPickMore`): they're tinted, and a tap only
+  shows their details.
 - Optional picks (`CanCancel` / minimum 0) show **Cancel**, which answers nothing.
 - The cards are enlarged (`SelectableCard`). This replaces `PickCards` and the long press on damage; skill order and
   options stay a swipe up (A).
@@ -340,11 +345,11 @@ public partial class SelectableCard : Control
     public void Show(CardBase card);
     public CardBase Card { get; }
 
-    /// <summary>Picked as number N (the badge shows it), or not picked (null: badge hidden, select button up).</summary>
+    /// <summary>Picked as number N (the badge shows it, the card is outlined), or not picked (null).</summary>
     public int? PickNumber { get; set; }
-    /// <summary>The select button can be pressed (false: shown disabled, e.g. the maximum is picked).</summary>
+    /// <summary>A tap may pick or drop the card now (false: tinted, e.g. the maximum is picked).</summary>
     public bool CanSelect { get; set; }
-    /// <summary>Shows the select button at all (false on screens where the card is only to read).</summary>
+    /// <summary>Taps pick the card at all (false where it's only to read or to drag).</summary>
     public bool Selectable { get; set; }
 
     /// <summary>Where the card is or what it's for (icon and/or text), or none.</summary>
@@ -352,7 +357,7 @@ public partial class SelectableCard : Control
     /// <summary>How the card will face once answered (counter blast / charge), or none.</summary>
     public FacingMark Facing { get; set; }   // None, FaceDown, FaceUp
 
-    public event Action<SelectableCard>? SelectPressed;   // the select button
+    public event Action<SelectableCard>? SelectPressed;   // a tap while it may be picked
     public event Action<SelectableCard>? Pressed;         // a tap on the card: details
 }
 
@@ -417,6 +422,8 @@ public partial class SelectableCard : Control
    details space (two at once throws); `CardDetailsOverlay.Show` fits its details into it, else puts them back where
    the scene has them.
 2. **A** `SwipeUpPicker` for "activate?", skill order, options (smallest, fixes the accidental decline).
+   **Built** (section 2). Picking several (D) changed with it: no select buttons, a tap picks and shows the details
+   (`SelectButton.tscn` is gone).
 3. **D** `CardSelectScreen` for soul blast, discard, drop zone, deck search, heal; then counter blast / charge with
    the markers.
    **Built** (section 5). The markers became one facing indicator (`FacingIndicator`, `FacingMark`); `CardMarker` and

@@ -6,9 +6,9 @@ using Godot;
 
 /// <summary>
 /// The cards an input screen offers, in rows that wrap (%Items) and scroll beyond the grid's height: one
-/// <see cref="ItemScene"/> (a SelectableCard scene) per card. Given a <see cref="CardSelection{T}"/>, its select
-/// buttons pick and drop through it and every card shows its pick number and whether it can still be picked. A tap on
-/// a card is <see cref="CardPressed"/> (its details). Sized by ratios, like every card holder: its cards are
+/// <see cref="ItemScene"/> (a SelectableCard scene) per card. Given a <see cref="CardSelection{T}"/>, a tap on a card
+/// picks or drops it through it, and every card shows its pick number and whether it can still be picked. Every tap on a
+/// card is also <see cref="CardPressed"/> (its details). Sized by ratios, like every card holder: its cards are
 /// <see cref="CardScale"/> of the card component's own size, and it is <see cref="VisibleRows"/> rows of them tall.
 /// Laid out in SelectionGrid.tscn.
 /// </summary>
@@ -34,7 +34,7 @@ public partial class SelectionGrid : ScrollContainer
     /// <summary>The cards shown, in order.</summary>
     public IReadOnlyList<SelectableCard> Items => shown;
 
-    /// <summary>Shows <paramref name="cards"/> only to read: no select buttons.</summary>
+    /// <summary>Shows <paramref name="cards"/> only to read: taps don't pick them.</summary>
     public IReadOnlyList<SelectableCard> Show(IEnumerable<CardBase> cards)
     {
         Clear();
@@ -44,7 +44,7 @@ public partial class SelectionGrid : ScrollContainer
 
     /// <summary>
     /// Shows one card per item <paramref name="selection"/> offers (<paramref name="cardOf"/>: the card standing for it,
-    /// e.g. a skill's card), in the offered order; their select buttons toggle it. Returns the cards in that order (e.g.
+    /// e.g. a skill's card), in the offered order; a tap on one toggles it. Returns the cards in that order (e.g.
     /// to tag them).
     /// </summary>
     public IReadOnlyList<SelectableCard> Show<T>(CardSelection<T> selection, Func<T, CardBase> cardOf) where T : class
