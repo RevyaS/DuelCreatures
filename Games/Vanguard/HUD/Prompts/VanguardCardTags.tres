@@ -1,39 +1,39 @@
-[gd_resource type="Resource" script_class="VanguardCardTags" load_steps=11 format=3]
+[gd_resource type="Resource" script_class="VanguardCardTags" load_steps=11 format=3 uid="uid://pli7hgh6v8r2"]
 
-[ext_resource type="Script" path="res://Games/Vanguard/HUD/Prompts/VanguardCardTags.cs" id="1_tags"]
-[ext_resource type="Script" path="res://Games/Shared/HUD/Prompts/CardTag.cs" id="2_tag"]
-
-[sub_resource type="Resource" id="Resource_Hand"]
-script = ExtResource("2_tag")
-Text = "Hand"
-
-[sub_resource type="Resource" id="Resource_Soul"]
-script = ExtResource("2_tag")
-Text = "Soul"
-
-[sub_resource type="Resource" id="Resource_DropZone"]
-script = ExtResource("2_tag")
-Text = "Drop"
-
-[sub_resource type="Resource" id="Resource_Deck"]
-script = ExtResource("2_tag")
-Text = "Deck"
+[ext_resource type="Script" uid="uid://ckiiotoylnnif" path="res://Games/Vanguard/HUD/Prompts/VanguardCardTags.cs" id="1_tags"]
+[ext_resource type="Script" uid="uid://6lfgcqwhbgvn" path="res://Games/Shared/HUD/Prompts/CardTag.cs" id="2_tag"]
 
 [sub_resource type="Resource" id="Resource_DamageZone"]
 script = ExtResource("2_tag")
 Text = "Damage"
 
-[sub_resource type="Resource" id="Resource_RearGuard"]
+[sub_resource type="Resource" id="Resource_Deck"]
 script = ExtResource("2_tag")
-Text = "Rear-guard"
+Text = "Deck"
 
-[sub_resource type="Resource" id="Resource_Vanguard"]
+[sub_resource type="Resource" id="Resource_DropZone"]
 script = ExtResource("2_tag")
-Text = "Vanguard"
+Text = "Drop"
+
+[sub_resource type="Resource" id="Resource_Hand"]
+script = ExtResource("2_tag")
+Text = "Hand"
 
 [sub_resource type="Resource" id="Resource_Intercept"]
 script = ExtResource("2_tag")
 Text = "Intercept"
+
+[sub_resource type="Resource" id="Resource_RearGuard"]
+script = ExtResource("2_tag")
+Text = "Rear-guard"
+
+[sub_resource type="Resource" id="Resource_Soul"]
+script = ExtResource("2_tag")
+Text = "Soul"
+
+[sub_resource type="Resource" id="Resource_Vanguard"]
+script = ExtResource("2_tag")
+Text = "Vanguard"
 
 [resource]
 script = ExtResource("1_tags")
