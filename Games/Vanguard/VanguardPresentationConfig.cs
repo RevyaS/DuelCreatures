@@ -37,9 +37,11 @@ public static class VanguardPresentationConfig
         [VanguardSfx.Target] = SfxPath + "target.ogg",
         [VanguardSfx.PhaseChange] = SfxPath + "phase_change.ogg",
         [VanguardSfx.PhaseChangeButton] = SfxPath + "button_next_phase.ogg",
-        // Cues without a stream are silent; map these when there are sounds for them
-        // [VanguardSfx.PowerUp] = "res://Assets/Sfx/power_up.ogg",
-        // [VanguardSfx.CriticalUp] = "res://Assets/Sfx/critical_up.ogg",
+        // [VanguardSfx.PowerUp] = SfxPath + "power_up.ogg", // Differentiate between cause of power up first
+        [VanguardSfx.CriticalUp] = SfxPath + "trigger_critical.ogg",
+        [VanguardSfx.Draw] = SfxPath + "card_draw.ogg",
+        [VanguardSfx.Shuffle] = SfxPath + "deck_shuffle.ogg",
+        [VanguardSfx.SkillActivated] = SfxPath + "skill.ogg",
     };
 
 
@@ -103,4 +105,7 @@ public static class VanguardSfx
     public static readonly SfxCue PhaseChangeButton = new(nameof(PhaseChangeButton));
     public static readonly SfxCue PowerUp = new(nameof(PowerUp));
     public static readonly SfxCue CriticalUp = new(nameof(CriticalUp));
+    public static readonly SfxCue Draw = new(nameof(Draw));
+    public static readonly SfxCue Shuffle = new(nameof(Shuffle));
+    public static readonly SfxCue SkillActivated = new(nameof(SkillActivated));
 }

@@ -134,11 +134,12 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
         foreach(var subscription in skillSubscriptions) subscription.Dispose();
         skillSubscriptions =
         [
-            eventBus.Subscribe<SkillUseStarted>(started =>
+            eventBus.Subscribe<SkillUseStartedEvent>(started =>
             {
+                input?.Presentation.PlaySfx(VanguardSfx.SkillActivated);
                 if(IsOwn(started.Run)) resolvingSkills.Started(started.Run.Self, started.Run.Skill);
             }),
-            eventBus.Subscribe<SkillUseEnded>(ended =>
+            eventBus.Subscribe<SkillUseEndedEvent>(ended =>
             {
                 if(IsOwn(ended.Run)) resolvingSkills.Finished(ended.Run.Skill);
             }),
@@ -149,6 +150,19 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
             eventBus.Subscribe<PhaseStartedEvent>(phaseStarted => { 
                 if(phaseStarted.Phase is VanguardAttackPhase or EndPhase) {
                     input?.Presentation.PlaySfx(VanguardSfx.PhaseChange);
+                }
+            }),
+            eventBus.Subscribe<DeckShuffledEvent>(_ => { 
+                input?.Presentation.PlaySfx(VanguardSfx.Shuffle);
+            }),
+            eventBus.Subscribe<CardsMoved>(cardsMoved => { 
+                if(cardsMoved.From is Deck && cardsMoved.To is Hand && cardsMoved.Reason is Drawn) {
+                    input?.Presentation.PlaySfx(VanguardSfx.Draw);
+                }
+            }),
+            eventBus.Subscribe<CardsMoved>(cardsMoved => { 
+                if(cardsMoved.From is Deck && cardsMoved.To is Hand && cardsMoved.Reason is Drawn) {
+                    input?.Presentation.PlaySfx(VanguardSfx.Draw);
                 }
             })
         ];

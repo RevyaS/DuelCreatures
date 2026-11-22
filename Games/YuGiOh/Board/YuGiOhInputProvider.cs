@@ -112,13 +112,13 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
         GetNode<ResolvingSkillDetails>("%ResolvingSkill").Follow(resolving);
         subscriptions =
         [
-            eventBus.Subscribe<SkillUseStarted>(started =>
+            eventBus.Subscribe<SkillUseStartedEvent>(started =>
             {
                 input?.Runs.Add(started.Run);
                 if(IsOwn(started.Run)) resolving.Started(started.Run.Self, started.Run.Skill);
                 return Task.CompletedTask;
             }),
-            eventBus.Subscribe<SkillUseEnded>(ended =>
+            eventBus.Subscribe<SkillUseEndedEvent>(ended =>
             {
                 input?.Runs.Remove(ended.Run);
                 if(IsOwn(ended.Run)) resolving.Finished(ended.Run.Skill);
