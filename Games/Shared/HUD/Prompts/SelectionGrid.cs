@@ -9,7 +9,8 @@ using Godot;
 /// <see cref="ItemScene"/> (a SelectableCard scene) per card. Given a <see cref="CardSelection{T}"/>, a tap on a card
 /// picks or drops it through it, and every card shows its pick number and whether it can still be picked. Every tap on a
 /// card is also <see cref="CardPressed"/> (its details). Sized by ratios, like every card holder: its cards are
-/// <see cref="CardScale"/> of the card component's own size, and it is <see cref="VisibleRows"/> rows of them tall.
+/// <see cref="CardScale"/> of the card component's own size, and it is as tall as its rows of cards, up to
+/// <see cref="VisibleRows"/> of them (one row of cards: one row tall, so a layout can keep it at the bottom).
 /// Laid out in SelectionGrid.tscn.
 /// </summary>
 public partial class SelectionGrid : ScrollContainer
@@ -18,7 +19,7 @@ public partial class SelectionGrid : ScrollContainer
     [Export] public PackedScene ItemScene { get; set; } = null!;
     /// <summary>Each card's size, as a ratio of the card component's own size (SizeConstants.CardDefaultSize).</summary>
     [Export(PropertyHint.Range, "0.05, 2.0, 0.01, or_greater")] public float CardScale { get; set; } = 0.8f;
-    /// <summary>How many rows of cards the grid is tall (e.g. 1.5 shows that there's more below); more scroll.</summary>
+    /// <summary>The most rows of cards the grid grows to (e.g. 1.5 shows that there's more below); more scroll.</summary>
     [Export(PropertyHint.Range, "0.5, 3.0, 0.1, or_greater")] public float VisibleRows { get; set; } = 1;
 
     Container? items;
@@ -85,12 +86,15 @@ public partial class SelectionGrid : ScrollContainer
         ScrollVertical = 0;
     }
 
-    // VisibleRows rows tall: a row is a card with its button and the space between rows
+    public override void _Ready() => ItemsContainer.Resized += FitRows;
+
+    // As tall as the rows of cards, up to VisibleRows of them: a row is a card and the space between rows
     private void FitRows()
     {
         if(shown.Count == 0 || !IsInstanceValid(shown[0])) return;
         var row = shown[0].GetCombinedMinimumSize().Y + ItemsContainer.GetThemeConstant("v_separation");
-        CustomMinimumSize = CustomMinimumSize with { Y = Mathf.Ceil(row * VisibleRows) };
+        var height = Mathf.Min(ItemsContainer.Size.Y, row * VisibleRows);
+        CustomMinimumSize = CustomMinimumSize with { Y = Mathf.Ceil(height) };
     }
 
     public override void _ExitTree()
@@ -107,7 +111,7 @@ public partial class SelectionGrid : ScrollContainer
         node.CardScale = CardScale;
         ItemsContainer.AddChild(node);
         node.Show(card);
-        if(shown.Count == 0) Callable.From(FitRows).CallDeferred();
+        Callable.From(FitRows).CallDeferred();
         node.Pressed += pressed => CardPressed?.Invoke(pressed);
         shown.Add(node);
         return node;

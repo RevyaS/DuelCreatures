@@ -38,6 +38,15 @@ public partial class CardDetailsOverlay : Control
 
     bool onScreen;
 
+    // On a screen, a press outside the details closes them and still reaches the screen (a tap on another card then
+    // shows that one's details)
+    public override void _Input(InputEvent e)
+    {
+        if(!onScreen || !Visible || !ZoneInput.IsClick(e)) return;
+        var position = e is InputEventScreenTouch touch ? touch.Position : GetGlobalMousePosition();
+        if(!details.GetGlobalRect().HasPoint(position)) Hide();
+    }
+
     public void Show(CardDetail detail)
     {
         details.Show(detail);

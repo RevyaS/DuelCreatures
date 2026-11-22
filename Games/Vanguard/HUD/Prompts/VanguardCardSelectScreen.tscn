@@ -37,7 +37,6 @@ theme_override_constants/separation = 0
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.7
 theme_override_styles/panel = SubResource("StyleBoxFlat_top")
 
 [node name="Margin" type="MarginContainer" parent="Layout/SwipeArea"]
@@ -95,7 +94,6 @@ layout_mode = 2
 
 [node name="Bottom" type="PanelContainer" parent="Layout"]
 layout_mode = 2
-size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_bottom")
 
 [node name="Margin" type="MarginContainer" parent="Layout/Bottom"]
@@ -114,9 +112,8 @@ theme_override_constants/separation = 16
 [node name="Grid" parent="Layout/Bottom/Margin/Content" instance=ExtResource("6_grid")]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 3
 CardScale = 0.6
-VisibleRows = 1.5
+VisibleRows = 2.5
 
 [node name="Buttons" parent="Layout/Bottom/Margin/Content" instance=ExtResource("7_buttons")]
 unique_name_in_owner = true

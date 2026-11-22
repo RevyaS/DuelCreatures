@@ -7,7 +7,6 @@
 [ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/SelectionGrid.tscn" id="7_row"]
 [ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/PromptButtons.tscn" id="8_buttons"]
 [ext_resource type="PackedScene" path="res://Games/Vanguard/HUD/Prompts/VanguardBattleSummary.tscn" id="9_summary"]
-[ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/SelectableCard.tscn" id="10_card"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_top"]
 bg_color = Color(0.07, 0.08, 0.11, 1)
@@ -75,24 +74,6 @@ alignment = 1
 [node name="BattleSummary" parent="Layout/SwipeArea/Margin/Content/SkillSpace/Battle" instance=ExtResource("9_summary")]
 unique_name_in_owner = true
 layout_mode = 2
-
-[node name="Trigger" type="HBoxContainer" parent="Layout/SwipeArea/Margin/Content/SkillSpace/Battle"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 16
-alignment = 1
-
-[node name="TriggerCard" parent="Layout/SwipeArea/Margin/Content/SkillSpace/Battle/Trigger" instance=ExtResource("10_card")]
-unique_name_in_owner = true
-layout_mode = 2
-CardScale = 0.35
-
-[node name="TriggerGives" type="Label" parent="Layout/SwipeArea/Margin/Content/SkillSpace/Battle/Trigger"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_font_sizes/font_size = 44
-text = "+10000 power"
-vertical_alignment = 1
 
 [node name="DetailsSpace" parent="Layout/SwipeArea/Margin/Content/SkillSpace" instance=ExtResource("4_space")]
 unique_name_in_owner = true
