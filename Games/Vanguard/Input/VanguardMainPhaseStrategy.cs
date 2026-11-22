@@ -42,7 +42,7 @@ public sealed class VanguardMainPhaseStrategy(VanguardInput input, Offered offer
         switch(await scope.Next())
         {
             case ButtonPressed:
-                input.Presentation.PlaySfx(VanguardSfx.PhaseChange);
+                input.Presentation.PlaySfx(VanguardSfx.PhaseChangeButton);
                 return offered.EndPhase;
 
             case CardDropped { To: RearGuard circle } drop when ReferenceEquals(drop.Choice, Choices.Call):

@@ -20,7 +20,7 @@ public partial class TurnLabel : Label, IBindable<GameSession>
         var presentation = this.DependOn<PresentationContext>();
         var player1 = session.Game.Profiles.First();
         subscription?.Dispose();
-        subscription = session.EventBus.Subscribe<PhaseStarted>(started =>
+        subscription = session.EventBus.Subscribe<PhaseStartedEvent>(started =>
         {
             var text = ReferenceEquals(started.TurnPlayer, player1) ? PlayerTurnText : OpponentTurnText;
             presentation.Present(() => Text = text);

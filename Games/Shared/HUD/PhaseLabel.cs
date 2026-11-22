@@ -28,7 +28,7 @@ public partial class PhaseLabel : Label, IBindable<GameSession>
         if(owner is not null) Visible = false;
 
         subscription?.Dispose();
-        subscription = session.EventBus.Subscribe<PhaseStarted>(started =>
+        subscription = session.EventBus.Subscribe<PhaseStartedEvent>(started =>
         {
             var text = Describe(started.Phase);
             var shown = owner is null || ReferenceEquals(started.TurnPlayer, owner);

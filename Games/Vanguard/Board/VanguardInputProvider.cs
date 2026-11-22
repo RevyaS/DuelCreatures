@@ -6,6 +6,7 @@ using ArC.CardGames;
 using ArC.CardGames.Actions;
 using ArC.CardGames.Components;
 using ArC.CardGames.Flow;
+using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Rules;
 using ArC.CardGames.Setup;
 using ArC.CardGames.Skills;
@@ -125,6 +126,7 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
     }
 
     List<IDisposable> skillSubscriptions = [];
+    List<IDisposable> sfxSubscriptions = [];
 
     public void SetEventBus(VanguardEventBus eventBus)
     {
@@ -140,6 +142,15 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
             {
                 if(IsOwn(ended.Run)) resolvingSkills.Finished(ended.Run.Skill);
             }),
+        ];
+
+        foreach(var subscription in sfxSubscriptions) subscription.Dispose();
+        sfxSubscriptions = [
+            eventBus.Subscribe<PhaseStartedEvent>(phaseStarted => { 
+                if(phaseStarted.Phase is VanguardAttackPhase or EndPhase) {
+                    input?.Presentation.PlaySfx(VanguardSfx.PhaseChange);
+                }
+            })
         ];
     }
 

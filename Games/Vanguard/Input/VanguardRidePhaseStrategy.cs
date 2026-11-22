@@ -34,7 +34,7 @@ public sealed class VanguardRidePhaseStrategy(VanguardInput input, Offered offer
             case CardDropped drop:
                 return offered.One<RideRequest>(ride => ReferenceEquals(ride.Card, drop.Card), "Riding");
             default:
-                input.Presentation.PlaySfx(VanguardSfx.PhaseChange);
+                input.Presentation.PlaySfx(VanguardSfx.PhaseChangeButton);
                 return offered.EndPhase;
         }
     }

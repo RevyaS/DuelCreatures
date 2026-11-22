@@ -36,6 +36,7 @@ public static class VanguardPresentationConfig
         [VanguardSfx.Call] = SfxPath + "call.ogg",
         [VanguardSfx.Target] = SfxPath + "target.ogg",
         [VanguardSfx.PhaseChange] = SfxPath + "phase_change.ogg",
+        [VanguardSfx.PhaseChangeButton] = SfxPath + "button_next_phase.ogg",
         // Cues without a stream are silent; map these when there are sounds for them
         // [VanguardSfx.PowerUp] = "res://Assets/Sfx/power_up.ogg",
         // [VanguardSfx.CriticalUp] = "res://Assets/Sfx/critical_up.ogg",
@@ -99,6 +100,7 @@ public static class VanguardSfx
     public static readonly SfxCue Call = new(nameof(Call));
     public static readonly SfxCue Target = new(nameof(Target));
     public static readonly SfxCue PhaseChange = new(nameof(PhaseChange));
+    public static readonly SfxCue PhaseChangeButton = new(nameof(PhaseChangeButton));
     public static readonly SfxCue PowerUp = new(nameof(PowerUp));
     public static readonly SfxCue CriticalUp = new(nameof(CriticalUp));
 }

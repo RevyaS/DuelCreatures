@@ -42,7 +42,7 @@ public sealed class VanguardAttackPhaseStrategy(VanguardInput input, Offered off
         switch(await scope.Next())
         {
             case ButtonPressed:
-                input.Presentation.PlaySfx(VanguardSfx.PhaseChange);
+                input.Presentation.PlaySfx(VanguardSfx.PhaseChangeButton);
                 return offered.EndPhase;
 
             case Aimed { Via: UnitCircle boosted } aimed:
