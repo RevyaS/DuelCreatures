@@ -150,16 +150,20 @@ Vanguard (`VanguardMulliganStrategy`, `VanguardRidePhaseStrategy`, `VanguardMain
   other circle of its column to move it (**Move**, the card follows the finger); [ACT] skills from the card details.
 - Attack: drag from a front-row unit to a target; boost by dragging from the back-row unit over the unit in front
   (line to the boosted unit first), then to the target. Targets show three arrows.
-- Guard: hand cards show their shield; drag cards onto the guardian circle (**Guard**) and back to the hand
-  (**Return**); tap a front rear-guard to intercept, tap it on the guardian circle to call it back; the guarded unit
-  shows its would-be power; Confirm. Nothing moves in ArC until Confirm (the board previews, then `Resync()`s).
+- Guard: the **guard screen** (`VanguardGuardScreen`): the battle on top (attacker, its power and critical, against
+  your overall power), one grid of the hand cards that can guard (Hand tag, shield shown) and the front rear-guards
+  that can intercept (Intercept tag); tap to pick (numbered) and see details; your overall power previews the picked
+  shields; **Guard** answers, **No Guard** passes. Nothing moves in ArC until Guard.
 - Cards from the soul, drop zone, deck (searches, superior call), damage zone (heal) or hand, or from several places
   at once: the **card selection screen** (`CardSelectScreen`): each card tagged with where it is; a tap picks the card
   (numbered, outlined) and shows its details, a tap again drops it; once the most are picked the others are tinted and
   a tap only shows details; OK once the count fits; Cancel when optional.
 - Counter blast / counter charge: the card selection screen with the damage; picked cards show how they'll face
   (counter blast: face down; counter charge: the face-down cards, the picked ones face up); OK when exactly enough.
-- Triggers, skill targets, units picked by circle: the **field selection screen** (`FieldSelectScreen`) enlarges the
+- Trigger power / critical / stand: the **trigger screen** (`VanguardTriggerSelectScreen`, the field screen with the
+  battle and the revealed trigger on top): tap a unit to pick it (numbered), the battle previews what it would do
+  (power or critical to the attacker, power to the defender), tap another to move the pick, OK answers.
+- Skill targets, units picked by circle: the **field selection screen** (`FieldSelectScreen`) enlarges the
   play area holding the circles (the opponent's cards turned to face you), tap highlighted circles (a tap that selects
   doesn't open details; other taps show details at the top); several are numbered, then OK; Cancel when optional.
   Swipe down to see the whole board.

@@ -16,6 +16,8 @@
 [ext_resource type="PackedScene" path="res://Games/Vanguard/HUD/Prompts/VanguardCardSelectScreen.tscn" id="34_cards"]
 [ext_resource type="Resource" path="res://Games/Vanguard/HUD/Prompts/VanguardCardTags.tres" id="35_tags"]
 [ext_resource type="PackedScene" path="res://Games/Vanguard/HUD/Prompts/VanguardSwipeUpPicker.tscn" id="36_swipe"]
+[ext_resource type="PackedScene" path="res://Games/Vanguard/HUD/Prompts/VanguardTriggerSelectScreen.tscn" id="37_trigger"]
+[ext_resource type="PackedScene" path="res://Games/Vanguard/HUD/Prompts/VanguardGuardScreen.tscn" id="38_guard"]
 
 [node name="InputProviderComponent" type="Control"]
 layout_mode = 3
@@ -138,6 +140,16 @@ visible = false
 layout_mode = 1
 
 [node name="SwipeUp" parent="HUD/Prompts" instance=ExtResource("36_swipe")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+
+[node name="TriggerSelect" parent="HUD/Prompts" instance=ExtResource("37_trigger")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+
+[node name="GuardScreen" parent="HUD/Prompts" instance=ExtResource("38_guard")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1

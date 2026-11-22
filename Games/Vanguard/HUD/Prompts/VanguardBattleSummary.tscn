@@ -1,0 +1,59 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://Games/Vanguard/HUD/Prompts/VanguardBattleSummary.cs" id="1_summary"]
+[ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/SelectableCard.tscn" id="2_card"]
+[ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/StatView.tscn" id="3_stat"]
+
+[node name="VanguardBattleSummary" type="HBoxContainer"]
+offset_right = 1032.0
+offset_bottom = 260.0
+mouse_filter = 2
+theme_override_constants/separation = 24
+alignment = 1
+script = ExtResource("1_summary")
+
+[node name="Attacker" type="HBoxContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 16
+
+[node name="AttackerCard" parent="Attacker" instance=ExtResource("2_card")]
+unique_name_in_owner = true
+layout_mode = 2
+CardScale = 0.55
+
+[node name="Stats" type="VBoxContainer" parent="Attacker"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="AttackerPower" parent="Attacker/Stats" instance=ExtResource("3_stat")]
+unique_name_in_owner = true
+layout_mode = 2
+ValueFormat = "{0}"
+
+[node name="AttackerCritical" parent="Attacker/Stats" instance=ExtResource("3_stat")]
+unique_name_in_owner = true
+layout_mode = 2
+ValueFormat = "★{0}"
+
+[node name="Versus" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "vs"
+vertical_alignment = 1
+
+[node name="Defense" type="VBoxContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="DefenseLabel" type="Label" parent="Defense"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Defense"
+horizontal_alignment = 1
+
+[node name="DefensePower" parent="Defense" instance=ExtResource("3_stat")]
+unique_name_in_owner = true
+layout_mode = 2

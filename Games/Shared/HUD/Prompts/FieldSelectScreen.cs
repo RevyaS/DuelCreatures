@@ -23,6 +23,17 @@ public partial class FieldSelectScreen : InputScreen
 {
     /// <summary>The region shown on a space while a row card is dragged over it.</summary>
     [Export] public string PlaceText { get; set; } = "Place";
+    /// <summary>
+    /// A single pick is numbered instead of answering: a tap on another space moves it, OK answers (e.g. a trigger's
+    /// unit, so its would-be numbers can be read first). Off: the tap answers.
+    /// </summary>
+    [Export] public bool ConfirmSinglePick { get; set; }
+
+    /// <summary>The spaces picked so far changed (in picking order), e.g. to preview what they'd do.</summary>
+    public event Action<IReadOnlyList<ICardSpace>>? PicksChanged;
+
+    /// <summary>Shows a card's details at the top (a part of the layout was tapped, e.g. a subclass's).</summary>
+    protected void ShowDetailsOf(CardBase card) => CardPressed?.Invoke(card);
 
     PromptHeader header = null!;
     FieldFocus fieldFocus = null!;
@@ -73,6 +84,25 @@ public partial class FieldSelectScreen : InputScreen
         try
         {
             buttons.CanCancel = canCancel;
+            if(minimum == 1 && maximum == 1 && ConfirmSinglePick)
+            {
+                // One, confirmed: a tap picks (numbered), a tap elsewhere moves the pick, OK answers
+                ICardSpace? pick = null;
+                buttons.ShowsOk = true;
+                while(true)
+                {
+                    buttons.CanConfirm = pick is not null;
+                    using var scope = Input.Scope().Zones(candidates).Numbered(pick is null ? [] : [ pick ]);
+                    var (gesture, button) = await Next(scope);
+                    if(button == PromptButton.Cancel) return [];
+                    if(button == PromptButton.Ok && pick is not null) return [ pick ];
+                    if(gesture is ZoneClicked { Zone: var zone })
+                    {
+                        pick = ReferenceEquals(pick, zone) ? null : zone;
+                        PicksChanged?.Invoke(pick is null ? [] : [ pick ]);
+                    }
+                }
+            }
             if(minimum == 1 && maximum == 1)
             {
                 // One: the tap answers
@@ -103,6 +133,7 @@ public partial class FieldSelectScreen : InputScreen
                         return [];
                     case (_, ZoneClicked { Zone: var zone }):
                         chosen.Toggle(zone);
+                        PicksChanged?.Invoke(chosen.Picks);
                         break;
                 }
             }

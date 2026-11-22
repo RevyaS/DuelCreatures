@@ -431,6 +431,18 @@ public partial class SelectableCard : Control
    (`CardTags`) and checked complete at startup.
 4. **Battle summary and guard:** `StatView`, `VanguardAttackerView`, `VanguardDefenseView`, `VanguardBattleSummary`,
    `VanguardBattleTracker`; then `GuardScreen` with the summary, `VanguardGuardPrompt.Stage` moved to it.
+   **Built**, with the trigger layout (section 4), differently in places:
+   - No tracker: the battle is read from ArC while its questions are asked, `session.Actions.Current<VanguardBattle>()`
+     (attacker, target, boost in the attacker's power) and `Current<TriggerCheck>().Checked` (the revealed trigger; its
+     `TriggerPowerBonus` / `TriggerCriticalBonus` are the amounts). `VanguardInput.Session` gives the session.
+   - `VanguardBattleSummary` is one script over `%AttackerCard` (a `SelectableCard`), `%AttackerPower`,
+     `%AttackerCritical` and `%DefensePower` (`StatView`s, shared); the attacker and defense views are groups in its
+     scene, not scenes of their own.
+   - `VanguardTriggerSelectScreen` subclasses `FieldSelectScreen` (its scene is a full copy of the field layout, not an
+     inherited scene) with `ConfirmSinglePick` on; `FieldSelectScreen.PicksChanged` drives the preview. A power given
+     to a unit outside the battle previews nothing yet (no would-be power on the field).
+   - `VanguardGuardScreen` returns the picks; `VanguardGuardPrompt` still answers them one per question. The board's
+     guard preview and the Guard / Return drop choices are gone.
 5. **C** `FieldSelectScreen` with `FieldFocus` and `PlayAreaView.FaceViewer`; then the card row for superior calls.
    **Built** (section 4), with the screen base every screen uses: `InputScreen` (in the `PromptLayer`, one at a time,
    the error naming the question still answered; `%SwipeArea` collapses the layer) and `ResolvingSkills` (one list of

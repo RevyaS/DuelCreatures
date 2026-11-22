@@ -43,6 +43,11 @@ public sealed class VanguardChoices(VanguardInput input)
         {
             return (IReadOnlyList<T>)await mulligan.Answer(redraw);
         }
+        if(question.Purpose is TriggerQuestion.Power or TriggerQuestion.Critical or TriggerQuestion.Stand && typeof(ICardSpace).IsAssignableFrom(typeof(T)))
+        {
+            IReadOnlyList<T> target = [ (T)await ChooseTriggerTarget((TriggerQuestion)question.Purpose, question.Offered.Cast<ICardSpace>().ToList()) ];
+            return target;
+        }
         if(typeof(ICardSpace).IsAssignableFrom(typeof(T)))
         {
             return (await ChooseZones(question.Offered.Cast<ICardSpace>().ToList(), question.Minimum, question.Maximum, ZoneHint(question.Purpose, question.Prompt), question.CanCancel)).Cast<T>().ToList();
@@ -70,6 +75,20 @@ public sealed class VanguardChoices(VanguardInput input)
         TriggerQuestion.Stand => Text.Stand,
         _ => prompt,
     };
+
+    // A trigger's unit: on the trigger screen, the battle and the revealed trigger on top (read from the battle and the
+    // check ArC is resolving now); a tap previews what it would do, OK answers
+    private async Task<ICardSpace> ChooseTriggerTarget(TriggerQuestion purpose, List<ICardSpace> candidates)
+    {
+        var actions = input.Session().Actions;
+        var battle = actions.Current<VanguardBattle>()
+            ?? throw new InvalidOperationException($"A {purpose} trigger question came outside a battle");
+        var trigger = actions.Current<TriggerCheck>()?.Checked
+            ?? throw new InvalidOperationException($"A {purpose} trigger question came with no trigger check revealing a card");
+        var target = battle.State.TargetCircle!;
+        var defenderArea = PlayArea.Owns(target) ? PlayArea : input.OpponentPlayArea;
+        return await input.TriggerSelect.ChooseTriggerTarget(purpose, candidates, ZoneHint(purpose, ""), battle.State, trigger, defenderArea);
+    }
 
     // On the enlarged field (FieldSelectScreen): one, tap it; several, tap to number them, tap again to drop, then OK
     private async Task<List<ICardSpace>> ChooseZones(List<ICardSpace> candidates, int minimum, int maximum, string hint, bool canCancel)

@@ -13,6 +13,9 @@ public sealed class VanguardInput(
     FieldSelectScreen fieldSelect,
     CardSelectScreen cardSelect,
     SwipeUpPicker swipeUp,
+    VanguardTriggerSelectScreen triggerSelect,
+    VanguardGuardScreen guardScreen,
+    System.Func<VanguardGameSession> session,
     ResolvingSkills resolvingSkills,
     VanguardCardTags cardTags,
     System.Action<CardDetail> showDetails)
@@ -38,6 +41,12 @@ public sealed class VanguardInput(
     public CardSelectScreen CardSelect { get; } = cardSelect;
     /// <summary>Where one skill or option is picked by swiping its card up out of a row.</summary>
     public SwipeUpPicker SwipeUp { get; } = swipeUp;
+    /// <summary>Where a trigger's unit is picked, with the battle on top.</summary>
+    public VanguardTriggerSelectScreen TriggerSelect { get; } = triggerSelect;
+    /// <summary>Where guardians and interceptors are picked.</summary>
+    public VanguardGuardScreen GuardScreen { get; } = guardScreen;
+    /// <summary>The game being played (e.g. the battle and the trigger check being resolved: its Actions.Current).</summary>
+    public System.Func<VanguardGameSession> Session { get; } = session;
     /// <summary>The player's skills being used (e.g. the card a skill's options are shown on).</summary>
     public ResolvingSkills ResolvingSkills { get; } = resolvingSkills;
     /// <summary>The location tags on cards offered to pick.</summary>

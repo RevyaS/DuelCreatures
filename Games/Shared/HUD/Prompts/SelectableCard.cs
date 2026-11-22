@@ -101,6 +101,9 @@ public partial class SelectableCard : Control
     /// <summary>The card shown.</summary>
     public CardBase Card => card ?? throw new InvalidOperationException($"{GetPath()} shows no card yet (Show it one)");
 
+    /// <summary>The game's card node shown (e.g. to switch a Vanguard card to show its shield), once shown.</summary>
+    public Card? CardNode => cardNode;
+
     /// <summary>Whether <paramref name="node"/> is this card's node (e.g. the one a drag carried).</summary>
     public bool Shows(Card node) => ReferenceEquals(cardNode, node);
 

@@ -34,6 +34,9 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
     FieldSelectScreen FieldSelect = null!;
     CardSelectScreen CardSelect = null!;
     SwipeUpPicker SwipeUp = null!;
+    VanguardTriggerSelectScreen TriggerSelect = null!;
+    VanguardGuardScreen GuardScreen = null!;
+    VanguardGameSession? session;
 
     /// <summary>The location tags on cards offered to pick (VanguardCardTags.tres).</summary>
     [Export] public VanguardCardTags CardTags { get; set; } = null!;
@@ -72,6 +75,10 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
         CardSelect = GetNode<CardSelectScreen>($"%{nameof(CardSelect)}");
         CardSelect.CardPressed += card => CardDetails.Show(new CardDetail(card));
         SwipeUp = GetNode<SwipeUpPicker>($"%{nameof(SwipeUp)}");
+        TriggerSelect = GetNode<VanguardTriggerSelectScreen>($"%{nameof(TriggerSelect)}");
+        TriggerSelect.CardPressed += card => CardDetails.Show(new CardDetail(card));
+        GuardScreen = GetNode<VanguardGuardScreen>($"%{nameof(GuardScreen)}");
+        GuardScreen.CardPressed += card => CardDetails.Show(new CardDetail(card));
         if(CardTags is null) throw new InvalidOperationException($"{GetPath()}: set {nameof(CardTags)} (VanguardCardTags.tres)");
         CardTags.EnsureComplete();
         foreach(var resolving in this.Descendants<ResolvingSkillDetails>()) resolving.Follow(resolvingSkills);
@@ -96,6 +103,8 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
         driver?.Dispose();
         driver = board.Show(session, Presenter, sleeves);
         FieldSelect.Attach(inputBoard, driver, board);
+        TriggerSelect.Attach(inputBoard, driver, board);
+        this.session = session;
         driver.ZoneInspected += OnZoneInspected;
         driver.CardInspected += OnCardInspected;
         driver.LongPressed += OnLongPressed;
@@ -108,7 +117,9 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
         PlayArea = playArea;
         OpponentPlayArea = opponentPlayArea;
         var presentation = new PresentationContext(Presenter, board.Sfx, BoardSide.Player);
-        input = new(this, inputBoard, presentation, this, SelectFromCardListComponent, SelectCardsComponent, CardListComponent, FieldSelect, CardSelect, SwipeUp, resolvingSkills, CardTags, CardDetails.Show);
+        input = new(this, inputBoard, presentation, this, SelectFromCardListComponent, SelectCardsComponent, CardListComponent, FieldSelect, CardSelect, SwipeUp, TriggerSelect, GuardScreen,
+            () => session ?? throw new InvalidOperationException($"{nameof(VanguardInputProvider)} was asked about the game before it was shown"),
+            resolvingSkills, CardTags, CardDetails.Show);
         choices = new(input);
         guard = new(input);
     }
