@@ -1,38 +1,41 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=4 format=3 uid="uid://ce1263bq8ujeg"]
 
-[ext_resource type="Script" path="res://Games/Vanguard/HUD/Prompts/VanguardBattleSummary.cs" id="1_summary"]
+[ext_resource type="Script" uid="uid://bu3nhvgikhita" path="res://Games/Vanguard/HUD/Prompts/VanguardBattleSummary.cs" id="1_summary"]
 [ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/SelectableCard.tscn" id="2_card"]
 [ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/StatView.tscn" id="3_stat"]
 
 [node name="VanguardBattleSummary" type="HBoxContainer"]
-offset_right = 1032.0
-offset_bottom = 260.0
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 231.0
+grow_horizontal = 2
 mouse_filter = 2
 theme_override_constants/separation = 24
 alignment = 1
 script = ExtResource("1_summary")
 
-[node name="Attacker" type="HBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 16
+alignment = 1
 
-[node name="AttackerCard" parent="Attacker" instance=ExtResource("2_card")]
+[node name="Attacker" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="AttackerCard" parent="VBoxContainer/Attacker" instance=ExtResource("2_card")]
 unique_name_in_owner = true
 layout_mode = 2
 CardScale = 0.55
 
-[node name="Stats" type="VBoxContainer" parent="Attacker"]
+[node name="Stats" type="VBoxContainer" parent="VBoxContainer/Attacker"]
 layout_mode = 2
 mouse_filter = 2
 alignment = 1
 
-[node name="AttackerPower" parent="Attacker/Stats" instance=ExtResource("3_stat")]
+[node name="AttackerPower" parent="VBoxContainer/Attacker/Stats" instance=ExtResource("3_stat")]
 unique_name_in_owner = true
 layout_mode = 2
-ValueFormat = "{0}"
 
-[node name="AttackerCritical" parent="Attacker/Stats" instance=ExtResource("3_stat")]
+[node name="AttackerCritical" parent="VBoxContainer/Attacker/Stats" instance=ExtResource("3_stat")]
 unique_name_in_owner = true
 layout_mode = 2
 ValueFormat = "★{0}"
@@ -48,12 +51,25 @@ layout_mode = 2
 mouse_filter = 2
 alignment = 1
 
-[node name="DefenseLabel" type="Label" parent="Defense"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Defense"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Defense/HBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="DefenseLabel" type="Label" parent="Defense/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "Defense"
 horizontal_alignment = 1
 
-[node name="DefensePower" parent="Defense" instance=ExtResource("3_stat")]
+[node name="DefensePower" parent="Defense/HBoxContainer/VBoxContainer" instance=ExtResource("3_stat")]
 unique_name_in_owner = true
 layout_mode = 2
+
+[node name="TargetCard" parent="Defense/HBoxContainer" instance=ExtResource("2_card")]
+unique_name_in_owner = true
+layout_mode = 2
+CardScale = 0.55

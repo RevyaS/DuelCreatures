@@ -12,7 +12,8 @@ using Godot;
 /// </summary>
 public partial class VanguardBattleSummary : Control
 {
-    SelectableCard attackerCard = null!;
+    SelectableCard AttackerCard = null!;
+    SelectableCard TargetCard = null!;
     StatView attackerPower = null!, attackerCritical = null!, defensePower = null!;
 
     /// <summary>The attacker's card was tapped: show its details.</summary>
@@ -20,20 +21,22 @@ public partial class VanguardBattleSummary : Control
 
     public override void _Ready()
     {
-        attackerCard = GetNode<SelectableCard>("%AttackerCard");
+        AttackerCard = GetNode<SelectableCard>($"%{nameof(AttackerCard)}");
+        TargetCard = GetNode<SelectableCard>($"%{nameof(TargetCard)}");
         attackerPower = GetNode<StatView>("%AttackerPower");
         attackerCritical = GetNode<StatView>("%AttackerCritical");
         defensePower = GetNode<StatView>("%DefensePower");
-        attackerCard.Selectable = false;
-        attackerCard.Pressed += card => CardPressed?.Invoke(card.Card);
+        AttackerCard.Selectable = false;
+        AttackerCard.Pressed += card => CardPressed?.Invoke(card.Card);
     }
 
     /// <summary>The battle as it is now: <paramref name="attacker"/> against <paramref name="target"/> of <paramref name="defenderArea"/>.</summary>
     public void Show(UnitCircle attacker, UnitCircle target, VanguardPlayArea defenderArea)
     {
-        if(attacker.Card is { } card) attackerCard.Show(card);
+        AttackerCard.Show(attacker.Card!);
         attackerPower.Value = attacker.GetOverallPower();
         attackerCritical.Value = attacker.GetOverallCritical();
+        TargetCard.Show(target.Card!);
         DefensePower = target.GetOverallPower() + defenderArea.GuardianCircleShield;
         defensePower.Value = DefensePower;
         ClearPreview();
