@@ -1,15 +1,15 @@
-[gd_scene format=3]
+[gd_scene load_steps=12 format=3 uid="uid://d1t7f2y5vfi7i"]
 
-[ext_resource type="Script" path="res://Games/Vanguard/Board/VanguardBoardView.cs" id="1_024yw"]
+[ext_resource type="Script" uid="uid://ccgreqr3xo6av" path="res://Games/Vanguard/Board/VanguardBoardView.cs" id="1_024yw"]
 [ext_resource type="PackedScene" path="res://Games/Vanguard/Board/VanguardPlayAreaView.tscn" id="2_d5ajh"]
 [ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/HandZone.tscn" id="4_0sx56"]
-[ext_resource type="Texture2D" uid="uid://o1c8663jut1n" path="res://Assets/Board/fight_field@guardiancircle_base.png" id="5_te0hm"]
-[ext_resource type="Texture2D" uid="uid://dtsomuwryke03" path="res://Assets/Board/icon_GC.png" id="6_4us7w"]
+[ext_resource type="Texture2D" uid="uid://o1c8663jut1n" path="res://Assets/Vanguard/Board/fight_field@guardiancircle_base.png" id="5_te0hm"]
+[ext_resource type="Texture2D" uid="uid://dtsomuwryke03" path="res://Assets/Vanguard/Board/icon_GC.png" id="6_4us7w"]
 [ext_resource type="PackedScene" path="res://Games/Shared/Board/Zones/LineZone.tscn" id="7_nmdui"]
 [ext_resource type="PackedScene" uid="uid://bj6jrhfey56is" path="res://Games/Shared/Vfx/AttackIndicator.tscn" id="8_0i5bu"]
 [ext_resource type="PackedScene" path="res://Games/Shared/Audio/SfxPlayer.tscn" id="9_sfx"]
-[ext_resource type="Script" path="res://Games/Vanguard/Board/VanguardBattleLines.cs" id="10_lines"]
-[ext_resource type="Script" path="res://Games/Vanguard/Board/Zones/GuardianShields.cs" id="11_shields"]
+[ext_resource type="Script" uid="uid://dmq58qpr5mvcd" path="res://Games/Vanguard/Board/VanguardBattleLines.cs" id="10_lines"]
+[ext_resource type="Script" uid="uid://c0uhwfyolhjxx" path="res://Games/Vanguard/Board/Zones/GuardianShields.cs" id="11_shields"]
 [ext_resource type="Script" uid="uid://wpkwmk8pl57r" path="res://Games/Shared/Input/BoardButtonView.cs" id="13_button"]
 
 [node name="VanguardBoardView" type="Control"]
@@ -94,8 +94,13 @@ grow_horizontal = 2
 
 [node name="OppHand" parent="Opp Hand" instance=ExtResource("4_0sx56")]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(1080, 193)
 layout_mode = 2
-custom_minimum_size = Vector2(1080, 0)
+HighlightColor = Color(1, 0.85, 0.2, 1)
+HighlightWidth = 4.0
+CardHighlightColor = Color(1, 0.85, 0.2, 1)
+TargetColor = Color(1, 0.85, 0.2, 0.35)
+EmptyHeightPadding = 4.0
 HideCards = true
 Alignment = 1
 ShowBackground = false
@@ -197,6 +202,7 @@ HideWhenUnavailable = true
 
 [node name="GuardZone" parent="." instance=ExtResource("7_nmdui")]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 172)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -209,6 +215,11 @@ offset_right = 279.5
 offset_bottom = 96.5
 grow_horizontal = 2
 grow_vertical = 2
+Inspectable = false
+HighlightColor = Color(1, 0.85, 0.2, 1)
+HighlightWidth = 4.0
+CardHighlightColor = Color(1, 0.85, 0.2, 1)
+EmptyHeightPadding = 4.0
 CardScale = 0.4
 Alignment = 1
 ShowBackground = false
@@ -228,8 +239,13 @@ grow_vertical = 0
 
 [node name="PlayerHand" parent="PlayerHand" instance=ExtResource("4_0sx56")]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(1080, 193)
 layout_mode = 2
-custom_minimum_size = Vector2(1080, 0)
+HighlightColor = Color(1, 0.85, 0.2, 1)
+HighlightWidth = 4.0
+CardHighlightColor = Color(1, 0.85, 0.2, 1)
+TargetColor = Color(1, 0.85, 0.2, 0.35)
+EmptyHeightPadding = 4.0
 Alignment = 1
 ShowBackground = false
 

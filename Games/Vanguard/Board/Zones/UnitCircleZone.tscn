@@ -1,10 +1,10 @@
 [gd_scene load_steps=7 format=3]
 
-[ext_resource type="Script" path="res://Games/Vanguard/Board/Zones/UnitCircleZone.cs" id="1_zone"]
+[ext_resource type="Script" uid="uid://5mqjcj0e7so4" path="res://Games/Vanguard/Board/Zones/UnitCircleZone.cs" id="1_zone"]
 [ext_resource type="Script" uid="uid://d0xdsvmtayatq" path="res://Games/Shared/Components/CardRotationContainer.cs" id="2_rotation"]
 [ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Games/Shared/Cards/Card.tscn" id="3_card"]
-[ext_resource type="Script" path="res://Games/Vanguard/Board/Zones/UnitStats.cs" id="4_stats"]
-[ext_resource type="Texture2D" uid="uid://5xkkafu44j3" path="res://Assets/Board/UnitCircle/fight@card_effect_arrow.png" id="5_arrow"]
+[ext_resource type="Script" uid="uid://b8i8tjo734bwk" path="res://Games/Vanguard/Board/Zones/UnitStats.cs" id="4_stats"]
+[ext_resource type="Texture2D" uid="uid://5xkkafu44j3" path="res://Assets/Vanguard/Board/UnitCircle/fight@card_effect_arrow.png" id="5_arrow"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_circle"]
 
