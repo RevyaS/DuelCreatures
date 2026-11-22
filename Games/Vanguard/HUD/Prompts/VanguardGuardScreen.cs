@@ -16,7 +16,7 @@ using Godot;
 public partial class VanguardGuardScreen : InputScreen
 {
     VanguardBattleSummary summary = null!;
-    PromptHeader header = null!;
+    PromptHeader Prompt = null!;
     SelectionGrid grid = null!;
     PromptButtons buttons = null!;
 
@@ -27,7 +27,7 @@ public partial class VanguardGuardScreen : InputScreen
     {
         base._Ready();
         summary = GetNode<VanguardBattleSummary>("%BattleSummary");
-        header = GetNode<PromptHeader>("%Header");
+        Prompt = GetNode<PromptHeader>($"%{nameof(Prompt)}");
         grid = GetNode<SelectionGrid>("%Grid");
         buttons = GetNode<PromptButtons>("%Buttons");
         grid.CardPressed += card => CardPressed?.Invoke(card.Card);
@@ -50,8 +50,8 @@ public partial class VanguardGuardScreen : InputScreen
         try
         {
             summary.Show(attacker, target, defenderArea);
-            header.Hint = hint;
-            header.HideCount();
+            Prompt.Hint = hint;
+            Prompt.HideCount();
             buttons.ShowsOk = true;
             buttons.CanCancel = true;
             buttons.CanConfirm = true;

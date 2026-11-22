@@ -28,6 +28,7 @@ public partial class VanguardBattleSummary : Control
         defensePower = GetNode<StatView>("%DefensePower");
         AttackerCard.Selectable = false;
         AttackerCard.Pressed += card => CardPressed?.Invoke(card.Card);
+        TargetCard.Pressed += card => CardPressed?.Invoke(card.Card);
     }
 
     /// <summary>The battle as it is now: <paramref name="attacker"/> against <paramref name="target"/> of <paramref name="defenderArea"/>.</summary>
@@ -37,7 +38,7 @@ public partial class VanguardBattleSummary : Control
         attackerPower.Value = attacker.GetOverallPower();
         attackerCritical.Value = attacker.GetOverallCritical();
         TargetCard.Show(target.Card!);
-        DefensePower = target.GetOverallPower() + defenderArea.GuardianCircleShield;
+        DefensePower = target.GetOverallPower();
         defensePower.Value = DefensePower;
         ClearPreview();
     }
