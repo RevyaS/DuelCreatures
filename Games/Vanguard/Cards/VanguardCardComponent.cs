@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using ArC.CardGames.Components;
 using ArC.CardGames.Vanguard;
 using Godot;
@@ -13,10 +14,11 @@ public partial class VanguardCardComponent : Card
     // The power/critical panel, e.g. to pulse it when they change
     public Control StatsPanel => PowerPanel;
 
-    const string DrawTriggerTexturePath = "res://Assets/Triggers/Draw.png";
-    const string CriticalTriggerTexturePath = "res://Assets/Triggers/Critical.png";
-    const string HealTriggerTexturePath = "res://Assets/Triggers/Heal.png";
-    const string StandTriggerTexturePath = "res://Assets/Triggers/Stand.png";
+    private const string TriggerTexturePath = "res://Assets/Vanguard/Triggers/";
+    const string DrawTriggerTexturePath = TriggerTexturePath + "Draw.png";
+    const string CriticalTriggerTexturePath = TriggerTexturePath + "Critical.png";
+    const string HealTriggerTexturePath = TriggerTexturePath + "Heal.png";
+    const string StandTriggerTexturePath = TriggerTexturePath + "Stand.png";
 
     private VanguardTrigger Trigger { get; set; } = VanguardTrigger.NONE;
 

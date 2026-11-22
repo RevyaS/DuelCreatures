@@ -28,13 +28,14 @@ public static class VanguardPresentationConfig
         [VanguardMoves.ToSoul]            = new(0.30f, Easing.EaseIn, Stagger: 0.06f),
     };
 
+    private const string SfxPath = "res://Assets/Vanguard/Sfx/";
     // Sfx cue -> stream
     public static readonly Dictionary<SfxCue, string> SfxStreams = new()
     {
-        [VanguardSfx.Ride] = "res://Assets/Sfx/ride.ogg",
-        [VanguardSfx.Call] = "res://Assets/Sfx/call.ogg",
-        [VanguardSfx.Target] = "res://Assets/Sfx/target.ogg",
-        [VanguardSfx.PhaseChange] = "res://Assets/Sfx/phase_change.ogg",
+        [VanguardSfx.Ride] = SfxPath + "ride.ogg",
+        [VanguardSfx.Call] = SfxPath + "call.ogg",
+        [VanguardSfx.Target] = SfxPath + "target.ogg",
+        [VanguardSfx.PhaseChange] = SfxPath + "phase_change.ogg",
         // Cues without a stream are silent; map these when there are sounds for them
         // [VanguardSfx.PowerUp] = "res://Assets/Sfx/power_up.ogg",
         // [VanguardSfx.CriticalUp] = "res://Assets/Sfx/critical_up.ogg",
