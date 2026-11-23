@@ -1,7 +1,7 @@
-[gd_scene format=3 uid="uid://54vx7214u53f"]
+[gd_scene load_steps=19 format=3 uid="uid://54vx7214u53f"]
 
 [ext_resource type="Script" uid="uid://dg7uwa2tvdn5o" path="res://Games/Vanguard/Board/VanguardInputProvider.cs" id="1_mnfo1"]
-[ext_resource type="PackedScene" path="res://Games/Vanguard/Board/VanguardBoardView.tscn" id="2_board"]
+[ext_resource type="PackedScene" uid="uid://d1t7f2y5vfi7i" path="res://Games/Vanguard/Board/VanguardBoardView.tscn" id="2_board"]
 [ext_resource type="PackedScene" uid="uid://dt60jvmuuttc0" path="res://Games/Shared/HUD/SelectCards.tscn" id="3_g4tnu"]
 [ext_resource type="PackedScene" uid="uid://cl0t7q61is3ro" path="res://Games/Shared/HUD/CardList.tscn" id="4_3v0st"]
 [ext_resource type="PackedScene" path="res://Games/Vanguard/HUD/VanguardCardDetailsOverlay.tscn" id="5_details"]
@@ -9,15 +9,15 @@
 [ext_resource type="Script" uid="uid://oevhg1o84cdb" path="res://Games/Shared/Presentation/CardFlightLayer.cs" id="7_flights"]
 [ext_resource type="Script" uid="uid://dy0qllpcj4gug" path="res://Games/Shared/Input/AimIndicatorLayer.cs" id="8_aim"]
 [ext_resource type="PackedScene" uid="uid://bj6jrhfey56is" path="res://Games/Shared/Vfx/AttackIndicator.tscn" id="9_indicator"]
-[ext_resource type="Script" path="res://Games/Shared/HUD/PromptLayer.cs" id="30_prompts"]
-[ext_resource type="Script" path="res://Games/Shared/HUD/ResolvingSkillDetails.cs" id="31_resolving"]
+[ext_resource type="Script" uid="uid://drtn24inxoxdt" path="res://Games/Shared/HUD/PromptLayer.cs" id="30_prompts"]
+[ext_resource type="Script" uid="uid://ohr6i87k310i" path="res://Games/Shared/HUD/ResolvingSkillDetails.cs" id="31_resolving"]
 [ext_resource type="PackedScene" path="res://Games/Vanguard/HUD/CardDetailParts/VanguardCardDetails.tscn" id="32_details"]
 [ext_resource type="PackedScene" path="res://Games/Vanguard/HUD/Prompts/VanguardFieldSelectScreen.tscn" id="33_field"]
 [ext_resource type="PackedScene" path="res://Games/Vanguard/HUD/Prompts/VanguardCardSelectScreen.tscn" id="34_cards"]
-[ext_resource type="Resource" path="res://Games/Vanguard/HUD/Prompts/VanguardCardTags.tres" id="35_tags"]
+[ext_resource type="Resource" uid="uid://pli7hgh6v8r2" path="res://Games/Vanguard/HUD/Prompts/VanguardCardTags.tres" id="35_tags"]
 [ext_resource type="PackedScene" path="res://Games/Vanguard/HUD/Prompts/VanguardSwipeUpPicker.tscn" id="36_swipe"]
 [ext_resource type="PackedScene" path="res://Games/Vanguard/HUD/Prompts/VanguardTriggerSelectScreen.tscn" id="37_trigger"]
-[ext_resource type="PackedScene" path="res://Games/Vanguard/HUD/Prompts/VanguardGuardScreen.tscn" id="38_guard"]
+[ext_resource type="PackedScene" uid="uid://c7irlkmv0ly6c" path="res://Games/Vanguard/HUD/Prompts/VanguardGuardScreen.tscn" id="38_guard"]
 
 [node name="InputProviderComponent" type="Control"]
 layout_mode = 3
@@ -126,6 +126,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_right = 0.0
+offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 

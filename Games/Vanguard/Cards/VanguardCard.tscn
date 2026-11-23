@@ -1,4 +1,4 @@
-[gd_scene load_steps=0 format=3 uid="uid://b4ogsmqyb7phr"]
+[gd_scene load_steps=5 format=3 uid="uid://b4ogsmqyb7phr"]
 
 [ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Games/Shared/Cards/Card.tscn" id="1_uvjtr"]
 [ext_resource type="Script" uid="uid://bo34fh6nunsrb" path="res://Games/Vanguard/Cards/VanguardCardComponent.cs" id="2_kdthh"]
@@ -9,13 +9,7 @@
 [node name="Card" instance=ExtResource("1_uvjtr")]
 script = ExtResource("2_kdthh")
 
-[node name="MarginContainer" parent="Border" index="1"]
-theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = 0
-
-[node name="PowerPanel" type="PanelContainer" parent="Border"]
+[node name="PowerPanel" type="PanelContainer" parent="Border" index="2"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -27,10 +21,10 @@ offset_top = -58.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Border/PowerPanel"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Border/PowerPanel" index="0"]
 layout_mode = 2
 
-[node name="PowerLabel" type="Label" parent="Border/PowerPanel/HBoxContainer"]
+[node name="PowerLabel" type="Label" parent="Border/PowerPanel/HBoxContainer" index="0"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -38,7 +32,7 @@ theme_override_font_sizes/font_size = 56
 text = "100"
 horizontal_alignment = 1
 
-[node name="CriticalLabel" type="Label" parent="Border/PowerPanel/HBoxContainer"]
+[node name="CriticalLabel" type="Label" parent="Border/PowerPanel/HBoxContainer" index="1"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(77, 0)
 layout_mode = 2
@@ -46,7 +40,7 @@ theme_override_font_sizes/font_size = 56
 text = "1"
 horizontal_alignment = 1
 
-[node name="GuardPanel" type="PanelContainer" parent="Border"]
+[node name="GuardPanel" type="PanelContainer" parent="Border" index="3"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -58,10 +52,10 @@ offset_top = -58.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Border/GuardPanel"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Border/GuardPanel" index="0"]
 layout_mode = 2
 
-[node name="GuardLabel" type="Label" parent="Border/GuardPanel/HBoxContainer"]
+[node name="GuardLabel" type="Label" parent="Border/GuardPanel/HBoxContainer" index="0"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -69,14 +63,14 @@ theme_override_font_sizes/font_size = 56
 text = "10000"
 horizontal_alignment = 1
 
-[node name="GradePanel" type="PanelContainer" parent="Border"]
+[node name="GradePanel" type="PanelContainer" parent="Border" index="4"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="GradeLabel" type="Label" parent="Border/GradePanel"]
+[node name="GradeLabel" type="Label" parent="Border/GradePanel" index="0"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
@@ -85,7 +79,7 @@ text = "1"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="TriggerPanel" type="PanelContainer" parent="Border"]
+[node name="TriggerPanel" type="PanelContainer" parent="Border" index="5"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -99,7 +93,7 @@ offset_bottom = 70.0
 grow_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_kdthh")
 
-[node name="TriggerRect" type="TextureRect" parent="Border/TriggerPanel"]
+[node name="TriggerRect" type="TextureRect" parent="Border/TriggerPanel" index="0"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(80, 80)
 layout_mode = 2

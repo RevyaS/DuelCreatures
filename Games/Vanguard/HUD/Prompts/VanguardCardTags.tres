@@ -1,27 +1,33 @@
-[gd_resource type="Resource" script_class="VanguardCardTags" load_steps=11 format=3 uid="uid://pli7hgh6v8r2"]
+[gd_resource type="Resource" script_class="VanguardCardTags" load_steps=17 format=3 uid="uid://pli7hgh6v8r2"]
 
+[ext_resource type="Texture2D" uid="uid://w0dykqumdm82" path="res://Assets/Vanguard/Textures/CardTexture/fight@abilitymenu_zone_damage.png" id="1_ddqsb"]
 [ext_resource type="Script" uid="uid://ckiiotoylnnif" path="res://Games/Vanguard/HUD/Prompts/VanguardCardTags.cs" id="1_tags"]
+[ext_resource type="Texture2D" uid="uid://5m3i021r6ug" path="res://Assets/Vanguard/Textures/CardTexture/fight@abilitymenu_zone_hand.png" id="2_k50vn"]
 [ext_resource type="Script" uid="uid://6lfgcqwhbgvn" path="res://Games/Shared/HUD/Prompts/CardTag.cs" id="2_tag"]
+[ext_resource type="Texture2D" uid="uid://c15h7hte2oijh" path="res://Assets/Vanguard/Textures/CardTexture/fight@abilitymenu_zone_soul.png" id="3_hqeqv"]
+[ext_resource type="Texture2D" uid="uid://lnvmxkiifg32" path="res://Assets/Vanguard/Textures/CardTexture/fight@abilitymenu_zone_deck.png" id="3_vy4yb"]
+[ext_resource type="Texture2D" uid="uid://daqqga4nkf2iq" path="res://Assets/Vanguard/Textures/CardTexture/fight@abilitymenu_zone_drop.png" id="4_8rlug"]
+[ext_resource type="Texture2D" uid="uid://b8b6wl8uw4wtx" path="res://Assets/Vanguard/Textures/CardTexture/fight@card_effect_intercept.png" id="6_pdnt0"]
 
 [sub_resource type="Resource" id="Resource_DamageZone"]
 script = ExtResource("2_tag")
-Text = "Damage"
+Icon = ExtResource("1_ddqsb")
 
 [sub_resource type="Resource" id="Resource_Deck"]
 script = ExtResource("2_tag")
-Text = "Deck"
+Icon = ExtResource("3_vy4yb")
 
 [sub_resource type="Resource" id="Resource_DropZone"]
 script = ExtResource("2_tag")
-Text = "Drop"
+Icon = ExtResource("4_8rlug")
 
 [sub_resource type="Resource" id="Resource_Hand"]
 script = ExtResource("2_tag")
-Text = "Hand"
+Icon = ExtResource("2_k50vn")
 
 [sub_resource type="Resource" id="Resource_Intercept"]
 script = ExtResource("2_tag")
-Text = "Intercept"
+Icon = ExtResource("6_pdnt0")
 
 [sub_resource type="Resource" id="Resource_RearGuard"]
 script = ExtResource("2_tag")
@@ -29,7 +35,7 @@ Text = "Rear-guard"
 
 [sub_resource type="Resource" id="Resource_Soul"]
 script = ExtResource("2_tag")
-Text = "Soul"
+Icon = ExtResource("3_hqeqv")
 
 [sub_resource type="Resource" id="Resource_Vanguard"]
 script = ExtResource("2_tag")

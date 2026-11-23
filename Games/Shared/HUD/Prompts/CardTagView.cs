@@ -11,12 +11,17 @@ public partial class CardTagView : Control
 {
     TextureRect? icon;
     Label? text;
+    PanelContainer? panel;
     TextureRect IconRect => icon ??= GetNode<TextureRect>("%Icon");
     Label TextLabel => text ??= GetNode<Label>("%Text");
+    PanelContainer Panel => panel ??= GetNode<PanelContainer>($"%{nameof(Panel)}"); 
 
     CardTag? tag;
 
-    public override void _Ready() => Tag = tag;
+    public override void _Ready()
+    {
+        Tag = tag;
+    }
 
     /// <summary>The tag shown, or null: hidden.</summary>
     public CardTag? Tag
@@ -34,7 +39,7 @@ public partial class CardTagView : Control
             IconRect.Texture = value?.Icon;
             IconRect.Visible = value?.HasIcon == true;
             TextLabel.Text = value?.Text ?? string.Empty;
-            TextLabel.Visible = value?.HasText == true;
+            Panel.Visible = value?.HasText == true;
         }
     }
 }
