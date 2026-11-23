@@ -1,12 +1,12 @@
 [gd_resource type="Resource" script_class="VanguardCardTags" load_steps=17 format=3 uid="uid://pli7hgh6v8r2"]
 
-[ext_resource type="Texture2D" uid="uid://w0dykqumdm82" path="res://Assets/Vanguard/Textures/CardTexture/fight@abilitymenu_zone_damage.png" id="1_ddqsb"]
+[ext_resource type="Texture2D" uid="uid://w0dykqumdm82" path="res://Assets/Vanguard/Textures/CardTexture/LocationIndicator/fight@abilitymenu_zone_damage.png" id="1_ddqsb"]
 [ext_resource type="Script" uid="uid://ckiiotoylnnif" path="res://Games/Vanguard/HUD/Prompts/VanguardCardTags.cs" id="1_tags"]
-[ext_resource type="Texture2D" uid="uid://5m3i021r6ug" path="res://Assets/Vanguard/Textures/CardTexture/fight@abilitymenu_zone_hand.png" id="2_k50vn"]
+[ext_resource type="Texture2D" uid="uid://5m3i021r6ug" path="res://Assets/Vanguard/Textures/CardTexture/LocationIndicator/fight@abilitymenu_zone_hand.png" id="2_k50vn"]
 [ext_resource type="Script" uid="uid://6lfgcqwhbgvn" path="res://Games/Shared/HUD/Prompts/CardTag.cs" id="2_tag"]
-[ext_resource type="Texture2D" uid="uid://c15h7hte2oijh" path="res://Assets/Vanguard/Textures/CardTexture/fight@abilitymenu_zone_soul.png" id="3_hqeqv"]
-[ext_resource type="Texture2D" uid="uid://lnvmxkiifg32" path="res://Assets/Vanguard/Textures/CardTexture/fight@abilitymenu_zone_deck.png" id="3_vy4yb"]
-[ext_resource type="Texture2D" uid="uid://daqqga4nkf2iq" path="res://Assets/Vanguard/Textures/CardTexture/fight@abilitymenu_zone_drop.png" id="4_8rlug"]
+[ext_resource type="Texture2D" uid="uid://c15h7hte2oijh" path="res://Assets/Vanguard/Textures/CardTexture/LocationIndicator/fight@abilitymenu_zone_soul.png" id="3_hqeqv"]
+[ext_resource type="Texture2D" uid="uid://lnvmxkiifg32" path="res://Assets/Vanguard/Textures/CardTexture/LocationIndicator/fight@abilitymenu_zone_deck.png" id="3_vy4yb"]
+[ext_resource type="Texture2D" uid="uid://daqqga4nkf2iq" path="res://Assets/Vanguard/Textures/CardTexture/LocationIndicator/fight@abilitymenu_zone_drop.png" id="4_8rlug"]
 [ext_resource type="Texture2D" uid="uid://b8b6wl8uw4wtx" path="res://Assets/Vanguard/Textures/CardTexture/fight@card_effect_intercept.png" id="6_pdnt0"]
 
 [sub_resource type="Resource" id="Resource_DamageZone"]

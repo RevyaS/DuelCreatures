@@ -11,10 +11,10 @@ public partial class CardTagView : Control
 {
     TextureRect? icon;
     Label? text;
-    PanelContainer? panel;
+    PanelContainer? textPanel;
     TextureRect IconRect => icon ??= GetNode<TextureRect>("%Icon");
     Label TextLabel => text ??= GetNode<Label>("%Text");
-    PanelContainer Panel => panel ??= GetNode<PanelContainer>($"%{nameof(Panel)}"); 
+    PanelContainer TextPanel => textPanel ??= GetNode<PanelContainer>($"%{nameof(TextPanel)}"); 
 
     CardTag? tag;
 
@@ -39,7 +39,7 @@ public partial class CardTagView : Control
             IconRect.Texture = value?.Icon;
             IconRect.Visible = value?.HasIcon == true;
             TextLabel.Text = value?.Text ?? string.Empty;
-            Panel.Visible = value?.HasText == true;
+            TextPanel.Visible = value?.HasText == true;
         }
     }
 }

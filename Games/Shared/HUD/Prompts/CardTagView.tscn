@@ -1,7 +1,19 @@
-[gd_scene load_steps=4 format=3 uid="uid://bhyf0lw35htkx"]
+[gd_scene load_steps=7 format=3 uid="uid://bhyf0lw35htkx"]
 
 [ext_resource type="Script" uid="uid://cfh4bsj57h65r" path="res://Games/Shared/HUD/Prompts/CardTagView.cs" id="1_tag"]
-[ext_resource type="Texture2D" uid="uid://w0dykqumdm82" path="res://Assets/Vanguard/Textures/CardTexture/fight@abilitymenu_zone_damage.png" id="2_qj7jx"]
+[ext_resource type="Texture2D" uid="uid://w0dykqumdm82" path="res://Assets/Vanguard/Textures/CardTexture/LocationIndicator/fight@abilitymenu_zone_damage.png" id="2_qj7jx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qj7jx"]
+
+[sub_resource type="Gradient" id="Gradient_qj7jx"]
+offsets = PackedFloat32Array(0.0023364485, 0.95327103)
+colors = PackedColorArray(0, 0, 0, 0.5882353, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_40bss"]
+gradient = SubResource("Gradient_qj7jx")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tag"]
 content_margin_left = 12.0
@@ -22,24 +34,33 @@ offset_bottom = 420.0
 mouse_filter = 2
 script = ExtResource("1_tag")
 
-[node name="Icon" type="TextureRect" parent="."]
+[node name="IconPanel" type="PanelContainer" parent="."]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(300, 170)
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -270.0
-offset_top = -50.0
-offset_right = 30.0
-offset_bottom = 120.0
+offset_left = -225.0
+offset_top = -25.0
+offset_right = 45.0
+offset_bottom = 92.0
 grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_qj7jx")
+
+[node name="ColorRect" type="TextureRect" parent="IconPanel"]
+layout_mode = 2
+texture = SubResource("GradientTexture2D_40bss")
+
+[node name="Icon" type="TextureRect" parent="IconPanel"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(330, 143)
+layout_mode = 2
 mouse_filter = 2
 texture = ExtResource("2_qj7jx")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Panel" type="PanelContainer" parent="."]
+[node name="TextPanel" type="PanelContainer" parent="."]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -54,13 +75,13 @@ grow_horizontal = 0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_tag")
 
-[node name="Content" type="HBoxContainer" parent="Panel"]
+[node name="Content" type="HBoxContainer" parent="TextPanel"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="Text" type="Label" parent="Panel/Content"]
+[node name="Text" type="Label" parent="TextPanel/Content"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
