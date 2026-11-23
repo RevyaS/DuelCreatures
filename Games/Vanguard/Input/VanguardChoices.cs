@@ -12,8 +12,8 @@ using ActivateSkillRequest = ArC.CardGames.Skills.ActivateSkillRequest;
 /// <summary>
 /// Answers Vanguard's "pick from these" and "yes or no" questions (Choose, Confirm) by their shape: the mulligan by its
 /// purpose; circles, and units by their circles, on the enlarged field (FieldSelectScreen: several are numbered, then
-/// OK); any other cards on the card selection screen (CardSelectScreen: tagged with where they are; a counter blast or
-/// charge shows how the picks will face); skills and skill options by swiping one up out of a row (SwipeUpPicker). A shape with no gesture throws UnansweredQuestion.
+/// OK); any other cards on the card selection screen (CardSelectScreen, through an ICardSelectionStrategy per kind of
+/// pick: counter blast, counter charge, heal, any other); skills and skill options by swiping one up out of a row (SwipeUpPicker). A shape with no gesture throws UnansweredQuestion.
 /// </summary>
 public sealed class VanguardChoices(VanguardInput input)
 {
@@ -36,10 +36,19 @@ public sealed class VanguardChoices(VanguardInput input)
     VanguardPlayArea PlayArea => input.PlayArea;
     readonly VanguardMulliganStrategy mulligan = new(input);
 
+    // The card selection screen's kinds of picks, the most specific first; the default takes any other
+    readonly IReadOnlyList<ICardSelectionStrategy> cardSelections =
+    [
+        new CounterBlastSelection(input),
+        new CounterChargeSelection(input),
+        new HealSelection(input),
+        new DefaultCardSelection(input),
+    ];
+
     #region Choose
     public async Task<IReadOnlyList<T>> Choose<T>(Choosing<T> question)
     {
-        if(question.Purpose is MulliganQuestion.RETURN && question is Choosing<CardBase> redraw)
+        if(question.Purpose is MulliganQuestion.Return && question is Choosing<CardBase> redraw)
         {
             return (IReadOnlyList<T>)await mulligan.Answer(redraw);
         }
@@ -52,9 +61,9 @@ public sealed class VanguardChoices(VanguardInput input)
         {
             return (await ChooseZones(question.Offered.Cast<ICardSpace>().ToList(), question.Minimum, question.Maximum, ZoneHint(question.Purpose, question.Prompt), question.CanCancel)).Cast<T>().ToList();
         }
-        if(typeof(CardBase).IsAssignableFrom(typeof(T)))
+        if(question is Choosing<CardBase> cards)
         {
-            return (await ChooseCards(question.Offered.Cast<CardBase>().ToList(), question.Minimum, question.Maximum, question.Purpose, question.Prompt, question.CanCancel)).Cast<T>().ToList();
+            return (IReadOnlyList<T>)await ChooseCards(cards);
         }
         if(question is Choosing<SkillOption> options)
         {
@@ -68,7 +77,7 @@ public sealed class VanguardChoices(VanguardInput input)
         throw new UnansweredQuestion(question.Purpose, question.Prompt, typeof(T));
     }
 
-    private static string ZoneHint(object purpose, string prompt) => purpose switch
+    private static string ZoneHint(IQuestionPurpose purpose, string prompt) => purpose switch
     {
         TriggerQuestion.Power => Text.ProvidePower,
         TriggerQuestion.Critical => Text.ProvideCritical,
@@ -95,49 +104,24 @@ public sealed class VanguardChoices(VanguardInput input)
         => (await input.FieldSelect.ChooseZones(candidates, minimum, maximum, hint, canCancel)).ToList();
 
     // Units only: on the enlarged field. Anything else (the hand, the soul, the drop zone, the deck, the damage zone, or
-    // several places at once): the card selection screen, each card tagged with where it is
-    private async Task<IReadOnlyList<CardBase>> ChooseCards(List<CardBase> cards, int minimum, int maximum, object purpose, string prompt, bool canCancel)
+    // several places at once): the card selection screen, by the first selection strategy that handles the question
+    private async Task<IReadOnlyList<CardBase>> ChooseCards(Choosing<CardBase> question)
     {
-        if(cards.Count == 0) return [];
+        if(question.Offered.Count == 0) return [];
 
-        var circles = cards.Select(CircleOf).ToList();
+        var circles = question.Offered.Select(CircleOf).ToList();
         if(circles.All(circle => circle is not null))
         {
-            var chosen = await ChooseZones(circles.Cast<ICardSpace>().ToList(), minimum, maximum, prompt, canCancel);
+            var chosen = await ChooseZones(circles.Cast<ICardSpace>().ToList(), question.Minimum, question.Maximum, question.Prompt, question.CanCancel);
             return chosen.Select(zone => ((UnitCircle)zone).Card!).Cast<CardBase>().ToList();
         }
-
-        var hint = purpose is TriggerQuestion.Heal ? Text.Heal : prompt;
-        Func<CardBase, bool, FacingMark>? facing = null;
-        // Exactly N of the face-up damage is a counter blast (the picks turn face down), of the face-down damage a
-        // counter charge (the picks turn face up)
-        if(purpose is not TriggerQuestion.Heal && minimum == maximum && cards.All(card => Refs.Has(PlayArea.DamageZone.Cards, card)))
-        {
-            if(cards.All(card => card.IsFaceUp))
-            {
-                hint = Text.CounterBlast(maximum);
-                facing = (_, picked) => picked ? FacingMark.FaceDown : FacingMark.None;
-            }
-            else if(cards.All(card => !card.IsFaceUp))
-            {
-                hint = Text.CounterCharge(maximum);
-                facing = (_, picked) => picked ? FacingMark.FaceUp : FacingMark.FaceDown;
-            }
-        }
-        return await input.CardSelect.ChooseCards(new CardSelectRequest(cards, minimum, maximum, hint, canCancel, card => input.CardTags.For(ZoneOf(card)), facing));
+        return await cardSelections.First(selection => selection.Handles(question)).Choose(question);
     }
 
     private UnitCircle? CircleOf(CardBase card)
         => new[] { PlayArea, input.OpponentPlayArea }
             .SelectMany(area => area.Rearguards.Cast<UnitCircle>().Prepend(area.Vanguard))
             .FirstOrDefault(circle => ReferenceEquals(circle.Card, card));
-
-    // The zone holding a card offered to pick, either player's
-    private ICardSpace ZoneOf(CardBase card)
-        => new PlayAreaBase[] { PlayArea, input.OpponentPlayArea }
-            .SelectMany(area => area.Zones)
-            .FirstOrDefault(zone => zone is ICardSource source && source.Holds(card))
-            ?? throw new InvalidOperationException($"{card.Name} was offered to pick, but no zone of either play area holds it");
 
     // Several of the player's skills wait at once: swipe the one to resolve first up out of the row
     private async Task<ActivateSkillRequest> ChooseSkill(Choosing<ActivateSkillRequest> question)
