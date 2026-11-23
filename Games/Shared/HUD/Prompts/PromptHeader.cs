@@ -36,7 +36,7 @@ public partial class PromptHeader : Control
     }
 
     /// <summary>Counts <paramref name="selection"/>'s picks as they're made, until <see cref="HideCount"/> or another Follow.</summary>
-    public void Follow<T>(CardSelection<T> selection) where T : class
+    public void ListenToUpdates<T>(CardSelection<T> selection) where T : class
     {
         HideCount();
         void Update() => ShowCount(selection.Count, selection.Maximum);

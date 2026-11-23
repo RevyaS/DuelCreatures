@@ -41,7 +41,7 @@ public partial class VanguardGuardScreen : InputScreen
     public async Task<(List<VanguardCard> Guardians, List<RearGuard> Interceptors)> Stage(string hint, UnitCircle attacker, UnitCircle target,
         VanguardPlayArea defenderArea, IReadOnlyList<VanguardCard> guardians, IReadOnlyList<RearGuard> interceptors, VanguardCardTags tags)
     {
-        Open(hint);
+        UpdatePrompt(hint);
         var interceptingUnits = interceptors.Select(circle => (CardBase)(circle.Card ?? throw new InvalidOperationException($"An empty {circle} was offered to intercept"))).ToList();
         var offered = guardians.Cast<CardBase>().Concat(interceptingUnits).ToList();
         var selection = new CardSelection<CardBase>(offered, 0, offered.Count);
@@ -55,7 +55,7 @@ public partial class VanguardGuardScreen : InputScreen
             buttons.ShowsOk = true;
             buttons.CanCancel = true;
             buttons.CanConfirm = true;
-            var items = grid.Show(selection, card => card);
+            var items = grid.LoadCards(selection, card => card);
             foreach(var item in items)
             {
                 item.Tag = Refs.Has(interceptingUnits, item.Card) ? tags.Intercept : tags.Hand;

@@ -118,8 +118,8 @@ public partial class FieldSelectScreen : InputScreen
 
             var chosen = new CardSelection<ICardSpace>(candidates, minimum, maximum);
             buttons.ShowsOk = true;
-            buttons.Follow(chosen);
-            header.Follow(chosen);
+            buttons.ListenToUpdates(chosen);
+            header.ListenToUpdates(chosen);
             while(true)
             {
                 // Picked spaces can always be tapped again to drop them; the others while there's room
@@ -228,7 +228,7 @@ public partial class FieldSelectScreen : InputScreen
     // Opens the screen and enlarges the play areas holding spaces (the whole board for spaces outside them)
     private async Task Begin(string hint, IReadOnlyList<ICardSpace> spaces, bool withRow)
     {
-        Open(hint);
+        UpdatePrompt(hint);
         header.Hint = hint;
         header.HideCount();
         buttons.Unfollow();

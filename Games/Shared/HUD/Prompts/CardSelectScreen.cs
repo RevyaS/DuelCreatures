@@ -32,20 +32,16 @@ public partial class CardSelectScreen : InputScreen
     /// <summary>The picks answering <paramref name="request"/>, in picking order; none when cancelled.</summary>
     public async System.Threading.Tasks.Task<IReadOnlyList<CardBase>> ChooseCards(CardSelectRequest request)
     {
-        Open(request.Hint);
+        UpdatePrompt(request.Hint);
         var selection = new CardSelection<CardBase>(request.Cards, request.Minimum, request.Maximum);
-        var items = grid.Show(selection, card => card);
-        void ShowFacing()
-        {
-            foreach(var item in items) item.Facing = request.FacingOf?.Invoke(item.Card, selection.IsPicked(item.Card)) ?? FacingMark.None;
-        }
+        var items = grid.LoadCards(selection, card => card);
         try
         {
             header.Hint = request.Hint;
-            header.Follow(selection);
+            header.ListenToUpdates(selection);
             buttons.ShowsOk = true;
             buttons.CanCancel = request.CanCancel;
-            buttons.Follow(selection);
+            buttons.ListenToUpdates(selection);
             foreach(var item in items) item.Tag = request.TagOf(item.Card);
             selection.Changed += ShowFacing;
             ShowFacing();
@@ -68,6 +64,14 @@ public partial class CardSelectScreen : InputScreen
             buttons.Unfollow();
             grid.Clear();
             Close();
+        }
+
+        void ShowFacing()
+        {
+            foreach(var item in items) {
+                // item.Facing = item.Card.IsFaceUp ? FacingMark.FaceUp : FacingMark.FaceDown;
+                item.Facing = request.FacingOf?.Invoke(item.Card, selection.IsPicked(item.Card)) ?? FacingMark.None;
+            }
         }
     }
 }

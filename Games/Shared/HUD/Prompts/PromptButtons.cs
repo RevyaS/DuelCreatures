@@ -66,7 +66,7 @@ public partial class PromptButtons : Control
     }
 
     /// <summary>OK is enabled while <paramref name="selection"/> can be confirmed, until <see cref="Unfollow"/> or another Follow.</summary>
-    public void Follow<T>(CardSelection<T> selection) where T : class
+    public void ListenToUpdates<T>(CardSelection<T> selection) where T : class
     {
         Unfollow();
         void Update() => CanConfirm = selection.CanConfirm;

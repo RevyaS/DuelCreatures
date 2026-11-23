@@ -38,7 +38,7 @@ public partial class SwipeUpPicker : InputScreen
     public async Task<(bool Picked, T Item)> PickOne<T>(string hint, IReadOnlyList<SwipeUpOption<T>> options, bool canCancel, Action<T> showDetails)
     {
         if(options.Count == 0) throw new ArgumentException($"{GetPath()}: nothing to pick from for \"{hint}\"", nameof(options));
-        Open(hint);
+        UpdatePrompt(hint);
         var items = row.Show(options.Select(option => option.Card));
         var picked = new TaskCompletionSource<int>();
         int IndexOf(Func<SelectableCard, bool> match) => items.Select((item, index) => (item, index)).First(entry => match(entry.item)).index;

@@ -48,7 +48,7 @@ public partial class SelectionGrid : ScrollContainer
     /// e.g. a skill's card), in the offered order; a tap on one toggles it. Returns the cards in that order (e.g.
     /// to tag them).
     /// </summary>
-    public IReadOnlyList<SelectableCard> Show<T>(CardSelection<T> selection, Func<T, CardBase> cardOf) where T : class
+    public IReadOnlyList<SelectableCard> LoadCards<T>(CardSelection<T> selection, Func<T, CardBase> cardOf) where T : class
     {
         Clear();
         var byCard = new Dictionary<SelectableCard, T>();
