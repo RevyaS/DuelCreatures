@@ -10,6 +10,7 @@ using ArC.CardGames.Predefined.Common;
 using ArC.CardGames.Rules;
 using ArC.CardGames.Setup;
 using ArC.CardGames.Skills;
+using ArC.CardGames.Stats;
 using ArC.CardGames.Vanguard;
 using Godot;
 
@@ -160,9 +161,12 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
                     input?.Presentation.PlaySfx(VanguardSfx.Draw);
                 }
             }),
-            eventBus.Subscribe<CardsMoved>(cardsMoved => { 
-                if(cardsMoved.From is Deck && cardsMoved.To is Hand && cardsMoved.Reason is Drawn) {
-                    input?.Presentation.PlaySfx(VanguardSfx.Draw);
+            eventBus.Subscribe<StatChanged<int>>(statChanged => { 
+                if(ReferenceEquals(statChanged.Which, VanguardStats.Power) 
+                    && statChanged.New > statChanged.Old
+                    && statChanged.Cause is not GuardShieldRequest
+                    && statChanged.Cause is not AttackRequest { Boosted: true }) {
+                    input?.Presentation.PlaySfx(VanguardSfx.PowerUp);
                 }
             })
         ];

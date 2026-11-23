@@ -37,7 +37,7 @@ public static class VanguardPresentationConfig
         [VanguardSfx.Target] = SfxPath + "target.ogg",
         [VanguardSfx.PhaseChange] = SfxPath + "phase_change.ogg",
         [VanguardSfx.PhaseChangeButton] = SfxPath + "button_next_phase.ogg",
-        // [VanguardSfx.PowerUp] = SfxPath + "power_up.ogg", // Differentiate between cause of power up first
+        [VanguardSfx.PowerUp] = SfxPath + "power_up.ogg",
         [VanguardSfx.CriticalUp] = SfxPath + "trigger_critical.ogg",
         [VanguardSfx.Draw] = SfxPath + "card_draw.ogg",
         [VanguardSfx.Shuffle] = SfxPath + "deck_shuffle.ogg",

@@ -39,7 +39,6 @@ public partial class UnitStats : Node, IBindable<UnitCircle>
         var oldCritical = node.Critical;
         if(oldPower == power && oldCritical == critical) return;
 
-        if(power > oldPower) presentation.PlaySfx(VanguardSfx.PowerUp);
         if(critical > oldCritical) presentation.PlaySfx(VanguardSfx.CriticalUp);
 
         if(presentation?.Presenter.Flights is { } flights && Presenter.Animates(presentation.Side))

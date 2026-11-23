@@ -29,8 +29,6 @@ public partial class YuGiOhBoard : MarginContainer, IProvide<ArcDriver>
         driver = new ArcDriver(session.EventBus, presenter, Sfx);
         driver.Bind(PlayerHand, board.Player1Area.Hand, BoardSide.Player);
         driver.Bind(OppHand, board.Player2Area.Hand, BoardSide.Opponent);
-        // Cards waiting to become XYZ materials aren't shown anywhere
-        driver.BindBoard(this, board, area => [ area.PendingMaterials ]);
         driver.UseSleeves(sleeves);
         driver.Start();
 
