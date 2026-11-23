@@ -105,8 +105,8 @@ public partial class VanguardSession : Control
         // session.Game.Board.Player1Area.Vanguard.Assign(NovaGrappler.KingOfSword);
         // session.Game.Board.Player1Area.Hand.AddCard(NovaGrappler.MrInvincible);
         // session.Game.Board.Player1Area.Hand.AddCard(NovaGrappler.MrInvincible);
-        session.Game.Board.Player1Area.FrontLeft.Assign(NovaGrappler.NGMPrototype);
-        session.Game.Board.Player1Area.FrontRight.Assign(NovaGrappler.NGMPrototype);
+        // session.Game.Board.Player1Area.FrontLeft.Assign(NovaGrappler.NGMPrototype);
+        // session.Game.Board.Player1Area.FrontRight.Assign(NovaGrappler.NGMPrototype);
         // session.Game.Board.Player1Area.FrontRight.Assign(RoyalPaladin.KnightOfRoseMorgana);
         // session.Game.Board.Player2Area.Vanguard.Assign(RoyalPaladin.KnightOfTheHarpTristan);
         // session.Game.Board.Player2Area.BackLeft.Assign(RoyalPaladin.LittleSageMarron);
