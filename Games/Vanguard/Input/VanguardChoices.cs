@@ -61,9 +61,11 @@ public sealed class VanguardChoices(VanguardInput input)
         {
             return (await ChooseZones(question.Offered.Cast<ICardSpace>().ToList(), question.Minimum, question.Maximum, ZoneHint(question.Purpose, question.Prompt), question.CanCancel)).Cast<T>().ToList();
         }
-        if(question is Choosing<CardBase> cards)
+        // Any card type (the heal asks for VanguardCards): asked as CardBase, the purpose and quantity kept
+        if(typeof(CardBase).IsAssignableFrom(typeof(T)))
         {
-            return (IReadOnlyList<T>)await ChooseCards(cards);
+            var cards = new Choosing<CardBase>(question.Offered.Cast<CardBase>().ToList(), question.Quantity, question.Prompt, question.Purpose, question.CanCancel);
+            return (await ChooseCards(cards)).Cast<T>().ToList();
         }
         if(question is Choosing<SkillOption> options)
         {
