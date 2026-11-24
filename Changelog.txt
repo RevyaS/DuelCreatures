@@ -1,5 +1,9 @@
 v.0009 Another game?
+- Adopted updated ArC changes
 
+What to do:
+1. Hold on some Sfx cues
+2. Make is easier to set the CardTags (also divide card tags per rg)
 
 v.0004 GUI Improvements
 - Created Attack Indicator

@@ -6,14 +6,15 @@ using Godot;
 
 public partial class VanguardCardComponent : Card
 {
-    Label PowerLabel = null!, CriticalLabel = null!, GradeLabel = null!, GuardLabel = null!;
+    Label PowerLabel = null!, CriticalLabel = null!, GuardLabel = null!;
     PanelContainer PowerPanel = null!, GradePanel = null!, GuardPanel = null!, TriggerPanel = null!;
-    TextureRect TriggerRect = null!;
+    TextureRect TriggerRect = null!, GradeRect = null!;
     public override VanguardCard CurrentCard => (VanguardCard)base.CurrentCard;
 
     // The power/critical panel, e.g. to pulse it when they change
     public Control StatsPanel => PowerPanel;
 
+    private const string GradeTexturePath = "res://Assets/Vanguard/Grades/";
     private const string TriggerTexturePath = "res://Assets/Vanguard/Triggers/";
     const string DrawTriggerTexturePath = TriggerTexturePath + "Draw.png";
     const string CriticalTriggerTexturePath = TriggerTexturePath + "Critical.png";
@@ -83,7 +84,7 @@ public partial class VanguardCardComponent : Card
         TriggerRect = GetNode<TextureRect>($"%{nameof(TriggerRect)}");
         PowerLabel = GetNode<Label>($"%{nameof(PowerLabel)}");
         CriticalLabel = GetNode<Label>($"%{nameof(CriticalLabel)}");
-        GradeLabel = GetNode<Label>($"%{nameof(GradeLabel)}");
+        GradeRect = GetNode<TextureRect>($"%{nameof(GradeRect)}");
         GuardLabel = GetNode<Label>($"%{nameof(GuardLabel)}");
         PowerPanel = GetNode<PanelContainer>($"%{nameof(PowerPanel)}");
         GradePanel = GetNode<PanelContainer>($"%{nameof(GradePanel)}");
@@ -96,12 +97,13 @@ public partial class VanguardCardComponent : Card
         base.RenderCore();
         PowerLabel.Text = Power.ToString();
         CriticalLabel.Text = Critical.ToString();
-        GradeLabel.Text = Grade.ToString();
         GuardLabel.Text = Guard.ToString();
 
         PowerPanel.Visible = IsFront && !GuardMode;
         GradePanel.Visible = IsFront;
         GuardPanel.Visible = IsFront && GuardMode;
+
+        GradeRect.Texture = ResourceLoader.Load<Texture2D>(GradeTexturePath + $"fight@grade_icon_0{Grade}.png");
 
         TriggerPanel.Visible = IsFront && Trigger != VanguardTrigger.NONE;
         if(TriggerPanel.Visible)

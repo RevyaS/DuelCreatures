@@ -1,8 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://b4ogsmqyb7phr"]
+[gd_scene load_steps=7 format=3 uid="uid://b4ogsmqyb7phr"]
 
 [ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Games/Shared/Cards/Card.tscn" id="1_uvjtr"]
 [ext_resource type="Script" uid="uid://bo34fh6nunsrb" path="res://Games/Vanguard/Cards/VanguardCardComponent.cs" id="2_kdthh"]
 [ext_resource type="Texture2D" uid="uid://pa8cxhggayht" path="res://Assets/Vanguard/Triggers/Draw.png" id="3_kdthh"]
+[ext_resource type="Texture2D" uid="uid://gk22rlg4j1s0" path="res://Assets/Vanguard/Grades/fight@grade_icon_00.png" id="3_vq1fm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vq1fm"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kdthh"]
 
@@ -66,18 +69,21 @@ horizontal_alignment = 1
 [node name="GradePanel" type="PanelContainer" parent="Border" index="4"]
 unique_name_in_owner = true
 visible = false
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+offset_left = -39.0
+offset_top = -39.0
+offset_right = 39.0
+offset_bottom = 31.0
+pivot_offset = Vector2(39, 35)
+theme_override_styles/panel = SubResource("StyleBoxEmpty_vq1fm")
 
-[node name="GradeLabel" type="Label" parent="Border/GradePanel" index="0"]
+[node name="GradeRect" type="TextureRect" parent="Border/GradePanel" index="0"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(60, 60)
+custom_minimum_size = Vector2(117, 105)
 layout_mode = 2
-theme_override_font_sizes/font_size = 46
-text = "1"
-horizontal_alignment = 1
-vertical_alignment = 1
+texture = ExtResource("3_vq1fm")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="TriggerPanel" type="PanelContainer" parent="Border" index="5"]
 unique_name_in_owner = true
