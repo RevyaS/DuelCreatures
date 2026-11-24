@@ -137,7 +137,7 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
         [
             eventBus.Subscribe<SkillUseStartedEvent>(started =>
             {
-                input?.Presentation.PlaySfx(VanguardSfx.SkillActivated);
+                Cue(VanguardSfx.SkillActivated);
                 if(IsOwn(started.Run)) resolvingSkills.Started(started.Run.Self, started.Run.Skill);
             }),
             eventBus.Subscribe<SkillUseEndedEvent>(ended =>
@@ -150,15 +150,15 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
         sfxSubscriptions = [
             eventBus.Subscribe<PhaseStartedEvent>(phaseStarted => { 
                 if(phaseStarted.Phase is VanguardAttackPhase or EndPhase) {
-                    input?.Presentation.PlaySfx(VanguardSfx.PhaseChange);
+                    Cue(VanguardSfx.PhaseChange);
                 }
             }),
             eventBus.Subscribe<DeckShuffledEvent>(_ => { 
-                input?.Presentation.PlaySfx(VanguardSfx.Shuffle);
+                Cue(VanguardSfx.Shuffle);
             }),
             eventBus.Subscribe<CardsMoved>(cardsMoved => { 
                 if(cardsMoved.From is Deck && cardsMoved.To is Hand && cardsMoved.Reason is Drawn) {
-                    input?.Presentation.PlaySfx(VanguardSfx.Draw);
+                    Cue(VanguardSfx.Draw);
                 }
             }),
             eventBus.Subscribe<StatChanged<int>>(statChanged => { 
@@ -166,10 +166,18 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
                     && statChanged.New > statChanged.Old
                     && statChanged.Cause is not GuardShieldRequest
                     && statChanged.Cause is not AttackRequest { Boosted: true }) {
-                    input?.Presentation.PlaySfx(VanguardSfx.PowerUp);
+                    Cue(VanguardSfx.PowerUp);
                 }
             })
         ];
+    }
+
+    // A sound for something the game did: played in step with the board (ArC runs ahead of what is shown), so e.g. the
+    // second drive check's power up sounds when that check is shown, not together with the first
+    private void Cue(SfxCue cue)
+    {
+        if(input is not { } current) return;
+        current.Presentation.Present(() => current.Presentation.PlaySfx(cue));
     }
 
     private bool IsOwn(SkillRun run) => PlayArea is not null && ReferenceEquals(run.PlayArea, PlayArea);
