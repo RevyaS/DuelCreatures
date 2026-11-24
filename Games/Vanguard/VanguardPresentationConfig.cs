@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using ArC.CardGames.Components;
 using ArC.CardGames.Vanguard;
+using ArC.CardGames.Vanguard.Actions;
 using Godot;
 
 // Vanguard's presentation: its moves, sounds, holds and colors. The shared settings
@@ -46,20 +47,31 @@ public static class VanguardPresentationConfig
 
 
 
+    // Cues that come in bursts (the opening draws, several power ups at once): how close together each may play
+    public static readonly Dictionary<SfxCue, SfxSpacing> SfxSpacings = new()
+    {
+        [VanguardSfx.Draw] = new(Gap: 0.08f, MaxWaiting: 5),
+        [VanguardSfx.PowerUp] = new(Gap: 0.2f, MaxWaiting: 2),
+        [VanguardSfx.CriticalUp] = new(Gap: 0.2f, MaxWaiting: 2),
+    };
+
     /// <summary>How each kind of Vanguard move looks and sounds on a board shown by <paramref name="driver"/>.</summary>
     public static ArcDriver ShowVanguardMoves(this ArcDriver driver) => driver
-        // Onto the circles
-        .Animate<Rode>(VanguardMoves.ToUnitCircle).Sound<Rode>(VanguardSfx.Ride)
-        .Animate<SuperiorRide>(VanguardMoves.ToUnitCircle).Sound<SuperiorRide>(VanguardSfx.Ride)
-        .Animate<Called>(VanguardMoves.ToUnitCircle).Sound<Called>(VanguardSfx.Call)
-        .Animate<SuperiorCallRequest>(VanguardMoves.ToUnitCircle).Sound<SuperiorCallRequest>(VanguardSfx.Call)
-        .Animate<Swapped>(VanguardMoves.ToUnitCircle)
-        // Into the soul
-        .Animate<RodeUpon>(VanguardMoves.ToSoul)
-        // Battle
-        .Animate<Guarded>(VanguardMoves.ToGuardZone)
+        // A ride: the new vanguard onto its circle (sounded), the old one into the soul
+        .Animate<RideRequest, ICardSpace, Soul>(VanguardMoves.ToSoul)
+        .Animate<RideRequest>(VanguardMoves.ToUnitCircle).Sound<RideRequest, ICardSpace, Vanguard>(VanguardSfx.Ride)
+        .Animate<SuperiorRideFromHandRequest, ICardSpace, Soul>(VanguardMoves.ToSoul)
+        .Animate<SuperiorRideFromHandRequest>(VanguardMoves.ToUnitCircle).Sound<SuperiorRideFromHandRequest, ICardSpace, Vanguard>(VanguardSfx.Ride)
+        // A call: the called card onto its circle (sounded), an overcalled unit into the drop zone
+        .Animate<CallRequest, ICardSpace, DropZone>(VanguardMoves.ToDropZone)
+        .Animate<CallRequest>(VanguardMoves.ToUnitCircle).Sound<CallRequest, ICardSpace, RearGuard>(VanguardSfx.Call)
+        .Animate<SuperiorCallRequest, ICardSpace, DropZone>(VanguardMoves.ToDropZone)
+        .Animate<SuperiorCallRequest>(VanguardMoves.ToUnitCircle).Sound<SuperiorCallRequest, ICardSpace, RearGuard>(VanguardSfx.Call)
+        .Animate<ForerunnerRequest>(VanguardMoves.ToUnitCircle)
+        .Animate<SwapRequest>(VanguardMoves.ToUnitCircle)
+        .Animate<RetireRequest>(VanguardMoves.ToDropZone)
+        // Guarding
         .Animate<CallGuardianRequest>(VanguardMoves.ToGuardZone)
-        .Animate<Intercepted>(VanguardMoves.ToGuardZone)
         .Animate<InterceptRequest>(VanguardMoves.ToGuardZone)
         // The battle moves the guardians and a hit rear-guard; a check reveals a card, then its trigger check sends it on
         .Animate<VanguardBattle, GuardZone, DropZone>(VanguardMoves.GuardToDropZone)
@@ -67,12 +79,8 @@ public static class VanguardPresentationConfig
         .Animate<TriggerCheckRequest>(VanguardMoves.DeckToTriggerZone)
         .Animate<TriggerCheck, TriggerZone, DamageZone>(VanguardMoves.TriggerToDamage)
         .Animate<TriggerCheck, DamageZone, DropZone>(VanguardMoves.ToDropZone)
-        // Into the drop zone
-        .Animate<Overcalled>(VanguardMoves.ToDropZone)
         // Held to be read: drive and damage checks, and the opponent's guards
         .Hold<TriggerCheckRequest>(CheckRevealHold, CheckReveal)
-        .Hold<Guarded>(GuardRevealHold, GuardReveal)
-        .Hold<Intercepted>(GuardRevealHold, GuardReveal)
         .Hold<CallGuardianRequest>(GuardRevealHold, GuardReveal)
         .Hold<InterceptRequest>(GuardRevealHold, GuardReveal);
     // Drive checks into the hand, cards returned to the hand or deck: the shared hand and deck moves (ArcDriver's defaults)
@@ -80,7 +88,7 @@ public static class VanguardPresentationConfig
     // Once, when a Vanguard board starts: its moves and sounds (its card scene is in VanguardStyle.tres)
     public static void Register()
     {
-        PresentationConfig.Register(Moves, SfxStreams);
+        PresentationConfig.Register(Moves, SfxStreams, SfxSpacings);
     }
 }
 

@@ -28,10 +28,10 @@ public partial class VanguardTriggerSelectScreen : FieldSelectScreen
     /// <paramref name="battle"/> (whose target belongs to <paramref name="defenderArea"/>).
     /// </summary>
     public async Task<ICardSpace> ChooseTriggerTarget(TriggerQuestion purpose, IReadOnlyList<ICardSpace> candidates, string hint,
-        AttackState battle, VanguardCard trigger, VanguardPlayArea defenderArea)
+        VanguardBattle battle, VanguardCard trigger, VanguardPlayArea defenderArea)
     {
-        var attacker = battle.AttackingCircle!;
-        var target = battle.TargetCircle!;
+        var attacker = battle.Attacker!;
+        var target = battle.Target!;
         summary.Show(attacker, target, defenderArea);
         void Preview(IReadOnlyList<ICardSpace> picks)
         {

@@ -48,9 +48,17 @@ public static class PresentationConfig
     // Sfx cue -> stream; games add theirs (cues without a stream are silent)
     public static readonly Dictionary<SfxCue, string> SfxStreams = new();
 
-    // Adds (or replaces) a game's moves and sounds
-    public static void Register(IReadOnlyDictionary<CardMove, Transition> moves, IReadOnlyDictionary<SfxCue, string> sfxStreams)
+    // Sfx cue -> how close together it may play (cues without one play at once, every time)
+    public static readonly Dictionary<SfxCue, SfxSpacing> SfxSpacings = new();
+
+    // Adds (or replaces) a game's moves, sounds and sound spacings
+    public static void Register(IReadOnlyDictionary<CardMove, Transition> moves, IReadOnlyDictionary<SfxCue, string> sfxStreams,
+        IReadOnlyDictionary<SfxCue, SfxSpacing>? sfxSpacings = null)
     {
+        foreach(var (cue, spacing) in sfxSpacings ?? new Dictionary<SfxCue, SfxSpacing>())
+        {
+            SfxSpacings[cue] = spacing;
+        }
         foreach(var (move, timing) in moves)
         {
             Moves[move] = timing;

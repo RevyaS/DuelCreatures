@@ -96,9 +96,9 @@ public sealed class VanguardChoices(VanguardInput input)
             ?? throw new InvalidOperationException($"A {purpose} trigger question came outside a battle");
         var trigger = actions.Current<TriggerCheck>()?.Checked
             ?? throw new InvalidOperationException($"A {purpose} trigger question came with no trigger check revealing a card");
-        var target = battle.State.TargetCircle!;
+        var target = battle.Target!;
         var defenderArea = PlayArea.Owns(target) ? PlayArea : input.OpponentPlayArea;
-        return await input.TriggerSelect.ChooseTriggerTarget(purpose, candidates, ZoneHint(purpose, ""), battle.State, trigger, defenderArea);
+        return await input.TriggerSelect.ChooseTriggerTarget(purpose, candidates, ZoneHint(purpose, ""), battle, trigger, defenderArea);
     }
 
     // On the enlarged field (FieldSelectScreen): one, tap it; several, tap to number them, tap again to drop, then OK

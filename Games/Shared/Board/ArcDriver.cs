@@ -339,6 +339,33 @@ public sealed class ArcDriver : IDisposable
     }
 
     public static readonly CardMove DefaultMove = new(nameof(DefaultMove));
+
+    /// <summary>
+    /// Plays <paramref name="cue"/> when cards moved for <typeparamref name="TReason"/> from a <typeparamref name="TFrom"/>
+    /// zone into a <typeparamref name="TTo"/> zone have arrived: for a reason that moves several cards in several moves
+    /// (a ride: the new vanguard onto its circle, sounded; the old one into the soul, not). Checked before
+    /// <see cref="Sound{TReason}"/>, in the order registered.
+    /// </summary>
+    public ArcDriver Sound<TReason, TFrom, TTo>(SfxCue cue) where TReason : IMoveReason where TFrom : ICardSpace where TTo : ICardSpace
+    {
+        moveSoundsBetween.Add((typeof(TReason), typeof(TFrom), typeof(TTo), cue));
+        return this;
+    }
+
+    readonly List<(Type Reason, Type From, Type To, SfxCue Cue)> moveSoundsBetween = [];
+
+    private bool TrySoundFor(IMoveReason reason, ICardSpace from, ICardSpace to, out SfxCue cue)
+    {
+        foreach(var (reasonType, fromType, toType, between) in moveSoundsBetween)
+        {
+            if(reasonType.IsInstanceOfType(reason) && fromType.IsInstanceOfType(from) && toType.IsInstanceOfType(to))
+            {
+                cue = between;
+                return true;
+            }
+        }
+        return TryFind(moveSounds, reason, out cue);
+    }
     #endregion
 
     /// <summary>Face-down cards show <paramref name="sleeves"/>: each zone its side's (shared zones the player's).</summary>
@@ -373,7 +400,7 @@ public sealed class ArcDriver : IDisposable
         var to = shown.GetValueOrDefault(moved.To);
         if(from is not null) Apply(from, new ZoneCardsLeft(moved.Cards, to?.View, ZoneSnapshot.Of(moved.From)));
         if(to is not null) Apply(to, new ZoneCardsArrived(moved.Cards, from?.View, MoveFor(moved.Reason, moved.From, moved.To), ZoneSnapshot.Of(moved.To)));
-        if(TryFind(moveSounds, moved.Reason, out var cue))
+        if(TrySoundFor(moved.Reason, moved.From, moved.To, out var cue))
         {
             var context = ContextFor(to?.Side ?? from?.Side ?? BoardSide.Both);
             context.Present(() => context.PlaySfx(cue));
