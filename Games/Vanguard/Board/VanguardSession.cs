@@ -153,9 +153,9 @@ public partial class VanguardSession : Control
             GD.Print("You lose");
         }
 
-        GameOverDialog.Set(playerWins, dataQuery.GetPlayerDamage(session.Game.Player2), session.GameOverContext);
+        GameOverDialog.Set(playerWins, dataQuery.GetPlayerDamage(session.Game.Player2));
         HUD.Show();
 
-        GD.Print("Win Condition ", session.GameOverContext.ToString());
+        GD.Print("Result ", session.Actions.End.Result);
     }
 }

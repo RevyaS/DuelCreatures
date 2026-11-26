@@ -3,64 +3,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using ArC.CardGames.Components;
 using ArC.CardGames.Vanguard;
-using Godot;
 
 /// <summary>
-/// Picking the unit a trigger goes to (its power, its critical, the rear-guard it stands), on the enlarged field like
-/// any circle pick, with the battle on top: %BattleSummary (the attacker against the defender's overall power; the
-/// revealed trigger is on the board's trigger zone, a tap there shows it). A tap picks a unit and previews what the
-/// trigger would do to the battle (power or critical to the attacker, power to the defender); OK answers (set
-/// ConfirmSinglePick in the scene).
+/// Picking the unit a trigger goes to (its power, its critical, the rear-guard it stands): on the board as it is, not
+/// enlarged (EnlargesField off in the scene), the prompt between the opponent's board above and the player's below, so
+/// the attack stays drawn and both sides can be read. The revealed trigger is on the board's trigger zone (a tap shows
+/// it). A tap picks a unit (numbered), a tap on another moves the pick, OK answers (ConfirmSinglePick in the scene).
 /// </summary>
 public partial class VanguardTriggerSelectScreen : FieldSelectScreen
 {
-    VanguardBattleSummary summary = null!;
-
-    public override void _Ready()
-    {
-        base._Ready();
-        summary = GetNode<VanguardBattleSummary>("%BattleSummary");
-        summary.CardPressed += ShowDetailsOf;
-    }
-
-    /// <summary>
-    /// The unit <paramref name="trigger"/>'s <paramref name="purpose"/> goes to, of <paramref name="candidates"/>, during
-    /// <paramref name="battle"/> (whose target belongs to <paramref name="defenderArea"/>).
-    /// </summary>
-    public async Task<ICardSpace> ChooseTriggerTarget(TriggerQuestion purpose, IReadOnlyList<ICardSpace> candidates, string hint,
-        VanguardBattle battle, VanguardCard trigger, VanguardPlayArea defenderArea)
-    {
-        var attacker = battle.Attacker!;
-        var target = battle.Target!;
-        summary.Show(attacker, target, defenderArea);
-        void Preview(IReadOnlyList<ICardSpace> picks)
-        {
-            summary.ClearPreview();
-            if(picks.FirstOrDefault() is not { } pick) return;
-            bool toAttacker = ReferenceEquals(pick, attacker), toDefender = ReferenceEquals(pick, target);
-            switch(purpose)
-            {
-                case TriggerQuestion.Power when toAttacker:
-                    summary.Preview(attackerPower: summary.AttackerPower + trigger.TriggerPowerBonus);
-                    break;
-                case TriggerQuestion.Power when toDefender:
-                    summary.Preview(defensePower: summary.DefensePower + trigger.TriggerPowerBonus);
-                    break;
-                case TriggerQuestion.Critical when toAttacker:
-                    summary.Preview(attackerCritical: summary.AttackerCritical + trigger.TriggerCriticalBonus);
-                    break;
-            }
-        }
-
-        PicksChanged += Preview;
-        try
-        {
-            return (await ChooseZones(candidates, 1, 1, hint, canCancel: false)).Single();
-        }
-        finally
-        {
-            PicksChanged -= Preview;
-            summary.ClearPreview();
-        }
-    }
+    /// <summary>The unit <paramref name="purpose"/>'s trigger goes to, of <paramref name="candidates"/>.</summary>
+    public async Task<ICardSpace> ChooseTriggerTarget(TriggerQuestion purpose, IReadOnlyList<ICardSpace> candidates, string hint)
+        => (await ChooseZones(candidates, 1, 1, hint, canCancel: false)).Single();
 }

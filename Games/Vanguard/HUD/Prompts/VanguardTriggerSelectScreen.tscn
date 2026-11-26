@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://Games/Vanguard/HUD/Prompts/VanguardTriggerSelectScreen.cs" id="1_screen"]
 [ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/DetailsSpace.tscn" id="4_space"]
@@ -6,13 +6,9 @@
 [ext_resource type="Script" path="res://Games/Shared/HUD/Prompts/FieldFocus.cs" id="6_focus"]
 [ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/SelectionGrid.tscn" id="7_row"]
 [ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/PromptButtons.tscn" id="8_buttons"]
-[ext_resource type="PackedScene" path="res://Games/Vanguard/HUD/Prompts/VanguardBattleSummary.tscn" id="9_summary"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_top"]
-bg_color = Color(0.07, 0.08, 0.11, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bottom"]
-bg_color = Color(0.07, 0.08, 0.11, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_prompt"]
+bg_color = Color(0.07, 0.08, 0.11, 0.92)
 
 [node name="VanguardTriggerSelectScreen" type="Control"]
 layout_mode = 3
@@ -24,6 +20,7 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_screen")
 ConfirmSinglePick = true
+EnlargesField = false
 
 [node name="Layout" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -35,47 +32,12 @@ grow_vertical = 2
 mouse_filter = 2
 theme_override_constants/separation = 0
 
-[node name="SwipeArea" type="PanelContainer" parent="Layout"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 0.9
-theme_override_styles/panel = SubResource("StyleBoxFlat_top")
-
-[node name="Margin" type="MarginContainer" parent="Layout/SwipeArea"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 16
-
-[node name="Content" type="VBoxContainer" parent="Layout/SwipeArea/Margin"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 16
-
-[node name="SkillSpace" type="Control" parent="Layout/SwipeArea/Margin/Content"]
+[node name="OpponentBoard" type="Control" parent="Layout"]
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 
-[node name="Battle" type="VBoxContainer" parent="Layout/SwipeArea/Margin/Content/SkillSpace"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 16
-alignment = 1
-
-[node name="BattleSummary" parent="Layout/SwipeArea/Margin/Content/SkillSpace/Battle" instance=ExtResource("9_summary")]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="DetailsSpace" parent="Layout/SwipeArea/Margin/Content/SkillSpace" instance=ExtResource("4_space")]
+[node name="DetailsSpace" parent="Layout/OpponentBoard" instance=ExtResource("4_space")]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 1
@@ -87,7 +49,36 @@ offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="SwipeArea" type="PanelContainer" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_prompt")
+
+[node name="Margin" type="MarginContainer" parent="Layout/SwipeArea"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 12
+
+[node name="Content" type="VBoxContainer" parent="Layout/SwipeArea/Margin"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
+
 [node name="Header" parent="Layout/SwipeArea/Margin/Content" instance=ExtResource("5_header")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="CardRow" parent="Layout/SwipeArea/Margin/Content" instance=ExtResource("7_row")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+CardScale = 0.45
+VisibleRows = 1.0
+
+[node name="Buttons" parent="Layout/SwipeArea/Margin/Content" instance=ExtResource("8_buttons")]
 unique_name_in_owner = true
 layout_mode = 2
 
@@ -95,34 +86,5 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 1.25
 mouse_filter = 2
 script = ExtResource("6_focus")
-
-[node name="Bottom" type="PanelContainer" parent="Layout"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_bottom")
-
-[node name="Margin" type="MarginContainer" parent="Layout/Bottom"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 32
-
-[node name="Content" type="VBoxContainer" parent="Layout/Bottom/Margin"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 16
-
-[node name="CardRow" parent="Layout/Bottom/Margin/Content" instance=ExtResource("7_row")]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-CardScale = 0.45
-VisibleRows = 1.0
-
-[node name="Buttons" parent="Layout/Bottom/Margin/Content" instance=ExtResource("8_buttons")]
-unique_name_in_owner = true
-layout_mode = 2

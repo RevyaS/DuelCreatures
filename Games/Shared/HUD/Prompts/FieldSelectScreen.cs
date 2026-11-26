@@ -28,6 +28,12 @@ public partial class FieldSelectScreen : InputScreen
     /// unit, so its would-be numbers can be read first). Off: the tap answers.
     /// </summary>
     [Export] public bool ConfirmSinglePick { get; set; }
+    /// <summary>
+    /// The play areas holding the spaces are enlarged into %FieldFocus. Off: the board stays as it is and the spaces are
+    /// picked on it, the screen's layout leaving it visible around its prompt (e.g. the trigger screen: the opponent's
+    /// board above, the player's below, the attack still drawn).
+    /// </summary>
+    [Export] public bool EnlargesField { get; set; } = true;
 
     /// <summary>The spaces picked so far changed (in picking order), e.g. to preview what they'd do.</summary>
     public event Action<IReadOnlyList<ICardSpace>>? PicksChanged;
@@ -261,7 +267,7 @@ public partial class FieldSelectScreen : InputScreen
 
     private void ApplyFocus()
     {
-        if(IsCollapsed || focusAreas.Count == 0) return;
+        if(!EnlargesField || IsCollapsed || focusAreas.Count == 0) return;
         foreach(var area in facing) area.FaceViewer(true);
         fieldFocus.Focus(BoardRoot, focusAreas);
     }

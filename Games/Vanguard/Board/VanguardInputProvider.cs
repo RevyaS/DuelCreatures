@@ -195,21 +195,21 @@ public partial class VanguardInputProvider : Control, IPlayerInput, IProvide<IAc
             OpenWindow open when ReferenceEquals(open.Window, VanguardAttackPhase.GuardStep) => await guard!.Answer(offered, open),
             var where => throw new NotSupportedException($"{nameof(VanguardInputProvider)} has no gesture for a choice in {where}. Offered: {offered.Describe()}"),
         };
-        return choice.Expect(chosen);
+        return Answered(choice.Expect(chosen));
     }
 
     public async Task<IReadOnlyList<T>> Choose<T>(Choosing<T> question)
     {
         Asked();
         await Presenter.WhenIdle();
-        return question.Expect(await choices!.Choose(question));
+        return Answered(question.Expect(await choices!.Choose(question)));
     }
 
     public async Task<bool> Confirm(Confirmation question)
     {
         Asked();
         await Presenter.WhenIdle();
-        return await choices!.Confirm(question);
+        return Answered(await choices!.Confirm(question));
     }
 
     /// <summary>Cards onto circles in one answer (a superior call): placed on the enlarged field (FieldSelectScreen).</summary>
@@ -219,11 +219,19 @@ public partial class VanguardInputProvider : Control, IPlayerInput, IProvide<IAc
     {
         Asked();
         await Presenter.WhenIdle();
-        return question.Expect(await FieldSelect.Assign(question));
+        return Answered(question.Expect(await FieldSelect.Assign(question)));
     }
 
     // Vanguard asks for no order yet
     public Task<IReadOnlyList<T>> Order<T>(Ordering<T> question) => throw new UnansweredQuestion(question.Purpose, question.Prompt, typeof(T), "ordering has no gesture yet");
+
+    // Answered: the details shown while answering go, so they don't cover what the answer starts (a counter blast's
+    // flips, a call, a skill resolving)
+    private T Answered<T>(T answer)
+    {
+        CardDetails.Hide();
+        return answer;
+    }
 
     private VanguardInput Asked() => input ?? throw new InvalidOperationException($"{nameof(VanguardInputProvider)} was asked before it was activated");
     #endregion

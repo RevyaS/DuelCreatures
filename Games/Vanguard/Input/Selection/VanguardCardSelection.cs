@@ -22,16 +22,20 @@ public abstract class VanguardCardSelection(VanguardInput input) : ICardSelectio
 
     protected Task<IReadOnlyList<CardBase>> Ask(Choosing<CardBase> question, string hint)
         => input.CardSelect.ChooseCards(new CardSelectRequest(question.Offered, question.Minimum, question.Maximum, hint, question.CanCancel,
-            card => input.CardTags.For(ZoneOf(card)), FacingOf));
+            card => TagOf(card), FacingOf));
 
     /// <summary>Whether every offered card is in the player's own damage zone.</summary>
     protected bool AllInOwnDamage(Choosing<CardBase> question)
         => question.Offered.All(card => Refs.Has(input.PlayArea.DamageZone.Cards, card));
 
-    // The zone holding a card offered to pick, either player's
-    private ICardSpace ZoneOf(CardBase card)
-        => new PlayAreaBase[] { input.PlayArea, input.OpponentPlayArea }
-            .SelectMany(area => area.Zones)
-            .FirstOrDefault(zone => zone is ICardSource source && source.Holds(card))
-            ?? throw new InvalidOperationException($"{card.Name} was offered to pick, but no zone of either play area holds it");
+    // The tag of the zone holding a card offered to pick, either player's
+    private CardTag TagOf(CardBase card)
+    {
+        foreach(var area in new[] { input.PlayArea, input.OpponentPlayArea })
+        {
+            var zone = area.Zones.FirstOrDefault(zone => zone is ICardSource source && source.Holds(card));
+            if(zone is not null) return input.CardTags.For(zone, area);
+        }
+        throw new InvalidOperationException($"{card.Name} was offered to pick, but no zone of either play area holds it");
+    }
 }

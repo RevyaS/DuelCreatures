@@ -33,7 +33,7 @@ public partial class GameOverDialog : PanelContainer
         CurrentPlayerDeck = currentPlayerDeck;
     }
 
-    public void Set(bool playerWins, int damageDealt, GameOverContext gameOverContext)
+    public void Set(bool playerWins, int damageDealt)
     {
         Result.Text = playerWins ? "You Win!" : "You Lose :(";
 

@@ -87,19 +87,9 @@ public sealed class VanguardChoices(VanguardInput input)
         _ => prompt,
     };
 
-    // A trigger's unit: on the trigger screen, the battle and the revealed trigger on top (read from the battle and the
-    // check ArC is resolving now); a tap previews what it would do, OK answers
-    private async Task<ICardSpace> ChooseTriggerTarget(TriggerQuestion purpose, List<ICardSpace> candidates)
-    {
-        var actions = input.Session().Actions;
-        var battle = actions.Current<VanguardBattle>()
-            ?? throw new InvalidOperationException($"A {purpose} trigger question came outside a battle");
-        var trigger = actions.Current<TriggerCheck>()?.Checked
-            ?? throw new InvalidOperationException($"A {purpose} trigger question came with no trigger check revealing a card");
-        var target = battle.Target!;
-        var defenderArea = PlayArea.Owns(target) ? PlayArea : input.OpponentPlayArea;
-        return await input.TriggerSelect.ChooseTriggerTarget(purpose, candidates, ZoneHint(purpose, ""), battle, trigger, defenderArea);
-    }
+    // A trigger's unit: on the trigger screen, the board as it is with the attack drawn, the prompt between both sides
+    private Task<ICardSpace> ChooseTriggerTarget(TriggerQuestion purpose, List<ICardSpace> candidates)
+        => input.TriggerSelect.ChooseTriggerTarget(purpose, candidates, ZoneHint(purpose, ""));
 
     // On the enlarged field (FieldSelectScreen): one, tap it; several, tap to number them, tap again to drop, then OK
     private async Task<List<ICardSpace>> ChooseZones(List<ICardSpace> candidates, int minimum, int maximum, string hint, bool canCancel)
