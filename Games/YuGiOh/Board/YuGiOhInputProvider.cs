@@ -103,11 +103,14 @@ public partial class YuGiOhInputProvider : Control, IPlayerInput, IProvide<Prese
 
     List<IDisposable> subscriptions = [];
 
+    // The player's skills being used (pinned while they ask something)
+    ResolvingSkills resolving = new();
+
     /// <summary>Follows the game's skills and chain: the player's own skill is pinned while it's used; the chain so far is kept for the responses.</summary>
     public void SetEventBus(EventBus eventBus)
     {
         foreach(var subscription in subscriptions) subscription.Dispose();
-        var resolving = new ResolvingSkills();
+        resolving = new ResolvingSkills();
         GetNode<ResolvingSkillDetails>("%ResolvingSkill").Follow(resolving);
         subscriptions =
         [
@@ -149,13 +152,13 @@ public partial class YuGiOhInputProvider : Control, IPlayerInput, IProvide<Prese
         var current = Asked();
         await Presenter.WhenIdle();
         var offered = new Offered(choice);
-        var chosen = choice.Where switch
+        var chosen = await resolving.Asking(async () => choice.Where switch
         {
             YuGiOhMainPhase => await new YuGiOhMainPhaseStrategy(current, offered).Answer(),
             YuGiOhBattlePhase => await new YuGiOhBattlePhaseStrategy(current, offered).Answer(),
             OpenWindow open when IsResponseWindow(open) => await responses!.Answer(offered, open),
             var where => throw new NotSupportedException($"{nameof(YuGiOhInputProvider)} has no gesture for a choice in {where}. Offered: {offered.Describe()}"),
-        };
+        });
         return choice.Expect(chosen);
     }
 
@@ -166,14 +169,14 @@ public partial class YuGiOhInputProvider : Control, IPlayerInput, IProvide<Prese
     {
         Asked();
         await Presenter.WhenIdle();
-        return question.Expect(await choices!.Choose(question));
+        return question.Expect(await resolving.Asking(() => choices!.Choose(question)));
     }
 
     public async Task<bool> Confirm(Confirmation question)
     {
         Asked();
         await Presenter.WhenIdle();
-        return await choices!.Confirm(question);
+        return await resolving.Asking(() => choices!.Confirm(question));
     }
 
     // YuGiOh asks for no order yet

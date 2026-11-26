@@ -187,14 +187,14 @@ public partial class VanguardInputProvider : Control, IPlayerInput, IProvide<IAc
         var current = Asked();
         await Presenter.WhenIdle();
         var offered = new Offered(choice);
-        var chosen = choice.Where switch
+        var chosen = await resolvingSkills.Asking(async () => choice.Where switch
         {
             RidePhase => await new VanguardRidePhaseStrategy(current, offered).Answer(),
             VanguardMainPhase => await new VanguardMainPhaseStrategy(current, offered).Answer(),
             VanguardAttackPhase => await new VanguardAttackPhaseStrategy(current, offered).Answer(),
             OpenWindow open when ReferenceEquals(open.Window, VanguardAttackPhase.GuardStep) => await guard!.Answer(offered, open),
             var where => throw new NotSupportedException($"{nameof(VanguardInputProvider)} has no gesture for a choice in {where}. Offered: {offered.Describe()}"),
-        };
+        });
         return Answered(choice.Expect(chosen));
     }
 
@@ -202,14 +202,14 @@ public partial class VanguardInputProvider : Control, IPlayerInput, IProvide<IAc
     {
         Asked();
         await Presenter.WhenIdle();
-        return Answered(question.Expect(await choices!.Choose(question)));
+        return Answered(question.Expect(await resolvingSkills.Asking(() => choices!.Choose(question))));
     }
 
     public async Task<bool> Confirm(Confirmation question)
     {
         Asked();
         await Presenter.WhenIdle();
-        return Answered(await choices!.Confirm(question));
+        return Answered(await resolvingSkills.Asking(() => choices!.Confirm(question)));
     }
 
     /// <summary>Cards onto circles in one answer (a superior call): placed on the enlarged field (FieldSelectScreen).</summary>
@@ -219,7 +219,7 @@ public partial class VanguardInputProvider : Control, IPlayerInput, IProvide<IAc
     {
         Asked();
         await Presenter.WhenIdle();
-        return Answered(question.Expect(await FieldSelect.Assign(question)));
+        return Answered(question.Expect(await resolvingSkills.Asking(() => FieldSelect.Assign(question))));
     }
 
     // Vanguard asks for no order yet

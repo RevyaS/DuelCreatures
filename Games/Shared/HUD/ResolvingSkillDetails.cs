@@ -2,8 +2,8 @@ using System.Linq;
 using Godot;
 
 /// <summary>
-/// The skill of the player's that is being activated or resolved (<see cref="ResolvingSkills"/>), shown while it asks
-/// them things (its targets, its costs, its options): the game's card details scene under it, showing only that skill.
+/// The skill of the player's that is being activated or resolved (<see cref="ResolvingSkills"/>), shown only while it
+/// asks them things (hidden while the board plays what an answer started) (its targets, its costs, its options): the game's card details scene under it, showing only that skill.
 /// It can't be closed; it goes when the skill is done. A skill used while another one resolves is shown on top, then
 /// the outer one again. Pinned over the board in a PromptLayer (swiping down on it collapses the layer), it steps aside
 /// while an input screen is up; inside an input screen it is that screen's skill banner.
@@ -47,7 +47,7 @@ public partial class ResolvingSkillDetails : Control, ICollapsiblePrompt
     private void Refresh()
     {
         if(!IsNodeReady()) return;
-        if(source?.Current is not { } current || SteppedAside)
+        if(source?.Current is not { } current || !source.IsAsking || SteppedAside)
         {
             Hide();
             return;

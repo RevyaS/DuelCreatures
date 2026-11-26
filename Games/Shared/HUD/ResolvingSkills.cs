@@ -15,7 +15,29 @@ public sealed class ResolvingSkills
     /// <summary>The innermost skill being used, or null.</summary>
     public (CardBase Card, ISkill Skill)? Current => resolving.Count == 0 ? null : resolving[^1];
 
+    /// <summary>
+    /// Whether the player is being asked something now (the input provider sets it once the board is idle and clears it
+    /// on the answer). The skill is pinned only then: while the board plays what the answer started (a counter blast's
+    /// flips), the board is to be seen.
+    /// </summary>
+    public bool IsAsking { get; private set; }
+
     public event Action? Changed;
+
+    /// <summary>Runs <paramref name="answer"/> (a question being answered) with <see cref="IsAsking"/> set.</summary>
+    public async System.Threading.Tasks.Task<T> Asking<T>(Func<System.Threading.Tasks.Task<T>> answer)
+    {
+        SetAsking(true);
+        try { return await answer(); }
+        finally { SetAsking(false); }
+    }
+
+    private void SetAsking(bool asking)
+    {
+        if(IsAsking == asking) return;
+        IsAsking = asking;
+        Changed?.Invoke();
+    }
 
     /// <summary><paramref name="skill"/> of <paramref name="card"/> started asking the player things.</summary>
     public void Started(CardBase card, ISkill skill)
