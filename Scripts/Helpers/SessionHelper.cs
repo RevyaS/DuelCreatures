@@ -20,9 +20,9 @@ public static class SessionHelper
     public static VanguardDeckBuilder CopyDeck(VanguardDeckBuilder deck)
     {
         var copy = VanguardDeckBuilder.Create().SetStartingVanguard(deck.StartingVanguard with { });
-        foreach(var card in deck.GetCards())
+        foreach(var card in deck.MainDeck.GetCards())
         {
-            copy.AddCards(card);
+            copy.AddCards((VanguardCard)card);
         }
         return copy;
     }

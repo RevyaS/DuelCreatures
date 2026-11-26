@@ -53,7 +53,7 @@ public class DeckInfo
             Name = name,
             FirstVanguardId = firstVanguardId,
             ClanId = CardRegistry.GetClan(firstVanguardId).Id,
-            Cards = deck.GetCards()
+            Cards = deck.MainDeck.GetCards()
                 .GroupBy(CardRegistry.Game.GetId)
                 .ToDictionary(group => group.Key, group => group.Count())
         };

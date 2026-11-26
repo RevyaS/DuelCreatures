@@ -52,7 +52,7 @@ public partial class VanguardBotSession : Control
 
         if(await SessionLoop.Run(session, presenter))
         {
-            GD.Print($"Bot game over: {(session.Winner() == session.Game.Player1 ? "player 1" : session.Winner() is null ? "nobody" : "player 2")} won ({session.GameOverContext})");
+            GD.Print($"Bot game over: {(session.Winner() == session.Game.Player1 ? "player 1" : session.Winner() is null ? "nobody" : "player 2")} won ({session.Actions.End.Result})");
         }
     }
 }

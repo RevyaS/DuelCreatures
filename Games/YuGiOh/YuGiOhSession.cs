@@ -38,6 +38,6 @@ public partial class YuGiOhSession : Control
 
         var playerWins = session.Winner() == session.Game.Player1;
         GD.Print(playerWins ? "You won" : "You lose");
-        GD.Print("Win Condition ", session.GameOverContext.ToString());
+        GD.Print("Result ", session.Actions.End.Result);
     }
 }

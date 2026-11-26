@@ -58,7 +58,7 @@ public sealed class YuGiOhMainPhaseStrategy(YuGiOhInput input, Offered offered)
         {
             if(offered.Any<SkipToEndPhaseRequest>(_ => true)) scope.Button(BoardButton.EndPhase);
             foreach(var zone in PlayArea.MonsterZones) scope.Drop(zone, card => MonsterChoices(card, zone));
-            foreach(var zone in PlayArea.SpellAndTrapZones.Append(PlayArea.FieldZone)) scope.Drop(zone, card => SpellTrapChoices(card, zone));
+            foreach(var zone in PlayArea.SpellAndTrapZones.Append<SpellAndTrapSpace>(PlayArea.FieldZone)) scope.Drop(zone, card => SpellTrapChoices(card, zone));
             foreach(var zone in PlayArea.ControlledMonsterZones) scope.Swipe(zone, direction => SwipeAction(zone, direction) is not null);
             gesture = await scope.Next();
         }
@@ -72,9 +72,9 @@ public sealed class YuGiOhMainPhaseStrategy(YuGiOhInput input, Offered offered)
 
             case CardDropped { Card: var monster, To: MonsterZone zone } drop:
                 return await Summon(monster, zone, setting: ReferenceEquals(drop.Choice, Choices.Set));
-            case CardDropped { Card: var card, To: SpellAndTrapZone zone } drop when ReferenceEquals(drop.Choice, Choices.Activate):
+            case CardDropped { Card: var card, To: SpellAndTrapSpace zone } drop when ReferenceEquals(drop.Choice, Choices.Activate):
                 return offered.One<PlayAbilityRequest>(play => ReferenceEquals(play.Card, card) && ReferenceEquals(play.To, zone), $"Activating {card.Name}");
-            case CardDropped { Card: var card, To: SpellAndTrapZone zone }:
+            case CardDropped { Card: var card, To: SpellAndTrapSpace zone }:
                 return offered.One<SetCardRequest>(set => ReferenceEquals(set.Card, card) && ReferenceEquals(set.To, zone), $"Setting {card.Name}");
 
             case ZoneSwiped { Zone: MonsterZone zone } swipe:
@@ -171,7 +171,7 @@ public sealed class YuGiOhMainPhaseStrategy(YuGiOhInput input, Offered offered)
     #endregion
 
     // A spell can be activated or Set, a trap only Set: as the offered requests say for this card and zone
-    private IReadOnlyList<DropChoice> SpellTrapChoices(CardBase card, SpellAndTrapZone zone)
+    private IReadOnlyList<DropChoice> SpellTrapChoices(CardBase card, SpellAndTrapSpace zone)
     {
         List<DropChoice> choices = [];
         if(offered.Any<PlayAbilityRequest>(play => ReferenceEquals(play.Card, card) && ReferenceEquals(play.To, zone))) choices.Add(Choices.Activate);

@@ -64,15 +64,15 @@ public partial class ZoneCheck : Control
     private async Task Run()
     {
         // Cards without skills, so nothing triggers and asks for input
-        var monsters = Enumerable.Range(1, 6).Select(i => (CardBase)new YuGiOhNormalMonsterCard(4, $"Zone Check Monster {i}", YuGiOhAttribute.DARK, [], 1000, 1000, [ MonsterType.EFFECT ])).ToList();
-        var spells = Enumerable.Range(1, 4).Select(i => (CardBase)new YuGiOhSpellCard($"Zone Check Spell {i}", SpellProperty.CONTINUOUS, [])).ToList();
-        var deck = DeckBuilder.Create();
+        var monsters = Enumerable.Range(1, 6).Select(i => (YuGiOhCard)new YuGiOhNormalMonsterCard(4, $"Zone Check Monster {i}", YuGiOhAttribute.DARK, [], 1000, 1000, [ MonsterType.EFFECT ])).ToList();
+        var spells = Enumerable.Range(1, 4).Select(i => (YuGiOhCard)new YuGiOhSpellCard($"Zone Check Spell {i}", SpellProperty.CONTINUOUS, [])).ToList();
+        var deck = YuGiOhDeckBuilder.Create();
         foreach(var card in monsters.Concat(spells)) deck.AddCards(card);
 
         // Bots: the skill service looks up the players on every event, but with skill-less cards it never asks them anything
         var (session, services) = YuGiOhSessionBuilder.Create()
-            .Player1(new(deck, DeckBuilder.Create()), s => new ExosisterTacticalTryDeckBot(s.Game.Player1, s.DataQuery, BotDifficulty.MASTER))
-            .Player2(new(DeckBuilder.Create().AddCards(monsters[0]), DeckBuilder.Create()), s => new ExosisterTacticalTryDeckBot(s.Game.Player2, s.DataQuery, BotDifficulty.MASTER))
+            .Player1(new(deck), s => new ExosisterTacticalTryDeckBot(s.Game.Player1, s.DataQuery, BotDifficulty.MASTER))
+            .Player2(new(YuGiOhDeckBuilder.Create().AddCards(monsters[0])), s => new ExosisterTacticalTryDeckBot(s.Game.Player2, s.DataQuery, BotDifficulty.MASTER))
             .Build();
         session.StartGame();
         var area = services.Game.Board.Player1Area;
@@ -110,7 +110,7 @@ public partial class ZoneCheck : Control
             () => Expect(MonsterZone1.Displayed.Count == 0 && Graveyard.Displayed.Top?.Card == monster, "the box is empty, the graveyard shows it on top"));
 
         var spell = area.Hand.Cards.OfType<YuGiOhSpellCard>().First();
-        await Step("Activate a spell into the CardSlot", () => area.ActivateCard(spell, area.Hand, area.SpellAndTrapZone1),
+        await Step("Activate a spell into the CardSlot", () => area.Move<YuGiOhSpellOrTrapCard>(spell, area.Hand, area.SpellAndTrapZone1, new ZoneCheckMove()),
             () => Expect(Shows(SpellAndTrapZone1, spell), "the spell is in the slot"));
 
         var banished = area.Hand.Cards.OfType<YuGiOhNormalMonsterCard>().Take(2).Cast<CardBase>().ToList();

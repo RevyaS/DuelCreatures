@@ -32,7 +32,7 @@ public partial class YuGiOhBotSession : Control
 
         if(await SessionLoop.Run(session, InputProviderComponent.Presenter))
         {
-            GD.Print($"Bot game over: {(session.Winner() == session.Game.Player1 ? "player 1" : session.Winner() is null ? "nobody" : "player 2")} won ({session.GameOverContext}), turn {session.TurnCount}");
+            GD.Print($"Bot game over: {(session.Winner() == session.Game.Player1 ? "player 1" : session.Winner() is null ? "nobody" : "player 2")} won ({session.Actions.End.Result}), turn {session.TurnCount}");
         }
     }
 }
