@@ -24,7 +24,7 @@ using Godot;
 /// Every answer is checked against what was offered (Expect) before it goes back. Tapping a card shows its details (unless
 /// the tap answers what is being asked), tapping a listing zone lists it.
 /// </summary>
-public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, IProvide<PresentationContext>, IProvide<IActivationGate>
+public partial class YuGiOhInputProvider : Control, IPlayerInput, IProvide<PresentationContext>, IProvide<IActivationGate>
 {
     YuGiOhBoard board = null!;
     public YuGiOhBoard Board => board;
@@ -48,7 +48,6 @@ public partial class YuGiOhInputProvider : Control, IYuGiOhPlayerInputProvider, 
 
     public YuGiOhPlayArea PlayArea { get; private set; } = null!;
     public YuGiOhPlayArea OpponentPlayArea { get; private set; } = null!;
-    PlayAreaBase IPlayerInputProvider.PlayArea => PlayArea;
 
     // Board animations play from this queue; prompts wait until it's done
     public Presenter Presenter { get; } = new();

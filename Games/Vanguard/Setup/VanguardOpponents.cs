@@ -1,5 +1,6 @@
 using System;
 using ArC.CardGames.Bots;
+using ArC.CardGames.Setup;
 using ArC.CardGames.Vanguard;
 using ArC.CardGames.Vanguard.Bots;
 
@@ -9,7 +10,7 @@ public static class VanguardOpponents
 {
     const string AIModelPath = "res://Scripts/VanguardAI/CurrentAI.onnx";
 
-    public static IVanguardPlayerInputProvider Create(OpponentType opponent, BotDifficulty difficulty, VanguardServices services) => opponent switch
+    public static IPlayerInput Create(OpponentType opponent, BotDifficulty difficulty, VanguardServices services) => opponent switch
     {
         OpponentType.RULE_BOT_ROYAL_PALADIN_TRIAL_DECK => new RoyalPaladinTrialDeckBot(services.Game.Player2, services.DataQuery, difficulty),
         OpponentType.RULE_BOT_KAGERO_TRIAL_DECK => new KageroTrialDeckBot(services.Game.Player2, services.DataQuery, difficulty),
@@ -20,6 +21,6 @@ public static class VanguardOpponents
     };
 
     // ArC.VanguardAI isn't on the rewritten ArC yet (it still plans with the old skill services): the AI opponent is off until it is
-    static IVanguardPlayerInputProvider CreateAI(VanguardServices services)
+    static IPlayerInput CreateAI(VanguardServices services)
         => throw new NotSupportedException($"The AI opponent ({AIModelPath}) waits for ArC.VanguardAI to move to the rewritten ArC");
 }

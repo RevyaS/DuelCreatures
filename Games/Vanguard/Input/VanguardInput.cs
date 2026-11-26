@@ -3,7 +3,7 @@ using Godot;
 
 /// <summary>Everything Vanguard's strategies and prompts work with: the player, the board's input, and the HUD's prompts.</summary>
 public sealed class VanguardInput(
-    IVanguardPlayerInputProvider player,
+    VanguardInputProvider player,
     InputBoard board,
     PresentationContext presentation,
     Node dialogParent,
@@ -21,7 +21,7 @@ public sealed class VanguardInput(
     System.Action<CardDetail> showDetails)
 {
     /// <summary>The player being asked.</summary>
-    public IVanguardPlayerInputProvider Player { get; } = player;
+    public VanguardInputProvider Player { get; } = player;
     public VanguardPlayArea PlayArea => Player.PlayArea;
     public VanguardPlayArea OpponentPlayArea => Player.OpponentPlayArea;
 

@@ -25,7 +25,7 @@ using Godot;
 /// Every answer is checked against what was offered (Expect) before it goes back. Tapping a card shows its details (unless the tap
 /// answers what is being asked), long pressing a vanguard lists its soul, pressing the drop zone lists it.
 /// </summary>
-public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvider, IProvide<IActivationGate>
+public partial class VanguardInputProvider : Control, IPlayerInput, IProvide<IActivationGate>
 {
     VanguardBoardView board = null!;
     public VanguardBoardView Board => board;
@@ -59,7 +59,6 @@ public partial class VanguardInputProvider : Control, IVanguardPlayerInputProvid
 
     public VanguardPlayArea PlayArea { get; private set; } = null!;
     public VanguardPlayArea OpponentPlayArea { get; private set; } = null!;
-    PlayAreaBase IPlayerInputProvider.PlayArea => PlayArea;
 
     // Board animations play from this queue; prompts wait until it's done
     public Presenter Presenter { get; } = new();

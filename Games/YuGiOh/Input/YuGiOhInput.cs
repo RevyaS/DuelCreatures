@@ -7,7 +7,7 @@ using Godot;
 
 /// <summary>Everything YuGiOh's strategies and prompts work with: the player, the board's input, the HUD's prompts, and the game going on.</summary>
 public sealed class YuGiOhInput(
-    IYuGiOhPlayerInputProvider player,
+    YuGiOhInputProvider player,
     InputBoard board,
     Node dialogParent,
     SelectFromCardList cardPicker,
@@ -16,7 +16,7 @@ public sealed class YuGiOhInput(
     System.Action<CardDetail> showDetails)
 {
     /// <summary>The player being asked.</summary>
-    public IYuGiOhPlayerInputProvider Player { get; } = player;
+    public YuGiOhInputProvider Player { get; } = player;
     public YuGiOhPlayArea PlayArea => Player.PlayArea;
     public YuGiOhPlayArea OpponentPlayArea => Player.OpponentPlayArea;
 

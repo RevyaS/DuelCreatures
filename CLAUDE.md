@@ -47,7 +47,7 @@ dotnet test ../ArC/ArC.CardGames.Tests -nologo
 ```
 ArC session ── CardsMoved / CardTurned / DeckShuffled ──▶ ArcDriver ──▶ zone views (IZoneView) ──▶ Presenter (animations, in order)
             ── typed game events (PhaseStarted, AttackDeclared, ...) ──▶ session components (labels, battle lines, pinned skill)
-            ◀── answers ── I…PlayerInputProvider ◀── strategies (InputScope + gestures) ◀── InputBoard ◀── gestures on views
+            ◀── answers ── <Game>InputProvider (IPlayerInput) ◀── strategies (InputScope + gestures) ◀── InputBoard ◀── gestures on views
 ```
 
 - **Board** (`Games/Shared/Board/`): `ArcDriver` binds zone views to ArC zones **by node name** (unique node `%Name`
@@ -97,9 +97,9 @@ The rewrite may rename or reshape these; whatever replaces them must still give 
   `SkillStarting`/`SkillFinished`.
 - **Move reasons** mapped to animations, sounds and pauses in `VanguardPresentationConfig.ShowVanguardMoves`. A new or
   renamed reason must be mapped again. YuGiOh maps none yet (its moves use `ArcDriver`'s defaults).
-- **Session builders** (`YuGiOhSessionBuilder`, `VanguardSessionBuilder`) with lazy input providers, and the input
-  provider interfaces (`IYuGiOhPlayerInputProvider`, `IVanguardPlayerInputProvider`): each method has a `Question`, an
-  answers method and an `Ask` line; a new method fails the build until all four exist.
+- **Session builders** (`YuGiOhSessionBuilder`, `VanguardSessionBuilder`) taking each player's `IPlayerInput` lazily
+  (ArC's `PlayerInputs`). The input providers implement `IPlayerInput` (the four questions) and keep their own
+  `PlayArea`/`OpponentPlayArea`, set by `Activate`.
 - **Rule queries** the strategies filter with, never deciding legality themselves: YuGiOh `YuGiOhGameRules`
   (`CanNormalSummonNow`, `CanSetFromHand`, `CanActivateSpellFromHand`, `Usable…Skills`, `UsableSetCardActivations`,
   `XYZMaterialOptions`, `CanAttack`, `ValidateTarget`, `CanChangeBattlePosition`, `CanFlipSummon`, …); Vanguard
