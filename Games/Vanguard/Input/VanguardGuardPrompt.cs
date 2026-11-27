@@ -36,8 +36,8 @@ public sealed class VanguardGuardPrompt(VanguardInput input)
         {
             window = open;
             staged.Clear();
-            var attack = open.About as AttackRequest ?? throw new InvalidOperationException($"The guard step is about {open.About?.ToString() ?? "nothing"}, not an attack");
-            var (guards, intercepts) = await Stage(offered, attack);
+            var battle = open.About as VanguardBattle ?? throw new InvalidOperationException($"The guard step is about {open.About?.ToString() ?? "nothing"}, not a battle");
+            var (guards, intercepts) = await Stage(offered, battle);
             foreach(var circle in intercepts) staged.Enqueue(circle);
             foreach(var card in guards) staged.Enqueue(card);
         }
@@ -51,11 +51,12 @@ public sealed class VanguardGuardPrompt(VanguardInput input)
         };
     }
 
-    private async Task<(List<CardBase> Guards, List<RearGuard> Intercepts)> Stage(Offered offered, AttackRequest attack)
+    private async Task<(List<CardBase> Guards, List<RearGuard> Intercepts)> Stage(Offered offered, VanguardBattle battle)
     {
         var guardians = offered.Of<CallGuardianRequest>().Select(call => call.Guardian).Cast<VanguardCard>().ToList();
         var interceptors = offered.Of<InterceptRequest>().Select(intercept => intercept.RearGuard).ToList();
-        var (picked, intercepts) = await input.GuardScreen.Stage(Text.Guard, attack.Attacker, attack.Target, PlayArea,
+        var (picked, intercepts) = await input.GuardScreen.Stage(Text.Guard, battle.AttackerSpace,
+            battle.TargetSpace ?? throw new InvalidOperationException($"The battle {battle} has no target circle"), PlayArea,
             guardians, interceptors, input.CardTags);
         return (picked.Cast<CardBase>().ToList(), intercepts);
     }

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using ArC.CardGames.Actions;
 using ArC.CardGames.Vanguard;
@@ -56,7 +57,8 @@ public sealed class VanguardAttackPhaseStrategy(VanguardInput input, Offered off
         }
     }
 
-    private static bool Is(AttackRequest attack, UnitCircle attacker, bool boosted) => ReferenceEquals(attack.Attacker, attacker) && attack.Boosted == boosted;
+    private static bool Is(AttackRequest attack, UnitCircle attacker, bool boosted)
+        => attacker.InPlay is { } unit && ReferenceEquals(attack.Attacker, unit) && attack is BoostRequest == boosted;
 
     // The offered attack by this attacker on the circle aimed at, boosted or not
     private AttackRequest? Find(UnitCircle attacker, AimTarget target, bool boosted)
@@ -64,7 +66,7 @@ public sealed class VanguardAttackPhaseStrategy(VanguardInput input, Offered off
         if(target is not ZoneTarget { Zone: UnitCircle circle }) return null;
         foreach(var attack in offered.Of<AttackRequest>())
         {
-            if(Is(attack, attacker, boosted) && ReferenceEquals(attack.Target, circle)) return attack;
+            if(Is(attack, attacker, boosted) && attack.UnitTargets.Any(unit => ReferenceEquals(unit, circle.InPlay))) return attack;
         }
         return null;
     }

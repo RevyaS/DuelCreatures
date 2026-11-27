@@ -164,7 +164,7 @@ public partial class VanguardInputProvider : Control, IPlayerInput, IProvide<IAc
                 if(ReferenceEquals(statChanged.Which, VanguardStats.Power) 
                     && statChanged.New > statChanged.Old
                     && statChanged.Cause is not GuardShieldRequest
-                    && statChanged.Cause is not AttackRequest { Boosted: true }) {
+                    && statChanged.Cause is not BoostRequest) {
                     Cue(VanguardSfx.PowerUp);
                 }
             })

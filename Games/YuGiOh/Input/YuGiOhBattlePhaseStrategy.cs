@@ -19,7 +19,11 @@ public sealed class YuGiOhBattlePhaseStrategy(YuGiOhInput input, Offered offered
     public async Task<Request> Answer()
     {
         using var scope = input.Board.Scope().Button(BoardButton.NextPhase).Hint(Text.Attack);
-        foreach(var attacker in offered.Of<DeclareAttackRequest>().Select(attack => attack.Attacker).Distinct(ReferenceEqualityComparer.Instance).Cast<MonsterZone>())
+        var attackers = offered.Of<AttackRequest>()
+            .Select(attack => input.PlayArea.FieldSpaceOf<MonsterZone>(attack.Attacker))
+            .OfType<MonsterZone>()
+            .Distinct(ReferenceEqualityComparer.Instance).Cast<MonsterZone>();
+        foreach(var attacker in attackers)
         {
             scope.Aim(attacker, target => AttackOn(attacker, target) is not null);
         }
@@ -31,13 +35,15 @@ public sealed class YuGiOhBattlePhaseStrategy(YuGiOhInput input, Offered offered
         };
     }
 
-    // The offered attack of the attacker on the target: a monster, or the opponent's hand for a direct attack (no target)
-    private DeclareAttackRequest? AttackOn(MonsterZone attacker, AimTarget target) => target switch
+    // The offered attack of the attacker on the target: the monster in a zone, or the opponent's hand for a direct attack
+    private AttackRequest? AttackOn(MonsterZone attacker, AimTarget target) => target switch
     {
-        ZoneTarget { Zone: MonsterZone monster } => offered.Of<DeclareAttackRequest>()
-            .FirstOrDefault(attack => ReferenceEquals(attack.Attacker, attacker) && ReferenceEquals(attack.Target, monster)),
-        ZoneTarget { Zone: var zone } when ReferenceEquals(zone, input.OpponentPlayArea.Hand) => offered.Of<DeclareAttackRequest>()
-            .FirstOrDefault(attack => ReferenceEquals(attack.Attacker, attacker) && attack.Target is null),
+        ZoneTarget { Zone: MonsterZone monster } => offered.Of<AttackRequest>()
+            .FirstOrDefault(attack => Holds(attacker, attack.Attacker) && attack.UnitTargets.Any(unit => Holds(monster, unit))),
+        ZoneTarget { Zone: var zone } when ReferenceEquals(zone, input.OpponentPlayArea.Hand) => offered.Of<AttackRequest>()
+            .FirstOrDefault(attack => Holds(attacker, attack.Attacker) && attack.IsDirect),
         _ => null,
     };
+
+    private static bool Holds(MonsterZone zone, ArC.CardGames.Components.CardInPlay inPlay) => ReferenceEquals(zone.InPlay, inPlay);
 }
