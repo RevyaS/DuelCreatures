@@ -45,7 +45,11 @@ public static class VanguardPresentationConfig
         [VanguardSfx.SkillActivated] = SfxPath + "skill.ogg",
     };
 
-
+    // Sfx cue -> how loud it plays, as a ratio of its file's volume (0 silent, 1 as recorded, 2 twice as loud);
+    // cues left out play at 1
+    public static readonly Dictionary<SfxCue, float> SfxBalance = new()
+    {
+    };
 
     // Cues that come in bursts (the opening draws, several power ups at once): how close together each may play
     public static readonly Dictionary<SfxCue, SfxSpacing> SfxSpacings = new()
@@ -89,6 +93,7 @@ public static class VanguardPresentationConfig
     public static void Register()
     {
         PresentationConfig.Register(Moves, SfxStreams, SfxSpacings);
+        AudioBalancer.Register(SfxBalance);
     }
 }
 
