@@ -1,17 +1,26 @@
-Editor errors when opening Sessions:
-
-E 0:00:11:757   ArC.CardGames.Setup.PlayerProfile PhaseLabel.OwnerOfItsArea(ArC.CardGames.Rules.GameSession): System.InvalidOperationException: /root/YuGiOhSession/InputProviderComponent/VBoxContainer/YuGiOhBoard/Board/VBoxContainer2/Control/Player2Area/VBoxNodeContainer/VBoxContainer/FacingOwner/MarginContainer/PlayerPhaseLabel: OnlyOnItsAreasTurn needs the label inside a play area scene
-  <C# Error>    System.InvalidOperationException
-  <C# Source>   PhaseLabel.cs:47 @ ArC.CardGames.Setup.PlayerProfile PhaseLabel.OwnerOfItsArea(ArC.CardGames.Rules.GameSession)
-  <Stack Trace> PhaseLabel.cs:47 @ ArC.CardGames.Setup.PlayerProfile PhaseLabel.OwnerOfItsArea(ArC.CardGames.Rules.GameSession)
-                PhaseLabel.cs:27 @ void PhaseLabel.Bind(ArC.CardGames.Rules.GameSession)
-                :0 @ object System.RuntimeMethodHandle.InvokeMethod(object, System.Void**, System.Signature, bool)
-                :0 @ object System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(object, System.Span`1[System.Object], System.Reflection.BindingFlags)
+E 0:00:08:067   void YuGiOhCardComponent.ShowFace(ArC.CardGames.Components.CardBase): System.NullReferenceException: Object reference not set to an instance of an object.
+  <C# Error>    System.NullReferenceException
+  <C# Source>   YuGiOhCardComponent.cs:45 @ void YuGiOhCardComponent.ShowFace(ArC.CardGames.Components.CardBase)
+  <Stack Trace> YuGiOhCardComponent.cs:45 @ void YuGiOhCardComponent.ShowFace(ArC.CardGames.Components.CardBase)
+                Card.cs:38 @ void Card.LoadCard(ArC.CardGames.Components.CardBase)
+                YuGiOhCardComponent.cs:37 @ void YuGiOhCardComponent.LoadCard(ArC.CardGames.Components.CardBase)
+                CardScenes.cs:19 @ Card CardScenes.Create(ArC.CardGames.Components.CardBase)
+                CardVerticalStack.cs:103 @ void CardVerticalStack.SetCard(ArC.CardGames.Components.CardBase)
+                StackZone.cs:199 @ void StackZone.Render(ZoneSnapshot)
+                StackZone.cs:91 @ void StackZone.Bind(ArC.CardGames.Components.GroupSpace)
+                :0 @ object <unknown>.InvokeStub_IBindable`1.Bind(object, System.Span`1[System.Object])
+                :0 @ object System.Reflection.MethodBaseInvoker.InvokeWithOneArg(object, System.Reflection.BindingFlags, System.Reflection.Binder, System.Object[], System.Globalization.CultureInfo)
                 :0 @ void System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
                 Bindings.cs:106 @ void Bindings.Invoke(object, System.Type, object)
                 Bindings.cs:79 @ bool Bindings.TryBind(object, object, string, string, BindingReport)
-                ArcDriver.cs:184 @ void ArcDriver.BindAll<TModel>(Godot.Node, TModel)
-                YuGiOhInputProvider.cs:90 @ void YuGiOhInputProvider.Show(ArC.CardGames.YuGiOh.YuGiOhGameSession, BoardSleeves)
+                Bindings.cs:92 @ bool Bindings+<>c__DisplayClass5_0`2.<BindByName>b__0(System.ValueTuple`3[System.String,TModel,TView])
+                :0 @ System.Collections.Generic.List`1[TSource] System.Linq.Enumerable+ArrayWhereIterator`1.ToList(System.ReadOnlySpan`1[TSource], System.Func`2[TSource,System.Boolean])
+                :0 @ System.Collections.Generic.List`1[TSource] System.Linq.Enumerable+ListWhereIterator`1.ToList()
+                :0 @ System.Collections.Generic.List`1[TSource] System.Linq.Enumerable.ToList<TSource>(System.Collections.Generic.IEnumerable`1[TSource])
+                Bindings.cs:91 @ System.Collections.Generic.IReadOnlyList`1[System.ValueTuple`3[System.String,TModel,TView]] Bindings.BindByName<TModel, TView>(System.Collections.Generic.IReadOnlyDictionary`2[System.String,TModel], System.Collections.Generic.IReadOnlyDictionary`2[System.String,TView], string, BindingReport, System.Collections.Generic.IReadOnlySet`1[System.String])
+                ArcDriver.cs:169 @ void ArcDriver.BindBoard<TPlayArea>(Godot.Node, ArC.CardGames.Components.TwoPlayerBoard`1[TPlayArea], System.Func`2[TPlayArea,System.Collections.Generic.IEnumerable`1[ArC.CardGames.Components.ICardSpace]])
+                YuGiOhBoard.cs:33 @ ArcDriver YuGiOhBoard.Show(ArC.CardGames.YuGiOh.YuGiOhGameSession, Presenter, BoardSleeves)
+                YuGiOhInputProvider.cs:87 @ void YuGiOhInputProvider.Show(ArC.CardGames.YuGiOh.YuGiOhGameSession, BoardSleeves)
                 YuGiOhSession.cs:45 @ void YuGiOhSession+<StartGame>d__9.MoveNext()
                 :0 @ void System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
                 :0 @ void System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(System.Threading.Tasks.Task)
@@ -22,3 +31,4 @@ E 0:00:11:757   ArC.CardGames.Setup.PlayerProfile PhaseLabel.OwnerOfItsArea(ArC.
                 GodotSynchronizationContext.cs:51 @ void Godot.GodotSynchronizationContext.ExecutePendingContinuations()
                 GodotTaskScheduler.cs:76 @ void Godot.GodotTaskScheduler.Activate()
                 ScriptManagerBridge.cs:84 @ void Godot.Bridge.ScriptManagerBridge.FrameCallback()
+
