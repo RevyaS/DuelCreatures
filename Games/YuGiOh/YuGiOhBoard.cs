@@ -29,6 +29,8 @@ public partial class YuGiOhBoard : MarginContainer, IProvide<ArcDriver>
         driver = new ArcDriver(session.EventBus, presenter, Sfx);
         driver.Bind(PlayerHand, board.Player1Area.Hand, BoardSide.Player);
         driver.Bind(OppHand, board.Player2Area.Hand, BoardSide.Opponent);
+        // Every other zone, the life points and anything else in the play area scenes, by name
+        driver.BindBoard(this, board);
         driver.UseSleeves(sleeves);
         driver.Start();
 
