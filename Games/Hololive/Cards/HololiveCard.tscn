@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://b1one43wkf42s"]
+
+[ext_resource type="PackedScene" uid="uid://b3rw6rjka7eon" path="res://Games/Shared/Cards/Card.tscn" id="1_2ky5x"]
+
+[node name="HololiveCard" instance=ExtResource("1_2ky5x")]
+
+[node name="FaceColor" parent="Border/Face" index="0"]
+color = Color(0.07450981, 0.3137255, 0.57254905, 1)
