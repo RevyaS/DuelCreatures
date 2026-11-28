@@ -12,7 +12,7 @@ using ArC.CardGames.Skills;
 public sealed class CounterChargeSelection(VanguardInput input) : VanguardCardSelection(input)
 {
     public override bool Handles(Choosing<CardBase> question)
-        => question.Purpose is Pick<CardBase> { For: null }
+        => question.Purpose is Pick<CardBase>
            && question.Quantity.FewerWillDo
            && question.Offered.Count > 0
            && AllInOwnDamage(question)
