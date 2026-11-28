@@ -7,8 +7,11 @@ using Godot;
 
 public partial class MainScreen : Control
 {
+    TabContainer TabContainer = null!;
+    Control Vanguard = null!, YuGiOh = null!;
     VBoxNodeContainer? Deck, Opponent;
     ButtonGroup? DeckChoiceGroup, OpponentChoiceGroup;
+    VBoxNodeContainer YuGiOhDeck = null!, YuGiOhOpponent = null!;
     Button? PlayButton;
     Button? NewProfile, LoadProfile, EditDecks, Gacha;
     Label? ProfileLabel, Tickets;
@@ -19,6 +22,9 @@ public partial class MainScreen : Control
     OpponentType? OpponentSelected = null;
     DeckChoice? DeckSelected = null;
 
+    YuGiOhOpponentType YuGiOhOpponentSelected = YuGiOhOpponents.Random();
+    YuGiOhDeckChoice? YuGiOhDeckSelected = null;
+
     public override void _Ready()
     {
         Tickets = GetNode<Label>($"%{nameof(Tickets)}");
@@ -26,6 +32,12 @@ public partial class MainScreen : Control
         MessageDialog = GetNode<AcceptDialog>($"%{nameof(MessageDialog)}");
         Deck = GetNode<VBoxNodeContainer>($"%{nameof(Deck)}");
         Opponent = GetNode<VBoxNodeContainer>($"%{nameof(Opponent)}");
+        TabContainer = GetNode<TabContainer>($"%{nameof(TabContainer)}");
+        Vanguard = GetNode<Control>($"%{nameof(Vanguard)}");
+        YuGiOh = GetNode<Control>($"%{nameof(YuGiOh)}");
+        YuGiOhDeck = GetNode<VBoxNodeContainer>($"%{nameof(YuGiOhDeck)}");
+        YuGiOhOpponent = GetNode<VBoxNodeContainer>($"%{nameof(YuGiOhOpponent)}");
+        TabContainer.TabChanged += _ => Render();
 
         PlayButton = GetNode<Button>($"%{nameof(PlayButton)}");
         PlayButton.Pressed += PlayPressed;
@@ -33,6 +45,11 @@ public partial class MainScreen : Control
         OpponentChoiceGroup = new();
         SetButtonGroup(OpponentChoiceGroup, Opponent.GetChildren<Button>());
         OpponentChoiceGroup.Pressed += OpponentChoicePressed;
+
+        var yuGiOhOpponentGroup = new ButtonGroup();
+        SetButtonGroup(yuGiOhOpponentGroup, YuGiOhOpponent.GetChildren<Button>());
+        yuGiOhOpponentGroup.Pressed += YuGiOhOpponentChoicePressed;
+        RenderYuGiOhDecks();
 
         DataManager = DataManager.Get(this);
         DataManager.ProfileChanged += OnProfileChanged;
@@ -173,9 +190,57 @@ public partial class MainScreen : Control
         }
     }
 
+    // The game of the open tab
+    private bool VanguardTabOpen => ReferenceEquals(TabContainer.GetCurrentTabControl(), Vanguard);
+    private bool YuGiOhTabOpen => ReferenceEquals(TabContainer.GetCurrentTabControl(), YuGiOh);
+
     private void PlayPressed()
     {
-        GUIManager.Get(this).PlayVanguardGame(DeckSelected!.Build(), OpponentSelected!.Value);
+        if(VanguardTabOpen)
+        {
+            GUIManager.Get(this).PlayVanguardGame(DeckSelected!.Build(), OpponentSelected!.Value);
+        }
+        else if(YuGiOhTabOpen)
+        {
+            GUIManager.Get(this).PlayYuGiOhGame(YuGiOhDeckSelected!.Build(), YuGiOhOpponentSelected);
+        }
+        else
+        {
+            throw new NotSupportedException($"The {TabContainer.GetCurrentTabControl()?.Name} tab has no game to play");
+        }
+    }
+
+    // The YuGiOh decks are the fixed ones in YuGiOhDeckChoice.All (no YuGiOh decks in the profile yet)
+    private void RenderYuGiOhDecks()
+    {
+        var group = new ButtonGroup();
+        foreach(var choice in YuGiOhDeckChoice.All)
+        {
+            var button = new Button
+            {
+                Text = choice.Label,
+                Theme = GUITheme,
+                ToggleMode = true,
+                ButtonGroup = group,
+                AutowrapMode = TextServer.AutowrapMode.WordSmart
+            };
+            button.Pressed += () =>
+            {
+                YuGiOhDeckSelected = choice;
+                Render();
+            };
+            YuGiOhDeck.AddChild(button);
+        }
+    }
+
+    // A YuGiOh opponent button is named like its YuGiOhOpponentType, or Random
+    private void YuGiOhOpponentChoicePressed(BaseButton button)
+    {
+        string name = button.Name;
+        YuGiOhOpponentSelected = name == "Random" ? YuGiOhOpponents.Random()
+            : Enum.TryParse<YuGiOhOpponentType>(name, out var opponent) ? opponent
+            : throw new NotSupportedException($"Opponent Not Supported {name}: name the button like a YuGiOhOpponentType");
+        Render();
     }
 
     private void OpponentChoicePressed(BaseButton button)
@@ -208,7 +273,7 @@ public partial class MainScreen : Control
 
     private void Render()
     {
-        PlayButton!.Disabled = DeckSelected is null;
+        PlayButton!.Disabled = VanguardTabOpen ? DeckSelected is null : YuGiOhTabOpen ? YuGiOhDeckSelected is null : true;
 
         var profile = DataManager!.CurrentProfile;
         ProfileLabel!.Text = profile is null

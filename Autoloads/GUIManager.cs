@@ -1,5 +1,6 @@
 using System;
 using ArC.CardGames.Vanguard;
+using ArC.CardGames.YuGiOh;
 using Godot;
 
 public partial class GUIManager : Node
@@ -9,6 +10,11 @@ public partial class GUIManager : Node
     public void PlayVanguardGame(VanguardDeckBuilder playerDeck, OpponentType opponentType)
     {
         ChangeScene<VanguardSession>("res://Games/Vanguard/Board/VanguardSession.tscn", session => session.Initialize(playerDeck, opponentType));
+    }
+
+    public void PlayYuGiOhGame(YuGiOhDeckBuilder playerDeck, YuGiOhOpponentType opponent)
+    {
+        ChangeScene<YuGiOhSession>("res://Games/YuGiOh/YuGiOhSession.tscn", session => session.Initialize(playerDeck, opponent));
     }
 
     public void OpenMainScreen()
