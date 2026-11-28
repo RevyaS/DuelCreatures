@@ -10,9 +10,10 @@ public sealed class YuGiOhInput(
     YuGiOhInputProvider player,
     InputBoard board,
     Node dialogParent,
-    SelectFromCardList cardPicker,
-    CardList effectPicker,
-    CardListPanel chainView,
+    CardList cardList,
+    InputScreens screens,
+    YuGiOhSwipeUpPicker swipeUp,
+    YuGiOhCardTags cardTags,
     System.Action<CardDetail> showDetails)
 {
     /// <summary>The player being asked.</summary>
@@ -22,13 +23,15 @@ public sealed class YuGiOhInput(
 
     public InputBoard Board { get; } = board;
     public Node DialogParent { get; } = dialogParent;
-    /// <summary>Picking cards from a list, then Confirm.</summary>
-    public SelectFromCardList CardPicker { get; } = cardPicker;
-    /// <summary>Where effects and cards are picked: one card per choice, pressed to read it, dragged out to pick it (Prompts.DragOutOfCardList).</summary>
-    public CardList EffectPicker { get; } = effectPicker;
-    /// <summary>Where the chain being responded to is shown, card by card, to read beside the responses.</summary>
-    public CardListPanel ChainView { get; } = chainView;
-    /// <summary>Shows a card's details (e.g. the effect a card stands for in the effect picker).</summary>
+    /// <summary>The list of a listing zone's cards (e.g. the Extra Deck, where an Xyz Summon starts).</summary>
+    public CardList CardList { get; } = cardList;
+    /// <summary>The input screens: zones and field cards on the enlarged field, other cards on the card selection screen.</summary>
+    public InputScreens Screens { get; } = screens;
+    /// <summary>Where one effect or option is picked by swiping its card up, the chain shown above while responding.</summary>
+    public YuGiOhSwipeUpPicker SwipeUp { get; } = swipeUp;
+    /// <summary>The location tags on cards offered to pick.</summary>
+    public YuGiOhCardTags CardTags { get; } = cardTags;
+    /// <summary>Shows a card's details (e.g. the effect a card stands for on the swipe-up picker).</summary>
     public System.Action<CardDetail> ShowDetails { get; } = showDetails;
 
     /// <summary>The links of the chain building now, first to last (kept by the input provider from the chain events).</summary>

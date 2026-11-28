@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="YuGiOhCardTags" format=3]
+
+[ext_resource type="Script" path="res://Games/YuGiOh/HUD/Prompts/YuGiOhCardTags.cs" id="1_tags"]
+[ext_resource type="Script" path="res://Games/Shared/HUD/Prompts/CardTag.cs" id="2_tag"]
+
+[sub_resource type="Resource" id="Resource_Hand"]
+script = ExtResource("2_tag")
+Text = "Hand"
+
+[sub_resource type="Resource" id="Resource_Deck"]
+script = ExtResource("2_tag")
+Text = "Deck"
+
+[sub_resource type="Resource" id="Resource_ExtraDeck"]
+script = ExtResource("2_tag")
+Text = "Extra Deck"
+
+[sub_resource type="Resource" id="Resource_Graveyard"]
+script = ExtResource("2_tag")
+Text = "GY"
+
+[sub_resource type="Resource" id="Resource_Banished"]
+script = ExtResource("2_tag")
+Text = "Banished"
+
+[sub_resource type="Resource" id="Resource_MonsterZone"]
+script = ExtResource("2_tag")
+Text = "Monster"
+
+[sub_resource type="Resource" id="Resource_SpellTrapZone"]
+script = ExtResource("2_tag")
+Text = "Spell/Trap"
+
+[sub_resource type="Resource" id="Resource_FieldZone"]
+script = ExtResource("2_tag")
+Text = "Field"
+
+[sub_resource type="Resource" id="Resource_Material"]
+script = ExtResource("2_tag")
+Text = "Material"
+
+[resource]
+script = ExtResource("1_tags")
+Hand = SubResource("Resource_Hand")
+Deck = SubResource("Resource_Deck")
+ExtraDeck = SubResource("Resource_ExtraDeck")
+Graveyard = SubResource("Resource_Graveyard")
+Banished = SubResource("Resource_Banished")
+MonsterZone = SubResource("Resource_MonsterZone")
+SpellTrapZone = SubResource("Resource_SpellTrapZone")
+FieldZone = SubResource("Resource_FieldZone")
+Material = SubResource("Resource_Material")

@@ -452,6 +452,15 @@ public partial class SelectableCard : Control
 6. **B** `MulliganScreen` (after asking ArC about turn order at mulligan time).
 7. YuGiOh: route its `Choose`/`Confirm` to A, C, D (`YuGiOhChoices`), with a `YuGiOhSkillBanner.tscn` and
    `YuGiOhCardTags`.
+   **Built**, differently in places: the three screens' layouts moved to shared scenes (`Games/Shared/HUD/Prompts/
+   SwipeUpPicker.tscn`, `CardSelectScreen.tscn`, `FieldSelectScreen.tscn`) whose skill banner is empty; each game's
+   screen is an inherited scene adding its card details scene there (no separate skill banner scene). What both games
+   ask the same way is shared code: `InputScreens` (finding and wiring the screens), `SkillPicks` (skill order,
+   options, "activate?", yes/no), `ScreenCardSelection` (card picks with tags and facing). YuGiOh's chain responses are
+   A too: `YuGiOhSwipeUpPicker` adds the chain above the prompt (`%ChainSection`, `%Chain`). Its details moved into a
+   `CardDetailsOverlay` (`YuGiOhCardDetailsOverlay.tscn`, `ClosesOnPressOutside` off: the board leaves them a space of
+   their own), and the field selection screen enlarges `%BoardLayout`, the board's container, which no container holds.
+   Tributes and Xyz materials picked during a summon the player started stay on the board.
 8. Update the input scenarios in `CLAUDE.md`, `docs/ArC-Rewrite-Adoption-Guide.md` 4.3 / 4.4 / 4.5 / 12.4–12.5:
    picking several cards becomes "select button, numbered, OK"; swiping up out of the row stays for one-of picks,
    with Cancel; guarding and counter blast / charge become D.

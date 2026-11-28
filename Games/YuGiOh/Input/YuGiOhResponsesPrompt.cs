@@ -9,10 +9,10 @@ using ArC.CardGames.Skills;
 using ArC.CardGames.YuGiOh;
 
 /// <summary>
-/// YuGiOh's windows (chain responses, priority, a summon): drag the effect to activate out of the list, one card per
-/// offered activation (pressed, it shows that effect); close the list to pass. While a chain is building, its links are
-/// shown above, each card showing the effect it activated, to read without closing the responses. A spell played from
-/// the hand that could go to several zones then asks for the zone (tap it).
+/// YuGiOh's windows (chain responses, priority, a summon), on the swipe-up picker: one card per offered activation
+/// (tapped, it shows that effect); swipe the one to activate up out of the row, Cancel to pass. While a chain is
+/// building, its links are shown above, each card showing the effect it activated, to read without answering. A spell
+/// played from the hand that could go to several zones then asks for the zone (tap it on the board).
 /// </summary>
 public sealed class YuGiOhResponsesPrompt(YuGiOhInput input)
 {
@@ -21,7 +21,6 @@ public sealed class YuGiOhResponsesPrompt(YuGiOhInput input)
         public static string Respond = "Respond to the chain";
         public static string Priority = "Activate an effect?";
         public static string Summon = "Respond to the summon";
-        public static string Chain = "Chain";
         public static string Zone = "Tap the zone to activate it in";
     }
 
@@ -41,14 +40,10 @@ public sealed class YuGiOhResponsesPrompt(YuGiOhInput input)
         }
         if(options.Count == 0) return offered.Pass;
 
-        using var shownChain = input.Chain.Count == 0
-            ? null
-            : Prompts.ShowToInspect(input.ChainView, Text.Chain, input.Chain.Select(link => (link.Activation.Card, link)).ToList(),
-                (card, link) => input.ShowDetails(new CardDetail(card) { Focus = link.Skill }));
-
-        var (picked, chosen) = await Prompts.DragOutOfCardList(input.EffectPicker, title,
-            options.Select(option => (option.Card, option)).ToList(), canDecline: true,
-            (card, option) => input.ShowDetails(new CardDetail(card) { Focus = option.Skill }));
+        using var shownChain = input.SwipeUp.ShowChain(input.Chain, link => input.ShowDetails(new CardDetail(link.Activation.Card) { Focus = link.Skill }));
+        var (picked, chosen) = await input.SwipeUp.PickOne(title,
+            options.Select(option => new SwipeUpOption<(CardBase Card, Request Request, ISkill? Skill)>(option.Card, option)).ToList(), canCancel: true,
+            option => input.ShowDetails(new CardDetail(option.Card) { Focus = option.Skill }));
         if(!picked) return offered.Pass;
         if(chosen.Request is not PlayAbilityRequest play) return chosen.Request;
 

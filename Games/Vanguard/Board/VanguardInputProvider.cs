@@ -71,18 +71,15 @@ public partial class VanguardInputProvider : Control, IPlayerInput, IProvide<IAc
         SelectFromCardListComponent = GetNode<SelectFromCardList>($"%{nameof(SelectFromCardListComponent)}");
         SelectCardsComponent = GetNode<SelectCardsComponent>($"%{nameof(SelectCardsComponent)}");
         CardDetails = GetNode<CardDetailsOverlay>($"%{nameof(CardDetails)}");
-        FieldSelect = GetNode<FieldSelectScreen>($"%{nameof(FieldSelect)}");
-        FieldSelect.CardPressed += card => CardDetails.Show(new CardDetail(card));
-        CardSelect = GetNode<CardSelectScreen>($"%{nameof(CardSelect)}");
-        CardSelect.CardPressed += card => CardDetails.Show(new CardDetail(card));
-        SwipeUp = GetNode<SwipeUpPicker>($"%{nameof(SwipeUp)}");
+        var screens = InputScreens.Find(this, CardDetails.Show);
+        (FieldSelect, CardSelect, SwipeUp) = (screens.FieldSelect, screens.CardSelect, screens.SwipeUp);
         TriggerSelect = GetNode<VanguardTriggerSelectScreen>($"%{nameof(TriggerSelect)}");
         TriggerSelect.CardPressed += card => CardDetails.Show(new CardDetail(card));
         GuardScreen = GetNode<VanguardGuardScreen>($"%{nameof(GuardScreen)}");
         GuardScreen.CardPressed += card => CardDetails.Show(new CardDetail(card));
         if(CardTags is null) throw new InvalidOperationException($"{GetPath()}: set {nameof(CardTags)} (VanguardCardTags.tres)");
         CardTags.EnsureComplete();
-        foreach(var resolving in this.Descendants<ResolvingSkillDetails>()) resolving.Follow(resolvingSkills);
+        InputScreens.FollowSkills(this, resolvingSkills);
         // A card offered to pick (a heal, a soul blast, the mulligan): its details, to read before picking
         SelectFromCardListComponent.CardPressed += node => ShowDetails(node);
         SelectCardsComponent.CardPressed += node => ShowDetails(node);

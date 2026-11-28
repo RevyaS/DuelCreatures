@@ -25,8 +25,21 @@ public sealed record CardDetail(CardBase Card, ICardSpace? From, IReadOnlyList<I
     /// <summary>Whether one skill, or one part of one, is shown alone (<see cref="Focus"/> or <see cref="FocusText"/>).</summary>
     public bool IsFocused => Focus is not null || FocusText is not null;
 
-    /// <summary>The card's own skills, then the granted ones.</summary>
-    public IEnumerable<ISkill> AllSkills => (Card is ArC.CardGames.Skills.IHasSkills skilled ? skilled.Skills.Cast<ISkill>() : []).Concat(GrantedSkills);
+    /// <summary>
+    /// The card's own skills, then the granted ones. An ability card's effects (a spell's, a trap's, any game's
+    /// <see cref="IPlayableAbility"/>) are its own skills too: the card is its effect, so it isn't a card without skills.
+    /// </summary>
+    public IEnumerable<ISkill> AllSkills => OwnSkills.Concat(GrantedSkills);
+
+    private IEnumerable<ISkill> OwnSkills
+    {
+        get
+        {
+            var effects = Card is IPlayableAbility ability ? ability.Effects.Cast<ISkill>() : [];
+            var skills = Card is ArC.CardGames.Skills.IHasSkills skilled ? skilled.Skills.Cast<ISkill>() : [];
+            return effects.Concat(skills).Distinct(ReferenceEqualityComparer.Instance).Cast<ISkill>();
+        }
+    }
 }
 
 /// <summary>

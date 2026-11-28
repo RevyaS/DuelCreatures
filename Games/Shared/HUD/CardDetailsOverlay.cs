@@ -7,10 +7,15 @@ using Godot;
 /// holding the details scene, shown with a card's details and hidden by a press anywhere outside them. Put the game's
 /// details scene (a CardDetailsView) under it, where details go over the board. While an input screen is up, the
 /// details are fitted into its DetailsSpace instead, and presses go through to the screen (a tap on another card shows
-/// that one's details instead); they close with the screen.
+/// that one's details instead); they close with the screen. With <see cref="ClosesOnPressOutside"/> off (a board that
+/// leaves the details a space of their own, e.g. YuGiOh's), the details stay over the board until hidden or replaced,
+/// and presses elsewhere reach the board.
 /// </summary>
 public partial class CardDetailsOverlay : Control
 {
+    /// <summary>Over the board, a press outside the details closes them (and is taken). Off: presses reach the board.</summary>
+    [Export] public bool ClosesOnPressOutside { get; set; } = true;
+
     CardDetailsView details = null!;
     // Where the scene puts the details (anchors, then offsets: left, top, right, bottom)
     float[] homeAnchors = null!;
@@ -60,7 +65,7 @@ public partial class CardDetailsOverlay : Control
     {
         onScreen = space is not null;
         // Over the board, a press anywhere else closes them; on a screen, presses reach the screen
-        MouseFilter = onScreen ? MouseFilterEnum.Ignore : MouseFilterEnum.Stop;
+        MouseFilter = onScreen || !ClosesOnPressOutside ? MouseFilterEnum.Ignore : MouseFilterEnum.Stop;
         if(space is null)
         {
             SetEdges(details, homeAnchors, homeOffsets);

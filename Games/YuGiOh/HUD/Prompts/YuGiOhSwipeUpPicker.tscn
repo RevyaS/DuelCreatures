@@ -1,0 +1,35 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/SwipeUpPicker.tscn" id="1_base"]
+[ext_resource type="PackedScene" path="res://Games/YuGiOh/HUD/CardDetails/YuGiOhCardDetails.tscn" id="2_details"]
+[ext_resource type="Script" path="res://Games/YuGiOh/HUD/Prompts/YuGiOhSwipeUpPicker.cs" id="3_script"]
+[ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/SelectionGrid.tscn" id="4_grid"]
+
+[node name="YuGiOhSwipeUpPicker" instance=ExtResource("1_base")]
+script = ExtResource("3_script")
+
+[node name="Details" parent="Layout/SwipeArea/Margin/Content/PickArea/SkillBanner" instance=ExtResource("2_details")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ChainSection" type="VBoxContainer" parent="Layout/SwipeArea/Margin/Content" index="1"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="ChainLabel" type="Label" parent="Layout/SwipeArea/Margin/Content/ChainSection"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Chain"
+
+[node name="Chain" parent="Layout/SwipeArea/Margin/Content/ChainSection" instance=ExtResource("4_grid")]
+unique_name_in_owner = true
+layout_mode = 2
+CardScale = 0.35
+VisibleRows = 1.0

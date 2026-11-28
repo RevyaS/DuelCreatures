@@ -1,132 +1,14 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene format=3]
 
-[ext_resource type="Script" path="res://Games/Shared/HUD/Prompts/FieldSelectScreen.cs" id="1_screen"]
-[ext_resource type="Script" path="res://Games/Shared/HUD/ResolvingSkillDetails.cs" id="2_banner"]
-[ext_resource type="PackedScene" path="res://Games/Vanguard/HUD/CardDetailParts/VanguardCardDetails.tscn" id="3_details"]
-[ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/DetailsSpace.tscn" id="4_space"]
-[ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/PromptHeader.tscn" id="5_header"]
-[ext_resource type="Script" path="res://Games/Shared/HUD/Prompts/FieldFocus.cs" id="6_focus"]
-[ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/SelectionGrid.tscn" id="7_row"]
-[ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/PromptButtons.tscn" id="8_buttons"]
+[ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/FieldSelectScreen.tscn" id="1_base"]
+[ext_resource type="PackedScene" path="res://Games/Vanguard/HUD/CardDetailParts/VanguardCardDetails.tscn" id="2_details"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_top"]
-bg_color = Color(0.07, 0.08, 0.11, 1)
+[node name="VanguardFieldSelectScreen" instance=ExtResource("1_base")]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bottom"]
-bg_color = Color(0.07, 0.08, 0.11, 1)
-
-[node name="VanguardFieldSelectScreen" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-script = ExtResource("1_screen")
-
-[node name="Layout" type="VBoxContainer" parent="."]
+[node name="Details" parent="Layout/SwipeArea/Margin/Content/SkillSpace/SkillBanner" instance=ExtResource("2_details")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 0
-
-[node name="SwipeArea" type="PanelContainer" parent="Layout"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 0.75
-theme_override_styles/panel = SubResource("StyleBoxFlat_top")
-
-[node name="Margin" type="MarginContainer" parent="Layout/SwipeArea"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 16
-
-[node name="Content" type="VBoxContainer" parent="Layout/SwipeArea/Margin"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 16
-
-[node name="SkillSpace" type="Control" parent="Layout/SwipeArea/Margin/Content"]
-layout_mode = 2
-size_flags_vertical = 3
-mouse_filter = 2
-
-[node name="SkillBanner" type="Control" parent="Layout/SwipeArea/Margin/Content/SkillSpace"]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-script = ExtResource("2_banner")
-
-[node name="Details" parent="Layout/SwipeArea/Margin/Content/SkillSpace/SkillBanner" instance=ExtResource("3_details")]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="DetailsSpace" parent="Layout/SwipeArea/Margin/Content/SkillSpace" instance=ExtResource("4_space")]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 0)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = 0.0
-offset_bottom = 0.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Header" parent="Layout/SwipeArea/Margin/Content" instance=ExtResource("5_header")]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="FieldFocus" type="Control" parent="Layout"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 1.25
-mouse_filter = 2
-script = ExtResource("6_focus")
-
-[node name="Bottom" type="PanelContainer" parent="Layout"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_bottom")
-
-[node name="Margin" type="MarginContainer" parent="Layout/Bottom"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 32
-
-[node name="Content" type="VBoxContainer" parent="Layout/Bottom/Margin"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 16
-
-[node name="CardRow" parent="Layout/Bottom/Margin/Content" instance=ExtResource("7_row")]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-CardScale = 0.45
-VisibleRows = 1.0
-
-[node name="Buttons" parent="Layout/Bottom/Margin/Content" instance=ExtResource("8_buttons")]
-unique_name_in_owner = true
-layout_mode = 2

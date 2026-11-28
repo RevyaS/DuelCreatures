@@ -69,7 +69,10 @@ ArC session ── CardsMoved / CardTurned / DeckShuffled ──▶ ArcDriver �
   `Presenter.WhenIdle()`: `ChooseAction` goes to the strategy for `choice.Where` (an unknown one throws), and every
   answer is checked with `Expect`. A question with no gesture throws `UnansweredQuestion`.
 - **Input screens** (`Games/Shared/HUD/Prompts/`, `docs/Input-Screens-Plan.md`): a question can open an
-  `InputScreen` over the board, in the `PromptLayer`, one at a time. Built from shared part scenes (`SelectableCard`,
+  `InputScreen` over the board, in the `PromptLayer`, one at a time. The three shared screens have shared layouts
+  (`SwipeUpPicker.tscn`, `CardSelectScreen.tscn`, `FieldSelectScreen.tscn`); each game's is an inherited scene adding
+  its card details scene as the skill banner (`Games/<Game>/HUD/Prompts/`). Providers find them with `InputScreens`;
+  card picks share `ScreenCardSelection`, skill picks `SkillPicks`. Built from shared part scenes (`SelectableCard`,
   `SelectionGrid`, `PromptHeader`, `PromptButtons`, `DetailsSpace`, `FieldFocus`); games add layouts. The field
   selection screen enlarges the real board (`FieldFocus` scales its root) rather than copying it.
 - **HUD:** card details are built from parts (`Games/Shared/HUD/CardDetails/`, per-game scenes); activation buttons are
@@ -118,13 +121,15 @@ Shared, both games:
 - Aiming (attacks): no line while searching; only a valid target under the finger shows the line (scale 0.4) and the
   target marker. Letting go anywhere else does nothing.
 - Every attack, including the opponent's and bots', stays drawn (line + target marker) from declaration to battle end.
-- Skills, skill order, triggers and "choose one of" options are picked by dragging a card out: in Vanguard on the
-  **swipe-up picker** (`SwipeUpPicker`: swipe a card up out of the row onto the space above to pick it, let go on the
-  row to keep it there; tap a card for what it stands for; only **Cancel** declines, shown when the question may be
-  declined); in YuGiOh out of the card list (press to read, drag out to pick; dropping back returns it; closing the
-  list declines), its deck searches too. Options show only the ones ArC says can be chosen.
-- Several zones/circles: tap to pick (a numbered badge 1, 2, … shows), tap again to drop, **Confirm** to finish
-  (Vanguard: on the field selection screen, **OK** to finish; YuGiOh: on the board).
+- Skills, skill order, triggers, "choose one of" options (and YuGiOh's chain responses) are picked on the **swipe-up
+  picker** (`SwipeUpPicker`, through `SkillPicks`): swipe a card up out of the row onto the space above to pick it, let
+  go on the row to keep it there; tap a card for what it stands for; only **Cancel** declines, shown when the question
+  may be declined. Options show only the ones ArC says can be chosen.
+- Cards picked by a question: on the field, by their zones/circles on the **field selection screen**; anywhere else
+  (or several places at once) on the **card selection screen**, tagged with where they are (`VanguardCardTags`,
+  `YuGiOhCardTags`). Several: tap to pick (numbered), tap again to drop, **OK** to finish.
+- Card details list every skill, an ability card's effects included (`CardDetail.AllSkills`: a spell or trap is its
+  effect).
 - The player's own skill is pinned while it's activated or resolved; prompts collapse with a swipe down (chevron bar),
   return with a swipe up or tap.
 - Next Phase / Confirm buttons appear only while offered (`BoardButtonView.HideWhenUnavailable`); the hint says what
@@ -139,8 +144,11 @@ YuGiOh (`YuGiOhMainPhaseStrategy`, `YuGiOhBattlePhaseStrategy`, `YuGiOhResponses
   Confirm). A tribute summon: drop the monster on a zone, then tap the tributes (numbered, Confirm).
 - Battle: drag from a monster onto the monster to attack; with no opponent monsters, onto the opponent's **hand**
   (direct attack). Next Phase / End Phase buttons.
-- Chain responses: drag an effect out of the list or close it to pass; the chain so far is shown above (`ChainView`),
-  pressing a link shows the effect it activated, without closing the responses.
+- Chain responses: swipe the effect up on the swipe-up picker, **Cancel** to pass; the chain so far is shown above the
+  prompt (`YuGiOhSwipeUpPicker`'s `%Chain`), tapping a link shows the effect it activated, without answering.
+- Searches, costs, materials asked by a question: the card selection screen; zones and field cards asked by a
+  question: the field selection screen. Tributes and Xyz materials of a summon you started are still tapped on the
+  board (numbered, Confirm).
 
 Vanguard (`VanguardMulliganStrategy`, `VanguardRidePhaseStrategy`, `VanguardMainPhaseStrategy`,
 `VanguardAttackPhaseStrategy`, `DefaultVanguardAnswers`, `VanguardGuardPrompt`):

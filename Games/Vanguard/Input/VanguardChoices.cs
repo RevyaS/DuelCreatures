@@ -116,40 +116,22 @@ public sealed class VanguardChoices(VanguardInput input)
             .FirstOrDefault(circle => ReferenceEquals(circle.Card, card));
 
     // Several of the player's skills wait at once: swipe the one to resolve first up out of the row
-    private async Task<ActivateSkillRequest> ChooseSkill(Choosing<ActivateSkillRequest> question)
-    {
-        if(question.Offered.Count == 1 && question.Minimum == 1) return question.Offered[0];
-        var (_, skill) = await input.SwipeUp.PickOne(Text.ChooseSkillToResolve,
-            question.Offered.Select(activation => new SwipeUpOption<ActivateSkillRequest>(activation.Card, activation)).ToList(), canCancel: false, ShowSkill);
-        return skill;
-    }
+    private Task<ActivateSkillRequest> ChooseSkill(Choosing<ActivateSkillRequest> question)
+        => SkillPicks.ChooseSkill(input.SwipeUp, question, Text.ChooseSkillToResolve, input.ShowDetails);
 
-    // "Choose one of": one card per option ArC offers (the card of the skill asking, the option's label as its tag);
-    // swipe the one to apply up out of the row
-    private async Task<IReadOnlyList<SkillOption>> ChooseOption(Choosing<SkillOption> question)
+    // "Choose one of": shown on the card of the player's skill being used
+    private Task<IReadOnlyList<SkillOption>> ChooseOption(Choosing<SkillOption> question)
     {
-        if(question.Offered.Count == 1 && question.Minimum == 1) return [ question.Offered[0] ];
         var card = input.ResolvingSkills.Current?.Card
             ?? throw new UnansweredQuestion(question.Purpose, question.Prompt, typeof(SkillOption), "no skill of the player's is being used, so there's no card to show its options on");
-        var (picked, option) = await input.SwipeUp.PickOne(question.Prompt,
-            question.Offered.Select(option => new SwipeUpOption<SkillOption>(card, option, new CardTag { Text = option.Label })).ToList(),
-            question.CanCancel, shown => input.ShowDetails(new CardDetail(card) { FocusText = shown.Label }));
-        return picked ? [ option ] : [];
+        return SkillPicks.ChooseOption(input.SwipeUp, question, card, input.ShowDetails);
     }
-
-    private void ShowSkill(ActivateSkillRequest activation) => input.ShowDetails(new CardDetail(activation.Card) { Focus = activation.Skill });
     #endregion
 
     #region Confirm
     /// <summary>"Use this skill?": swipe its card up out of the row to use it, Cancel not to. Any other question: Yes or No.</summary>
-    public async Task<bool> Confirm(Confirmation question)
-    {
-        if(question.Purpose is ActivateSkillRequest activation)
-        {
-            var (picked, _) = await input.SwipeUp.PickOne(Text.ActivateTrigger, [ new SwipeUpOption<ActivateSkillRequest>(activation.Card, activation) ], canCancel: true, ShowSkill);
-            return picked;
-        }
-        return await Prompts.Choose<bool>(input.DialogParent, question.Prompt, [ new Prompts.Option<bool>(Text.Yes, true), new Prompts.Option<bool>(Text.No, false) ]);
-    }
+    public Task<bool> Confirm(Confirmation question) => question.Purpose is ActivateSkillRequest activation
+        ? SkillPicks.ConfirmSkill(input.SwipeUp, activation, Text.ActivateTrigger, input.ShowDetails)
+        : SkillPicks.YesOrNo(input.DialogParent, question, Text.Yes, Text.No);
     #endregion
 }

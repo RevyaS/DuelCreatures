@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://Games/Shared/HUD/Prompts/FieldSelectScreen.tscn" id="1_base"]
+[ext_resource type="PackedScene" path="res://Games/YuGiOh/HUD/CardDetails/YuGiOhCardDetails.tscn" id="2_details"]
+
+[node name="YuGiOhFieldSelectScreen" instance=ExtResource("1_base")]
+
+[node name="Details" parent="Layout/SwipeArea/Margin/Content/SkillSpace/SkillBanner" instance=ExtResource("2_details")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

@@ -81,13 +81,13 @@ public sealed class YuGiOhMainPhaseStrategy(YuGiOhInput input, Offered offered)
                 return SwipeAction(zone, swipe.Direction)!;
 
             case CommandPressed { Command: var command, Card: var xyz } when ReferenceEquals(command, Commands.XyzSummon):
-                input.EffectPicker.Hide();
+                input.CardList.Hide();
                 return await XyzSummon(xyz);
             case CommandPressed { Command: var command, From: SpellAndTrapZone zone } when ReferenceEquals(command, Commands.ActivateSet):
                 return offered.One<ActivateSetRequest>(activation => ReferenceEquals(activation.Zone, zone), "Activating a Set card");
 
             case SkillActivated activation:
-                input.EffectPicker.Hide();
+                input.CardList.Hide();
                 return offered.Activation(activation.Card, activation.From, activation.Skill);
 
             case var other:

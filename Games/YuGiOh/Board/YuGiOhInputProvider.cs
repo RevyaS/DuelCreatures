@@ -19,7 +19,8 @@ using Godot;
 /// <item>ChooseAction: the strategy of the phase or window asking (the Main Phases, the Battle Phase, the chain
 /// responses, priority and summon windows), which matches a gesture to one of the offered requests; an unknown phase or
 /// window throws;</item>
-/// <item>Choose and Confirm: YuGiOhChoices, by the question's shape (zones, cards by where they are, options, effects).</item>
+/// <item>Choose and Confirm: YuGiOhChoices, by the question's shape (zones, cards by where they are, options, effects),
+/// on the input screens Vanguard uses (field selection, card selection, swipe-up picker).</item>
 /// </list>
 /// Every answer is checked against what was offered (Expect) before it goes back. Tapping a card shows its details (unless
 /// the tap answers what is being asked), tapping a listing zone lists it.
@@ -29,11 +30,15 @@ public partial class YuGiOhInputProvider : Control, IPlayerInput, IProvide<Prese
     YuGiOhBoard board = null!;
     public YuGiOhBoard Board => board;
     CardList CardListComponent = null!;
-    SelectFromCardList SelectFromCardListComponent = null!;
-    CardDetailsView CardDetails = null!;
-    // The chain being responded to, shown beside the responses
-    CardListPanel ChainView = null!;
+    CardDetailsOverlay CardDetails = null!;
+    InputScreens screens = null!;
+    YuGiOhSwipeUpPicker SwipeUp = null!;
+    // The board and the HUD rows under it: what the field selection screen enlarges (no container holds it)
+    Control BoardLayout = null!;
     ArcDriver? driver;
+
+    /// <summary>The location tags on cards offered to pick (YuGiOhCardTags.tres).</summary>
+    [Export] public YuGiOhCardTags CardTags { get; set; } = null!;
     // The zone whose cards CardListComponent is showing
     IZoneView? listedZone;
 
@@ -57,18 +62,15 @@ public partial class YuGiOhInputProvider : Control, IPlayerInput, IProvide<Prese
         board = GetNode<YuGiOhBoard>($"%{nameof(YuGiOhBoard)}");
         CardListComponent = GetNode<CardList>($"%{nameof(CardListComponent)}");
         CardListComponent.CardPressed += OnListedCardPressed;
-        SelectFromCardListComponent = GetNode<SelectFromCardList>($"%{nameof(SelectFromCardListComponent)}");
-        // A card offered to pick (a search, a cost, materials): its details, to read before picking
-        SelectFromCardListComponent.CardPressed += node =>
-        {
-            if(node.CurrentCard is { } card) CardDetails.Show(new CardDetail(card));
-        };
-        CardDetails = GetNode<CardDetailsView>($"%{nameof(CardDetails)}");
-        ChainView = GetNode<CardListPanel>($"%{nameof(ChainView)}");
-        ChainView.Hide();
-        // The details and the chain stay usable while a card list is open (reading them doesn't close it)
-        CardListComponent.LetThrough(CardDetails);
-        CardListComponent.LetThrough(ChainView);
+        CardDetails = GetNode<CardDetailsOverlay>($"%{nameof(CardDetails)}");
+        BoardLayout = GetNode<Control>($"%{nameof(BoardLayout)}");
+        screens = InputScreens.Find(this, CardDetails.Show);
+        SwipeUp = screens.SwipeUp as YuGiOhSwipeUpPicker
+            ?? throw new InvalidOperationException($"{GetPath()}: %{nameof(InputScreens.SwipeUp)} is a {nameof(YuGiOhSwipeUpPicker)} (YuGiOhSwipeUpPicker.tscn), to show the chain");
+        if(CardTags is null) throw new InvalidOperationException($"{GetPath()}: set {nameof(CardTags)} (YuGiOhCardTags.tres)");
+        CardTags.EnsureComplete();
+        // The details stay usable while a card list is open (reading them doesn't close it)
+        CardListComponent.LetThrough(CardDetails.Details);
         // Card flights draw above the board and below the HUD (see the scene)
         Presenter.Flights = GetNode<CardFlightLayer>("%CardFlights");
         // The HUD's buttons and hint, wherever they are in the scene
@@ -88,6 +90,7 @@ public partial class YuGiOhInputProvider : Control, IPlayerInput, IProvide<Prese
         driver.ZoneInspected += OnZoneInspected;
         driver.CardInspected += OnCardInspected;
         driver.BindAll<GameSession>(this, session);
+        screens.Attach(inputBoard, driver, BoardLayout);
         inputBoard.Attach(driver);
     }
 
@@ -96,7 +99,7 @@ public partial class YuGiOhInputProvider : Control, IPlayerInput, IProvide<Prese
     {
         PlayArea = playArea;
         OpponentPlayArea = opponentPlayArea;
-        input = new(this, inputBoard, this, SelectFromCardListComponent, CardListComponent, ChainView, CardDetails.Show);
+        input = new(this, inputBoard, this, CardListComponent, screens, SwipeUp, CardTags, CardDetails.Show);
         choices = new(input);
         responses = new(input);
     }
@@ -111,7 +114,7 @@ public partial class YuGiOhInputProvider : Control, IPlayerInput, IProvide<Prese
     {
         foreach(var subscription in subscriptions) subscription.Dispose();
         resolving = new ResolvingSkills();
-        GetNode<ResolvingSkillDetails>("%ResolvingSkill").Follow(resolving);
+        InputScreens.FollowSkills(this, resolving);
         subscriptions =
         [
             eventBus.Subscribe<SkillUseStartedEvent>(started =>
@@ -159,7 +162,7 @@ public partial class YuGiOhInputProvider : Control, IPlayerInput, IProvide<Prese
             OpenWindow open when IsResponseWindow(open) => await responses!.Answer(offered, open),
             var where => throw new NotSupportedException($"{nameof(YuGiOhInputProvider)} has no gesture for a choice in {where}. Offered: {offered.Describe()}"),
         });
-        return choice.Expect(chosen);
+        return Answered(choice.Expect(chosen));
     }
 
     private static bool IsResponseWindow(OpenWindow open)
@@ -169,18 +172,25 @@ public partial class YuGiOhInputProvider : Control, IPlayerInput, IProvide<Prese
     {
         Asked();
         await Presenter.WhenIdle();
-        return question.Expect(await resolving.Asking(() => choices!.Choose(question)));
+        return Answered(question.Expect(await resolving.Asking(() => choices!.Choose(question))));
     }
 
     public async Task<bool> Confirm(Confirmation question)
     {
         Asked();
         await Presenter.WhenIdle();
-        return await resolving.Asking(() => choices!.Confirm(question));
+        return Answered(await resolving.Asking(() => choices!.Confirm(question)));
     }
 
     // YuGiOh asks for no order yet
     public Task<IReadOnlyList<T>> Order<T>(Ordering<T> question) => throw new UnansweredQuestion(question.Purpose, question.Prompt, typeof(T), "ordering has no gesture yet");
+
+    // Answered: the details shown while answering go, so they don't cover what the answer starts
+    private T Answered<T>(T answer)
+    {
+        CardDetails.Hide();
+        return answer;
+    }
 
     private YuGiOhInput Asked() => input ?? throw new InvalidOperationException($"{nameof(YuGiOhInputProvider)} was asked before it was activated");
     #endregion
