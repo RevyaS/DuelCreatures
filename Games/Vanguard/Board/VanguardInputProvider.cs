@@ -156,8 +156,9 @@ public partial class VanguardInputProvider : Control, IPlayerInput, IProvide<IAc
                 Cue(VanguardSfx.Shuffle);
             }),
             eventBus.Subscribe<CardsMoved>(cardsMoved => {
-                // A draw's reason is its DrawRequest; the mulligan's draws resolve nothing, so they are Unresolved
-                if(cardsMoved.From is Deck && cardsMoved.To is Hand && cardsMoved.Reason is DrawRequest or Unresolved) {
+                // A draw's reason is its DrawRequest; the mulligan draws (the opening hand, the redraw) are its phase's
+                if(cardsMoved.From is Deck && cardsMoved.To is Hand
+                    && cardsMoved.Reason is DrawRequest or PhaseProcedure { Phase: MulliganPhase }) {
                     Cue(VanguardSfx.Draw);
                 }
             }),
