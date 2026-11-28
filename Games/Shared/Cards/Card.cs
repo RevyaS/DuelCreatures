@@ -6,8 +6,9 @@ using Godot;
 
 /// <summary>
 /// A card shown in a scene: its art (from its game's art folder, CardGameStyle) and, in a game's card scene, its face
-/// parts (ICardFacePart, e.g. a YuGiOh monster's Level and ATK), shown only while it's face up. Place parts anywhere
-/// under the card in the scene; they're found and filled in when the card is loaded.
+/// parts (ICardFacePart, e.g. a YuGiOh monster's Level and ATK), shown only while it's face up. The game's card script
+/// finds its texts by unique name (FindNodes) and fills them in (ShowFace); the parts are found anywhere under the card
+/// and turned with it.
 /// </summary>
 [Tool]
 public partial class Card : CardBaseComponent
@@ -34,9 +35,12 @@ public partial class Card : CardBaseComponent
     {
         this.card = card;
         Texture = CardStyles.For(card).ArtOf(card.Name)!;
-        foreach(var part in FaceParts) part.Show(card);
+        ShowFace(card);
         Render();
     }
+
+    /// <summary>Fills in the face texts with what <paramref name="card"/> prints (a game's card script writes it).</summary>
+    protected virtual void ShowFace(CardBase card) {}
 
     protected override void RenderCore()
     {

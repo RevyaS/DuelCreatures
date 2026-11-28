@@ -52,11 +52,13 @@ Then add the game in `Games/CardGames.cs`: `CardStyles.Register<MyCard>("res://G
 Every card of that type (and its subtypes) then uses that scene, folder and sleeves.
 
 **The card scene** (copy `Games/YuGiOh/Cards/YuGiOhCard.tscn`): inherit `Games/Shared/Cards/Card.tscn` and place
-face parts anywhere under it. A face part is a `CardFaceText` subclass (a Label: write `Format(card)`, null hides it;
-`Prefix`/`Suffix` around the value), like `YuGiOhLevelFace`, `YuGiOhAttackFace` and `YuGiOhDefenseFace`. Put
-them in a `CardFacePanel` to hide their background when none has a value (a spell's ATK bar). Parts show only face
-up. The card needs no script of its own; a card with values that change in game (Vanguard's power) has one
-(`VanguardCardComponent`).
+the face texts anywhere under it: Labels with the shared `CardFaceText` script (`Prefix`/`Suffix` around the value;
+no value hides it) and a unique name each. The card's script (a `Card` subclass, like `YuGiOhCardComponent`) binds
+them all: it finds them in `FindNodes` (`GetNode<CardFaceText>("%Attack")`, calling `base.FindNodes()` first) and
+fills them in `ShowFace(card)` (`Attack.Show(monster?.Attack)`; a prefix for this card only, e.g. a Rank:
+`Level.Show(xyz.Rank, RankPrefix)`). No script per text. Put texts in a `CardFacePanel` to hide their background when
+none has a value (a spell's ATK bar). Parts show only face up. A card with values that change in game (Vanguard's
+power) keeps them on its script too (`VanguardCardComponent`).
 
 **Sleeves on a board:** the board's `Show(session, presenter, sleeves)` calls `driver.UseSleeves(sleeves)`. The
 session passes `DataManager.BoardSleevesFor<MyCard>()` (the player's pick, the default for the opponent); a debug

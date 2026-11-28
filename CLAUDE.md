@@ -76,8 +76,8 @@ ArC session ── CardsMoved / CardTurned / DeckShuffled ──▶ ArcDriver �
   gated by `IActivationGate`. Prompt panels sit in a `PromptLayer` (swipe down collapses, swipe up/tap restores) with
   `ResolvingSkillDetails` (the player's own skill pinned while it's activated or resolved).
 - **Looks:** `CardGameStyle` resources (`Games/<Game>/<Game>Style.tres`: card scene, art folder, default sleeve,
-  sleeve choices), registered by card type in `Games/CardGames.cs`. Card faces are parts (`CardFaceText`,
-  `CardFacePanel`). Art: `res://Assets/Cards/<Game>/<CardNameWithoutSpacesOrPunctuation>.png` (`Assets/` is
+  sleeve choices), registered by card type in `Games/CardGames.cs`. Card faces: `CardFaceText` labels (unique names)
+  bound and filled by the game's `Card` subclass (`FindNodes`, `ShowFace`), in `CardFacePanel`s; no script per text. Art: `res://Assets/Cards/<Game>/<CardNameWithoutSpacesOrPunctuation>.png` (`Assets/` is
   git-ignored). The player's sleeve per game is saved in the profile (`DataManager.SleeveFor/ChooseSleeve`).
 
 ## What the client needs from ArC (re-map these in the migration)

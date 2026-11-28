@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using ArC.CardGames.Components;
 using Godot;
 
 /// <summary>
@@ -12,9 +11,7 @@ public partial class CardFacePanel : PanelContainer, ICardFacePart
 {
     List<CardFaceText>? texts;
 
-    public void Show(CardBase card) {}
-
-    // The card shows every part first, then turns them: the texts know whether they have a value by now
+    // The card fills in the texts first, then turns the parts: the texts know whether they have a value by now
     public void FaceUp(bool faceUp)
     {
         if(Engine.IsEditorHint()) return;
