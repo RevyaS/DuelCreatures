@@ -35,16 +35,19 @@ public partial class Card : CardBaseComponent
     {
         this.card = card;
         Texture = CardStyles.For(card).ArtOf(card.Name)!;
-        ShowFace(card);
         Render();
     }
 
-    /// <summary>Fills in the face texts with what <paramref name="card"/> prints (a game's card script writes it).</summary>
+    /// <summary>
+    /// Fills in the face texts with what <paramref name="card"/> prints (a game's card script writes it). Called while
+    /// rendering, once the scene's nodes are found: a card is often loaded before it enters the tree.
+    /// </summary>
     protected virtual void ShowFace(CardBase card) {}
 
     protected override void RenderCore()
     {
         base.RenderCore();
+        if(card is not null) ShowFace(card);
         foreach(var part in FaceParts) part.FaceUp(IsFront);
     }
 
